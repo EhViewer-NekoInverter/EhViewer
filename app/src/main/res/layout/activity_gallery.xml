@@ -68,11 +68,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="?attr/gallerySliderBackgroundColor"
+        android:fitsSystemWindows="true"
         android:orientation="horizontal"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:visibility="invisible"
-        app:fitsSystemWindowsInsets="bottom">
+        android:visibility="invisible">
 
         <TextView
             android:id="@+id/left"

@@ -20,6 +20,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.WindowInsets;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
@@ -65,5 +66,10 @@ public class SeekBarPanel extends LinearLayout {
             event.offsetLocation(-offsetX, -offsetY);
             return true;
         }
+    }
+
+    @Override
+    public WindowInsets onApplyWindowInsets(WindowInsets insets) {
+        return super.onApplyWindowInsets(insets.replaceSystemWindowInsets(insets.getSystemWindowInsetLeft(), 0, insets.getSystemWindowInsetRight(), insets.getSystemWindowInsetBottom()));
     }
 }
