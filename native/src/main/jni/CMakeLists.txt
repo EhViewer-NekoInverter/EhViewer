@@ -10,8 +10,6 @@ add_subdirectory(integrity)
 
 add_library(${PROJECT_NAME} SHARED main.c)
 
-target_compile_options(${PROJECT_NAME} PUBLIC -Oz -fvisibility=hidden -fvisibility-inlines-hidden -fno-exceptions)
-
 target_include_directories(${PROJECT_NAME} PUBLIC a7zip/a7zip image/image integrity)
 
-target_link_libraries(${PROJECT_NAME} a7zip image genuine)
+target_link_libraries(${PROJECT_NAME} a7zip image genuine -Wl,--gc-sections)
