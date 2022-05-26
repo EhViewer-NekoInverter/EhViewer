@@ -1,3 +1,6 @@
+**Project is no longer actively maintained.** Please move to general manga reader like [Tachiyomi](https://tachiyomi.org/).
+
+
 ### [下载](https://install.appcenter.ms/users/nekoinverter/apps/ehviewer/distribution_groups/public)
 
 [Download](https://install.appcenter.ms/users/nekoinverter/apps/ehviewer/distribution_groups/public)
