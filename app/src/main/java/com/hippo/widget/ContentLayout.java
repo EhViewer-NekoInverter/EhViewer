@@ -45,6 +45,7 @@ import com.hippo.easyrecyclerview.HandlerDrawable;
 import com.hippo.easyrecyclerview.LayoutManagerUtils;
 import com.hippo.ehviewer.EhApplication;
 import com.hippo.ehviewer.R;
+import com.hippo.ehviewer.Settings;
 import com.hippo.util.ExceptionUtils;
 import com.hippo.view.ViewTransition;
 import com.hippo.yorozuya.IntIdGenerator;
@@ -287,11 +288,15 @@ public class ContentLayout extends FrameLayout {
                     if (mEndPage < mPages) {
                         // Get next page
                         // Fill pages before NextPage with empty list
-                        while (mNextPage > mEndPage && mEndPage < mPages) {
-                            mCurrentTaskId = mIdGenerator.nextId();
-                            mCurrentTaskType = TYPE_NEXT_PAGE_KEEP_POS;
-                            mCurrentTaskPage = mEndPage;
-                            onGetPageData(mCurrentTaskId, mPages, mNextPage, Collections.emptyList());
+                        if (Settings.getGallerySite() == 0) {
+                            while (mNextPage > mEndPage && mEndPage < mPages) {
+                                mCurrentTaskId = mIdGenerator.nextId();
+                                mCurrentTaskType = TYPE_NEXT_PAGE_KEEP_POS;
+                                mCurrentTaskPage = mEndPage;
+                                onGetPageData(mCurrentTaskId, mPages, mNextPage, Collections.emptyList());
+                            }
+                        } else {
+                            mEndPage = mNextPage;
                         }
                         mCurrentTaskId = mIdGenerator.nextId();
                         mCurrentTaskType = TYPE_NEXT_PAGE_KEEP_POS;

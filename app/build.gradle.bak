@@ -1,0 +1,152 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+}
+
+android {
+    compileSdkVersion 32
+    buildToolsVersion "32.0.0"
+
+    Properties localProperties = new Properties()
+    if (project.rootProject.file('local.properties').exists()) {
+        localProperties.load(project.rootProject.file('local.properties').newDataInputStream())
+    }
+
+    splits {
+        abi {
+            enable = true
+            reset()
+            include 'arm64-v8a', 'x86_64', 'armeabi-v7a', 'x86'
+        }
+    }
+
+    signingConfigs {
+            sign {
+                storeFile file(signStoreFile)
+                storePassword signStorePassword
+                keyAlias signkeyAlias
+                keyPassword signkeyPassword
+            }
+    }
+
+    defaultConfig {
+        applicationId "org.moedog.ehviewer"
+        minSdkVersion 23
+        targetSdkVersion 32
+<<<<<<< HEAD
+        versionCode 114523
+        versionName "1.7.27.1"
+=======
+        versionCode 114522
+        versionName "1.7.27"
+>>>>>>> 310c8b0b (Fix exhentai paging (from Ehviewer-Overhauled))
+        resConfigs 'zh', 'zh-rCN', 'zh-rHK', 'zh-rTW', 'es', 'ja', 'ko', 'fr', 'de', 'th'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+
+    lint {
+        abortOnError true
+        checkReleaseBuilds false
+        disable 'MissingTranslation'
+    }
+
+    packagingOptions {
+        resources {
+            excludes += "/META-INF/**"
+            excludes += "/kotlin/**"
+            excludes += "**.txt"
+            excludes += "**.bin"
+        }
+    }
+
+    dependenciesInfo.includeInApk false
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles 'proguard-rules.pro'
+            signingConfig signingConfigs.sign
+        }
+        debug {
+            applicationIdSuffix ".debug"
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    sourceSets {
+        main {
+            java.srcDirs += 'src/main/java-gen'
+        }
+    }
+    namespace 'com.hippo.ehviewer'
+}
+
+tasks.withType(JavaCompile) {
+    task -> task.dependsOn ":daogenerator:executeDaoGenerator"
+}
+
+dependencies {
+    implementation 'androidx.activity:activity:1.4.0'
+    implementation 'androidx.biometric:biometric:1.1.0'
+    implementation 'androidx.browser:browser:1.4.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.core:core:1.7.0'
+    implementation 'androidx.dynamicanimation:dynamicanimation:1.1.0-alpha03'
+    implementation 'androidx.fragment:fragment:1.4.1'
+    implementation 'androidx.preference:preference:1.2.0'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01'
+    implementation 'androidx.webkit:webkit:1.4.0'
+    implementation 'com.drakeet.drawer:drawer:1.0.3'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.3'
+    implementation 'com.github.seven332:beerbelly:0.1.4'
+    implementation 'com.github.seven332:glgallery:0.1.2'
+    implementation 'com.github.seven332:glview:0.1.0'
+    implementation 'com.github.seven332:glview-image:0.1.3'
+    implementation 'com.github.seven332:streampipe:0.1.0'
+    implementation 'com.github.seven332:tuxiang:0.1.6'
+    implementation 'com.github.seven332:unifile:9ec57bcd8f'
+    implementation 'com.github.seven332:yorozuya-thread:0.1.1'
+    implementation 'com.github.seven332:yorozuya-collect:0.1.4'
+    implementation 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:1.0.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+    implementation 'com.squareup.okhttp3:okhttp-dnsoverhttps:4.9.3'
+    implementation 'com.takisoft.preferencex:preferencex:1.1.0'
+    implementation 'com.gitlab.NekoInverter:yorozuya:723dc867a9'
+    implementation 'dev.rikka.rikkax.appcompat:appcompat:1.4.1'
+    implementation 'dev.rikka.rikkax.core:core:1.4.0'
+    implementation 'dev.rikka.rikkax.insets:insets:1.2.0'
+    implementation 'dev.rikka.rikkax.layoutinflater:layoutinflater:1.2.0'
+    implementation 'dev.rikka.rikkax.material:material:1.6.6'
+    implementation 'dev.rikka.rikkax.recyclerview:recyclerview-ktx:1.3.1'
+    implementation 'dev.rikka.rikkax.widget:borderview:1.1.0'
+    implementation 'dev.rikka.rikkax.preference:simplemenu-preference:1.0.3'
+    implementation 'org.ccil.cowan.tagsoup:tagsoup:1.2.1'
+    implementation 'org.greenrobot:greendao:3.3.0'
+    implementation 'org.jsoup:jsoup:1.15.1'
+    implementation projects.native
+}
+
+configurations.all {
+    resolutionStrategy {
+        force 'com.github.seven332:glgallery:25893283ca'
+        force 'com.github.seven332:glview:ba6aee61d7'
+        force 'com.github.seven332:glview-image:68d94b0fc2'
+
+        exclude group: 'com.github.seven332', module: 'okhttp'
+        exclude group: 'com.github.seven332', module: 'image'
+        exclude group: 'com.github.seven332', module: 'yorozuya'
+        exclude group: 'androidx.appcompat', module: 'appcompat'
+    }
+}
