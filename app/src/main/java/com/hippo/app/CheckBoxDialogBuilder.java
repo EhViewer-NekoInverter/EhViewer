@@ -23,7 +23,6 @@ import android.view.View;
 import android.widget.CheckBox;
 
 import androidx.appcompat.app.AlertDialog;
-
 import com.hippo.ehviewer.R;
 
 public class CheckBoxDialogBuilder extends AlertDialog.Builder {

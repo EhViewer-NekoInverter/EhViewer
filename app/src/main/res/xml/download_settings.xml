@@ -22,7 +22,7 @@
         android:title="@string/settings_download_download_location"
         app:iconSpaceReserved="false" />
 
-    <SwitchPreference
+    <SwitchPreferenceCompat
         android:defaultValue="false"
         android:key="media_scan"
         android:title="@string/settings_download_media_scan"
@@ -40,12 +40,12 @@
         app:iconSpaceReserved="false" />
 
     <rikka.preference.SimpleMenuPreference
+        android:defaultValue="0"
         android:key="download_delay"
-        android:title="@string/settings_download_download_delay"
         android:summary="@string/settings_download_download_delay_summary"
+        android:title="@string/settings_download_download_delay"
         app:entries="@array/download_delay_entries"
         app:entryValues="@array/download_delay_entry_values"
-        android:defaultValue="0"
         app:iconSpaceReserved="false" />
 
     <rikka.preference.SimpleMenuPreference
@@ -66,7 +66,7 @@
         app:entryValues="@array/image_resolution_entry_values"
         app:iconSpaceReserved="false" />
 
-    <SwitchPreference
+    <SwitchPreferenceCompat
         android:defaultValue="false"
         android:key="download_origin_image"
         android:summary="@string/settings_download_download_origin_image_summary"

@@ -17,15 +17,15 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <SwitchPreference
-        android:defaultValue="true"
+    <SwitchPreferenceCompat
+        android:defaultValue="false"
         android:key="save_parse_error_body"
         android:summary="@string/settings_advanced_save_parse_error_body_summary"
         android:title="@string/settings_advanced_save_parse_error_body"
         app:iconSpaceReserved="false" />
 
-    <SwitchPreference
-        android:defaultValue="true"
+    <SwitchPreferenceCompat
+        android:defaultValue="false"
         android:key="save_crash_log"
         android:summary="@string/settings_advanced_save_crash_log_summary"
         android:title="@string/settings_advanced_save_crash_log"
@@ -72,7 +72,7 @@
         android:title="@string/settings_advanced_proxy"
         app:iconSpaceReserved="false" />
 
-    <SwitchPreference
+    <SwitchPreferenceCompat
         android:defaultValue="false"
         android:key="built_in_hosts_2"
         android:summary="@string/settings_advanced_built_in_hosts_summary"
@@ -80,24 +80,17 @@
         app:iconSpaceReserved="false" />
 
     <Preference
+        android:fragment="com.hippo.ehviewer.ui.fragment.HostsFragment"
         android:key="custom_hosts_2"
         android:summary="@string/settings_advanced_custom_hosts_summary"
         android:title="@string/settings_advanced_custom_hosts_title"
-        android:fragment="com.hippo.ehviewer.ui.fragment.HostsFragment"
         app:iconSpaceReserved="false" />
 
-    <SwitchPreference
+    <SwitchPreferenceCompat
         android:defaultValue="false"
         android:key="domain_fronting"
         android:summary="@string/settings_advanced_domain_fronting_summary"
         android:title="@string/settings_advanced_domain_fronting_title"
-        app:iconSpaceReserved="false" />
-
-    <SwitchPreference
-        android:defaultValue="false"
-        android:key="e_ink_mode_2"
-        android:summary="@string/settings_e_ink_mode_summary"
-        android:title="@string/settings_e_ink_mode_title"
         app:iconSpaceReserved="false" />
 
     <Preference

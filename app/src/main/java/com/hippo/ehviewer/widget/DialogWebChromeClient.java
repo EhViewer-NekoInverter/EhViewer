@@ -27,7 +27,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
-
 import com.hippo.ehviewer.R;
 
 public class DialogWebChromeClient extends WebChromeClient {

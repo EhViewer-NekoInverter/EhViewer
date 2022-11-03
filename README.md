@@ -1,20 +1,14 @@
-**Project is no longer actively maintained.** Please move to general manga reader like [Tachiyomi](https://tachiyomi.org/).
-
----
-
-
-### [下载](https://install.appcenter.ms/users/nekoinverter/apps/ehviewer/distribution_groups/public)
-
-[Download](https://install.appcenter.ms/users/nekoinverter/apps/ehviewer/distribution_groups/public)
-
 # EhViewer
 
 ![Icon](art/launcher_icon-web.png)
 
-这是一个 E-Hentai Android 平台的浏览器。
+这是一个 E-Hentai Android 平台的浏览器
 
-An E-Hentai Application for Android.
+An E-Hentai Application for Android
 
+# Download
+
+[Github 下载](https://github.com/asuka-mio/Ehviewer/releases)
 
 # Screenshot
 

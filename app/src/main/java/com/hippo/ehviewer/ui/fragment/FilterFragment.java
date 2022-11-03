@@ -173,6 +173,25 @@ public class FilterFragment extends BaseFragment {
                 .show();
     }
 
+    @Override
+    public int getFragmentTitle() {
+        return R.string.filter;
+    }
+
+    private static class FilterHolder extends RecyclerView.ViewHolder {
+
+        private final MaterialCheckBox checkbox;
+        private final TextView text;
+        private final ImageView delete;
+
+        public FilterHolder(View itemView) {
+            super(itemView);
+            checkbox = itemView.findViewById(R.id.checkbox);
+            text = itemView.findViewById(R.id.text);
+            delete = itemView.findViewById(R.id.delete);
+        }
+    }
+
     private class AddFilterDialogHelper implements View.OnClickListener {
 
         @Nullable
@@ -231,20 +250,6 @@ public class FilterFragment extends BaseFragment {
             mSpinner = null;
             mInputLayout = null;
             mEditText = null;
-        }
-    }
-
-    private static class FilterHolder extends RecyclerView.ViewHolder {
-
-        private final MaterialCheckBox checkbox;
-        private final TextView text;
-        private final ImageView delete;
-
-        public FilterHolder(View itemView) {
-            super(itemView);
-            checkbox = itemView.findViewById(R.id.checkbox);
-            text = itemView.findViewById(R.id.text);
-            delete = itemView.findViewById(R.id.delete);
         }
     }
 
@@ -455,10 +460,5 @@ public class FilterFragment extends BaseFragment {
         public void trigger(Filter filter) {
             mEhFilter.triggerFilter(filter);
         }
-    }
-
-    @Override
-    public int getFragmentTitle() {
-        return R.string.filter;
     }
 }

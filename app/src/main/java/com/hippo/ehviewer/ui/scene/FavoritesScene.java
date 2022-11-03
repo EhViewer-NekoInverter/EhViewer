@@ -90,7 +90,6 @@ import java.util.Collections;
 import java.util.List;
 
 import rikka.core.res.ResourcesKt;
-import rikka.recyclerview.RecyclerViewKt;
 
 // TODO Get favorite, modify favorite, add favorite, what a mess!
 @SuppressLint("RtlHardcoded")
@@ -120,6 +119,19 @@ public class FavoritesScene extends BaseScene implements
     @Nullable
     @ViewLifeCircle
     private FabLayout mFabLayout;
+    private final Runnable showNormalFabsRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mFabLayout != null) {
+                mFabLayout.setSecondaryFabVisibilityAt(0, true);
+                mFabLayout.setSecondaryFabVisibilityAt(1, true);
+                mFabLayout.setSecondaryFabVisibilityAt(2, true);
+                mFabLayout.setSecondaryFabVisibilityAt(3, false);
+                mFabLayout.setSecondaryFabVisibilityAt(4, false);
+                mFabLayout.setSecondaryFabVisibilityAt(5, false);
+            }
+        }
+    };
     @Nullable
     @ViewLifeCircle
     private FavoritesAdapter mAdapter;
@@ -164,20 +176,6 @@ public class FavoritesScene extends BaseScene implements
     private int mModifyFavCat;
     // For modify action
     private boolean mModifyAdd;
-
-    private final Runnable showNormalFabsRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mFabLayout != null) {
-                mFabLayout.setSecondaryFabVisibilityAt(0, true);
-                mFabLayout.setSecondaryFabVisibilityAt(1, true);
-                mFabLayout.setSecondaryFabVisibilityAt(2, true);
-                mFabLayout.setSecondaryFabVisibilityAt(3, false);
-                mFabLayout.setSecondaryFabVisibilityAt(4, false);
-                mFabLayout.setSecondaryFabVisibilityAt(5, false);
-            }
-        }
-    };
 
     @Override
     public int getNavCheckedItem() {
@@ -334,8 +332,8 @@ public class FavoritesScene extends BaseScene implements
 
         TapTargetView.showFor(requireActivity(),
                 TapTarget.forBounds(bounds,
-                        getString(R.string.guide_collections_title),
-                        getString(R.string.guide_collections_text))
+                                getString(R.string.guide_collections_title),
+                                getString(R.string.guide_collections_text))
                         .outerCircleColor(R.color.colorPrimary)
                         .transparentTarget(true),
                 new TapTargetView.Listener() {

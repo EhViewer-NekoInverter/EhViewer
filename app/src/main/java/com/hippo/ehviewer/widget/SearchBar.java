@@ -490,6 +490,27 @@ public class SearchBar extends MaterialCardView implements View.OnClickListener,
         }
     }
 
+    private String wrapTagKeyword(String keyword) {
+        keyword = keyword.trim();
+
+        int index1 = keyword.indexOf(':');
+        if (index1 == -1 || index1 >= keyword.length() - 1) {
+            // Can't find :, or : is the last char
+            return keyword;
+        }
+        if (keyword.charAt(index1 + 1) == '"') {
+            // The char after : is ", the word must be quoted
+            return keyword;
+        }
+        int index2 = keyword.indexOf(' ');
+        if (index2 <= index1) {
+            // Can't find space, or space is before :
+            return keyword;
+        }
+
+        return keyword.substring(0, index1 + 1) + "\"" + keyword.substring(index1 + 1) + "$\"";
+    }
+
     public interface Helper {
         void onClickTitle();
 
@@ -664,26 +685,5 @@ public class SearchBar extends MaterialCardView implements View.OnClickListener,
                     .show();
             return true;
         }
-    }
-
-    private String wrapTagKeyword(String keyword) {
-        keyword = keyword.trim();
-
-        int index1 = keyword.indexOf(':');
-        if (index1 == -1 || index1 >= keyword.length() - 1) {
-            // Can't find :, or : is the last char
-            return keyword;
-        }
-        if (keyword.charAt(index1 + 1) == '"') {
-            // The char after : is ", the word must be quoted
-            return keyword;
-        }
-        int index2 = keyword.indexOf(' ');
-        if (index2 <= index1) {
-            // Can't find space, or space is before :
-            return keyword;
-        }
-
-        return keyword.substring(0, index1 + 1) + "\"" + keyword.substring(index1 + 1) + "$\"";
     }
 }

@@ -31,20 +31,13 @@ import androidx.annotation.NonNull;
 import androidx.collection.LongSparseArray;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.hippo.ehviewer.Settings;
 import com.hippo.yorozuya.NumberUtils;
 
 /**
  * Add setChoiceMode for RecyclerView
  */
 // Get some code from twoway-view and AbsListView.
-public class EasyRecyclerView extends ScrollLessRecyclerView {
-
-    /**
-     * Represents an invalid position. All valid positions are in the range 0 to 1 less than the
-     * number of items in the current adapter.
-     */
-    public static final int INVALID_POSITION = -1;
+public class EasyRecyclerView extends RecyclerView {
 
     /**
      * Normal list that does not indicate choices
@@ -70,23 +63,21 @@ public class EasyRecyclerView extends ScrollLessRecyclerView {
      * The list allows multiple choices in custom action
      */
     public static final int CHOICE_MODE_MULTIPLE_CUSTOM = 4;
-
-    /**
-     * Controls if/how the user may choose/check items in the list
-     */
-    private int mChoiceMode = CHOICE_MODE_NONE;
-
-    /**
-     * Controls CHOICE_MODE_MULTIPLE_MODAL. null when inactive.
-     */
-    private ActionMode mChoiceActionMode;
-
+    // Fling friction
+    public float pageScrollThreshold;
     /**
      * Wrapper for the multiple choice mode callback; AbsListView needs to perform
      * a few extra actions around what application code does.
      */
     MultiChoiceModeWrapper mMultiChoiceModeCallback;
-
+    /**
+     * Controls if/how the user may choose/check items in the list
+     */
+    private int mChoiceMode = CHOICE_MODE_NONE;
+    /**
+     * Controls CHOICE_MODE_MULTIPLE_MODAL. null when inactive.
+     */
+    private ActionMode mChoiceActionMode;
     /**
      * Listener for custom multiple choices
      */
@@ -122,17 +113,25 @@ public class EasyRecyclerView extends ScrollLessRecyclerView {
 
     public EasyRecyclerView(Context context) {
         super(context);
-        setEnableScroll(!Settings.getEInkMode());
+        EasyRecyclerView.this.init(context);
     }
 
     public EasyRecyclerView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setEnableScroll(!Settings.getEInkMode());
+        EasyRecyclerView.this.init(context);
     }
 
     public EasyRecyclerView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        setEnableScroll(!Settings.getEInkMode());
+        EasyRecyclerView.this.init(context);
+    }
+
+    public static void setViewChecked(View view, boolean checked) {
+        if (view instanceof Checkable) {
+            ((Checkable) view).setChecked(checked);
+        } else {
+            view.setActivated(checked);
+        }
     }
 
     /**
@@ -172,18 +171,7 @@ public class EasyRecyclerView extends ScrollLessRecyclerView {
         }
     }
 
-    /**
-     * Returns the number of items currently selected. This will only be valid
-     * if the choice mode is not {@link #CHOICE_MODE_NONE} (default).
-     *
-     * <p>To determine the specific items that are currently selected, use one of
-     * the <code>getChecked*</code> methods.
-     *
-     * @return The number of items currently selected
-     * @see #getCheckedItemPosition()
-     * @see #getCheckedItemPositions()
-     * @see #getCheckedItemIds()
-     */
+
     public int getCheckedItemCount() {
         return mCheckedItemCount;
     }
@@ -208,22 +196,6 @@ public class EasyRecyclerView extends ScrollLessRecyclerView {
     }
 
     /**
-     * Returns the currently checked item. The result is only valid if the choice
-     * mode has been set to {@link #CHOICE_MODE_SINGLE}.
-     *
-     * @return The position of the currently checked item or
-     * {@link #INVALID_POSITION} if nothing is selected
-     * @see #setChoiceMode(int)
-     */
-    public int getCheckedItemPosition() {
-        if (mChoiceMode == CHOICE_MODE_SINGLE && mCheckStates != null && mCheckStates.size() == 1) {
-            return mCheckStates.keyAt(0);
-        }
-
-        return INVALID_POSITION;
-    }
-
-    /**
      * Returns the set of checked items in the list. The result is only valid if
      * the choice mode has not been set to {@link #CHOICE_MODE_NONE}.
      *
@@ -237,30 +209,6 @@ public class EasyRecyclerView extends ScrollLessRecyclerView {
             return mCheckStates;
         }
         return null;
-    }
-
-    /**
-     * Returns the set of checked items ids. The result is only valid if the
-     * choice mode has not been set to {@link #CHOICE_MODE_NONE} and the adapter
-     * has stable IDs. ({@link android.widget.ListAdapter#hasStableIds()} == {@code true})
-     *
-     * @return A new array which contains the id of each checked item in the
-     * list.
-     */
-    public long[] getCheckedItemIds() {
-        if (mChoiceMode == CHOICE_MODE_NONE || mCheckedIdStates == null || mAdapter == null) {
-            return new long[0];
-        }
-
-        final LongSparseArray<Integer> idStates = mCheckedIdStates;
-        final int count = idStates.size();
-        final long[] ids = new long[count];
-
-        for (int i = 0; i < count; i++) {
-            ids[i] = idStates.keyAt(i);
-        }
-
-        return ids;
     }
 
     public boolean isInCustomChoice() {
@@ -446,14 +394,6 @@ public class EasyRecyclerView extends ScrollLessRecyclerView {
     }
 
     /**
-     * @return The current choice mode
-     * @see #setChoiceMode(int)
-     */
-    public int getChoiceMode() {
-        return mChoiceMode;
-    }
-
-    /**
      * Defines the choice behavior for the List. By default, Lists do not have any choice behavior
      * ({@link #CHOICE_MODE_NONE}). By setting the choiceMode to {@link #CHOICE_MODE_SINGLE}, the
      * List allows up to one item to  be in a chosen state. By setting the choiceMode to
@@ -488,24 +428,6 @@ public class EasyRecyclerView extends ScrollLessRecyclerView {
         }
     }
 
-    /**
-     * Set a {@link MultiChoiceModeListener} that will manage the lifecycle of the
-     * selection {@link android.view.ActionMode}. Only used when the choice mode is set to
-     * {@link #CHOICE_MODE_MULTIPLE_MODAL}.
-     *
-     * @param listener Listener that will manage the selection mode
-     * @see #setChoiceMode(int)
-     */
-    public void setMultiChoiceModeListener(MultiChoiceModeListener listener) {
-        if (mMultiChoiceModeCallback == null) {
-            mMultiChoiceModeCallback = new MultiChoiceModeWrapper();
-        }
-        mMultiChoiceModeCallback.setWrapped(listener);
-    }
-
-    /**
-     * @param listener
-     */
     public void setCustomCheckedListener(CustomChoiceListener listener) {
         mCustomChoiceListener = listener;
     }
@@ -524,12 +446,79 @@ public class EasyRecyclerView extends ScrollLessRecyclerView {
         }
     }
 
-    public static void setViewChecked(View view, boolean checked) {
-        if (view instanceof Checkable) {
-            ((Checkable) view).setChecked(checked);
-        } else {
-            view.setActivated(checked);
+    private void init(Context context) {
+        float scale = context.getResources().getDisplayMetrics().density;
+        // g (m/s^2)
+        // inch/meter
+        // A context-specific coefficient adjusted to physical values.
+        // look and feel tuning
+        pageScrollThreshold = scale * 80;
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        final SavedState ss = new SavedState(super.onSaveInstanceState());
+
+        ss.choiceMode = mChoiceMode;
+        ss.customChoice = mCustomChoice;
+        ss.checkedItemCount = mCheckedItemCount;
+        ss.checkState = mCheckStates;
+        ss.checkIdState = mCheckedIdStates;
+
+        return ss;
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        SavedState ss = (SavedState) state;
+        super.onRestoreInstanceState(ss.getSuperState());
+
+        setChoiceMode(ss.choiceMode);
+        mCustomChoice = ss.customChoice;
+        mCheckedItemCount = ss.checkedItemCount;
+        if (ss.checkState != null) {
+            mCheckStates = ss.checkState;
         }
+        if (ss.checkIdState != null) {
+            mCheckedIdStates = ss.checkIdState;
+        }
+
+        if (mChoiceMode == CHOICE_MODE_MULTIPLE_MODAL && mCheckedItemCount > 0) {
+            mChoiceActionMode = startActionMode(mMultiChoiceModeCallback);
+        }
+        updateOnScreenCheckedViews();
+    }
+
+    /**
+     * A MultiChoiceModeListener receives events for {@link android.widget.AbsListView#CHOICE_MODE_MULTIPLE_MODAL}.
+     * It acts as the {@link android.view.ActionMode.Callback} for the selection mode and also receives
+     * {@link #onItemCheckedStateChanged(android.view.ActionMode, int, long, boolean)} events when the user
+     * selects and deselects list items.
+     */
+    public interface MultiChoiceModeListener extends ActionMode.Callback {
+        /**
+         * Called when an item is checked or unchecked during selection mode.
+         *
+         * @param mode     The {@link android.view.ActionMode} providing the selection mode
+         * @param position Adapter position of the item that was checked or unchecked
+         * @param id       Adapter ID of the item that was checked or unchecked
+         * @param checked  <code>true</code> if the item is now checked, <code>false</code>
+         *                 if the item is now unchecked.
+         */
+        void onItemCheckedStateChanged(ActionMode mode,
+                                       int position, long id, boolean checked);
+    }
+
+    /**
+     * Custom checked
+     */
+    public interface CustomChoiceListener {
+
+        void onIntoCustomChoice(EasyRecyclerView view);
+
+        void onOutOfCustomChoice(EasyRecyclerView view);
+
+        void onItemCheckedStateChanged(EasyRecyclerView view, int position, long id, boolean checked);
     }
 
     /**
@@ -549,13 +538,23 @@ public class EasyRecyclerView extends ScrollLessRecyclerView {
 
         public static final SavedState EMPTY_STATE = new SavedState() {
         };
+        public static final Parcelable.Creator<SavedState> CREATOR
+                = new Parcelable.Creator<SavedState>() {
+            @Override
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
 
+            @Override
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
         int choiceMode;
         boolean customChoice;
         int checkedItemCount;
         SparseBooleanArray checkState;
         LongSparseArray<Integer> checkIdState;
-
         // This keeps the parent(RecyclerView)'s state
         Parcelable mSuperState;
 
@@ -618,81 +617,11 @@ public class EasyRecyclerView extends ScrollLessRecyclerView {
         public Parcelable getSuperState() {
             return mSuperState;
         }
-
-        public static final Parcelable.Creator<SavedState> CREATOR
-                = new Parcelable.Creator<SavedState>() {
-            @Override
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            @Override
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        };
-    }
-
-    @Override
-    public Parcelable onSaveInstanceState() {
-        final SavedState ss = new SavedState(super.onSaveInstanceState());
-
-        ss.choiceMode = mChoiceMode;
-        ss.customChoice = mCustomChoice;
-        ss.checkedItemCount = mCheckedItemCount;
-        ss.checkState = mCheckStates;
-        ss.checkIdState = mCheckedIdStates;
-
-        return ss;
-    }
-
-    @Override
-    public void onRestoreInstanceState(Parcelable state) {
-        SavedState ss = (SavedState) state;
-        super.onRestoreInstanceState(ss.getSuperState());
-
-        setChoiceMode(ss.choiceMode);
-        mCustomChoice = ss.customChoice;
-        mCheckedItemCount = ss.checkedItemCount;
-        if (ss.checkState != null) {
-            mCheckStates = ss.checkState;
-        }
-        if (ss.checkIdState != null) {
-            mCheckedIdStates = ss.checkIdState;
-        }
-
-        if (mChoiceMode == CHOICE_MODE_MULTIPLE_MODAL && mCheckedItemCount > 0) {
-            mChoiceActionMode = startActionMode(mMultiChoiceModeCallback);
-        }
-        updateOnScreenCheckedViews();
-    }
-
-    /**
-     * A MultiChoiceModeListener receives events for {@link android.widget.AbsListView#CHOICE_MODE_MULTIPLE_MODAL}.
-     * It acts as the {@link android.view.ActionMode.Callback} for the selection mode and also receives
-     * {@link #onItemCheckedStateChanged(android.view.ActionMode, int, long, boolean)} events when the user
-     * selects and deselects list items.
-     */
-    public interface MultiChoiceModeListener extends ActionMode.Callback {
-        /**
-         * Called when an item is checked or unchecked during selection mode.
-         *
-         * @param mode     The {@link android.view.ActionMode} providing the selection mode
-         * @param position Adapter position of the item that was checked or unchecked
-         * @param id       Adapter ID of the item that was checked or unchecked
-         * @param checked  <code>true</code> if the item is now checked, <code>false</code>
-         *                 if the item is now unchecked.
-         */
-        void onItemCheckedStateChanged(ActionMode mode,
-                                       int position, long id, boolean checked);
     }
 
     class MultiChoiceModeWrapper implements MultiChoiceModeListener {
         private MultiChoiceModeListener mWrapped;
 
-        public void setWrapped(MultiChoiceModeListener wrapped) {
-            mWrapped = wrapped;
-        }
 
         @SuppressWarnings("BooleanMethodIsAlwaysInverted")
         public boolean hasWrappedCallback() {
@@ -742,17 +671,5 @@ public class EasyRecyclerView extends ScrollLessRecyclerView {
                 mode.finish();
             }
         }
-    }
-
-    /**
-     * Custom checked
-     */
-    public interface CustomChoiceListener {
-
-        void onIntoCustomChoice(EasyRecyclerView view);
-
-        void onOutOfCustomChoice(EasyRecyclerView view);
-
-        void onItemCheckedStateChanged(EasyRecyclerView view, int position, long id, boolean checked);
     }
 }

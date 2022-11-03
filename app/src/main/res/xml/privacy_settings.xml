@@ -3,30 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
+        android:fragment="com.hippo.ehviewer.ui.fragment.SetSecurityFragment"
         android:key="pattern_protection"
         android:title="@string/settings_privacy_pattern_protection_title"
-        android:fragment="com.hippo.ehviewer.ui.fragment.SetSecurityFragment"
         app:iconSpaceReserved="false" />
 
-    <SwitchPreference
+    <SwitchPreferenceCompat
         android:defaultValue="false"
         android:key="enable_secure"
         android:title="@string/settings_privacy_secure"
         app:iconSpaceReserved="false"
         app:summaryOff="@string/settings_privacy_secure_summary"
         app:summaryOn="@string/settings_privacy_secure_summary" />
-
-    <SwitchPreference
-        app:iconSpaceReserved="false"
-        android:key="enable_analytics"
-        android:title="@string/settings_privacy_enable_analytics"
-        android:defaultValue="true" />
-
-    <com.hippo.preference.MessagePreference
-        android:key="about_analytics"
-        android:title="@string/settings_privacy_about_analytics"
-        app:iconSpaceReserved="false"
-        app:dialogMessage="@string/analytics_explain"
-        app:dialogMessageHtml="true"
-        app:dialogMessageLinkify="true" />
 </PreferenceScreen>
