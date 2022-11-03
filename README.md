@@ -1,4 +1,6 @@
-# EhViewer
+# EhViewer-NekoInverter [DEPRECATED]
+
+此版本原作者已不再维护，本仓库仅用于保证最低限度的可用性
 
 ![Icon](art/launcher_icon-web.png)
 
@@ -8,7 +10,7 @@ An E-Hentai Application for Android
 
 # Download
 
-[Github 下载](https://github.com/asuka-mio/Ehviewer/releases)
+[Github 下载](https://github.com/xb2016/EhViewer-NekoInverter/actions)
 
 # Screenshot
 
