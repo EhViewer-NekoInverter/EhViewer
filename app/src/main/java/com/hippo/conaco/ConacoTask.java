@@ -194,7 +194,6 @@ public final class ConacoTask<V> {
         } else if (mNetworkLoadTask != null) { // Getting from network
             mNetworkLoadTask.cancel(false);
             if (mCall != null) {
-                mCall.cancel();
                 mCall = null;
             }
         }
