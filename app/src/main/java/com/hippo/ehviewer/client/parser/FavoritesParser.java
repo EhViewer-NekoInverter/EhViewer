@@ -31,6 +31,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FavoritesParser {
@@ -64,11 +65,11 @@ public class FavoritesParser {
         Result re = new Result();
 
         try {
-            var d = Jsoup.parse(body);
-            var snv = d.getElementsByClass("searchnav").first();
+            Document d = Jsoup.parse(body);
+            Element snv = d.getElementById("unext");
             assert snv != null;
-            var href = snv.child(3).child(0).attr("href");
-            var matcher = PATTERN_NEXT_PAGE.matcher(href);
+            String href = snv.attr("href");
+            Matcher matcher = PATTERN_NEXT_PAGE.matcher(href);
             if (matcher.find()) {
                 re.nextPage = matcher.group(1);
             }

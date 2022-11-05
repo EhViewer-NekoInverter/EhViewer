@@ -62,10 +62,10 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 **EhViewer 各版本链接**
 
-- Hippo Seven 版 [绿E原版，动了！，最新 [1.7.8](https://t.me/ehviewer/2127118)]：[https://github.com/seven332/EhViewer](https://github.com/seven332/EhViewer)
-- NekoInverter 版 [白E，已停更，最新 1.7.26.4]：[https://gitlab.com/NekoInverter/EhViewer](https://gitlab.com/NekoInverter/EhViewer)
+- Hippo Seven 版 [绿E原版，半停更，最新 [1.7.8](https://t.me/ehviewer/2127118)]：[https://github.com/seven332/EhViewer](https://github.com/seven332/EhViewer)
+- NekoInverter 版 [白E，已停更，最新 [1.7.26.4](https://t.me/ehviewer/2029210)]：[https://gitlab.com/NekoInverter/EhViewer](https://gitlab.com/NekoInverter/EhViewer)
+- Overhauled 版 [彩E，推荐使用，活跃]：[https://github.com/Ehviewer-Overhauled/Ehviewer](https://github.com/Ehviewer-Overhauled/Ehviewer)
 - SXJ 版 [绿E新版，活跃]：[https://github.com/xiaojieonly/Ehviewer_CN_SXJ](https://github.com/xiaojieonly/Ehviewer_CN_SXJ)
-- Overhauled 版 [彩E，活跃]：[https://github.com/Ehviewer-Overhauled/Ehviewer](https://github.com/Ehviewer-Overhauled/Ehviewer)
 
 **其他 E-Hentai Viewer 链接**
 
