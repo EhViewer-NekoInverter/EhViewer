@@ -25,7 +25,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.util.SparseBooleanArray;
 import android.util.TypedValue;
@@ -49,9 +48,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetView;
+import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hippo.annotation.Implemented;
-import com.hippo.app.EditTextDialogBuilder;
 import com.hippo.drawable.AddDeleteDrawable;
 import com.hippo.drawable.DrawerArrowDrawable;
 import com.hippo.easyrecyclerview.EasyRecyclerView;
@@ -693,35 +692,13 @@ public class FavoritesScene extends BaseScene implements
             return;
         }
 
-        final int page = mHelper.getPageForTop();
-        final int pages = mHelper.getPages();
-        String hint = getString(R.string.go_to_hint, page + 1, pages);
-        final EditTextDialogBuilder builder = new EditTextDialogBuilder(context, null, hint);
-        builder.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        final AlertDialog dialog = builder.setTitle(R.string.go_to)
-                .setPositiveButton(android.R.string.ok, null)
-                .show();
-        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(v -> {
-            if (null == mHelper) {
-                dialog.dismiss();
-                return;
-            }
-
-            String text = builder.getText().trim();
-            int goTo;
-            try {
-                goTo = Integer.parseInt(text) - 1;
-            } catch (NumberFormatException e) {
-                builder.setError(getString(R.string.error_invalid_number));
-                return;
-            }
-            if (goTo < 0 || goTo >= pages) {
-                builder.setError(getString(R.string.error_out_of_range));
-                return;
-            }
-            builder.setError(null);
-            mHelper.goTo(goTo);
-            dialog.dismiss();
+        var datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText(R.string.go_to)
+                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                .build();
+        datePicker.show(requireActivity().getSupportFragmentManager(), "date-picker");
+        datePicker.addOnPositiveButtonClickListener(v -> {
+            mHelper.goTo(v);
         });
     }
 

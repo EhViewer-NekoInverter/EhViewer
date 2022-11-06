@@ -66,9 +66,9 @@ public class FavoritesParser {
 
         try {
             Document d = Jsoup.parse(body);
-            Element snv = d.getElementById("unext");
-            assert snv != null;
-            String href = snv.attr("href");
+            Element next = d.getElementById("unext");
+            assert next != null;
+            String href = next.attr("href");
             Matcher matcher = PATTERN_NEXT_PAGE.matcher(href);
             if (matcher.find()) {
                 re.nextPage = matcher.group(1);
