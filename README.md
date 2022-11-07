@@ -48,15 +48,15 @@
 
 NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
-本仓库仅作自用目的，不开放 issue，仅保证最低限度的可用性
+本仓库仅作自用目的，不开放 issue，仅同步 [Ehviewer-Overhauled](https://github.com/Ehviewer-Overhauled/Ehviewer) 的更新以保证最低限度的可用性
 
 可能需要 Android 10 及以上版本系统才能使用
 
 # 下载
 
-请前往 [Github Actions](https://github.com/xb2016/EhViewer-NekoInverter/actions) 下载最新 CI 版本
+请前往 [Github Actions](https://github.com/xb2016/EhViewer-NekoInverter/actions) 下载最新 CI 版本，需要登录 Github 账号
 
-注：需要登录 Github 账号
+也可以前往 [Github Releases](https://github.com/xb2016/EhViewer-NekoInverter/releases) 下载发行版，无需登录账号，但可能不是最新的
 
 # 链接
 
@@ -124,7 +124,7 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 **其他问题**
 
-- 请查看 [http://sinner.ehentai.life/index.php/category/ehentai/](http://sinner.ehentai.life/index.php/category/ehentai/)
+- 请善用搜索引擎，或者去 E-Hentai 论坛提问
 
 # 截图
 
@@ -151,17 +151,16 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 # 许可证
 
-    Copyright (C) 2014-2019 Hippo Seven
-    Copyright (C) 2020-2022 NekoInverter
+    Copyright 2014-2019 Hippo Seven
+    Copyright 2020-2022 NekoInverter
 
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
+    EhViewer is free software:
+    you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
+    either version 3 of the License, or (at your option) any later version.
 
-        http://www.apache.org/licenses/LICENSE-2.0
+    EhViewer is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+    without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+    See the GNU General Public License for more details.
 
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
+    You should have received a copy of the GNU General Public License along with EhViewer.
+    If not, see <https://www.gnu.org/licenses/>.
