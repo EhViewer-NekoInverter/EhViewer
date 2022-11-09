@@ -506,11 +506,7 @@ public final class GalleryListScene extends BaseScene
             mFabLayout.getSecondaryFabAt(0).setImageResource(isTopList ? R.drawable.ic_baseline_format_list_numbered_24 : R.drawable.v_magnify_x24);
         }
 
-        if (ListUrlBuilder.MODE_WHATS_HOT == builder.getMode()) {
-            mFabLayout.setSecondaryFabVisibilityAt(1, false);
-        } else {
-            mFabLayout.setSecondaryFabVisibilityAt(1, true);
-        }
+        mFabLayout.setSecondaryFabVisibilityAt(1, ListUrlBuilder.MODE_WHATS_HOT != builder.getMode());
 
         // Update normal search mode
         mSearchLayout.setNormalSearchMode(builder.getMode() == ListUrlBuilder.MODE_SUBSCRIPTION
@@ -1879,7 +1875,7 @@ public final class GalleryListScene extends BaseScene
             }
 
             if (page != 0)
-                mUrlBuilder.setNextGid(mIsTopList == true ? page : minGid);
+                mUrlBuilder.setNextGid(mIsTopList ? page : minGid);
             else
                 mUrlBuilder.setNextGid(0);
 
