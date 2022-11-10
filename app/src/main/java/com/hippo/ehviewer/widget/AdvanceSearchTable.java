@@ -33,14 +33,8 @@ import com.hippo.yorozuya.NumberUtils;
 
 public class AdvanceSearchTable extends LinearLayout {
 
-    public static final int SNAME = 0x1;
-    public static final int STAGS = 0x2;
-    public static final int SDESC = 0x4;
-    public static final int STORR = 0x8;
-    public static final int STO = 0x10;
-    public static final int SDT1 = 0x20;
-    public static final int SDT2 = 0x40;
-    public static final int SH = 0x80;
+    public static final int SH = 0x1;
+    public static final int STO = 0x2;
     public static final int SFL = 0x100;
     public static final int SFU = 0x200;
     public static final int SFT = 0x400;
@@ -49,14 +43,8 @@ public class AdvanceSearchTable extends LinearLayout {
     private static final String STATE_KEY_MIN_RATING = "min_rating";
     private static final String STATE_KEY_PAGE_FROM = "page_from";
     private static final String STATE_KEY_PAGE_TO = "page_to";
-    private CheckBox mSname;
-    private CheckBox mStags;
-    private CheckBox mSdesc;
-    private CheckBox mStorr;
-    private CheckBox mSto;
-    private CheckBox mSdt1;
-    private CheckBox mSdt2;
     private CheckBox mSh;
+    private CheckBox mSto;
     private CheckBox mSr;
     private Spinner mMinRating;
     private CheckBox mSp;
@@ -83,34 +71,22 @@ public class AdvanceSearchTable extends LinearLayout {
         inflater.inflate(R.layout.widget_advance_search_table, this);
 
         ViewGroup row0 = (ViewGroup) getChildAt(0);
-        mSname = (CheckBox) row0.getChildAt(0);
-        mStags = (CheckBox) row0.getChildAt(1);
+        mSh = (CheckBox) row0.getChildAt(0);
+        mSto = (CheckBox) row0.getChildAt(1);
 
         ViewGroup row1 = (ViewGroup) getChildAt(1);
-        mSdesc = (CheckBox) row1.getChildAt(0);
-        mStorr = (CheckBox) row1.getChildAt(1);
+        mSr = (CheckBox) row1.getChildAt(0);
+        mMinRating = (Spinner) row1.getChildAt(1);
 
         ViewGroup row2 = (ViewGroup) getChildAt(2);
-        mSto = (CheckBox) row2.getChildAt(0);
-        mSdt1 = (CheckBox) row2.getChildAt(1);
-
-        ViewGroup row3 = (ViewGroup) getChildAt(3);
-        mSdt2 = (CheckBox) row3.getChildAt(0);
-        mSh = (CheckBox) row3.getChildAt(1);
+        mSp = (CheckBox) row2.getChildAt(0);
+        mSpf = (EditText) row2.getChildAt(1);
+        mSpt = (EditText) row2.getChildAt(3);
 
         ViewGroup row4 = (ViewGroup) getChildAt(4);
-        mSr = (CheckBox) row4.getChildAt(0);
-        mMinRating = (Spinner) row4.getChildAt(1);
-
-        ViewGroup row5 = (ViewGroup) getChildAt(5);
-        mSp = (CheckBox) row5.getChildAt(0);
-        mSpf = (EditText) row5.getChildAt(1);
-        mSpt = (EditText) row5.getChildAt(3);
-
-        ViewGroup row7 = (ViewGroup) getChildAt(7);
-        mSfl = (CheckBox) row7.getChildAt(0);
-        mSfu = (CheckBox) row7.getChildAt(1);
-        mSft = (CheckBox) row7.getChildAt(2);
+        mSfl = (CheckBox) row4.getChildAt(0);
+        mSfu = (CheckBox) row4.getChildAt(1);
+        mSft = (CheckBox) row4.getChildAt(2);
 
         // Avoid java.lang.IllegalStateException: focus search returned a view that wasn't able to take focus!
         mSpt.setOnEditorActionListener((v, actionId, event) -> {
@@ -124,14 +100,8 @@ public class AdvanceSearchTable extends LinearLayout {
 
     public int getAdvanceSearch() {
         int advanceSearch = 0;
-        if (mSname.isChecked()) advanceSearch |= SNAME;
-        if (mStags.isChecked()) advanceSearch |= STAGS;
-        if (mSdesc.isChecked()) advanceSearch |= SDESC;
-        if (mStorr.isChecked()) advanceSearch |= STORR;
-        if (mSto.isChecked()) advanceSearch |= STO;
-        if (mSdt1.isChecked()) advanceSearch |= SDT1;
-        if (mSdt2.isChecked()) advanceSearch |= SDT2;
         if (mSh.isChecked()) advanceSearch |= SH;
+        if (mSto.isChecked()) advanceSearch |= STO;
         if (mSfl.isChecked()) advanceSearch |= SFL;
         if (mSfu.isChecked()) advanceSearch |= SFU;
         if (mSft.isChecked()) advanceSearch |= SFT;
@@ -139,14 +109,8 @@ public class AdvanceSearchTable extends LinearLayout {
     }
 
     public void setAdvanceSearch(int advanceSearch) {
-        mSname.setChecked(NumberUtils.int2boolean(advanceSearch & SNAME));
-        mStags.setChecked(NumberUtils.int2boolean(advanceSearch & STAGS));
-        mSdesc.setChecked(NumberUtils.int2boolean(advanceSearch & SDESC));
-        mStorr.setChecked(NumberUtils.int2boolean(advanceSearch & STORR));
-        mSto.setChecked(NumberUtils.int2boolean(advanceSearch & STO));
-        mSdt1.setChecked(NumberUtils.int2boolean(advanceSearch & SDT1));
-        mSdt2.setChecked(NumberUtils.int2boolean(advanceSearch & SDT2));
         mSh.setChecked(NumberUtils.int2boolean(advanceSearch & SH));
+        mSto.setChecked(NumberUtils.int2boolean(advanceSearch & STO));
         mSfl.setChecked(NumberUtils.int2boolean(advanceSearch & SFL));
         mSfu.setChecked(NumberUtils.int2boolean(advanceSearch & SFU));
         mSft.setChecked(NumberUtils.int2boolean(advanceSearch & SFT));
