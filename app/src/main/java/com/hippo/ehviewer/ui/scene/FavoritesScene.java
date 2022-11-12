@@ -878,7 +878,9 @@ public class FavoritesScene extends BaseScene implements
             updateSearchBar();
             int pages = 0;
             assert mUrlBuilder != null;
-            if (FavListUrlBuilder.isValidFavCat(mUrlBuilder.getFavCat()))
+            if (result.nextPage == null)
+                pages = mHelper.pgCounter;
+            else if (FavListUrlBuilder.isValidFavCat(mUrlBuilder.getFavCat()))
                 pages = CommonOperations.getPagesForFounds(mFavCountArray[mUrlBuilder.getFavCat()], 50);
             else if (mUrlBuilder.getFavCat() == FavListUrlBuilder.FAV_CAT_ALL)
                 pages = CommonOperations.getPagesForFounds(mFavCountSum, 50);
@@ -1251,7 +1253,10 @@ public class FavoritesScene extends BaseScene implements
                         url = mUrlBuilder.build();
                     }
 
-                    mUrlBuilder.setNext(nextPg);
+                    mUrlBuilder.setNext(jumpTo == null ? nextPg : "1");
+                    mUrlBuilder.setJumpTo(jumpTo);
+                    jumpTo = null;
+
                     EhRequest request = new EhRequest();
                     request.setMethod(EhClient.METHOD_MODIFY_FAVORITES);
                     request.setCallback(new GetFavoritesListener(getContext(),
@@ -1264,7 +1269,10 @@ public class FavoritesScene extends BaseScene implements
                 final String keyword = mUrlBuilder.getKeyword();
                 SimpleHandler.getInstance().post(() -> onGetFavoritesLocal(keyword, taskId));
             } else {
-                mUrlBuilder.setNext(nextPg);
+                mUrlBuilder.setNext(jumpTo == null ? nextPg : "1");
+                mUrlBuilder.setJumpTo(jumpTo);
+                jumpTo = null;
+
                 String url = mUrlBuilder.build();
                 EhRequest request = new EhRequest();
                 request.setMethod(EhClient.METHOD_GET_FAVORITES);
