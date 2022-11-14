@@ -48,7 +48,7 @@
 
 NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
-本仓库仅作自用目的，不开放 issue，仅同步 [Ehviewer-Overhauled](https://github.com/Ehviewer-Overhauled/Ehviewer) 的更新以保证最低限度的可用性
+本仓库仅作自用目的，不开放 issue，仅保证最低限度的可用性
 
 可能需要 Android 10 及以上版本系统才能使用
 
