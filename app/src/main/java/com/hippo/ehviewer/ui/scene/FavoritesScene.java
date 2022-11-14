@@ -879,14 +879,16 @@ public class FavoritesScene extends BaseScene implements
             }
 
             updateSearchBar();
-            int pages = 0;
             assert mUrlBuilder != null;
+
+            int pages = 0;
             if (result.nextPage == null)
-                pages = mHelper.pgCounter;
+                pages = mHelper.pgCounter + 1;
             else if (FavListUrlBuilder.isValidFavCat(mUrlBuilder.getFavCat()))
                 pages = CommonOperations.getPagesForFounds(mFavCountArray[mUrlBuilder.getFavCat()], 50);
             else if (mUrlBuilder.getFavCat() == FavListUrlBuilder.FAV_CAT_ALL)
                 pages = CommonOperations.getPagesForFounds(mFavCountSum, 50);
+
             mHelper.nextPg = result.nextPage;
             mHelper.onGetPageData(taskId, pages, mHelper.pgCounter + 1, result.galleryInfoList);
 
@@ -1256,10 +1258,7 @@ public class FavoritesScene extends BaseScene implements
                         url = mUrlBuilder.build();
                     }
 
-                    mUrlBuilder.setNext(jumpTo == null ? nextPg : "1");
-                    mUrlBuilder.setJumpTo(jumpTo);
-                    jumpTo = null;
-
+                    mUrlBuilder.setNext(nextPg);
                     EhRequest request = new EhRequest();
                     request.setMethod(EhClient.METHOD_MODIFY_FAVORITES);
                     request.setCallback(new GetFavoritesListener(getContext(),
@@ -1272,7 +1271,7 @@ public class FavoritesScene extends BaseScene implements
                 final String keyword = mUrlBuilder.getKeyword();
                 SimpleHandler.getInstance().post(() -> onGetFavoritesLocal(keyword, taskId));
             } else {
-                mUrlBuilder.setNext(jumpTo == null ? nextPg : "1");
+                mUrlBuilder.setNext(jumpTo == null ? nextPg : Integer.toString(minGid));
                 mUrlBuilder.setJumpTo(jumpTo);
                 jumpTo = null;
 
