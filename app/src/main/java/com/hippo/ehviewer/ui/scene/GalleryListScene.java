@@ -1485,7 +1485,7 @@ public final class GalleryListScene extends BaseScene
             else if (result.nextGid == 0)
                 pages = mHelper.pgCounter + 1;
             else
-                pages = result.founds; //CommonOperations.getPagesForFounds(result.founds, 25);
+                pages = result.founds;
 
             mHelper.onGetPageData(taskId, pages, mHelper.pgCounter + 1, result.galleryInfoList);
         }

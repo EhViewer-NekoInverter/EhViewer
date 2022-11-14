@@ -884,11 +884,10 @@ public class FavoritesScene extends BaseScene implements
             int pages = 0;
             if (result.nextPage == null)
                 pages = mHelper.pgCounter + 1;
-            else if (FavListUrlBuilder.isValidFavCat(mUrlBuilder.getFavCat()))
-                pages = CommonOperations.getPagesForFounds(mFavCountArray[mUrlBuilder.getFavCat()], 50);
-            else if (mUrlBuilder.getFavCat() == FavListUrlBuilder.FAV_CAT_ALL)
-                pages = CommonOperations.getPagesForFounds(mFavCountSum, 50);
+            else
+                pages = Integer.MAX_VALUE;
 
+            mHelper.prevPg = result.prevPage;
             mHelper.nextPg = result.nextPage;
             mHelper.onGetPageData(taskId, pages, mHelper.pgCounter + 1, result.galleryInfoList);
 
@@ -1210,6 +1209,7 @@ public class FavoritesScene extends BaseScene implements
 
     private class FavoritesHelper extends GalleryInfoContentHelper {
         public int pgCounter = 0;
+        public String prevPg = null;
         public String nextPg = null;
 
         @Override
@@ -1271,7 +1271,16 @@ public class FavoritesScene extends BaseScene implements
                 final String keyword = mUrlBuilder.getKeyword();
                 SimpleHandler.getInstance().post(() -> onGetFavoritesLocal(keyword, taskId));
             } else {
-                mUrlBuilder.setNext(jumpTo == null ? nextPg : Integer.toString(minGid));
+                String prevPage = null, nextPage = null;
+                if (page != 0) {
+                    if (page >= mHelper.getPageForTop())
+                        nextPage = nextPg;
+                    else
+                        prevPage = prevPg;
+                }
+                mUrlBuilder.setPrev(prevPage);
+                mUrlBuilder.setNext(jumpTo == null ? nextPage : Integer.toString(minGid));
+
                 mUrlBuilder.setJumpTo(jumpTo);
                 jumpTo = null;
 
@@ -1346,12 +1355,14 @@ public class FavoritesScene extends BaseScene implements
         @Override
         protected void beforeRefresh() {
             super.beforeRefresh();
+            prevPg = null;
             nextPg = null;
         }
 
         @Override
         protected Parcelable saveInstanceState(Parcelable superState) {
             Bundle bundle = (Bundle) super.saveInstanceState(superState);
+            bundle.putString(KEY_PREV_PAGE, prevPg);
             bundle.putString(KEY_NEXT_PAGE, nextPg);
             return bundle;
         }
@@ -1359,6 +1370,7 @@ public class FavoritesScene extends BaseScene implements
         @Override
         protected Parcelable restoreInstanceState(Parcelable state) {
             Bundle bundle = (Bundle) state;
+            prevPg = bundle.getString(KEY_PREV_PAGE);
             nextPg = bundle.getString(KEY_NEXT_PAGE);
             return super.restoreInstanceState(state);
         }
