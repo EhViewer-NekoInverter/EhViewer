@@ -887,8 +887,8 @@ public class FavoritesScene extends BaseScene implements
             else
                 pages = Integer.MAX_VALUE;
 
-            mHelper.prevPg = result.prevPage;
-            mHelper.nextPg = result.nextPage;
+            mHelper.prevPage = result.prevPage;
+            mHelper.nextPage = result.nextPage;
             mHelper.onGetPageData(taskId, pages, mHelper.pgCounter + 1, result.galleryInfoList);
 
             if (mDrawerAdapter != null) {
@@ -1208,9 +1208,12 @@ public class FavoritesScene extends BaseScene implements
     }
 
     private class FavoritesHelper extends GalleryInfoContentHelper {
+        protected String operation = null;
+        protected String upperPage = null;
+        protected String lowerPage = null;
+        public String prevPage = null;
+        public String nextPage = null;
         public int pgCounter = 0;
-        public String prevPg = null;
-        public String nextPg = null;
 
         @Override
         protected void getPageData(final int taskId, int type, int page) {
@@ -1218,7 +1221,15 @@ public class FavoritesScene extends BaseScene implements
             if (null == activity || null == mUrlBuilder || null == mClient) {
                 return;
             }
+
             pgCounter = page;
+            if (jumpTo != null) beforeRefresh();
+            if (upperPage == null) upperPage = prevPage;
+            if (lowerPage == null) lowerPage = nextPage;
+            if (operation == "prev" && prevPage != null) upperPage = prevPage;
+            if (operation == "next" && nextPage != null) lowerPage = nextPage;
+            prevPage = null;
+            nextPage = null;
 
             if (mEnableModify) {
                 mEnableModify = false;
@@ -1258,7 +1269,7 @@ public class FavoritesScene extends BaseScene implements
                         url = mUrlBuilder.build();
                     }
 
-                    mUrlBuilder.setNext(nextPg);
+                    mUrlBuilder.setNext(lowerPage);
                     EhRequest request = new EhRequest();
                     request.setMethod(EhClient.METHOD_MODIFY_FAVORITES);
                     request.setCallback(new GetFavoritesListener(getContext(),
@@ -1271,15 +1282,18 @@ public class FavoritesScene extends BaseScene implements
                 final String keyword = mUrlBuilder.getKeyword();
                 SimpleHandler.getInstance().post(() -> onGetFavoritesLocal(keyword, taskId));
             } else {
-                String prevPage = null, nextPage = null;
+                String prev = null, next = null;
                 if (page != 0) {
-                    if (page >= mHelper.getPageForTop())
-                        nextPage = nextPg;
-                    else
-                        prevPage = prevPg;
+                    if (page >= mHelper.getPageForTop()) {
+                        next = lowerPage;
+                        operation = "next";
+                    } else {
+                        prev = upperPage;
+                        operation = "prev";
+                    }
                 }
-                mUrlBuilder.setPrev(prevPage);
-                mUrlBuilder.setNext(jumpTo == null ? nextPage : Integer.toString(minGid));
+                mUrlBuilder.setPrev(prev);
+                mUrlBuilder.setNext(jumpTo == null ? next : Integer.toString(minGid));
 
                 mUrlBuilder.setJumpTo(jumpTo);
                 jumpTo = null;
@@ -1355,23 +1369,32 @@ public class FavoritesScene extends BaseScene implements
         @Override
         protected void beforeRefresh() {
             super.beforeRefresh();
-            prevPg = null;
-            nextPg = null;
+            operation = null;
+            upperPage = null;
+            lowerPage = null;
+            prevPage = null;
+            nextPage = null;
         }
 
         @Override
         protected Parcelable saveInstanceState(Parcelable superState) {
             Bundle bundle = (Bundle) super.saveInstanceState(superState);
-            bundle.putString(KEY_PREV_PAGE, prevPg);
-            bundle.putString(KEY_NEXT_PAGE, nextPg);
+            bundle.putString(KEY_OPERATION, operation);
+            bundle.putString(KEY_UPPER_PAGE, upperPage);
+            bundle.putString(KEY_LOWER_PAGE, lowerPage);
+            bundle.putString(KEY_PREV_PAGE, prevPage);
+            bundle.putString(KEY_NEXT_PAGE, nextPage);
             return bundle;
         }
 
         @Override
         protected Parcelable restoreInstanceState(Parcelable state) {
             Bundle bundle = (Bundle) state;
-            prevPg = bundle.getString(KEY_PREV_PAGE);
-            nextPg = bundle.getString(KEY_NEXT_PAGE);
+            operation = bundle.getString(KEY_OPERATION);
+            upperPage = bundle.getString(KEY_UPPER_PAGE);
+            lowerPage = bundle.getString(KEY_LOWER_PAGE);
+            prevPage = bundle.getString(KEY_PREV_PAGE);
+            nextPage = bundle.getString(KEY_NEXT_PAGE);
             return super.restoreInstanceState(state);
         }
     }
