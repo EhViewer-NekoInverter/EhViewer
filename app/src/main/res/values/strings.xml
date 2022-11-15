@@ -21,11 +21,6 @@
     <string name="site_e" translatable="false">e-hentai</string>
     <string name="site_ex" translatable="false">exhentai</string>
 
-    <!-- Theme -->
-    <string name="theme_light">Light Theme</string>
-    <string name="theme_dark">Dark Theme</string>
-    <string name="theme_black">Black Theme</string>
-
     <!-- Category -->
     <string name="doujinshi" translatable="false">DOUJINSHI</string>
     <string name="manga" translatable="false">MANGA</string>
@@ -49,19 +44,12 @@
 
     <string name="username">Username</string>
     <string name="password">Password</string>
-    <string name="recaptcha">Recaptcha (Not required)</string>
-
-    <string name="recaptcha_none">Tap here</string>
-    <string name="recaptcha_loading">Loading…</string>
-    <string name="recaptcha_failure">Failed</string>
 
     <string name="sign_in">Sign in</string>
     <string name="register">Register</string>
     <string name="sign_in_via_webview">Sign in via WebView</string>
     <string name="sign_in_via_cookies">Sign in via cookies</string>
-    <string name="display_name_dialog_title">Enter Display Name</string>
     <string name="display_name">Display name</string>
-    <string name="display_name_is_empty">Display name is empty</string>
     <string name="sign_in_first">Please sign in first</string>
 
     <string name="default_display_name">Little Hippo</string>
@@ -143,28 +131,15 @@
     <string name="skip_signing_in">Continue without signing in</string>
     <string name="sign_in_failed">Sign in failed</string>
     <string name="sign_in_failed_tip">If this issue continues, try \"Sign in via WebView\" or \"Sign in via cookies\"</string>
-    <string name="sign_in_failed_plain">Perhaps it is a mistake due to website update or something wrong happened. You may try sign in via WebView or enter cookie or skip signing in under sign in button. But you may be a "Sad Panda" after skipping signing in. Try "Sign in via cookies" first if you had signed in on 0.6.x version.</string>
     <string name="press_twice_exit">Press twice to exit</string>
-    <string name="content_layout_restore_tip">Tap to retry</string>
-    <string name="write_rationale">EhViewer will request WRITE_EXTERNAL_STORAGE permission for downloading gallery. Do you want to grant the permission?</string>
-    <string name="you_rejected_me">It hurts</string>
-    <string name="analytics_explain">Would you mind if the developer collected your device information and your usage? It will help the developer a lot.&lt;br&gt;&lt;br&gt;Data analysis service is provided by Microsoft AppCenter. Its privacy policy can be found at &lt;a href=&quot;https://privacy.microsoft.com/zh-cn/privacystatement&quot;&gt;https://privacy.microsoft.com/zh-cn/privacystatement&lt;/a&gt;.&lt;br&gt;&lt;br&gt;If you agree to join data analysis, your device information and your usage will be collected, including but not limited to Android API version, equipment model, language residence, the application version, conversion time, function times. The developer promise that these information will NOT be collected, including phone number, e-mail address, IMEI.&lt;br&gt;&lt;br&gt;Your information will not be collected until you agree to join data analysis.&lt;br&gt;&lt;br&gt;The collected information will be analyzed by Microsoft AppCenter. The analysis report can only be viewed by the developer of this application.</string>
     <string name="get_it">Got it</string>
     <string name="accept">Accept</string>
     <string name="reject">Reject</string>
-
-    <string name="help_route">Settings->About->Help</string>
 
     <!-- Select scene -->
     <string name="select_scene">Which gallery site do you want to visit?</string>
     <string name="select_scene_explain">e-hentai: available for anyone\nexhentai: available for who has signed in</string>
     <string name="no_select">Please select one site</string>
-
-    <!-- Update -->
-    <string name="update">Update</string>
-    <string name="update_plain">Version: %1$s\nSize: %2$s\n\n%3$s</string>
-    <string name="update_to_date">You are using the latest version of EhViewer.</string>
-    <string name="update_ignore">Ignore</string>
 
     <!-- Gallery List -->
     <string name="gallery_list_search_bar_hint_exhentai">Search ExHentai</string>
@@ -451,6 +426,7 @@
     <string name="share_image">Share image</string>
     <string name="image_saved">Image saved to %s</string>
 
+    <!-- Settings -->
     <string name="settings_eh">EH</string>
     <string name="settings_eh_sign_out">Sign out</string>
     <string name="settings_eh_sign_out_summary">Restart the application to sign in</string>
@@ -466,11 +442,8 @@
     <string name="settings_u_config_summary">Settings on EHentai website</string>
     <string name="settings_my_tags">My tags</string>
     <string name="settings_my_tags_summary">My tags on EHentai website</string>
-    <string name="settings_eh_theme">Theme</string>
     <string name="settings_eh_theme_light">Light</string>
     <string name="settings_eh_theme_dark">Dark</string>
-    <string name="settings_eh_theme_black">Black</string>
-    <string name="settings_eh_apply_nav_bar_theme_color">Apply theme color to navigation bar</string>
     <string name="settings_eh_gallery_site">Gallery site</string>
     <string name="settings_eh_launch_page">Launch page</string>
     <string name="settings_eh_list_mode">List mode</string>
@@ -487,12 +460,6 @@
     <string name="settings_eh_thumb_resolution_summary">Currently %s. Certain resolutions might cause getting thumb failed</string>
     <string name="settings_eh_thumb_resolution_auto">Auto</string>
     <string name="settings_eh_fix_thumb_url">Fix thumb url</string>
-    <string name="settings_eh_default_categories">Categories on Homepage</string>
-    <string name="settings_eh_default_categories_summary">The categories shown as default on Homepage</string>
-    <string name="settings_eh_excluded_languages">Excluded languages</string>
-    <string name="settings_eh_excluded_languages_summary">Hide galleries in certain languages from the gallery list and searches</string>
-    <string name="settings_eh_excluded_tag_namespaces">Excluded tag namespaces</string>
-    <string name="settings_eh_excluded_tag_namespaces_summary">Exclude certain namespaces from a default tag search</string>
     <string name="settings_eh_show_jpn_title">Show Japanese title</string>
     <string name="settings_eh_show_jpn_title_summary">Require enabling Japanese Title in Settings on EHentai website</string>
     <string name="settings_eh_show_gallery_pages">Show gallery pages</string>
@@ -542,10 +509,6 @@
     <string name="settings_download_download_location">Download location</string>
     <string name="settings_download_invalid_download_location">Invalid download location</string>
     <string name="settings_download_cant_get_download_location">Can\'t get download location</string>
-    <string name="settings_download_pick_dir_kk">On Android 4.4+, apps can\'t write any data on your external SD card, unless you root the system and apply a patch. But &lt;SD card&gt;/Android/data/com.hippo.ehviewer is an exception. It is writable for this app.</string>
-    <string name="settings_download_pick_dir_l">Android 5.0+ provides new API to write on external SD card. Tap the \"DOCUMENT\" if you want to set SD card as download location.</string>
-    <string name="settings_download_document">Document</string>
-    <string name="settings_download_continue">Continue</string>
     <string name="settings_download_media_scan">Allow media scan</string>
     <string name="settings_download_media_scan_summary_on">Please hide your gallery apps away from other people</string>
     <string name="settings_download_media_scan_summary_off">Most gallery apps will ignore pictures in the download path</string>
@@ -592,12 +555,10 @@
     <string name="settings_advanced_proxy_summary_2">%1$s</string>
     <string name="settings_advanced_built_in_hosts_title">Built-in hosts.txt</string>
     <string name="settings_advanced_built_in_hosts_summary">Apply the built-in host-to-IP mapping provided by the app.\nIt can be overridden by custom hosts.txt.</string>
-    <string name="settings_advanced_dns_over_http_title">DNS over HTTPS</string>
-    <string name="settings_advanced_dns_over_http_summary">Workaround DNS poisoning in some nations.</string>
-    <string name="settings_advanced_domain_fronting_title">Domain fronting</string>
-    <string name="settings_advanced_domain_fronting_summary">Bypass SNI blocking.</string>
     <string name="settings_advanced_custom_hosts_title">Custom hosts.txt</string>
     <string name="settings_advanced_custom_hosts_summary">Map hostnames to IP addresses.\nIt can override built-in hosts.txt.</string>
+    <string name="settings_advanced_domain_fronting_title">Domain fronting</string>
+    <string name="settings_advanced_domain_fronting_summary">Bypass SNI blocking.</string>
     <string name="settings_privacy_pattern_protection_title">Pattern protection</string>
     <string name="settings_privacy_pattern_protection_not_set">Pattern protection has not been set</string>
     <string name="settings_privacy_pattern_protection_set">Pattern protection has been set</string>
@@ -614,27 +575,9 @@
     <string name="settings_about_declaration_summary">EhViewer is not affiliated with E-Hentai.org in any way</string>
     <string name="settings_about_author">Author</string>
     <string name="settings_about_author_summary" translatable="false">&lt;del&gt;Hippo &amp;lt;ehviewersu$gmail.com&amp;gt;&lt;/del&gt;&lt;br&gt;NekoInverter &amp;lt;nekoworkshop$protonmail.com&amp;gt;</string>
-    <string name="settings_about_telegram">Telegram</string>
     <string name="settings_about_latest_release">Latest release</string>
-    <string name="settings_about_website">Website</string>
     <string name="settings_about_source">Source</string>
-    <string name="settings_about_changelog">Changelog</string>
-    <string name="settings_about_help">Help</string>
-    <string name="settings_about_license">License</string>
-    <string name="settings_about_license_summary">EhViewer is made possible thanks to many open source projects</string>
-    <string name="settings_about_donate">Donate</string>
-    <string name="settings_about_donate_message">Your donation can not bring you any privileges. But it helps me maintain this app.</string>
-    <string name="settings_about_donate_alipay">Alipay</string>
-    <string name="settings_about_donate_paypal">PayPal</string>
-    <string name="settings_about_donate_open">Open</string>
-    <string name="settings_about_donate_copy">Copy</string>
-    <string name="settings_about_donate_copied">Copied</string>
-    <string name="settings_privacy_enable_analytics">Enable analytics</string>
-    <string name="settings_privacy_about_analytics">About analytics</string>
     <string name="settings_about_version">Build version</string>
-    <string name="settings_about_check_for_updates">Check for updates</string>
-    <string name="settings_about_beta_update_channel">Beta update channel</string>
-    <string name="settings_about_beta_update_channel_summary">Beta versions may contain unsolved bugs.</string>
 
     <string name="proxy_enable">Enable</string>
     <string name="proxy_enabled">Enabled</string>
@@ -662,41 +605,7 @@
     <string name="app_language_zh_hk" translatable="false">中文（香港）</string>
     <string name="app_language_zh_tw" translatable="false">國文（臺灣）</string>
 
-    <!-- ExcludedLanguagesScene -->
-    <string name="excluded_languages">Excluded languages</string>
-    <string name="select_all">All</string>
-    <string name="deselect_all">None</string>
-    <string name="invert_selection">Invert</string>
-    <string name="language">Language</string>
-    <string name="original">Original</string>
-    <string name="translated">Translated</string>
-    <string name="rewrite">Rewrite</string>
-    <string name="language_japanese">Japanese</string>
-    <string name="language_english">English</string>
-    <string name="language_chinese">Chinese</string>
-    <string name="language_dutch">Dutch</string>
-    <string name="language_french">French</string>
-    <string name="language_german">German</string>
-    <string name="language_hungarian">Hungarian</string>
-    <string name="language_italian">Italian</string>
-    <string name="language_korean">Korean</string>
-    <string name="language_polish">Polish</string>
-    <string name="language_portuguese">Portuguese</string>
-    <string name="language_russian">Russian</string>
-    <string name="language_spanish">Spanish</string>
-    <string name="language_thai">Thai</string>
-    <string name="language_vietnamese">Vietnamese</string>
-    <string name="language_na">N/A</string>
-    <string name="language_other">Other</string>
-
     <string name="please_wait">Pleas wait</string>
-
-    <!-- License -->
-    <string name="license">License</string>
-
-    <!-- Dir Picker-->
-    <string name="dir_picker">Dir picker</string>
-    <string name="directory_not_writable">The directory is not writable</string>
 
     <!-- Favorites -->
     <string name="cloud_favorites">Cloud Favorites</string>
@@ -797,8 +706,6 @@
     <string name="delete_search_history">Delete \"%s\" from search history?</string>
     <string name="read_theme">Color theme</string>
     <string name="follow_app">Follow app</string>
-    <string name="settings_e_ink_mode_title">E-Ink mode</string>
-    <string name="settings_e_ink_mode_summary">Some optimizations for the ink screen.</string>
     <string name="settings_advanced_clear_memory_cache_done">Memory cache cleaning completed</string>
     <string name="action_add_tag">Add tag</string>
     <string name="action_add_tag_tip">Enter new tags, separated with comma</string>

@@ -18,11 +18,6 @@
 
     <string name="app_name">EhViewer</string>
 
-    <!-- Theme -->
-    <string name="theme_light">밝은 테마</string>
-    <string name="theme_dark">어두운 테마</string>
-    <string name="theme_black">검정색 테마</string>
-
     <string name="homepage">홈</string>
     <string name="whats_hot">인기 갤러리</string>
     <string name="favourite">즐겨찾기</string>
@@ -32,19 +27,12 @@
 
     <string name="username">사용자 이름</string>
     <string name="password">비밀번호</string>
-    <string name="recaptcha">Recaptcha (선택)</string>
-
-    <string name="recaptcha_none">Recaptcha 불러오기</string>
-    <string name="recaptcha_loading">불러오는 중…</string>
-    <string name="recaptcha_failure">실패</string>
 
     <string name="sign_in">로그인</string>
     <string name="register">회원가입</string>
     <string name="sign_in_via_webview">WebView를 통하여 로그인</string>
     <string name="sign_in_via_cookies">쿠키를 사용하여 로그인</string>
-    <string name="display_name_dialog_title">별명 입력</string>
     <string name="display_name">별명</string>
-    <string name="display_name_is_empty">별명이 비어 있습니다.</string>
     <string name="sign_in_first">먼저 로그인하세요.</string>
 
     <string name="default_display_name">작은 하마</string>
@@ -96,25 +84,14 @@
     <string name="sign_in_failed">로그인 실패</string>
     <string name="sign_in_failed_plain">뭔가가 잘못되었습니다. 웹사이트가 업데이트 중일 수 있습니다. WebView 또는 쿠키를 사용하여 로그인하거나 아래 버튼을 눌러 로그인을 건너뛸 수 있습니다. 그러나 로그인을 건너뛰면 "슬픈 팬더"를 보게 될 것입니다.</string>
     <string name="press_twice_exit">한 번 더 누르면 종료됩니다.</string>
-    <string name="content_layout_restore_tip">다시 시도하려면 누르기</string>
-    <string name="write_rationale">앱이 갤러리를 다운로드하려면 WRITE_EXTERNAL_STORAGE 권한이 필요합니다. 권한을 허용하시겠습니까?</string>
-    <string name="you_rejected_me">안돼요</string>
     <string name="get_it">알겠습니다</string>
     <string name="accept">동의</string>
     <string name="reject">거부</string>
-
-    <string name="help_route">설정 -> 정보 -> 도움말</string>
 
     <!-- Select scene -->
     <string name="select_scene">어느 갤러리 사이트를 사용하시겠습니까?</string>
     <string name="select_scene_explain">e-hentai: 모든 사람들이 사용할 수 있음\nexhentai: 로그인한 사람만 사용할 수 있음</string>
     <string name="no_select">두 사이트 중 하나를 선택하세요.</string>
-
-    <!-- Update -->
-    <string name="update">업데이트</string>
-    <string name="update_plain">버전: %1$s\n파일 크기: %2$s\n\n%3$s</string>
-    <string name="update_to_date">최신 버전의 EhViewer를 사용 중입니다.</string>
-    <string name="update_ignore">무시</string>
 
     <!-- Gallery List -->
     <string name="gallery_list_search_bar_hint_exhentai">ExHentai 검색</string>
@@ -211,7 +188,7 @@
     <string name="copied_to_clipboard">클립보드에 복사했습니다.</string>
     <string name="header_key">키</string>
     <string name="header_value">값</string>
-    <string name="key_gid">GID</string>
+    <string name="key_gid">Gid</string>
     <string name="key_token">토큰</string>
     <string name="key_url">주소</string>
     <string name="key_title">제목</string>
@@ -350,6 +327,8 @@
     <string name="settings_eh">EH</string>
     <string name="settings_eh_sign_out">로그아웃</string>
     <string name="settings_eh_sign_out_summary">다시 로그인하려면 앱을 재시작하세요.</string>
+    <string name="settings_eh_sign_out_warning">정말 로그아웃하시겠습니까?</string>
+    <string name="settings_eh_sign_out_tip">로그아웃했습니다. 다시 로그인하려면 앱을 재시작하세요.</string>
     <string name="settings_eh_identity_cookies">식별용 쿠키</string>
     <string name="settings_eh_identity_cookies_summary">쿠키는 로그인 시 사용할 수 있습니다.</string>
     <string name="settings_eh_identity_cookies_signed">식별용 쿠키를 사용하여 이 계정으로 로그인할 수 있습니다.&lt;br&gt;&lt;b&gt;안전하게 보관하세요.&lt;/b&gt;&lt;br&gt;&lt;br&gt;%s</string>
@@ -357,13 +336,8 @@
     <string name="settings_eh_identity_cookies_copy">복사</string>
     <string name="settings_u_config">E-Hentai 설정</string>
     <string name="settings_u_config_summary">E-Hentai 사이트의 설정 페이지를 엽니다.</string>
-    <string name="settings_eh_sign_out_warning">정말 로그아웃하시겠습니까?</string>
-    <string name="settings_eh_sign_out_tip">로그아웃했습니다. 다시 로그인하려면 앱을 재시작하세요.</string>
-    <string name="settings_eh_theme">테마</string>
     <string name="settings_eh_theme_light">밝은 테마</string>
     <string name="settings_eh_theme_dark">어두운 테마</string>
-    <string name="settings_eh_theme_black">검정색 테마</string>
-    <string name="settings_eh_apply_nav_bar_theme_color">내비게이션 바에 테마 색상 적용</string>
     <string name="settings_eh_gallery_site">갤러리 사이트</string>
     <string name="settings_eh_list_mode">목록 모드</string>
     <string name="settings_eh_list_mode_detail">자세히</string>
@@ -379,12 +353,6 @@
     <string name="settings_eh_thumb_resolution_summary">특정 해상도로 설정하면 섬네일을 불러오지 못할 수 있습니다. 현재 설정\u003a \u005b%s\u005d</string>
     <string name="settings_eh_thumb_resolution_auto">자동</string>
     <string name="settings_eh_fix_thumb_url">섬네일 URL 바로잡기</string>
-    <string name="settings_eh_default_categories">홈페이지 카테고리</string>
-    <string name="settings_eh_default_categories_summary">홈페이지에 기본으로 보여질 카테고리</string>
-    <string name="settings_eh_excluded_languages">제외할 언어</string>
-    <string name="settings_eh_excluded_languages_summary">갤러리 목록과 검색에서 특정 언어 숨기기</string>
-    <string name="settings_eh_excluded_tag_namespaces">제외할 태그 네임스페이스</string>
-    <string name="settings_eh_excluded_tag_namespaces_summary">기본 태그 검색에서 특정 네임스페이스 제외</string>
     <string name="settings_eh_show_jpn_title">일본어 제목 표시</string>
     <string name="settings_eh_show_gallery_pages">갤러리 페이지 수 표시</string>
     <string name="settings_eh_show_gallery_pages_summary">갤러리 목록에 해당 갤러리의 페이지 수를 표시합니다</string>
@@ -429,10 +397,6 @@
     <string name="settings_download_download_location">다운로드 위치</string>
     <string name="settings_download_invalid_download_location">다운로드 위치가 잘못되었습니다.</string>
     <string name="settings_download_cant_get_download_location">다운로드 위치를 가져올 수 없습니다.</string>
-    <string name="settings_download_pick_dir_kk">Android 4.4 이상에서는 루트 권한 없이 외장 SD 카드에 데이터를 쓸 수 있는 방법이 없습니다. 그러나 &lt;SD 카드&gt;/Android/data/me.loverain.fleur 폴더만은 쓸 수 있습니다.</string>
-    <string name="settings_download_pick_dir_l">Android 5.0 이상에서는 외장 SD 카드에 쓰기 작업을 할 수 있는 새 API를 제공합니다. SD 카드를 다운로드 위치로 지정하려면 \"문서\"를 누르세요.</string>
-    <string name="settings_download_document">문서</string>
-    <string name="settings_download_continue">계속</string>
     <string name="settings_download_media_scan">미디어 스캔 허용</string>
     <string name="settings_download_media_scan_summary_on">다른 사람들에게 갤러리 앱을 들키지 마세요.</string>
     <string name="settings_download_media_scan_summary_off">대부분의 갤러리 앱에서 다운로드 경로에 있는 사진을 무시합니다.</string>
@@ -493,25 +457,8 @@
     <string name="settings_about">앱 정보</string>
     <string name="settings_about_declaration_summary">EhViewer는 E-Hentai.org 사이트와 아무런 관계가 없습니다.</string>
     <string name="settings_about_author">개발자</string>
-    <string name="settings_about_website">웹사이트</string>
     <string name="settings_about_source">소스 코드</string>
-    <string name="settings_about_changelog">변경 사항</string>
-    <string name="settings_about_help">도움말</string>
-    <string name="settings_about_license">라이선스</string>
-    <string name="settings_about_license_summary">EhViewer는 많은 오픈 소스 프로젝트 덕분에 만들 수 있었습니다.</string>
-    <string name="settings_about_donate">후원</string>
-    <string name="settings_about_donate_message">후원 특전은 따로 없습니다만, 제가 이 앱을 관리하는 데 도움이 됩니다.</string>
-    <string name="settings_about_donate_alipay">Alipay</string>
-    <string name="settings_about_donate_paypal">PayPal</string>
-    <string name="settings_about_donate_open">열기</string>
-    <string name="settings_about_donate_copy">복사</string>
-    <string name="settings_about_donate_copied">클립보드에 복사했습니다.</string>
-    <string name="settings_privacy_enable_analytics">데이터 분석 사용</string>
-    <string name="settings_privacy_about_analytics">데이터 분석 정보</string>
     <string name="settings_about_version">빌드 버전</string>
-    <string name="settings_about_check_for_updates">업데이트 확인</string>
-    <string name="settings_about_beta_update_channel">베타 업데이트 채널</string>
-    <string name="settings_about_beta_update_channel_summary">베타 버전은 해결되지 않은 문제가 발생할 수 있습니다.</string>
 
     <string name="proxy_enable">사용</string>
     <string name="proxy_enabled">사용함</string>
@@ -529,41 +476,7 @@
 
     <string name="app_language_system">시스템 언어 (기본값)</string>
 
-    <!-- ExcludedLanguagesScene -->
-    <string name="excluded_languages">제외할 언어</string>
-    <string name="select_all">모두 선택</string>
-    <string name="deselect_all">모두 선택 해제</string>
-    <string name="invert_selection">선택 반전</string>
-    <string name="language">언어</string>
-    <string name="original">원어</string>
-    <string name="translated">역본</string>
-    <string name="rewrite">재필</string>
-    <string name="language_japanese">일본어</string>
-    <string name="language_english">영어</string>
-    <string name="language_chinese">중국어</string>
-    <string name="language_dutch">네덜란드어</string>
-    <string name="language_french">프랑스어</string>
-    <string name="language_german">독일어</string>
-    <string name="language_hungarian">헝가리어</string>
-    <string name="language_italian">이탈리아어</string>
-    <string name="language_korean">한국어</string>
-    <string name="language_polish">폴란드어</string>
-    <string name="language_portuguese">포르투갈어</string>
-    <string name="language_russian">러시아어</string>
-    <string name="language_spanish">스페인어</string>
-    <string name="language_thai">타이어</string>
-    <string name="language_vietnamese">베트남어</string>
-    <string name="language_na">없음</string>
-    <string name="language_other">기타</string>
-
     <string name="please_wait">잠시만 기다려 주세요.</string>
-
-    <!-- License -->
-    <string name="license">라이선스</string>
-
-    <!-- Dir Picker-->
-    <string name="dir_picker">디렉터리 선택기</string>
-    <string name="directory_not_writable">쓸 수 있는 디렉터리가 아닙니다.</string>
 
     <!-- Favorites -->
     <string name="cloud_favorites">클라우드 즐겨찾기</string>

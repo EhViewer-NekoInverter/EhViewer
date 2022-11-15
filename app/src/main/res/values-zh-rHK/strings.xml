@@ -18,11 +18,6 @@
 
     <string name="app_name">EhViewer</string>
 
-    <!-- Theme -->
-    <string name="theme_light">亮色主題</string>
-    <string name="theme_dark">暗色主題</string>
-    <string name="theme_black">黑色主題</string>
-
     <string name="homepage">主頁</string>
     <string name="subscription">訂閲</string>
     <string name="whats_hot">熱門</string>
@@ -33,19 +28,12 @@
 
     <string name="username">用户名</string>
     <string name="password">密碼</string>
-    <string name="recaptcha">驗證碼（非必需）</string>
-
-    <string name="recaptcha_none">點我</string>
-    <string name="recaptcha_loading">加載中…</string>
-    <string name="recaptcha_failure">失敗</string>
 
     <string name="sign_in">登錄</string>
     <string name="register">註冊</string>
     <string name="sign_in_via_webview">通過網頁登錄</string>
     <string name="sign_in_via_cookies">通過 Cookie 登錄</string>
-    <string name="display_name_dialog_title">輸入暱稱</string>
     <string name="display_name">暱稱</string>
-    <string name="display_name_is_empty">暱稱為空</string>
     <string name="sign_in_first">請先登錄</string>
 
     <string name="default_display_name">Little Hippo</string>
@@ -101,27 +89,15 @@
     <string name="skip_signing_in">跳過登錄</string>
     <string name="sign_in_failed">登錄失敗</string>
     <string name="sign_in_failed_tip">若持續出錯，請嘗試“通過網頁登錄”或“通過 Cookie 登錄”。</string>
-    <string name="sign_in_failed_plain">這可能是網站更新導致的，也有可能是發生了奇怪的事情。您可以選擇在登錄按鈕下方通過網頁登錄或者輸入 cookie，或者跳過登錄。跳過登錄可能導致無法正常使用應用。如果你已經在 0.6.x 版登錄過了，請優先嚐試選擇“通過 Cookie 登錄”。</string>
     <string name="press_twice_exit">再按一次退出</string>
-    <string name="content_layout_restore_tip">點擊重試</string>
-    <string name="write_rationale">EhViewer 將申請設備存儲空間訪問權限以便下載畫廊。您願意授權嗎？</string>
-    <string name="you_rejected_me">好痛</string>
     <string name="get_it">知道了</string>
     <string name="accept">接受</string>
     <string name="reject">拒絕</string>
-
-    <string name="help_route">設置->關於->幫助</string>
 
     <!-- Select scene -->
     <string name="select_scene">你想選擇哪個畫廊站點？</string>
     <string name="select_scene_explain">e-hentai：對任何人開放\nexhentai：僅對登錄用户開放</string>
     <string name="no_select">請選擇一個站點</string>
-
-    <!-- Update -->
-    <string name="update">更新</string>
-    <string name="update_plain">版本：%1$s\n大小：%2$s\n\n%3$s</string>
-    <string name="update_to_date">EhViewer 已是最新版本</string>
-    <string name="update_ignore">忽略</string>
 
     <!-- Gallery List -->
     <string name="gallery_list_search_bar_hint_exhentai">搜索 ExHentai</string>
@@ -415,11 +391,8 @@
     <string name="settings_u_config_summary">EHentai 網站上的設置</string>
     <string name="settings_my_tags">我的標籤</string>
     <string name="settings_my_tags_summary">EHentai 網站上的我的標籤</string>
-    <string name="settings_eh_theme">主題</string>
     <string name="settings_eh_theme_light">亮色</string>
     <string name="settings_eh_theme_dark">暗色</string>
-    <string name="settings_eh_theme_black">黑色</string>
-    <string name="settings_eh_apply_nav_bar_theme_color">導航欄應用主題配色</string>
     <string name="settings_eh_gallery_site">畫廊站點</string>
     <string name="settings_eh_launch_page">啟動頁</string>
     <string name="settings_eh_list_mode">列表模式</string>
@@ -436,12 +409,6 @@
     <string name="settings_eh_thumb_resolution_summary">%s，指定分辨率可能使獲取縮略圖失敗</string>
     <string name="settings_eh_thumb_resolution_auto">自動</string>
     <string name="settings_eh_fix_thumb_url">修正縮略圖鏈接</string>
-    <string name="settings_eh_default_categories">主頁分類顯示</string>
-    <string name="settings_eh_default_categories_summary">默認在主頁所顯示的分類</string>
-    <string name="settings_eh_excluded_tag_namespaces">排除標籤組</string>
-    <string name="settings_eh_excluded_tag_namespaces_summary">在默認搜索中排除指定標籤組</string>
-    <string name="settings_eh_excluded_languages">排除語言</string>
-    <string name="settings_eh_excluded_languages_summary">在主頁與搜索中隱藏指定語言的畫廊</string>
     <string name="settings_eh_show_jpn_title">顯示日文標題</string>
     <string name="settings_eh_show_jpn_title_summary">需同時在 EHentai 網站設置中啟用 Japanese Title</string>
     <string name="settings_eh_show_gallery_pages">顯示畫廊頁數</string>
@@ -489,10 +456,9 @@
     <string name="settings_download_download_location">下載路徑</string>
     <string name="settings_download_invalid_download_location">無效的下載路徑</string>
     <string name="settings_download_cant_get_download_location">無法獲取下載路徑</string>
-    <string name="settings_download_pick_dir_kk">在 KitKat 中您無法把數據寫入外置 SD 卡，除非您做了奇怪的事情。不過 &lt;SD card&gt;/Android/data/com.hippo.ehviewer 這個路徑比較特殊，是可以寫入的。</string>
-    <string name="settings_download_pick_dir_l">Lollipop 提供了新的寫入外置 SD 卡的 API。如果您想把下載路徑設置到外置 SD 卡上，點擊“文檔”按鈕</string>
-    <string name="settings_download_document">文檔</string>
-    <string name="settings_download_continue">繼續</string>
+    <string name="settings_download_media_scan">允許媒體掃描</string>
+    <string name="settings_download_media_scan_summary_on">請避免他人翻看你的圖庫應用</string>
+    <string name="settings_download_media_scan_summary_off">大多數圖庫應用將不會顯示下載目錄中的圖片</string>
     <string name="settings_download_multi_thread_download">下載線程數</string>
     <string name="settings_download_multi_thread_download_summary">最多同時下載 %s 張圖片</string>
     <string name="settings_download_preload_image">預載圖片</string>
@@ -502,9 +468,6 @@
     <string name="settings_download_image_resolution_auto">自動</string>
     <string name="settings_download_download_origin_image">下載原圖</string>
     <string name="settings_download_download_origin_image_summary">這很危險！勾選此項會導致下載配額迅速流失</string>
-    <string name="settings_download_media_scan">允許媒體掃描</string>
-    <string name="settings_download_media_scan_summary_on">請避免他人翻看你的圖庫應用</string>
-    <string name="settings_download_media_scan_summary_off">大多數圖庫應用將不會顯示下載目錄中的圖片</string>
     <string name="settings_download_restore_download_items">恢復下載項</string>
     <string name="settings_download_restore_download_items_summary">恢復下載目錄裏的所有下載項</string>
     <string name="settings_download_restoring">恢復中</string>
@@ -531,10 +494,10 @@
     <string name="settings_advanced_clear_memory_cache">清理內存緩存</string>
     <string name="settings_advanced_clear_memory_cache_summary">清理縮略圖、畫廊信息的內存緩存</string>
     <string name="settings_advanced_read_cache_size">閲讀緩存大小</string>
+    <string name="settings_advanced_app_language_title">App 界面語言</string>
     <string name="settings_advanced_proxy">代理</string>
     <string name="settings_advanced_proxy_summary_1">%1$s %2$s:%3$d</string>
     <string name="settings_advanced_proxy_summary_2">%1$s</string>
-    <string name="settings_advanced_app_language_title">App 界面語言</string>
     <string name="settings_advanced_built_in_hosts_title">內置 hosts.txt</string>
     <string name="settings_advanced_built_in_hosts_summary">應用提供的主機到IP的映射\n可被自定義 hosts.txt 覆蓋</string>
     <string name="settings_advanced_custom_hosts_title">自定義 hosts.txt</string>
@@ -554,54 +517,8 @@
     <string name="settings_about_declaration_summary">EhViewer 與 E-Hentai.org 無任何聯繫</string>
     <string name="settings_about_author">作者</string>
     <string name="settings_about_latest_release">最新版本</string>
-    <string name="settings_about_website">網站</string>
     <string name="settings_about_source">源碼</string>
-    <string name="settings_about_changelog">更新日誌</string>
-    <string name="settings_about_help">幫助</string>
-    <string name="settings_about_license">開源許可</string>
-    <string name="settings_about_license_summary">EhViewer 的誕生離不開許多開源項目</string>
-    <string name="settings_about_donate">捐贈</string>
-    <string name="settings_about_donate_message">你的捐贈不能為你帶來特權，但能幫助我繼續維護這個應用。</string>
-    <string name="settings_about_donate_alipay">支付寶</string>
-    <string name="settings_about_donate_paypal">PayPal</string>
-    <string name="settings_about_donate_open">打開</string>
-    <string name="settings_about_donate_copy">複製</string>
-    <string name="settings_about_donate_copied">已複製</string>
-    <string name="settings_privacy_enable_analytics">啟用數據統計</string>
-    <string name="settings_privacy_about_analytics">關於數據統計</string>
     <string name="settings_about_version">版本號</string>
-    <string name="settings_about_check_for_updates">檢查更新</string>
-    <string name="settings_about_beta_update_channel">更新測試版</string>
-    <string name="settings_about_beta_update_channel_summary">測試版可能在你的設備上出現不可預知的錯誤</string>
-
-    <!-- ExcludedLanguagesScene -->
-    <string name="excluded_languages">排除語言</string>
-    <string name="select_all">全選</string>
-    <string name="deselect_all">全取消</string>
-    <string name="invert_selection">反選</string>
-    <string name="language">語言</string>
-    <string name="original">原作</string>
-    <string name="translated">翻譯</string>
-    <string name="rewrite">改寫</string>
-    <string name="language_japanese">日語</string>
-    <string name="language_english">英語</string>
-    <string name="language_chinese">漢語</string>
-    <string name="language_dutch">荷蘭語</string>
-    <string name="language_french">法語</string>
-    <string name="language_german">德語</string>
-    <string name="language_hungarian">匈牙利語</string>
-    <string name="language_italian">意大利語</string>
-    <string name="language_korean">韓語</string>
-    <string name="language_polish">波蘭語</string>
-    <string name="language_portuguese">葡萄牙語</string>
-    <string name="language_russian">俄語</string>
-    <string name="language_spanish">西班牙語</string>
-    <string name="language_thai">泰語</string>
-    <string name="language_vietnamese">越南語</string>
-    <string name="language_na">N/A</string>
-    <string name="language_other">其他</string>
-
-    <string name="please_wait">請稍候</string>
 
     <string name="proxy_enable">啟用</string>
     <string name="proxy_enabled">已啟用</string>
@@ -619,12 +536,7 @@
 
     <string name="app_language_system">系統語言（默認）</string>
 
-    <!-- License -->
-    <string name="license">開源許可</string>
-
-    <!-- Dir Picker-->
-    <string name="dir_picker">選擇文件夾</string>
-    <string name="directory_not_writable">該文件夾不可寫</string>
+    <string name="please_wait">請稍候</string>
 
     <!-- Favorites -->
     <string name="cloud_favorites">雲端收藏</string>
@@ -671,7 +583,6 @@
     </plurals>
     <string name="yesterday">昨天</string>
     <string name="some_days_ago">%d 天前</string>
-
     <plurals name="second">
         <item quantity="other">秒</item>
     </plurals>
@@ -695,7 +606,8 @@
     <string name="download_archive_failure_no_hath">下載壓縮包需要 H@H 客户端</string>
     <string name="settings_privacy">隱私</string>
     <string name="settings_privacy_secure">不允許荧幕抓取</string>
-    <string name="settings_privacy_secure_summary">啟用後，將不能截取該應用的螢幕截圖，同時，將不會在系統任務切換器中顯示該應用的內容預覽\n\n重新啟動應用以生效此更改</string>
+    <string name="settings_privacy_secure_summary">啟用後，將不能截取該應用的螢幕截圖，同時，將不會在系統任務切換器中顯示該應用的內容預覽，重新啟動應用以生效此更改</string>
+
     <string name="favorite_name">收藏畫廊</string>
 
 </resources>

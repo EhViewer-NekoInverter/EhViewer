@@ -18,11 +18,6 @@
 
     <string name="app_name">EhViewer</string>
 
-    <!-- Theme -->
-    <string name="theme_light">ธีมสีสว่าง</string>
-    <string name="theme_dark">ธีมสีมืด</string>
-    <string name="theme_black">ธีมสีดำ</string>
-
     <string name="homepage">หน้าหลัก</string>
     <string name="whats_hot">เรื่องที่กำลังมาแรงมากๆ</string>
     <string name="favourite">รายการโปรด</string>
@@ -32,19 +27,12 @@
 
     <string name="username">ชื่อผู้ใช้</string>
     <string name="password">รหัสผ่าน</string>
-    <string name="recaptcha">Recaptcha (ไม่จำเป็น)</string>
-
-    <string name="recaptcha_none">แตะตรงนี้</string>
-    <string name="recaptcha_loading">กำลังโหลด…</string>
-    <string name="recaptcha_failure">ล้มเหลว</string>
 
     <string name="sign_in">ลงชื่อเข้าใช้</string>
     <string name="register">ลงทะเบียน</string>
     <string name="sign_in_via_webview">ลงชื่อเข้าใช้ผ่านมุมมองเว็บไซต์</string>
     <string name="sign_in_via_cookies">ลงชื่อเข้าใช้ผ่านคุกกี้</string>
-    <string name="display_name_dialog_title">กรอกชื่อเล่นที่จะแสดง</string>
     <string name="display_name">ชื่อเล่นที่จะแสดง</string>
-    <string name="display_name_is_empty">ชื่อที่จะแสดงนั้นห้ามเว้นว่างไว้</string>
     <string name="sign_in_first">โปรดลงชื่อเข้าใช้ก่อนเป็นอันดับแรก</string>
 
     <string name="default_display_name">เจ้าฮิปโปโปเตมัสตัวน้อย</string>
@@ -94,27 +82,15 @@
     <string name="error_password_cannot_empty">รหัสผ่านห้ามเว้นว่างไว้</string>
     <string name="skip_signing_in">ดำเนินการต่อโดยไม่ต้องลงชื่อเข้าระบบ</string>
     <string name="sign_in_failed">การลงชื่อเข้าใช้ล้มเหลว</string>
-    <string name="sign_in_failed_plain">บางทีนี้เป็นข้อผิดพลาดเนื่องจากเว็บไซต์มีการอัพเดตหรือมีบางอย่างเกิดขึ้น คุณจะต้องลองวิธีลงชื่อเข้าใช้ผ่านมุมมองเว็บไซต์ หรือวิธีแบบคุกกี๊ หรือกดปุ่มข้ามไปก่อน แต่คุณอาจจะเจอ "แพนด้าผู้เดียวดาย" ได้หลังจากข้ามการลงชื่อเข้าใช้ อันดับแรกลอง "ลงชื่อเข้าใช้ผ่านคุกกี้" ถ้าคุณเคยเข้าสู่ระบบแล้วในเวอร์ชั่น 0.6.x</string>
     <string name="press_twice_exit">กดสองครั้งเพื่อออก</string>
-    <string name="content_layout_restore_tip">แตะเพื่อลองอีกครั้ง</string>
-    <string name="write_rationale">EhViewer จะขอสิทธิ์การเขียนข้อมูลพื้นที่จัดเก็บภายนอก (WRITE_EXTERNAL_STORAGE) เพื่อการดาวน์โหลดแกลเลอรี่ คุณจะอนุญาตหรือไม่?</string>
-    <string name="you_rejected_me">เอื้อออออ เจ็บจัง</string>
     <string name="get_it">เข้าใจแล้ว ไม่ต้องแสดงอีก</string>
     <string name="accept">ยินยอม</string>
     <string name="reject">ไม่ยินยอม</string>
-
-    <string name="help_route">การตั้งค่า->เกี่ยวกับ->ช่วยเหลือ</string>
 
     <!-- Select scene -->
     <string name="select_scene">เว็บแกลเลอรี่ไหนที่คุณอยากเข้าชม?</string>
     <string name="select_scene_explain">e-hentai: เขตแดนที่ทุกๆคนสามารถเข้าถึงได้\nexhentai: เขตแดนอันแสนศักศิทธิ์สำหรับคนที่ลงชื่อเข้าใช้ระบบแล้วเท่านั้นที่จะเข้าไปได้</string>
     <string name="no_select">โปรดเลือกหนึ่งเว็บไซต์</string>
-
-    <!-- Update -->
-    <string name="update">อัพเดต</string>
-    <string name="update_plain">เวอร์ชั่น: %1$s\nขนาดไฟล์: %2$s\n\n%3$s</string>
-    <string name="update_to_date">คุณกำลังใช้เวอร์ชั่นล่าสุดของ EhViewer.</string>
-    <string name="update_ignore">ข้ามไป</string>
 
     <!-- Gallery List -->
     <string name="gallery_list_search_bar_hint_exhentai">ค้นหาใน ExHentai</string>
@@ -377,11 +353,8 @@
     <string name="settings_eh_identity_cookies_copy">คัดลอก</string>
     <string name="settings_u_config">การตั้งค่า EHentai</string>
     <string name="settings_u_config_summary">การตั้งค่าบนเว็บไซต์ EHentai</string>
-    <string name="settings_eh_theme">ธีม</string>
     <string name="settings_eh_theme_light">สว่าง</string>
     <string name="settings_eh_theme_dark">มืด</string>
-    <string name="settings_eh_theme_black">ดำ</string>
-    <string name="settings_eh_apply_nav_bar_theme_color">ใช้สีของธีมบนแถบนำทางด้วย</string>
     <string name="settings_eh_gallery_site">เว็บไซต์หลักของแกลเลอรี่</string>
     <string name="settings_eh_list_mode">มุมองแบบรายการ</string>
     <string name="settings_eh_list_mode_detail">แสดงรายละเอียด</string>
@@ -397,12 +370,6 @@
     <string name="settings_eh_thumb_resolution_summary">ค่าตอนนี้เป็น %s. การตั้งความละเอียดที่แน่นอนอาจจะส่งผลต่อการโหลดตัวอย่างที่อาจจะไม่สำเร็จด้วย</string>
     <string name="settings_eh_thumb_resolution_auto">อัตโนมัติ</string>
     <string name="settings_eh_fix_thumb_url">แก้ลิงค์ภาพตัวอย่าง</string>
-    <string name="settings_eh_default_categories">หมวดหมู่บนหน้าแรก</string>
-    <string name="settings_eh_default_categories_summary">หมวดหมู่จะแสดงเป็นค่าเริ่มต้นบนหน้าแรก</string>
-    <string name="settings_eh_excluded_languages">ภาษาที่ยกเว้น</string>
-    <string name="settings_eh_excluded_languages_summary">ซ่อนแกลเลอรี่ที่มีภาษาต่างๆจากรายการแกลเลอรี่และการค้นหา</string>
-    <string name="settings_eh_excluded_tag_namespaces">แท็กเนมสเปซที่ยกเว้น</string>
-    <string name="settings_eh_excluded_tag_namespaces_summary">แยกเนมสเปซที่ตั้งไว้ออกจากที่ค้นหาแท็กที่เป็นค่าเริ่มต้น</string>
     <string name="settings_eh_show_jpn_title">แสดงชื่อเรื่องญี่ปุ่น</string>
     <string name="settings_eh_show_gallery_pages">แสดงจำนวนหน้าของแกลเลอรี่</string>
     <string name="settings_eh_show_gallery_pages_summary">แสดงจำนวนหน้าที่มีอยู่ในแต่ละแกลเลอรี่</string>
@@ -447,10 +414,6 @@
     <string name="settings_download_download_location">ตำแหน่งแหล่งดาวน์โหลด</string>
     <string name="settings_download_invalid_download_location">ตำแหน่งแหล่งดาวน์โหลดไม่ถูกต้อง</string>
     <string name="settings_download_cant_get_download_location">ไม่สามารถเข้าถึงแหล่งดาวน์โหลดได้</string>
-    <string name="settings_download_pick_dir_kk">บน Android เวอร์ชั่น 4.4 (หรือ KitKat) เป็นต้นไป แอพจะไม่สามารถเขียนข้อมูลใดๆก็ตามบนพื้นที่จัดเก็บภายนอกอย่างการ์ด SD ได้ เว้นแต่ว่าคุณจะรูทระบบและเพิ่มแพชต์เข้าไป แต่ &lt;การ์ด SD&gt;/Android/data/com.hippo.ehviewer นั้นเป็นข้อยกเว้น สามารถให้เขียนได้สำหรับแอพนี้</string>
-    <string name="settings_download_pick_dir_l">บน Android เวอร์ชั่น 5.0 (หรือ Lolipop) เป็นต้นไป ได้ใช้ API ตัวใหม่เพื่อเขียนข้อมูลบนพื้นที่จัดเก็บภายนอกอย่างการ์ด SD ได้ แตะที่ \"เอกสาร\" ถ้าคุณอยากตั้งให้การ์ด SD เป็นแหล่งดาวน์โหลด</string>
-    <string name="settings_download_document">เอกสาร</string>
-    <string name="settings_download_continue">ดำเนินการต่อ</string>
     <string name="settings_download_media_scan">การอนุญาตให้สแกนสื่อ</string>
     <string name="settings_download_media_scan_summary_on">โปรดซ่อนแอปแกลเลอรี่หรือแอปดูรูปในเครื่องของคุณจากคนอื่นด้วย</string>
     <string name="settings_download_media_scan_summary_off">แอปแกลเลอรี่ส่วนใหญ่จะข้ามการสแกนรูปภาพในแหล่งดาวน์โหลด</string>
@@ -509,29 +472,10 @@
     <string name="settings_advanced_import_data_successfully">การนำเข้าข้อมูลสำเร็จ</string>
 
     <string name="settings_about">เกี่ยวกับ</string>
-    <string name="settings_about_declaration" translatable="false">EhViewer</string>
     <string name="settings_about_declaration_summary">EhViewer ไม่มีความแตกต่างจากตัวเว็บ E-Hentai.org แต่อย่างใด</string>
     <string name="settings_about_author">นักพัฒนา</string>
-    <string name="settings_about_telegram">Telegram</string>
-    <string name="settings_about_website">เว็บไซต์</string>
     <string name="settings_about_source">ซอร์สโค้ด</string>
-    <string name="settings_about_changelog">บันทึกการเปลี่ยนแปลง</string>
-    <string name="settings_about_help">ช่วยเหลือ</string>
-    <string name="settings_about_license">ใบอนุญาต</string>
-    <string name="settings_about_license_summary">EhViewer ต้องขอขอบคุณโครงการโอเพ่นซอร์สหลายๆโครงการเป็นอย่างสูง</string>
-    <string name="settings_about_donate">บริจาค</string>
-    <string name="settings_about_donate_message">เงินบริจาคของคุณจะไม่ได้บริการพิเศษ แต่จะทำให้แอปพัฒนาไปได้ไกลมากขึ้น</string>
-    <string name="settings_about_donate_alipay">Alipay</string>
-    <string name="settings_about_donate_paypal">PayPal</string>
-    <string name="settings_about_donate_open">เปิดลิงค์</string>
-    <string name="settings_about_donate_copy">คัดลอก</string>
-    <string name="settings_about_donate_copied">คัดลอกแล้ว</string>
-    <string name="settings_privacy_enable_analytics">เปิดการวิเคราะห์ข้อมูล</string>
-    <string name="settings_privacy_about_analytics">เกี่ยวกับการวิเคราะห์ข้อมูล</string>
     <string name="settings_about_version">เวอร์ชั่นแอป</string>
-    <string name="settings_about_check_for_updates">ตรวจสอบการอัพเดต</string>
-    <string name="settings_about_beta_update_channel">ใช้เวอร์ชั่นทดสอบ (Beta)</string>
-    <string name="settings_about_beta_update_channel_summary">ในเวอร์ชั่นทดสอบอาจมีบัคที่ยังไม่ได้แก้ไข</string>
 
     <string name="proxy_enable">เปิดใช้งาน</string>
     <string name="proxy_enabled">เปิดใช้งานแล้ว</string>
@@ -549,41 +493,7 @@
 
     <string name="app_language_system">ภาษาของระบบ (ค่าเริ่มต้น)</string>
 
-    <!-- ExcludedLanguagesScene -->
-    <string name="excluded_languages">ภาษาที่ยกเว้น</string>
-    <string name="select_all">ทั้งหมด</string>
-    <string name="deselect_all">ไม่ทั้งหมด</string>
-    <string name="invert_selection">เลือกตรงกันข้าม</string>
-    <string name="language">ภาษา</string>
-    <string name="original">ต้นฉบับ</string>
-    <string name="translated">แปล</string>
-    <string name="rewrite">ถูกทำใหม่</string>
-    <string name="language_japanese">ภาษาญี่ปุ่น</string>
-    <string name="language_english">ภาษาอังกฤษ</string>
-    <string name="language_chinese">ภาษาจีน</string>
-    <string name="language_dutch">ภาษาดัตซ์</string>
-    <string name="language_french">ภาษาฝรั่งเศส</string>
-    <string name="language_german">ภาษาเยอรมัน</string>
-    <string name="language_hungarian">ภาษาฮังการี</string>
-    <string name="language_italian">ภาษาอิตาเลี่ยน</string>
-    <string name="language_korean">ภาษาเกาหลี</string>
-    <string name="language_polish">ภาษาโปแลนด์</string>
-    <string name="language_portuguese">ภาษาโปรตุเกส</string>
-    <string name="language_russian">ภาษารัสเซีย</string>
-    <string name="language_spanish">ภาษาสเปน</string>
-    <string name="language_thai">ภาษาไทย</string>
-    <string name="language_vietnamese">ภาษาเวียดนาม</string>
-    <string name="language_na">N/A</string>
-    <string name="language_other">อื่นๆ</string>
-
     <string name="please_wait">รอสักครู่</string>
-
-    <!-- License -->
-    <string name="license">ใบอนุญาต</string>
-
-    <!-- Dir Picker-->
-    <string name="dir_picker">เลือกโฟลเดอร์</string>
-    <string name="directory_not_writable">โฟลเดอร์นี้เขียนไฟล์ไม่ได้</string>
 
     <!-- Favorites -->
     <string name="cloud_favorites">รายการโปรดบนเว็บ</string>
