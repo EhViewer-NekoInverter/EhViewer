@@ -34,14 +34,14 @@
         android:title="@string/settings_about_latest_release"
         app:enableCopying="true"
         app:iconSpaceReserved="false"
-        app:url="https://github.com/xb2016/EhViewer-NekoInverter/actions" />
+        app:url="https://github.com/EhViewer-NekoInverter/EhViewer/actions" />
 
     <com.hippo.preference.UrlPreference
         android:key="source"
         android:title="@string/settings_about_source"
         app:enableCopying="true"
         app:iconSpaceReserved="false"
-        app:url="https://github.com/xb2016/EhViewer-NekoInverter" />
+        app:url="https://github.com/EhViewer-NekoInverter/EhViewer" />
 
     <com.hippo.ehviewer.preference.VersionPreference
         android:key="version"

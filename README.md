@@ -4,41 +4,41 @@
 </h1>
 
 <p align="center">
-  <a href="https://github.com/xb2016/EhViewer-NekoInverter/actions/workflows/ci.yml">
-    <img src="https://github.com/xb2016/EhViewer-NekoInverter/actions/workflows/ci.yml/badge.svg" alt="Github Actions">
+  <a href="https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml">
+    <img src="https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml/badge.svg" alt="Github Actions">
   </a>
-  <a href="https://github.com/xb2016/EhViewer-NekoInverter/blob/eh-1.7.27.x/LICENSE">
-    <img src="https://img.shields.io/github/license/xb2016/EhViewer-NekoInverter" alt="LICENSE">
+  <a href="https://github.com/EhViewer-NekoInverter/EhViewer/blob/eh-1.7.27.x/LICENSE">
+    <img src="https://img.shields.io/github/license/EhViewer-NekoInverter/EhViewer" alt="LICENSE">
   </a>
 </p>
 
 <div align="center">
   <h3>
-    <a href="https://github.com/xb2016/EhViewer-NekoInverter#描述">
+    <a href="https://github.com/EhViewer-NekoInverter/EhViewer#描述">
     描述
     </a>
     <span> | </span>
-    <a href="https://github.com/xb2016/EhViewer-NekoInverter#下载">
+    <a href="https://github.com/EhViewer-NekoInverter/EhViewer#下载">
     下载
     </a>
     <span> | </span>
-    <a href="https://github.com/xb2016/EhViewer-NekoInverter#链接">
+    <a href="https://github.com/EhViewer-NekoInverter/EhViewer#链接">
     链接
     </a>
     <span> | </span>
-    <a href="https://github.com/xb2016/EhViewer-NekoInverter#问题">
+    <a href="https://github.com/EhViewer-NekoInverter/EhViewer#问题">
     问题
     </a>
     <span> | </span>
-    <a href="https://github.com/xb2016/EhViewer-NekoInverter#截图">
+    <a href="https://github.com/EhViewer-NekoInverter/EhViewer#截图">
     截图
     </a>
     <span> | </span>
-    <a href="https://github.com/xb2016/EhViewer-NekoInverter#感谢">
+    <a href="https://github.com/EhViewer-NekoInverter/EhViewer#感谢">
     感谢
     </a>
     <span> | </span>
-    <a href="https://github.com/xb2016/EhViewer-NekoInverter#许可证">
+    <a href="https://github.com/EhViewer-NekoInverter/EhViewer#许可证">
     许可证
     </a>
   </h3>
@@ -48,15 +48,15 @@
 
 NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
-本仓库仅作自用目的，不开放 issue，仅保证最低限度的可用性
+本人与 NekoInverter 无任何关系，本仓库仅作自用目的，不开放 issue，~~仅保证最低限度的可用性~~ 看心情
 
-可能需要 Android 10 及以上版本系统才能使用
+~~可能需要 Android 10 及以上版本系统才能使用，~~ 按理来说 Android 8 以上应该都可以
 
 # 下载
 
-请前往 [Github Actions](https://github.com/xb2016/EhViewer-NekoInverter/actions) 下载最新 CI 版本，需要登录 Github 账号
+请前往 [Github Actions](https://github.com/EhViewer-NekoInverter/EhViewer/actions) 下载最新 CI 版本，需要登录 Github 账号
 
-也可以前往 [Github Releases](https://github.com/xb2016/EhViewer-NekoInverter/releases) 下载发行版，无需登录账号，但可能不是最新的
+也可以前往 [Github Releases](https://github.com/EhViewer-NekoInverter/EhViewer/releases) 下载发行版，无需登录账号，但可能不是最新的
 
 # 链接
 
@@ -94,7 +94,7 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 **里站无法跳页**
 
 - 网站更新去掉了页码，详见 [https://forums.e-hentai.org/index.php?showtopic=261743](https://forums.e-hentai.org/index.php?showtopic=261743)
-- 如果你是捐赠用户，可使用表站，表站暂时还未同步此更改 (注：表站需要使用旧版 APP)
+- 目前表站和里站均已应用此更改，请及时更新你的软件
 
 **挂梯子后打不开**
 
