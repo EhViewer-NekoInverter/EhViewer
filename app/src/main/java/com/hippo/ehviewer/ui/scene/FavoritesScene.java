@@ -887,8 +887,20 @@ public class FavoritesScene extends BaseScene implements
             else
                 pages = Integer.MAX_VALUE;
 
-            mHelper.prevPage = result.prevPage;
-            mHelper.nextPage = result.nextPage;
+            String prev = result.prevPage, next = result.nextPage;
+            switch (mHelper.operation) {
+                case -1:
+                    if (prev != null) mHelper.upperPage = prev;
+                    break;
+                case 1:
+                    if (next != null) mHelper.lowerPage = next;
+                    break;
+                default:
+                    mHelper.upperPage = prev;
+                    mHelper.lowerPage = next;
+                    break;
+            }
+
             mHelper.onGetPageData(taskId, pages, mHelper.pgCounter + 1, result.galleryInfoList);
 
             if (mDrawerAdapter != null) {
@@ -1208,11 +1220,9 @@ public class FavoritesScene extends BaseScene implements
     }
 
     private class FavoritesHelper extends GalleryInfoContentHelper {
-        protected String operation = null;
-        protected String upperPage = null;
-        protected String lowerPage = null;
-        public String prevPage = null;
-        public String nextPage = null;
+        public String upperPage = null;
+        public String lowerPage = null;
+        public int operation = 0;
         public int pgCounter = 0;
 
         @Override
@@ -1221,15 +1231,7 @@ public class FavoritesScene extends BaseScene implements
             if (null == activity || null == mUrlBuilder || null == mClient) {
                 return;
             }
-
             pgCounter = page;
-            if (jumpTo != null) beforeRefresh();
-            if (upperPage == null) upperPage = prevPage;
-            if (lowerPage == null) lowerPage = nextPage;
-            if (operation == "prev" && prevPage != null) upperPage = prevPage;
-            if (operation == "next" && nextPage != null) lowerPage = nextPage;
-            prevPage = null;
-            nextPage = null;
 
             if (mEnableModify) {
                 mEnableModify = false;
@@ -1283,17 +1285,20 @@ public class FavoritesScene extends BaseScene implements
                 SimpleHandler.getInstance().post(() -> onGetFavoritesLocal(keyword, taskId));
             } else {
                 String prev = null, next = null;
-                if (page != 0) {
+                if (jumpTo != null) {
+                    next = Integer.toString(minGid);
+                    operation = 0;
+                } else if (page != 0) {
                     if (page >= mHelper.getPageForTop()) {
                         next = lowerPage;
-                        operation = "next";
+                        operation = 1;
                     } else {
                         prev = upperPage;
-                        operation = "prev";
+                        operation = -1;
                     }
                 }
                 mUrlBuilder.setPrev(prev);
-                mUrlBuilder.setNext(jumpTo == null ? next : Integer.toString(minGid));
+                mUrlBuilder.setNext(next);
 
                 mUrlBuilder.setJumpTo(jumpTo);
                 jumpTo = null;
@@ -1369,32 +1374,24 @@ public class FavoritesScene extends BaseScene implements
         @Override
         protected void beforeRefresh() {
             super.beforeRefresh();
-            operation = null;
             upperPage = null;
             lowerPage = null;
-            prevPage = null;
-            nextPage = null;
+            operation = 0;
         }
 
         @Override
         protected Parcelable saveInstanceState(Parcelable superState) {
             Bundle bundle = (Bundle) super.saveInstanceState(superState);
-            bundle.putString(KEY_OPERATION, operation);
             bundle.putString(KEY_UPPER_PAGE, upperPage);
             bundle.putString(KEY_LOWER_PAGE, lowerPage);
-            bundle.putString(KEY_PREV_PAGE, prevPage);
-            bundle.putString(KEY_NEXT_PAGE, nextPage);
             return bundle;
         }
 
         @Override
         protected Parcelable restoreInstanceState(Parcelable state) {
             Bundle bundle = (Bundle) state;
-            operation = bundle.getString(KEY_OPERATION);
             upperPage = bundle.getString(KEY_UPPER_PAGE);
             lowerPage = bundle.getString(KEY_LOWER_PAGE);
-            prevPage = bundle.getString(KEY_PREV_PAGE);
-            nextPage = bundle.getString(KEY_NEXT_PAGE);
             return super.restoreInstanceState(state);
         }
     }
