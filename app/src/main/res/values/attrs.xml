@@ -88,6 +88,7 @@
     <declare-styleable name="FixedThumb">
         <attr name="minAspect" format="float" />
         <attr name="maxAspect" format="float" />
+        <attr name="alwaysCutAndScale" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="CheckTextView">
@@ -167,10 +168,6 @@
 
     <declare-styleable name="UrlPreference">
         <attr name="url" format="string" />
-    </declare-styleable>
-
-    <declare-styleable name="SeekBarPreference">
-        <attr name="max" format="integer" />
     </declare-styleable>
 
     <declare-styleable name="FastScroller">

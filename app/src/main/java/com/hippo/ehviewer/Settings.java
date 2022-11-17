@@ -47,18 +47,20 @@ public class Settings {
     /********************
      ****** Eh
      ********************/
-
     public static final String KEY_THEME = "theme";
     public static final String KEY_BLACK_DARK_THEME = "black_dark_theme";
     public static final int THEME_LIGHT = 1;
     public static final int THEME_SYSTEM = -1;
     public static final int THEME_BLACK = 2;
-    public static final String KEY_APPLY_NAV_BAR_THEME_COLOR = "apply_nav_bar_theme_color";
     public static final String KEY_GALLERY_SITE = "gallery_site";
     public static final String KEY_LIST_MODE = "list_mode";
     public static final String KEY_DETAIL_SIZE = "detail_size";
     public static final String KEY_THUMB_SIZE = "thumb_size";
     public static final String KEY_THUMB_RESOLUTION = "thumb_resolution";
+    public static final String KEY_LIST_THUMB_SIZE = "list_tile_size";
+    private static final int DEFAULT_LIST_THUMB_SIZE = 40;
+    public static boolean LIST_THUMB_SIZE_INITED = false;
+    private static int LIST_THUMB_SIZE = 40;
     public static final String KEY_SHOW_TAG_TRANSLATIONS = "show_tag_translations";
     public static final String KEY_DEFAULT_CATEGORIES = "default_categories";
     public static final int DEFAULT_DEFAULT_CATEGORIES = EhUtils.ALL_CATEGORY;
@@ -81,7 +83,6 @@ public class Settings {
     public static final String KEY_IMAGE_RESOLUTION = "image_size";
     public static final String DEFAULT_IMAGE_RESOLUTION = EhConfig.IMAGE_SIZE_AUTO;
     public static final int INVALID_DEFAULT_FAV_SLOT = -2;
-    public static final String KEY_ENABLE_ANALYTICS = "enable_analytics";
     /********************
      ****** Advanced
      ********************/
@@ -112,7 +113,6 @@ public class Settings {
     private static final String KEY_QUICK_SEARCH_TIP = "quick_search_tip";
     private static final boolean DEFAULT_QUICK_SEARCH_TIP = true;
     private static final int DEFAULT_THEME = THEME_SYSTEM;
-    private static final boolean DEFAULT_APPLY_NAV_BAR_THEME_COLOR = true;
     private static final int DEFAULT_GALLERY_SITE = 1;
     private static final String KEY_LAUNCH_PAGE = "launch_page";
     private static final int DEFAULT_LAUNCH_PAGE = 0;
@@ -135,7 +135,6 @@ public class Settings {
     private static final boolean DEFAULT_APP_LINK_VERIFY_TIP = false;
     private static final String KEY_NIGHT_MODE = "night_mode";
     private static final String DEFAULT_NIGHT_MODE = "-1";
-    private static final String KEY_E_INK_MODE = "e_ink_mode_2";
     private static final boolean DEFAULT_E_INK_MODE = false;
     /********************
      ****** Read
@@ -225,21 +224,8 @@ public class Settings {
     private static final String KEY_DEFAULT_FAV_SLOT = "default_favorite_2";
     private static final int DEFAULT_DEFAULT_FAV_SLOT = INVALID_DEFAULT_FAV_SLOT;
     /********************
-     ****** Analytics
-     ********************/
-    private static final String KEY_ASK_ANALYTICS = "ask_analytics";
-    private static final boolean DEFAULT_ASK_ANALYTICS = true;
-    private static final boolean DEFAULT_ENABLE_ANALYTICS = false;
-    private static final String KEY_USER_ID = "user_id";
-    private static final String FILENAME_USER_ID = ".user_id";
-    private static final int LENGTH_USER_ID = 32;
-    /********************
      ****** Update
      ********************/
-    private static final String KEY_BETA_UPDATE_CHANNEL = "beta_update_channel";
-    private static final boolean DEFAULT_BETA_UPDATE_CHANNEL = EhApplication.BETA;
-    private static final String KEY_SKIP_UPDATE_VERSION = "skip_update_version";
-    private static final int DEFAULT_SKIP_UPDATE_VERSION = 0;
     private static final boolean DEFAULT_SAVE_PARSE_ERROR_BODY = true;
     private static final String KEY_SAVE_CRASH_LOG = "save_crash_log";
     private static final boolean DEFAULT_SAVE_CRASH_LOG = true;
@@ -473,10 +459,6 @@ public class Settings {
         putIntToStr(KEY_THEME, theme);
     }
 
-    public static boolean getApplyNavBarThemeColor() {
-        return getBoolean(KEY_APPLY_NAV_BAR_THEME_COLOR, DEFAULT_APPLY_NAV_BAR_THEME_COLOR);
-    }
-
     public static int getGallerySite() {
         return getIntFromStr(KEY_GALLERY_SITE, DEFAULT_GALLERY_SITE);
     }
@@ -538,6 +520,16 @@ public class Settings {
 
     public static int getThumbResolution() {
         return getIntFromStr(KEY_THUMB_RESOLUTION, DEFAULT_THUMB_RESOLUTION);
+    }
+
+    public static int getListThumbSize() {
+        if (LIST_THUMB_SIZE_INITED) {
+            return LIST_THUMB_SIZE;
+        }
+        int size = 3 * getInt(KEY_LIST_THUMB_SIZE, DEFAULT_LIST_THUMB_SIZE);
+        LIST_THUMB_SIZE = size;
+        LIST_THUMB_SIZE_INITED = true;
+        return size;
     }
 
     public static boolean getFixThumbUrl() {
@@ -932,96 +924,6 @@ public class Settings {
 
     public static void putDefaultFavSlot(int value) {
         putInt(KEY_DEFAULT_FAV_SLOT, value);
-    }
-
-    public static boolean getAskAnalytics() {
-        return getBoolean(KEY_ASK_ANALYTICS, DEFAULT_ASK_ANALYTICS);
-    }
-
-    public static void putAskAnalytics(boolean value) {
-        putBoolean(KEY_ASK_ANALYTICS, value);
-    }
-
-    public static boolean getEnableAnalytics() {
-        return getBoolean(KEY_ENABLE_ANALYTICS, DEFAULT_ENABLE_ANALYTICS);
-    }
-
-    public static void putEnableAnalytics(boolean value) {
-        putBoolean(KEY_ENABLE_ANALYTICS, value);
-    }
-
-    public static String getUserID() {
-        boolean writeXml = false;
-        boolean writeFile = false;
-        String userID = getString(KEY_USER_ID, null);
-        File file = AppConfig.getFileInExternalAppDir(FILENAME_USER_ID);
-        if (null == userID || !isValidUserID(userID)) {
-            writeXml = true;
-            // Get use ID from out sd card file
-            userID = FileUtils.read(file);
-            if (null == userID || !isValidUserID(userID)) {
-                writeFile = true;
-                userID = generateUserID();
-            }
-        } else {
-            writeFile = true;
-        }
-
-        if (writeXml) {
-            putString(KEY_USER_ID, userID);
-        }
-        if (writeFile) {
-            FileUtils.write(file, userID);
-        }
-
-        return userID;
-    }
-
-    @NonNull
-    private static String generateUserID() {
-        int length = LENGTH_USER_ID;
-        StringBuilder sb = new StringBuilder(length);
-
-        for (int i = 0; i < length; i++) {
-            if (MathUtils.random(0, ('9' - '0' + 1) + ('z' - 'a' + 1)) <= '9' - '0') {
-                sb.append((char) MathUtils.random('0', '9' + 1));
-            } else {
-                sb.append((char) MathUtils.random('a', 'z' + 1));
-            }
-        }
-
-        return sb.toString();
-    }
-
-    private static boolean isValidUserID(@Nullable String userID) {
-        if (null == userID || LENGTH_USER_ID != userID.length()) {
-            return false;
-        }
-
-        for (int i = 0; i < LENGTH_USER_ID; i++) {
-            char ch = userID.charAt(i);
-            if (!(ch >= '0' && ch <= '9') && !(ch >= 'a' && ch <= 'z')) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public static boolean getBetaUpdateChannel() {
-        return getBoolean(KEY_BETA_UPDATE_CHANNEL, DEFAULT_BETA_UPDATE_CHANNEL);
-    }
-
-    public static void putBetaUpdateChannel(boolean value) {
-        putBoolean(KEY_BETA_UPDATE_CHANNEL, value);
-    }
-
-    public static int getSkipUpdateVersion() {
-        return getInt(KEY_SKIP_UPDATE_VERSION, DEFAULT_SKIP_UPDATE_VERSION);
-    }
-
-    public static void putSkipUpdateVersion(int value) {
-        putInt(KEY_SKIP_UPDATE_VERSION, value);
     }
 
     public static boolean getSaveParseErrorBody() {

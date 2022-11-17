@@ -406,7 +406,8 @@
     <string name="settings_eh_detail_size">详情大小</string>
     <string name="settings_eh_detail_size_long">长</string>
     <string name="settings_eh_detail_size_short">短</string>
-    <string name="settings_eh_thumb_size">缩略图大小</string>
+    <string name="settings_eh_list_tile_thumb_size">详情模式下缩略图大小</string>
+    <string name="settings_eh_thumb_size">缩略图模式下缩略图大小</string>
     <string name="settings_eh_thumb_size_large">大</string>
     <string name="settings_eh_thumb_size_middle">中</string>
     <string name="settings_eh_thumb_size_small">小</string>
