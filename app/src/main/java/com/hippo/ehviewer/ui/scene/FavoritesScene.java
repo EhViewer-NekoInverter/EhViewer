@@ -48,6 +48,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetView;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.CompositeDateValidator;
+import com.google.android.material.datepicker.DateValidatorPointBackward;
+import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hippo.annotation.Implemented;
@@ -85,6 +89,9 @@ import com.hippo.yorozuya.ObjectUtils;
 import com.hippo.yorozuya.SimpleHandler;
 import com.hippo.yorozuya.ViewUtils;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -695,9 +702,23 @@ public class FavoritesScene extends BaseScene implements
             return;
         }
 
+        LocalDateTime local = LocalDateTime.of(2007, 3, 21, 0, 0);
+        long fromDate = local.atZone(ZoneId.ofOffset("UTC", ZoneOffset.UTC)).toInstant().toEpochMilli();
+        long toDate = MaterialDatePicker.todayInUtcMilliseconds();
+
+        ArrayList listValidators = new ArrayList<>();
+        listValidators.add(DateValidatorPointForward.from(fromDate));
+        listValidators.add(DateValidatorPointBackward.before(toDate));
+
+        var constraintsBuilder = new CalendarConstraints.Builder()
+                .setStart(fromDate)
+                .setEnd(toDate)
+                .setValidator(CompositeDateValidator.allOf(listValidators));
+
         var datePicker = MaterialDatePicker.Builder.datePicker()
+                .setCalendarConstraints(constraintsBuilder.build())
                 .setTitleText(R.string.go_to)
-                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                .setSelection(toDate)
                 .build();
         datePicker.show(requireActivity().getSupportFragmentManager(), "date-picker");
         datePicker.addOnPositiveButtonClickListener(v -> {
