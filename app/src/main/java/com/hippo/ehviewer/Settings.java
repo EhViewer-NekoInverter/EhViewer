@@ -124,8 +124,6 @@ public class Settings {
     private static final int DEFAULT_DETAIL_SIZE = 0;
     private static final int DEFAULT_THUMB_SIZE = 1;
     private static final int DEFAULT_THUMB_RESOLUTION = 0;
-    private static final String KEY_FIX_THUMB_URL = "fix_thumb_url";
-    private static final boolean DEFAULT_FIX_THUMB_URL = false;
     private static final String KEY_SHOW_JPN_TITLE = "show_jpn_title";
     private static final boolean DEFAULT_SHOW_JPN_TITLE = false;
     private static final String KEY_SHOW_GALLERY_PAGES = "show_gallery_pages";
@@ -534,10 +532,6 @@ public class Settings {
         LIST_THUMB_SIZE = size;
         LIST_THUMB_SIZE_INITED = true;
         return size;
-    }
-
-    public static boolean getFixThumbUrl() {
-        return getBoolean(KEY_FIX_THUMB_URL, DEFAULT_FIX_THUMB_URL);
     }
 
     public static boolean getRequestNews() {

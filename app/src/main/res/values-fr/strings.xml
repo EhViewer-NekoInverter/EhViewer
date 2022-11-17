@@ -392,7 +392,6 @@
     <string name="settings_eh_thumb_resolution">Résolution des miniatures</string>
     <string name="settings_eh_thumb_resolution_summary">Auctuellement %s. Certaines résolutions spéciales êmpechent de les charger correctement.</string>
     <string name="settings_eh_thumb_resolution_auto">Auto</string>
-    <string name="settings_eh_fix_thumb_url">Réparer l\'URL de la miniature</string>
     <string name="settings_eh_default_categories">Catégoriques sur la page d\'accueil</string>
     <string name="settings_eh_default_categories_summary">Les catégoriques par défaut à afficher sur la page d\'accueil</string>
     <string name="settings_eh_excluded_languages">Langues exclues</string>
