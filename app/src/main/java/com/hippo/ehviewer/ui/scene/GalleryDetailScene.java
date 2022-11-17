@@ -593,8 +593,12 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
         mNoTags = (TextView) ViewUtils.$$(mTags, R.id.no_tags);
 
         mComments = (LinearLayout) ViewUtils.$$(belowHeader, R.id.comments);
-        mCommentsText = (TextView) ViewUtils.$$(mComments, R.id.comments_text);
-        mComments.setOnClickListener(this);
+        if (Settings.getShowComments()) {
+            mCommentsText = (TextView) ViewUtils.$$(mComments, R.id.comments_text);
+            mComments.setOnClickListener(this);
+        } else {
+            mComments.setVisibility(View.GONE);
+        }
 
         mPreviews = ViewUtils.$$(belowHeader, R.id.previews);
         mGridLayout = (SimpleGridAutoSpanLayout) ViewUtils.$$(mPreviews, R.id.grid_layout);

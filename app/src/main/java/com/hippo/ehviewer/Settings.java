@@ -61,6 +61,8 @@ public class Settings {
     private static final int DEFAULT_LIST_THUMB_SIZE = 40;
     public static boolean LIST_THUMB_SIZE_INITED = false;
     private static int LIST_THUMB_SIZE = 40;
+    private static final String KEY_SHOW_COMMENTS = "show_gallery_comments";
+    private static final boolean DEFAULT_SHOW_COMMENTS = true;
     public static final String KEY_SHOW_TAG_TRANSLATIONS = "show_tag_translations";
     public static final String KEY_DEFAULT_CATEGORIES = "default_categories";
     public static final int DEFAULT_DEFAULT_CATEGORIES = EhUtils.ALL_CATEGORY;
@@ -546,6 +548,10 @@ public class Settings {
 
     public static boolean getShowGalleryPages() {
         return getBoolean(KEY_SHOW_GALLERY_PAGES, DEFAULT_SHOW_GALLERY_PAGES);
+    }
+
+    public static boolean getShowComments() {
+        return getBoolean(KEY_SHOW_COMMENTS, DEFAULT_SHOW_COMMENTS);
     }
 
     public static boolean getShowTagTranslations() {
