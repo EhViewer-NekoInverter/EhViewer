@@ -474,6 +474,8 @@
     <string name="settings_eh_filter">Block gallery</string>
     <string name="settings_eh_filter_summary">Block gallery by title, uploader and tags</string>
     <string name="settings_eh_cellular_network_warning">Cellular network warning</string>
+    <string name="settings_eh_request_news">Request news page on start</string>
+    <string name="settings_eh_hide_hv_events">Hide HV event Notifications</string>
 
     <string name="settings_read">Read</string>
     <string name="settings_read_screen_rotation">Screen orientation</string>
@@ -717,7 +719,6 @@
     <string name="settings_eh_metered_network_warning">Metered network warning</string>
     <string name="metered_network_warning">Connected to metered networks</string>
     <string name="read_from">Read page %d</string>
-    <string name="settings_request_news_title">Request news page on start</string>
     <string name="copy_trans">Copy translation</string>
     <string name="reset_download_location">Reset to default</string>
     <string name="pick_new_download_location">Pick a new location</string>

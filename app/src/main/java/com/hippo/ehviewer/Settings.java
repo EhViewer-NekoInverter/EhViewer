@@ -70,6 +70,8 @@ public class Settings {
     public static final String KEY_EXCLUDED_LANGUAGES = "excluded_languages";
     private static final String KEY_PREVIEW_NUM = "preview_num";
     private static final int DEFAULT_PREVIEW_NUM = 60;
+    private static final String KEY_HIDE_HV_EVENTS = "hide_hv_events";
+    private static final boolean DEFAULT_HIDE_HV_EVENTS = true;
     /********************
      ****** Privacy and Security
      ********************/
@@ -534,10 +536,6 @@ public class Settings {
         return size;
     }
 
-    public static boolean getRequestNews() {
-        return getBoolean(KEY_REQUEST_NEWS, DEFAULT_REQUEST_NEWS);
-    }
-
     public static boolean getShowJpnTitle() {
         return getBoolean(KEY_SHOW_JPN_TITLE, DEFAULT_SHOW_JPN_TITLE);
     }
@@ -594,6 +592,14 @@ public class Settings {
 
     public static boolean getMeteredNetworkWarning() {
         return getBoolean(KEY_METERED_NETWORK_WARNING, DEFAULT_METERED_NETWORK_WARNING);
+    }
+
+    public static boolean getRequestNews() {
+        return getBoolean(KEY_REQUEST_NEWS, DEFAULT_REQUEST_NEWS);
+    }
+
+    public static boolean getHideHvEvents() {
+        return getBoolean(KEY_HIDE_HV_EVENTS, DEFAULT_HIDE_HV_EVENTS);
     }
 
     public static boolean getAppLinkVerifyTip() {

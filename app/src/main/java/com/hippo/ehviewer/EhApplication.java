@@ -421,6 +421,9 @@ public class EhApplication extends SceneApplication {
     }
 
     public void showEventPane(String html) {
+        if (Settings.getHideHvEvents() && html.contains("You have encountered a monster!")) {
+            return;
+        }
         Activity activity = getTopActivity();
         if (activity != null) {
             activity.runOnUiThread(() -> {
