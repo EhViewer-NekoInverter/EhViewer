@@ -50,7 +50,9 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 本人与 NekoInverter 无任何关系，本仓库仅作自用目的，不开放 issue，~~仅保证最低限度的可用性~~ 看心情
 
-~~可能需要 Android 10 及以上版本系统才能使用，~~ 按理来说 Android 8 以上应该都可以
+~~可能需要 Android 10 及以上版本系统才能使用，~~ 按理来说 Android 8 以上应该都可以，如果闪退就是不兼容，换别的用吧
+
+如果你可以接受 MD3 风格，那 [Overhauled 版](https://github.com/Ehviewer-Overhauled/Ehviewer) [彩E] 应该是最好的选择，但本仓库存在的理由也在于此，我实在不能接受 MD3 🌚🌚
 
 # 下载
 
@@ -62,21 +64,22 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 **EhViewer 各版本链接**
 
-- Hippo Seven 版 [绿E原版，半停更，最新 [1.7.8](https://t.me/ehviewer/2127118)]：[https://github.com/seven332/EhViewer](https://github.com/seven332/EhViewer)
-- NekoInverter 版 [白E，已停更，最新 [1.7.26.4](https://t.me/ehviewer/2029210)]：[https://gitlab.com/NekoInverter/EhViewer](https://gitlab.com/NekoInverter/EhViewer)
-- Overhauled 版 [彩E，推荐使用，活跃]：[https://github.com/Ehviewer-Overhauled/Ehviewer](https://github.com/Ehviewer-Overhauled/Ehviewer)
-- SXJ 版 [绿E新版，活跃]：[https://github.com/xiaojieonly/Ehviewer_CN_SXJ](https://github.com/xiaojieonly/Ehviewer_CN_SXJ)
+- Overhauled 版 [彩E，推荐使用]：[https://github.com/Ehviewer-Overhauled/Ehviewer](https://github.com/Ehviewer-Overhauled/Ehviewer)
+- Epix 版 [绿E MOD，最接近原版]：[https://github.com/exzhawk/EhViewer](https://github.com/exzhawk/EhViewer)
+- SXJ 版 [绿E新版，与其他版本不兼容]：[https://github.com/xiaojieonly/Ehviewer_CN_SXJ](https://github.com/xiaojieonly/Ehviewer_CN_SXJ)
+- ~~Hippo Seven 版 [绿E原版，半停更，最新 [1.7.8](https://t.me/ehviewer/2127118)]：[https://github.com/seven332/EhViewer](https://github.com/seven332/EhViewer)~~
+- ~~NekoInverter 版 [白E，已停更，最新 [1.7.26.4](https://t.me/ehviewer/2029210)]：[https://gitlab.com/NekoInverter/EhViewer](https://gitlab.com/NekoInverter/EhViewer)~~
 
 **其他 E-Hentai Viewer 链接**
 
-- FEhViewer [全平台，活跃]：[https://github.com/honjow/FEhViewer](https://github.com/honjow/FEhViewer)
-- JHenTai [全平台，活跃]：[https://github.com/jiangtian616/JHenTai](https://github.com/jiangtian616/JHenTai)
-- Dai-Hentai [iOS，活跃]：[https://github.com/DaidoujiChen/Dai-Hentai](https://github.com/DaidoujiChen/Dai-Hentai)
-- EhPanda [iOS，活跃]：[https://github.com/EhPanda-Team/EhPanda](https://github.com/EhPanda-Team/EhPanda)
-- Shinsi2 [iOS，一年未更新]：[https://github.com/LonelyRun/Shinsi2](https://github.com/LonelyRun/Shinsi2)
-- E-Viewer [UWP，活跃]：[https://github.com/OpportunityLiu/E-Viewer](https://github.com/OpportunityLiu/E-Viewer)
-- Ehentai-QT [桌面端，活跃]：[https://github.com/tonquer/ehentai-qt](https://github.com/tonquer/ehentai-qt)
-- Violet [移动端，活跃]：[https://github.com/project-violet/violet](https://github.com/project-violet/violet)
+- FEhViewer [全平台]：[https://github.com/honjow/FEhViewer](https://github.com/honjow/FEhViewer)
+- JHenTai [全平台]：[https://github.com/jiangtian616/JHenTai](https://github.com/jiangtian616/JHenTai)
+- Dai-Hentai [iOS]：[https://github.com/DaidoujiChen/Dai-Hentai](https://github.com/DaidoujiChen/Dai-Hentai)
+- EhPanda [iOS]：[https://github.com/EhPanda-Team/EhPanda](https://github.com/EhPanda-Team/EhPanda)
+- Shinsi2 [iOS]：[https://github.com/LonelyRun/Shinsi2](https://github.com/LonelyRun/Shinsi2)
+- E-Viewer [UWP]：[https://github.com/OpportunityLiu/E-Viewer](https://github.com/OpportunityLiu/E-Viewer)
+- Ehentai-QT [桌面端]：[https://github.com/tonquer/ehentai-qt](https://github.com/tonquer/ehentai-qt)
+- Violet [移动端]：[https://github.com/project-violet/violet](https://github.com/project-violet/violet)
 
 **支持 E-Hentai 的聚合阅读器**
 
@@ -121,6 +124,10 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 **我订阅了标签，但是订阅页面提示我没有订阅**
 
 - 打开任意一个画廊后再返回访问订阅页面
+
+**你这个软件怎么报毒啊**
+
+- 啊对对对，有毒，别用
 
 **那么多软件，哪个版本好用**
 
