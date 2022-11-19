@@ -21,7 +21,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.util.Log;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -31,10 +31,15 @@ import androidx.preference.Preference;
 
 import com.hippo.ehviewer.AppConfig;
 import com.hippo.ehviewer.BuildConfig;
+import com.hippo.ehviewer.client.data.FavListUrlBuilder;
+import com.hippo.ehviewer.client.EhClient;
+import com.hippo.ehviewer.client.EhRequest;
+import com.hippo.ehviewer.client.parser.FavoritesParser;
 import com.hippo.ehviewer.EhApplication;
 import com.hippo.ehviewer.EhDB;
 import com.hippo.ehviewer.GetText;
 import com.hippo.ehviewer.R;
+import com.hippo.ehviewer.Settings;
 import com.hippo.ehviewer.ui.scene.BaseScene;
 import com.hippo.util.ExceptionUtils;
 import com.hippo.util.IoThreadPoolExecutor;
@@ -63,6 +68,9 @@ public class AdvancedFragment extends BasePreferenceFragment {
     private static final String KEY_IMPORT_DATA = "import_data";
     private static final String KEY_EXPORT_DATA = "export_data";
     private static final String KEY_OPEN_BY_DEFAULT = "open_by_default";
+    private static final String KEY_BACKUP_FAVORITE = "backup_favorite";
+    private int favTotal;
+    private int favIndex;
 
     ActivityResultLauncher<String> exportLauncher = registerForActivityResult(
             new ActivityResultContracts.CreateDocument(),
@@ -229,6 +237,7 @@ public class AdvancedFragment extends BasePreferenceFragment {
         Preference appLanguage = findPreference(KEY_APP_LANGUAGE);
         Preference importData = findPreference(KEY_IMPORT_DATA);
         Preference exportData = findPreference(KEY_EXPORT_DATA);
+        Preference backupFavorite = findPreference(KEY_BACKUP_FAVORITE);
         Preference openByDefault = findPreference(KEY_OPEN_BY_DEFAULT);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
@@ -241,6 +250,7 @@ public class AdvancedFragment extends BasePreferenceFragment {
         clearMemoryCache.setOnPreferenceClickListener(this);
         importData.setOnPreferenceClickListener(this);
         exportData.setOnPreferenceClickListener(this);
+        backupFavorite.setOnPreferenceClickListener(this);
 
         appLanguage.setOnPreferenceChangeListener(this);
     }
@@ -276,13 +286,84 @@ public class AdvancedFragment extends BasePreferenceFragment {
                 showTip(R.string.error_cant_find_activity, BaseScene.LENGTH_SHORT);
             }
             return true;
+        } else if (KEY_BACKUP_FAVORITE.equals(key)) {
+            try {
+                backupFavorite();
+            } catch (Exception e) {
+                ExceptionUtils.throwIfFatal(e);
+                showTip(R.string.settings_advanced_backup_favorite_failed, BaseScene.LENGTH_SHORT);
+            }
+            return true;
         } else if (KEY_OPEN_BY_DEFAULT.equals(key)) {
-            Intent intent = new Intent(Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS,
+            Intent intent = new Intent(android.provider.Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS,
                     Uri.parse("package:" + requireContext().getPackageName()));
             startActivity(intent);
             return true;
         }
         return false;
+    }
+
+    private void backupFavorite() {
+        EhClient mClient = EhApplication.getEhClient(requireContext());
+        FavListUrlBuilder favListUrlBuilder = new FavListUrlBuilder();
+        favTotal = 0;
+        favIndex = 1;
+
+        EhRequest request = new EhRequest();
+        request.setMethod(EhClient.METHOD_GET_FAVORITES);
+        request.setCallback(new EhClient.Callback() {
+            @Override
+            public void onSuccess(Object result) {
+                try {
+                    FavoritesParser.Result favResult = (FavoritesParser.Result) result;
+                    if (favResult.galleryInfoList.isEmpty()) {
+                        showTip(R.string.settings_advanced_backup_favorite_nothing, BaseScene.LENGTH_SHORT);
+                    } else {
+                        if (favTotal == 0 && favResult.countArray != null) {
+                            int totalFav = 0;
+                            for (int i = 0; i < 10; i++) {
+                                totalFav = totalFav + favResult.countArray[i];
+                            }
+                            favTotal = (int) Math.ceil((double) totalFav / favResult.galleryInfoList.size());
+                        }
+
+                        String status = "(" + favIndex + "/" + favTotal + ")";
+                        showTip(GetText.getString(R.string.settings_advanced_backup_favorite_start, status), BaseScene.LENGTH_SHORT);
+                        Log.d("LocalFavorites", "now backup page " + status);
+                        EhDB.putLocalFavorites(favResult.galleryInfoList);
+
+                        if (favResult.nextPage != null) {
+                            try {
+                                Thread.sleep(Settings.getDownloadDelay());
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            favIndex ++;
+                            favListUrlBuilder.setNext(favResult.nextPage);
+                            request.setArgs(favListUrlBuilder.build(), Settings.getShowJpnTitle());
+                            mClient.execute(request);
+                        } else {
+                            showTip(R.string.settings_advanced_backup_favorite_success, BaseScene.LENGTH_SHORT);
+                        }
+                    }
+                } catch (Exception e) {
+                    showTip(R.string.settings_advanced_backup_favorite_failed, BaseScene.LENGTH_SHORT);
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                showTip(R.string.settings_advanced_backup_favorite_failed, BaseScene.LENGTH_SHORT);
+            }
+
+            @Override
+            public void onCancel() {
+                showTip(R.string.settings_advanced_backup_favorite_failed, BaseScene.LENGTH_SHORT);
+            }
+        });
+
+        request.setArgs(favListUrlBuilder.build(), Settings.getShowJpnTitle());
+        mClient.execute(request);
     }
 
     @Override

@@ -528,6 +528,12 @@
     <string name="settings_advanced_import_data">导入数据</string>
     <string name="settings_advanced_import_data_summary">从外置存储器导入数据</string>
     <string name="settings_advanced_import_data_successfully">导入数据成功</string>
+    <string name="settings_advanced_backup_favorite">备份收藏列表</string>
+    <string name="settings_advanced_backup_favorite_summary">备份云端收藏列表到本地</string>
+    <string name="settings_advanced_backup_favorite_start">正在备份收藏列表 %s</string>
+    <string name="settings_advanced_backup_favorite_nothing">没有可以备份的收藏列表</string>
+    <string name="settings_advanced_backup_favorite_success">备份收藏列表成功</string>
+    <string name="settings_advanced_backup_favorite_failed">备份收藏列表失败</string>
 
     <string name="settings_about">关于</string>
     <string name="settings_about_declaration_summary">EhViewer 与 E-Hentai.org 无任何联系</string>
