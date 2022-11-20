@@ -121,7 +121,7 @@
         app:iconSpaceReserved="false" />
 
     <SwitchPreferenceCompat
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:key="show_jpn_title"
         android:summary="@string/settings_eh_show_jpn_title_summary"
         android:title="@string/settings_eh_show_jpn_title"
@@ -142,7 +142,7 @@
         app:iconSpaceReserved="false" />
 
     <SwitchPreferenceCompat
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:key="show_tag_translations"
         android:summary="@string/settings_eh_show_tag_translations_summary"
         android:title="@string/settings_eh_show_tag_translations"
@@ -171,7 +171,7 @@
         app:iconSpaceReserved="false" />
 
     <SwitchPreferenceCompat
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:key="cellular_network_warning"
         android:title="@string/settings_eh_metered_network_warning"
         app:iconSpaceReserved="false" />
@@ -183,7 +183,7 @@
         app:iconSpaceReserved="false" />
 
     <SwitchPreferenceCompat
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:key="hide_hv_events"
         android:title="@string/settings_eh_hide_hv_events"
         app:iconSpaceReserved="false" />
