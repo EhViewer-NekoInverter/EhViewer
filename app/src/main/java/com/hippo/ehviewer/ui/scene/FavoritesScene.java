@@ -136,7 +136,9 @@ public class FavoritesScene extends BaseScene implements
                 mFabLayout.setSecondaryFabVisibilityAt(3, false);
                 mFabLayout.setSecondaryFabVisibilityAt(4, false);
                 mFabLayout.setSecondaryFabVisibilityAt(5, false);
+                mFabLayout.setSecondaryFabVisibilityAt(6, false);
             }
+            updateJumpFab();
         }
     };
     @Nullable
@@ -295,6 +297,7 @@ public class FavoritesScene extends BaseScene implements
         mSearchBar.setHelper(this);
         mSearchBar.setAllowEmptySearch(false);
         updateSearchBar();
+        updateJumpFab();
         mSearchBarMover = new SearchBarMover(this, mSearchBar, mRecyclerView);
 
         mActionFabDrawable = new AddDeleteDrawable(context, resources.getColor(R.color.primary_drawable_dark));
@@ -387,14 +390,18 @@ public class FavoritesScene extends BaseScene implements
             mSearchBar.setEditTextHint(getString(R.string.favorites_search_bar_hint, favCatName));
         }
 
-        // Hide jump fab on fav cat
-        mFabLayout.setSecondaryFabVisibilityAt(1, favCat != FavListUrlBuilder.FAV_CAT_LOCAL);
-
         mOldFavCat = favCatName;
         mOldKeyword = keyword;
 
         // Save recent fav cat
         Settings.putRecentFavCat(mUrlBuilder.getFavCat());
+    }
+
+    // Hide jump fab on local fav cat
+    private void updateJumpFab() {
+        if (mFabLayout != null && mUrlBuilder != null) {
+            mFabLayout.setSecondaryFabVisibilityAt(1, mUrlBuilder.getFavCat() != FavListUrlBuilder.FAV_CAT_LOCAL);
+        }
     }
 
     @Override
@@ -538,6 +545,7 @@ public class FavoritesScene extends BaseScene implements
             mUrlBuilder.setKeyword(null);
             mUrlBuilder.setFavCat(newFavCat);
             updateSearchBar();
+            updateJumpFab();
             mHelper.refresh();
 
             closeDrawer(Gravity.RIGHT);
@@ -764,7 +772,11 @@ public class FavoritesScene extends BaseScene implements
         }
 
         switch (position) {
-            case 3: { // Download
+            case 3: { // Check all
+                mRecyclerView.checkAll();
+                break;
+            }
+            case 4: { // Download
                 Activity activity = getMainActivity();
                 if (activity != null) {
                     CommonOperations.startDownload(getMainActivity(), mModifyGiList, false);
@@ -775,7 +787,7 @@ public class FavoritesScene extends BaseScene implements
                 }
                 break;
             }
-            case 4: { // Delete
+            case 5: { // Delete
                 DeleteDialogHelper helper = new DeleteDialogHelper();
                 new AlertDialog.Builder(context)
                         .setTitle(R.string.delete_favorites_dialog_title)
@@ -785,7 +797,7 @@ public class FavoritesScene extends BaseScene implements
                         .show();
                 break;
             }
-            case 5: { // Move
+            case 6: { // Move
                 MoveDialogHelper helper = new MoveDialogHelper();
                 // First is local favorite, the other 10 is cloud favorite
                 String[] array = new String[11];
@@ -817,6 +829,7 @@ public class FavoritesScene extends BaseScene implements
             mFabLayout.setSecondaryFabVisibilityAt(3, true);
             mFabLayout.setSecondaryFabVisibilityAt(4, true);
             mFabLayout.setSecondaryFabVisibilityAt(5, true);
+            mFabLayout.setSecondaryFabVisibilityAt(6, true);
         }
     }
 
