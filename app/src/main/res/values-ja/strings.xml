@@ -475,8 +475,6 @@
     <string name="settings_advanced_clear_download_path_cache">ｷﾞｬﾗﾘｰのﾀﾞｳﾝﾛｰﾄﾞﾊﾟｽをｸﾘｱ</string>
     <string name="settings_advanced_clear_download_path_cache_summary">ギャラリー ダウンロード パスは無効なようで、もう一度ダウンロードする必要があると表示されている場合は、ダウンロードパスのキャッシュをクリアしてみてください。</string>
     <string name="settings_advanced_clear_download_path_cache_message">ギャラリーのダウンロード パス キャッシュをクリアしますか？</string>
-    <string name="settings_advanced_clear_memory_cache">メモリキャッシュをクリア</string>
-    <string name="settings_advanced_clear_memory_cache_summary">サムネイルとギャラリー情報のメモリキャッシュをクリア</string>
     <string name="settings_advanced_read_cache_size">閲覧キャッシュのサイズ</string>
     <string name="settings_advanced_app_language_title">アプリ言語（Language）</string>
     <string name="settings_advanced_proxy">プロキシ</string>

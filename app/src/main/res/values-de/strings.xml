@@ -470,8 +470,6 @@
     <string name="settings_advanced_clear_download_path_cache">Downloadpfadzwischenspeicher löschen</string>
     <string name="settings_advanced_clear_download_path_cache_summary">Wenn etwas dem Downloadpfad schiefgelaufen ist, den Downloadpfad reinigen, könnte das Problem lösen.</string>
     <string name="settings_advanced_clear_download_path_cache_message">Downloadpfadszwischenspeicher löschen?</string>
-    <string name="settings_advanced_clear_memory_cache">Zwischenspeicher löschen</string>
-    <string name="settings_advanced_clear_memory_cache_summary">Zwischenspeicher der Miniaturbilder und der Galerie-Info löschen</string>
     <string name="settings_advanced_read_cache_size">Größe des Lesezwischenspeichers</string>
     <string name="settings_advanced_app_language_title">Sprache der App (Language)</string>
     <string name="settings_advanced_proxy">Proxy</string>

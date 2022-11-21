@@ -430,8 +430,6 @@
     <string name="settings_advanced_clear_download_path_cache">다운로드 경로 캐시 삭제</string>
     <string name="settings_advanced_clear_download_path_cache_summary">갤러리 다운로드 경로가 잘못되었을 때 다운로드 경로 캐시를 삭제하면 문제를 해결할 수 있습니다.</string>
     <string name="settings_advanced_clear_download_path_cache_message">다운로드 경로 캐시를 지우시겠습니까?</string>
-    <string name="settings_advanced_clear_memory_cache">메모리 캐시 삭제</string>
-    <string name="settings_advanced_clear_memory_cache_summary">섬네일, 갤러리 정보 메모리 캐시 삭제</string>
     <string name="settings_advanced_read_cache_size">읽기 캐시 크기</string>
     <string name="settings_advanced_app_language_title">앱 언어 (Language)</string>
     <string name="settings_advanced_proxy">프록시</string>

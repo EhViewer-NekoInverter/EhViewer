@@ -54,15 +54,15 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 # 下载
 
+**注：需要 Android 8 及以上版本系统，如果闪退那就是不兼容，换别的用吧**
+
 推荐前往 [Github Actions](https://github.com/EhViewer-NekoInverter/EhViewer/actions) 下载最新 CI 版本，需要登录 Github 账号
 
 也可以前往 [Github Releases](https://github.com/EhViewer-NekoInverter/EhViewer/releases) 下载发行版，无需登录账号，但可能不是最新的
 
-**注：需要 Android 8 及以上版本系统，如果闪退那就是不兼容，换别的用吧**
-
 # 链接
 
-所有 APP 均为第三方，请勿在 E 站评论区提及 APP，维护评论区整洁你我有责，看到相关评论请点个踩再走
+**注：所有 APP 均为第三方，请勿在 E 站评论区提及 APP，维护评论区整洁你我有责，看到相关评论请点个踩再走**
 
 **EhViewer 各版本链接**
 
@@ -104,6 +104,10 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 - 尝试关闭 设置-高级 中的 “内置 hosts.txt” 和 “域名前置”
 
+**无法直连**
+
+- 目前 E 站部分 IP 被墙，域名前置功能可能无效，请关闭后使用梯子访问
+
 **登录界面被跳过**
 
 - 检查是否使用了具有跳广告等功能的软件
@@ -140,7 +144,7 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 **其他问题**
 
-- 请善用搜索引擎，或者去 E-Hentai 论坛提问
+- 请善用搜索引擎
 
 # 截图
 

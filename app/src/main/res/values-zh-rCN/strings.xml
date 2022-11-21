@@ -505,8 +505,6 @@
     <string name="settings_advanced_clear_download_path_cache">清除画廊下载路径缓存</string>
     <string name="settings_advanced_clear_download_path_cache_summary">画廊下载路径可能出错了，导致重新下载。清除画廊下载路径缓存可能解决这个问题。</string>
     <string name="settings_advanced_clear_download_path_cache_message">清除画廊下载路径缓存？</string>
-    <string name="settings_advanced_clear_memory_cache">清理内存缓存</string>
-    <string name="settings_advanced_clear_memory_cache_summary">清理缩略图、画廊信息的内存缓存</string>
     <string name="settings_advanced_read_cache_size">阅读缓存大小</string>
     <string name="settings_advanced_app_language_title">App 界面语言</string>
     <string name="settings_advanced_proxy">代理</string>
@@ -652,7 +650,6 @@
     <string name="delete_search_history">从搜索记录中删除“%s”？</string>
     <string name="read_theme">色彩主题</string>
     <string name="follow_app">跟随应用</string>
-    <string name="settings_advanced_clear_memory_cache_done">完成内存缓存清理</string>
     <string name="action_add_tag">添加标签</string>
     <string name="action_add_tag_tip">添加新标签，用逗号「，」分割</string>
     <string name="error_no_webview">WebView 不可用</string>

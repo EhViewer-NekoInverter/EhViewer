@@ -551,8 +551,6 @@
     <string name="settings_advanced_clear_download_path_cache">Clear download path cache</string>
     <string name="settings_advanced_clear_download_path_cache_summary">Gallery download path might be wrong and it need to be redownloaded. Clearing download path cache might solve the problem.</string>
     <string name="settings_advanced_clear_download_path_cache_message">Clear download path cache?</string>
-    <string name="settings_advanced_clear_memory_cache">Clear memory cache</string>
-    <string name="settings_advanced_clear_memory_cache_summary">Clear thumb, gallery info memory cache</string>
     <string name="settings_advanced_read_cache_size">Read cache size</string>
     <string name="settings_advanced_app_language_title">App language</string>
     <string name="settings_advanced_proxy">Proxy</string>
@@ -717,7 +715,6 @@
     <string name="delete_search_history">Delete \"%s\" from search history?</string>
     <string name="read_theme">Color theme</string>
     <string name="follow_app">Follow app</string>
-    <string name="settings_advanced_clear_memory_cache_done">Memory cache cleaning completed</string>
     <string name="action_add_tag">Add tag</string>
     <string name="action_add_tag_tip">Enter new tags, separated with comma</string>
     <string name="error_no_webview">WebView is not available.</string>
