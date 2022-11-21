@@ -84,7 +84,6 @@
     <string name="error_password_cannot_empty">パスワードを入力してください。</string>
     <string name="skip_signing_in">ログインをスキップ</string>
     <string name="sign_in_failed">ログインに失敗しました。</string>
-    <string name="sign_in_failed_plain">このエラーの原因は、ウェブサイトがメンテ中であることか、または不明なエラーが発生したことである可能性があります。ログインボタンの下でWebでログインするか、Cookieを入力してログインするか、またはログインをスキップしてみてください。ログインをスキップすると「Sad Panda」エラーが発生することがあります。0.6.xバージョンでログインした場合、Cookieでログインすることをおすすめします。</string>
     <string name="press_twice_exit">もう一度押して終了します</string>
     <string name="get_it">了解</string>
     <string name="accept">同意</string>
@@ -401,7 +400,6 @@
     <string name="settings_eh_thumb_resolution_summary">%s。解像度を正しく設定しないと、サムネイルを取得できない場合があります</string>
     <string name="settings_eh_thumb_resolution_auto">自動</string>
     <string name="settings_eh_show_jpn_title">日本語タイトルを表示</string>
-
     <string name="settings_eh_show_gallery_pages">ギャラリーページ数を表示</string>
     <string name="settings_eh_show_gallery_pages_summary">リストにギャラリーのページの数量を表示します</string>
     <string name="settings_eh_filter">ギャラリーをブロック</string>

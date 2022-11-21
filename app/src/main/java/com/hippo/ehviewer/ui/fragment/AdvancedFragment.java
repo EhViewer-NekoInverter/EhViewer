@@ -31,15 +31,15 @@ import androidx.preference.Preference;
 
 import com.hippo.ehviewer.AppConfig;
 import com.hippo.ehviewer.BuildConfig;
-import com.hippo.ehviewer.client.data.FavListUrlBuilder;
-import com.hippo.ehviewer.client.EhClient;
-import com.hippo.ehviewer.client.EhRequest;
-import com.hippo.ehviewer.client.parser.FavoritesParser;
 import com.hippo.ehviewer.EhApplication;
 import com.hippo.ehviewer.EhDB;
 import com.hippo.ehviewer.GetText;
 import com.hippo.ehviewer.R;
 import com.hippo.ehviewer.Settings;
+import com.hippo.ehviewer.client.EhClient;
+import com.hippo.ehviewer.client.EhRequest;
+import com.hippo.ehviewer.client.data.FavListUrlBuilder;
+import com.hippo.ehviewer.client.parser.FavoritesParser;
 import com.hippo.ehviewer.ui.scene.BaseScene;
 import com.hippo.util.ExceptionUtils;
 import com.hippo.util.IoThreadPoolExecutor;
@@ -69,8 +69,6 @@ public class AdvancedFragment extends BasePreferenceFragment {
     private static final String KEY_EXPORT_DATA = "export_data";
     private static final String KEY_OPEN_BY_DEFAULT = "open_by_default";
     private static final String KEY_BACKUP_FAVORITE = "backup_favorite";
-    private int favTotal;
-    private int favIndex;
 
     ActivityResultLauncher<String> exportLauncher = registerForActivityResult(
             new ActivityResultContracts.CreateDocument(),
@@ -295,14 +293,22 @@ public class AdvancedFragment extends BasePreferenceFragment {
             }
             return true;
         } else if (KEY_OPEN_BY_DEFAULT.equals(key)) {
-            Intent intent = new Intent(android.provider.Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS,
-                    Uri.parse("package:" + requireContext().getPackageName()));
-            startActivity(intent);
+            try {
+                Intent intent = new Intent(android.provider.Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS,
+                        Uri.parse("package:" + requireContext().getPackageName()));
+                startActivity(intent);
+            } catch (Throwable t) {
+                Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                        Uri.parse("package:" + requireContext().getPackageName()));
+                startActivity(intent);
+            }
             return true;
         }
         return false;
     }
 
+    private int favTotal;
+    private int favIndex;
     private void backupFavorite() {
         EhClient mClient = EhApplication.getEhClient(requireContext());
         FavListUrlBuilder favListUrlBuilder = new FavListUrlBuilder();
@@ -338,7 +344,7 @@ public class AdvancedFragment extends BasePreferenceFragment {
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
-                            favIndex ++;
+                            favIndex++;
                             favListUrlBuilder.setNext(favResult.nextPage);
                             request.setArgs(favListUrlBuilder.build(), Settings.getShowJpnTitle());
                             mClient.execute(request);

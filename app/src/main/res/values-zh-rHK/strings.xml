@@ -205,6 +205,8 @@
     <string name="filter_the_uploader">遮蔽上傳者“%s”？</string>
     <string name="filter_the_tag">遮蔽標籤“%s”？</string>
     <string name="filter_added">已新增遮蔽項</string>
+    <string name="newer_version_avaliable">此畫廊有新版本可用。</string>
+    <string name="newer_version_title">%1$s, 添加於 %2$s</string>
 
     <!-- Rating -->
     <string name="rating10">根本把持不住</string>
@@ -319,6 +321,7 @@
     <string name="rename_label_title">重命名標籤</string>
     <string name="delete_label_title">刪除標籤</string>
     <string name="delete_label_message">刪除“%s”？</string>
+    <string name="rename_label">重命名</string>
 
     <!-- History -->
     <string name="no_history">這裏是閲讀歷史</string>
@@ -343,6 +346,7 @@
     <string name="set_pattern_protection">設置圖案保護</string>
     <string name="set_pattern_protection_tip">繪製圖案來設置圖案保護\n留空來取消圖案保護</string>
     <string name="set">設置</string>
+    <string name="enable_biometric">允許使用生物特徵解鎖</string>
 
     <!-- UConfig Activity -->
     <string name="u_config">EHentai 設置</string>
@@ -370,6 +374,7 @@
     <string name="page_menu_refresh">@string/refresh</string>
     <string name="page_menu_share">@string/share</string>
     <string name="page_menu_save">保存</string>
+    <string name="page_menu_save_to">保存到…</string>
     <string name="page_menu_add_bookmark">添加書籤</string>
     <string name="gallery_menu_title">菜單</string>
     <string name="share_image">分享圖片</string>
@@ -401,6 +406,7 @@
     <string name="settings_eh_detail_size">詳情大小</string>
     <string name="settings_eh_detail_size_long">長</string>
     <string name="settings_eh_detail_size_short">短</string>
+    <string name="settings_eh_list_tile_thumb_size">詳情模式下縮略圖大小</string>
     <string name="settings_eh_thumb_size">縮略圖大小</string>
     <string name="settings_eh_thumb_size_large">大</string>
     <string name="settings_eh_thumb_size_middle">中</string>
@@ -412,19 +418,25 @@
     <string name="settings_eh_show_jpn_title_summary">需同時在 EHentai 網站設置中啟用 Japanese Title</string>
     <string name="settings_eh_show_gallery_pages">顯示畫廊頁數</string>
     <string name="settings_eh_show_gallery_pages_summary">在畫廊列表中顯示頁數</string>
+    <string name="settings_eh_show_gallery_comments">顯示畫廊評論</string>
+    <string name="settings_eh_show_gallery_comments_summary">在畫廊詳情頁中顯示評論</string>
     <string name="settings_eh_show_tag_translations">顯示標籤翻譯</string>
     <string name="settings_eh_show_tag_translations_summary">顯示翻譯後的標籤而非原始文字（需花費時間來下載數據文件）</string>
     <string name="settings_eh_tag_translations_source">補充翻譯（由 EhTagTranslation 提供）</string>
     <string name="settings_eh_tag_translations_source_url">https://github.com/EhTagTranslation/Editor/wiki</string>
+    <string name="settings_eh_preview_num">畫廊詳情頁預覽圖最大數量</string>
     <string name="settings_eh_filter">屏蔽畫廊</string>
     <string name="settings_eh_filter_summary">根據標題、上傳者、標籤屏蔽畫廊</string>
     <string name="settings_eh_cellular_network_warning">移動網絡警告</string>
+    <string name="settings_eh_request_news">啟動時請求新聞頁面</string>
+    <string name="settings_eh_hide_hv_events">隱藏 HV 事件通知</string>
 
     <string name="settings_read">閲讀</string>
     <string name="settings_read_screen_rotation">屏幕方向</string>
     <string name="settings_read_screen_rotation_default">系統默認</string>
     <string name="settings_read_screen_rotation_portrait">豎屏</string>
     <string name="settings_read_screen_rotation_landscape">橫屏</string>
+    <string name="settings_read_screen_rotation_sensor">自動旋轉</string>
     <string name="settings_read_reading_direction">閲讀方向</string>
     <string name="settings_read_reading_direction_left_to_right">從左至右</string>
     <string name="settings_read_reading_direction_right_to_Left">從右至左</string>
@@ -450,6 +462,7 @@
     <string name="settings_read_reading_fullscreen">全屏</string>
     <string name="settings_read_custom_screen_lightness">自定義屏幕亮度</string>
     <string name="settings_read_screen_lightness">屏幕亮度</string>
+    <string name="settings_read_reverse_volume">翻轉音量鍵</string>
 
     <string name="settings_download">下載</string>
     <string name="settings_download_download_location">下載路徑</string>
@@ -460,6 +473,8 @@
     <string name="settings_download_media_scan_summary_off">大多數圖庫應用將不會顯示下載目錄中的圖片</string>
     <string name="settings_download_multi_thread_download">下載線程數</string>
     <string name="settings_download_multi_thread_download_summary">最多同時下載 %s 張圖片</string>
+    <string name="settings_download_download_delay">下載延時</string>
+    <string name="settings_download_download_delay_summary">每次下載延時 %s 毫秒</string>
     <string name="settings_download_preload_image">預載圖片</string>
     <string name="settings_download_preload_image_summary">向後預載 %s 張圖片</string>
     <string name="settings_download_image_resolution">圖片分辨率</string>
@@ -501,6 +516,8 @@
     <string name="settings_advanced_built_in_hosts_summary">應用提供的主機到IP的映射\n可被自定義 hosts.txt 覆蓋</string>
     <string name="settings_advanced_custom_hosts_title">自定義 hosts.txt</string>
     <string name="settings_advanced_custom_hosts_summary">將主機名稱映射到相應的IP地址\n可覆蓋內置 hosts.txt</string>
+    <string name="settings_advanced_domain_fronting_title">域名前置</string>
+    <string name="settings_advanced_domain_fronting_summary">繞過 SNI 封鎖</string>
     <string name="settings_privacy_pattern_protection_title">圖案保護</string>
     <string name="settings_privacy_pattern_protection_not_set">未設置圖案保護</string>
     <string name="settings_privacy_pattern_protection_set">已設置圖案保護</string>
@@ -511,6 +528,12 @@
     <string name="settings_advanced_import_data">導入數據</string>
     <string name="settings_advanced_import_data_summary">從外置存儲器導入數據</string>
     <string name="settings_advanced_import_data_successfully">導入數據成功</string>
+    <string name="settings_advanced_backup_favorite">備份收藏列表</string>
+    <string name="settings_advanced_backup_favorite_summary">備份雲端收藏列表到本地</string>
+    <string name="settings_advanced_backup_favorite_start">正在備份收藏列表 %s</string>
+    <string name="settings_advanced_backup_favorite_nothing">沒有可以備份的收藏列表</string>
+    <string name="settings_advanced_backup_favorite_success">備份收藏列表成功</string>
+    <string name="settings_advanced_backup_favorite_failed">備份收藏列表失敗</string>
 
     <string name="settings_about">關於</string>
     <string name="settings_about_declaration_summary">EhViewer 與 E-Hentai.org 無任何聯繫</string>
@@ -607,6 +630,42 @@
     <string name="settings_privacy_secure">不允許荧幕抓取</string>
     <string name="settings_privacy_secure_summary">啟用後，將不能截取該應用的螢幕截圖，同時，將不會在系統任務切換器中顯示該應用的內容預覽，重新啟動應用以生效此更改</string>
 
+    <string name="download_service">下載服務</string>
     <string name="favorite_name">收藏畫廊</string>
 
+    <string name="black_dark_theme">純黑深色主題</string>
+    <string name="download_filter">過濾</string>
+    <string name="download_all">全部</string>
+    <string name="download_start_all_reversed">全部開始（倒序）</string>
+
+    <string name="no_browser_installed">請安裝一個瀏覽器。</string>
+    <string name="toplist_alltime">有史以來</string>
+    <string name="toplist_pastyear">過去一年</string>
+    <string name="toplist_pastmonth">過去一月</string>
+    <string name="toplist_yesterday">過去一天</string>
+    <string name="toplist">排行</string>
+    <string name="tag_vote_down">不，這不是</string>
+    <string name="tag_vote_up">是的，這很正確</string>
+    <string name="tag_vote_successfully">投票成功</string>
+    <string name="from_clipboard">從剪貼板導入</string>
+    <string name="from_clipboard_error">未在剪貼板中發現 Cookies。</string>
+    <string name="delete_search_history">從搜索記錄中刪除「%s」？</string>
+    <string name="read_theme">色彩主題</string>
+    <string name="follow_app">跟隨應用</string>
+    <string name="settings_advanced_clear_memory_cache_done">完成內存緩存清理</string>
+    <string name="action_add_tag">添加標籤</string>
+    <string name="action_add_tag_tip">添加新標籤，用逗號「，」分割</string>
+    <string name="error_no_webview">WebView 不可用</string>
+    <string name="comment_user_uploader">%s （上傳者）</string>
+    <string name="settings_eh_metered_network_warning">流量計費網絡警告</string>
+    <string name="metered_network_warning">正在使用流量計費網絡</string>
+    <string name="read_from">從第 %d 頁閱讀</string>
+    <string name="copy_trans">複製翻譯</string>
+    <string name="reset_download_location">恢復默認路徑</string>
+    <string name="pick_new_download_location">選擇新路徑</string>
+    <string name="dont_show_again">不再顯示</string>
+    <string name="open_settings">打開設置</string>
+    <string name="app_link_not_verified_message">對於 Android 12 及更新的版本，您需要手動添加連結到已驗證連結才能在 EhViewer 中打開 E-Hentai 連結。</string>
+    <string name="app_link_not_verified_title">應用連結未驗證</string>
+    <string name="open_by_default">默認打開</string>
 </resources>

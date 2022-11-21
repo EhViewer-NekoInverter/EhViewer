@@ -639,10 +639,10 @@
     <string name="download_start_all_reversed">全部开始（倒序）</string>
 
     <string name="no_browser_installed">请安装一个浏览器。</string>
-    <string name="toplist_alltime">从始至终</string>
+    <string name="toplist_alltime">有史以来</string>
     <string name="toplist_pastyear">过去一年</string>
-    <string name="toplist_pastmonth">过去一个月</string>
-    <string name="toplist_yesterday">昨日</string>
+    <string name="toplist_pastmonth">过去一月</string>
+    <string name="toplist_yesterday">过去一天</string>
     <string name="toplist">排行</string>
     <string name="tag_vote_down">不，这不是</string>
     <string name="tag_vote_up">是的，这很正确</string>

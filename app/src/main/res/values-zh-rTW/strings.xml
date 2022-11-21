@@ -152,7 +152,7 @@
     <string name="delete_quick_search_message">刪除“%s”嗎？</string>
     <string name="no_quick_search">快速搜尋會顯示在這裡</string>
     <string name="add_quick_search_tip">圖庫列表的狀態將被儲存為快速搜尋。如果你想儲存搜尋面板的狀態，請先進行搜尋。</string>
-    <string name="readme">ReadMe</string>
+    <string name="readme">README</string>
     <string name="image_search_not_quick_search">無法將圖片搜尋加入快速搜尋</string>
     <string name="duplicate_quick_search">已存在相同的快速搜尋，名稱為“%s”。</string>
     <string name="duplicate_name">已經由重複的名稱了</string>
@@ -406,6 +406,7 @@
     <string name="settings_eh_detail_size">詳細大小</string>
     <string name="settings_eh_detail_size_long">長</string>
     <string name="settings_eh_detail_size_short">短</string>
+    <string name="settings_eh_list_tile_thumb_size">詳細資料模式下縮圖大小</string>
     <string name="settings_eh_thumb_size">縮圖大小</string>
     <string name="settings_eh_thumb_size_large">大</string>
     <string name="settings_eh_thumb_size_middle">中</string>
@@ -417,14 +418,18 @@
     <string name="settings_eh_show_jpn_title_summary">需同時在 EHentai 網站設定中啟用 Japanese Title</string>
     <string name="settings_eh_show_gallery_pages">顯示圖庫頁數</string>
     <string name="settings_eh_show_gallery_pages_summary">在圖庫列表中顯示頁數</string>
+    <string name="settings_eh_show_gallery_comments">顯示圖庫評論</string>
+    <string name="settings_eh_show_gallery_comments_summary">在圖庫詳情頁中顯示評論</string>
     <string name="settings_eh_show_tag_translations">顯示標籤翻譯</string>
     <string name="settings_eh_show_tag_translations_summary">顯示翻譯後的標籤而非原始文字（需花費時間來下載資料檔案）</string>
     <string name="settings_eh_tag_translations_source">補充翻譯（由 EhTagTranslation 提供）</string>
     <string name="settings_eh_tag_translations_source_url">https://github.com/EhTagTranslation/Editor/wiki</string>
+    <string name="settings_eh_preview_num">圖庫詳情頁預覽圖最大數量</string>
     <string name="settings_eh_filter">遮蔽圖庫</string>
     <string name="settings_eh_filter_summary">根據標題、上傳者、標籤遮蔽圖庫</string>
     <string name="settings_eh_cellular_network_warning">行動數據警告</string>
     <string name="settings_eh_request_news">啟動時請求新聞頁面</string>
+    <string name="settings_eh_hide_hv_events">隱藏 HV 事件通知</string>
 
     <string name="settings_read">閱讀</string>
     <string name="settings_read_screen_rotation">螢幕方向</string>
@@ -523,6 +528,12 @@
     <string name="settings_advanced_import_data">匯入檔案</string>
     <string name="settings_advanced_import_data_summary">從之前儲存的檔案匯入</string>
     <string name="settings_advanced_import_data_successfully">成功將資料匯入</string>
+    <string name="settings_advanced_backup_favorite">備份收藏列表</string>
+    <string name="settings_advanced_backup_favorite_summary">備份雲端收藏列表到本地</string>
+    <string name="settings_advanced_backup_favorite_start">正在備份收藏列表 %s</string>
+    <string name="settings_advanced_backup_favorite_nothing">沒有可以備份的收藏列表</string>
+    <string name="settings_advanced_backup_favorite_success">備份收藏列表成功</string>
+    <string name="settings_advanced_backup_favorite_failed">備份收藏列表失敗</string>
 
     <string name="settings_about">關於</string>
     <string name="settings_about_declaration_summary">EhViewer 與 E-Hentai.org 無任何聯繫</string>
@@ -628,10 +639,10 @@
     <string name="download_start_all_reversed">全部開始（倒序）</string>
 
     <string name="no_browser_installed">請安裝一個瀏覽器。</string>
-    <string name="toplist_alltime">從始至終</string>
+    <string name="toplist_alltime">有史以來</string>
     <string name="toplist_pastyear">過去一年</string>
-    <string name="toplist_pastmonth">過去一個月</string>
-    <string name="toplist_yesterday">昨日</string>
+    <string name="toplist_pastmonth">過去一月</string>
+    <string name="toplist_yesterday">過去一天</string>
     <string name="toplist">排行</string>
     <string name="tag_vote_down">不，這不是</string>
     <string name="tag_vote_up">是的，這很正確</string>
