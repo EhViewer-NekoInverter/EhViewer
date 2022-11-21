@@ -85,7 +85,6 @@
     <string name="error_password_cannot_empty">Gibt das Passwort ein</string>
     <string name="skip_signing_in">Anmeldung überspringen</string>
     <string name="sign_in_failed">Anmeldung fehlgeschlagen</string>
-    <string name="sign_in_failed_plain">Der Fehler könnte wegen des Updates der Webseite aufgetretet werden. Versuche, dich anzumelden, indem du WebView benutzt oder Cookie eingeben, oder überspringe die Anmeldung mit der Taste unter ANMELDEN-Taste. Du könntest aber den Sad Panda sehen, wenn du dich nicht anmelden. Falls du dich mit Version unter 0.6.x anmeldetest, versuche, dich mit Cookie anzumelden.</string>
     <string name="press_twice_exit">Darauf erneut antippen, um die App zu beenden</string>
     <string name="get_it">Verstanden</string>
     <string name="accept">Akzeptieren</string>
