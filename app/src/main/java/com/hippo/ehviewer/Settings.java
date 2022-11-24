@@ -263,13 +263,6 @@ public class Settings {
 
     private static void fixDefaultValue(Context context) {
         if ("CN".equals(Locale.getDefault().getCountry())) {
-            // Enable domain fronting if the country is CN
-            if (!sSettingsPre.contains(KEY_BUILT_IN_HOSTS)) {
-                putBuiltInHosts(true);
-            }
-            if (!sSettingsPre.contains(KEY_DOMAIN_FRONTING)) {
-                putDF(true);
-            }
             // Enable show tag translations if the country is CN
             if (!sSettingsPre.contains(KEY_SHOW_TAG_TRANSLATIONS)) {
                 putShowTagTranslations(true);
