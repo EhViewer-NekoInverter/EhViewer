@@ -68,7 +68,7 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 - Overhauled 版 [彩E，推荐使用]：[https://github.com/Ehviewer-Overhauled/Ehviewer](https://github.com/Ehviewer-Overhauled/Ehviewer)
 - Epix 版 [绿E MOD，最接近原版]：[https://github.com/exzhawk/EhViewer](https://github.com/exzhawk/EhViewer)
-- SXJ 版 [绿E新版，与其他版本不兼容]：[https://github.com/xiaojieonly/Ehviewer_CN_SXJ](https://github.com/xiaojieonly/Ehviewer_CN_SXJ)
+- SXJ 版 [绿E新版，不推荐]：[https://github.com/xiaojieonly/Ehviewer_CN_SXJ](https://github.com/xiaojieonly/Ehviewer_CN_SXJ)
 - ~~Hippo Seven 版 [绿E原版，半停更，最新 [1.7.8](https://t.me/ehviewer/2127118)]：[https://github.com/seven332/EhViewer](https://github.com/seven332/EhViewer)~~
 - ~~NekoInverter 版 [白E，已停更，最新 [1.7.26.4](https://t.me/ehviewer/2029210)]：[https://gitlab.com/NekoInverter/EhViewer](https://gitlab.com/NekoInverter/EhViewer)~~
 
@@ -102,7 +102,7 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 **挂梯子后打不开**
 
-- 尝试关闭 设置-高级 中的 “内置 hosts.txt” 和 “域名前置”
+- 尝试关闭 设置-高级 中的 “域名前置”
 
 **无法直连**
 
@@ -144,6 +144,7 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 **其他问题**
 
+- 建议阅读 [https://nicebowl.fun/11](https://nicebowl.fun/11) ([Web Archive](http://web.archive.org/web/20221125053020/https://nicebowl.fun/11))
 - 请善用搜索引擎
 
 # 截图

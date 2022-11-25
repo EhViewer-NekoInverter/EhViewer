@@ -77,9 +77,9 @@ public class Settings {
     private static final String KEY_PREVIEW_NUM = "preview_num";
     private static final int DEFAULT_PREVIEW_NUM = 60;
     private static final String KEY_METERED_NETWORK_WARNING = "cellular_network_warning";
-    private static final boolean DEFAULT_METERED_NETWORK_WARNING = true;
+    private static final boolean DEFAULT_METERED_NETWORK_WARNING = false;
     private static final String KEY_REQUEST_NEWS = "request_news";
-    private static final boolean DEFAULT_REQUEST_NEWS = true;
+    private static final boolean DEFAULT_REQUEST_NEWS = false;
     private static final String KEY_HIDE_HV_EVENTS = "hide_hv_events";
     private static final boolean DEFAULT_HIDE_HV_EVENTS = false;
     /********************
@@ -263,6 +263,10 @@ public class Settings {
 
     private static void fixDefaultValue(Context context) {
         if ("CN".equals(Locale.getDefault().getCountry())) {
+            // Enable built in hosts if the country is CN
+            if (!sSettingsPre.contains(KEY_BUILT_IN_HOSTS)) {
+                putBuiltInHosts(true);
+            }
             // Enable show tag translations if the country is CN
             if (!sSettingsPre.contains(KEY_SHOW_TAG_TRANSLATIONS)) {
                 putShowTagTranslations(true);
