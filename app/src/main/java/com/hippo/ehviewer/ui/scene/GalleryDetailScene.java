@@ -1555,17 +1555,6 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
 
     @Override
     public void onBackPressed() {
-        if (mViewTransition != null && mThumb != null &&
-                mViewTransition.getShownViewIndex() == 0 && mThumb.isShown()) {
-            int[] location = new int[2];
-            mThumb.getLocationInWindow(location);
-            // Only show transaction when thumb can be seen
-            if (location[1] + mThumb.getHeight() > 0) {
-                setTransitionName();
-                finish(new ExitTransaction(mThumb));
-                return;
-            }
-        }
         finish();
     }
 
@@ -1725,38 +1714,6 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
     @IntDef({STATE_INIT, STATE_NORMAL, STATE_REFRESH, STATE_REFRESH_HEADER, STATE_FAILED})
     @Retention(RetentionPolicy.SOURCE)
     private @interface State {
-    }
-
-    private static class ExitTransaction implements TransitionHelper {
-
-        private final View mThumb;
-
-        public ExitTransaction(View thumb) {
-            mThumb = thumb;
-        }
-
-        @Override
-        public boolean onTransition(Context context,
-                                    FragmentTransaction transaction, Fragment exit, Fragment enter) {
-            if (!(enter instanceof GalleryListScene) && !(enter instanceof DownloadsScene) &&
-                    !(enter instanceof FavoritesScene) && !(enter instanceof HistoryScene)) {
-                return false;
-            }
-
-            String transitionName = ViewCompat.getTransitionName(mThumb);
-            if (transitionName != null) {
-                exit.setSharedElementReturnTransition(
-                        TransitionInflater.from(context).inflateTransition(R.transition.trans_move));
-                exit.setExitTransition(
-                        TransitionInflater.from(context).inflateTransition(R.transition.trans_fade));
-                enter.setSharedElementEnterTransition(
-                        TransitionInflater.from(context).inflateTransition(R.transition.trans_move));
-                enter.setEnterTransition(
-                        TransitionInflater.from(context).inflateTransition(R.transition.trans_fade));
-                transaction.addSharedElement(mThumb, transitionName);
-            }
-            return true;
-        }
     }
 
     private static class GetGalleryDetailListener extends EhCallback<GalleryDetailScene, GalleryDetail> {
