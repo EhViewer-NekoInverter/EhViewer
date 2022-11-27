@@ -7,10 +7,10 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hippo.ehviewer.ui.SettingsActivity;
-import com.takisoft.preferencex.PreferenceFragmentCompat;
 
 import rikka.recyclerview.RecyclerViewKt;
 
@@ -38,7 +38,7 @@ public class BasePreferenceFragment extends PreferenceFragmentCompat
     }
 
     @Override
-    public void onCreatePreferencesFix(@Nullable Bundle savedInstanceState, String rootKey) {
+    public void onCreatePreferences(@Nullable Bundle savedInstanceState, String rootKey) {
 
     }
 
