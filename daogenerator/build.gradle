@@ -22,7 +22,6 @@ task executeDaoGenerator(type:JavaExec) {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'org.greenrobot:greendao-generator:3.3.0'
 
     def roaster_version = "2.28.0.Final"
@@ -31,6 +30,6 @@ dependencies {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
