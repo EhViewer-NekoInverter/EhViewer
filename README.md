@@ -1,6 +1,6 @@
 <h1 align="center">
-  <img src="app/src/main/ic_launcher-playstore.png" width="150">
-  <br>EhViewer-NekoInverter [DEPRECATED]<br>
+  <img src="art/launcher_icon-web.png" width="150">
+  <br>EhViewer-NekoInverter<br>
 </h1>
 
 <p align="center">
