@@ -17,7 +17,7 @@ public class PrivacyFragment extends BasePreferenceFragment {
     private static final String KEY_PATTERN_PROTECTION = "pattern_protection";
 
     @Override
-    public void onCreatePreferencesFix(@Nullable Bundle savedInstanceState, String rootKey) {
+    public void onCreatePreferences(@Nullable Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.privacy_settings);
     }
 

@@ -14,7 +14,7 @@
   ~ limitations under the License.
   -->
 
-<rikka.widget.borderview.BorderNestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -212,4 +212,4 @@
             android:max="200" />
 
     </LinearLayout>
-</rikka.widget.borderview.BorderNestedScrollView>
+</androidx.core.widget.NestedScrollView>

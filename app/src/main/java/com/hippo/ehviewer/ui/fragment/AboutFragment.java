@@ -17,12 +17,12 @@
 package com.hippo.ehviewer.ui.fragment;
 
 import android.os.Bundle;
+import android.text.Html;
 
 import androidx.annotation.Nullable;
 import androidx.preference.Preference;
 
 import com.hippo.ehviewer.R;
-import com.hippo.text.Html;
 
 public class AboutFragment extends BasePreferenceFragment {
 
@@ -30,10 +30,10 @@ public class AboutFragment extends BasePreferenceFragment {
     private static final String KEY_CHECK_FOR_UPDATES = "check_for_updates";
 
     @Override
-    public void onCreatePreferencesFix(@Nullable Bundle savedInstanceState, String rootKey) {
+    public void onCreatePreferences(@Nullable Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.about_settings);
         Preference author = findPreference(KEY_AUTHOR);
-        author.setSummary(Html.fromHtml(getString(R.string.settings_about_author_summary).replace('$', '@')));
+        author.setSummary(Html.fromHtml(getString(R.string.settings_about_author_summary).replace('$', '@'), Html.FROM_HTML_MODE_LEGACY));
     }
 
     @Override
