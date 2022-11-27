@@ -155,20 +155,26 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 本项目受到了诸多开源项目的帮助
 
-- [AOSP](http://source.android.com/)
+- [AOSP](https://source.android.com/)
 - [android-advancedrecyclerview](https://github.com/h6ah4i/android-advancedrecyclerview)
+- [material-components-android](https://github.com/material-components/material-components-android)
+- [material-design-icons](https://github.com/google/material-design-icons)
 - [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/)
 - [apng](http://apng.sourceforge.net/)
+- [FullDraggableDrawer](https://github.com/PureWriter/FullDraggableDrawer)
 - [giflib](http://giflib.sourceforge.net)
 - [greenDAO](https://github.com/greenrobot/greenDAO)
 - [jsoup](https://github.com/jhy/jsoup)
 - [libjpeg-turbo](http://libjpeg-turbo.virtualgl.org/)
 - [libpng](http://www.libpng.org/pub/png/libpng.html)
 - [okhttp](https://github.com/square/okhttp)
+- [RikkaX](https://github.com/RikkaApps/RikkaX)
 - [roaster](https://github.com/forge/roaster)
-- [ShowcaseView](https://github.com/amlcurran/ShowcaseView)
-- [Slabo](https://github.com/TiroTypeworks/Slabo)
-- [TagSoup](http://home.ccil.org/~cowan/tagsoup/)
+- [TapTargetView](https://github.com/KeepSafe/TapTargetView)
+
+标签翻译数据
+
+- [EhTagTranslation](https://github.com/EhTagTranslation/Database)
 
 # 许可证
 
