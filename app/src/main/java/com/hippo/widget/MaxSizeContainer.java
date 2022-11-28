@@ -56,13 +56,12 @@ public class MaxSizeContainer extends ViewGroup {
         int mode = MeasureSpec.getMode(measureSpec);
 
         switch (mode) {
-            case MeasureSpec.AT_MOST:
-                size = Math.min(size, max);
-                break;
-            case MeasureSpec.UNSPECIFIED:
+            case MeasureSpec.AT_MOST -> size = Math.min(size, max);
+            case MeasureSpec.UNSPECIFIED -> {
                 size = max;
                 mode = MeasureSpec.AT_MOST;
-                break;
+            }
+            case MeasureSpec.EXACTLY -> {}
         }
         return MeasureSpec.makeMeasureSpec(size, mode);
     }

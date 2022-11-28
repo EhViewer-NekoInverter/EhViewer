@@ -163,11 +163,6 @@ public final class GalleryListScene extends BaseScene
     private EhClient mClient;
     @Nullable
     private ListUrlBuilder mUrlBuilder;
-    /*---------------
-     View life cycle
-     ---------------*/
-    @Nullable
-    private ContentLayout mContentLayout;
     @Nullable
     private EasyRecyclerView mRecyclerView;
     @Nullable
@@ -271,17 +266,13 @@ public final class GalleryListScene extends BaseScene
         } else if (ListUrlBuilder.MODE_WHATS_HOT == urlBuilder.getMode()) {
             return resources.getString(R.string.whats_hot);
         } else if (ListUrlBuilder.MODE_TOPLIST == urlBuilder.getMode()) {
-            switch (urlBuilder.getKeyword()) {
-                case "11":
-                    return resources.getString(R.string.toplist_alltime);
-                case "12":
-                    return resources.getString(R.string.toplist_pastyear);
-                case "13":
-                    return resources.getString(R.string.toplist_pastmonth);
-                case "15":
-                    return resources.getString(R.string.toplist_yesterday);
-            }
-            return null;
+            return switch (urlBuilder.getKeyword()) {
+                case "11" -> resources.getString(R.string.toplist_alltime);
+                case "12" -> resources.getString(R.string.toplist_pastyear);
+                case "13" -> resources.getString(R.string.toplist_pastmonth);
+                case "15" -> resources.getString(R.string.toplist_yesterday);
+                default -> null;
+            };
         } else if (!TextUtils.isEmpty(keyword)) {
             return keyword;
         } else if (MathUtils.hammingWeight(category) == 1) {
@@ -346,6 +337,7 @@ public final class GalleryListScene extends BaseScene
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -571,7 +563,10 @@ public final class GalleryListScene extends BaseScene
         mShowActionFab = true;
 
         View mainLayout = ViewUtils.$$(view, R.id.main_layout);
-        mContentLayout = (ContentLayout) ViewUtils.$$(mainLayout, R.id.content_layout);
+        /*---------------
+     View life cycle
+     ---------------*/
+        ContentLayout mContentLayout = (ContentLayout) ViewUtils.$$(mainLayout, R.id.content_layout);
         mRecyclerView = mContentLayout.getRecyclerView();
         FastScroller fastScroller = mContentLayout.getFastScroller();
         mSearchLayout = (SearchLayout) ViewUtils.$$(mainLayout, R.id.search_layout);
@@ -875,24 +870,17 @@ public final class GalleryListScene extends BaseScene
             return;
         }
 
-        boolean handle;
+        boolean handle = false;
         switch (mState) {
-            default:
-            case STATE_NORMAL:
-                handle = checkDoubleClickExit();
-                break;
-            case STATE_SIMPLE_SEARCH:
+            case STATE_NORMAL -> handle = checkDoubleClickExit();
+            case STATE_SIMPLE_SEARCH, STATE_SEARCH -> {
                 setState(STATE_NORMAL);
                 handle = true;
-                break;
-            case STATE_SEARCH:
-                setState(STATE_NORMAL);
-                handle = true;
-                break;
-            case STATE_SEARCH_SHOW_LIST:
+            }
+            case STATE_SEARCH_SHOW_LIST -> {
                 setState(STATE_SEARCH);
                 handle = true;
-                break;
+            }
         }
 
         if (!handle) {
@@ -979,7 +967,7 @@ public final class GalleryListScene extends BaseScene
             long fromDate = local.atZone(ZoneId.ofOffset("UTC", ZoneOffset.UTC)).toInstant().toEpochMilli();
             long toDate = MaterialDatePicker.todayInUtcMilliseconds();
 
-            ArrayList listValidators = new ArrayList<>();
+            ArrayList<CalendarConstraints.DateValidator> listValidators = new ArrayList<>();
             listValidators.add(DateValidatorPointForward.from(fromDate));
             listValidators.add(DateValidatorPointBackward.before(toDate));
 
@@ -994,9 +982,7 @@ public final class GalleryListScene extends BaseScene
                     .setSelection(toDate)
                     .build();
             datePicker.show(requireActivity().getSupportFragmentManager(), "date-picker");
-            datePicker.addOnPositiveButtonClickListener(v -> {
-                mHelper.goTo(v);
-            });
+            datePicker.addOnPositiveButtonClickListener(v -> mHelper.goTo(v));
         }
     }
 
@@ -1500,7 +1486,7 @@ public final class GalleryListScene extends BaseScene
                     : R.string.gallery_list_empty_hit);
             mHelper.setEmptyString(emptyString);
 
-            int pages = 0;
+            int pages;
             if (mIsTopList)
                 pages = 200;
             else if (result.nextGid == 0)
@@ -1656,6 +1642,7 @@ public final class GalleryListScene extends BaseScene
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private class QsDrawerAdapter extends RecyclerView.Adapter<QsDrawerHolder> implements DraggableItemAdapter<QsDrawerHolder> {
 
         private final LayoutInflater mInflater;
@@ -1951,6 +1938,7 @@ public final class GalleryListScene extends BaseScene
             return GalleryListScene.this.getContext();
         }
 
+        @SuppressLint("NotifyDataSetChanged")
         @Override
         protected void notifyDataSetChanged() {
             if (null != mAdapter) {
@@ -1986,8 +1974,8 @@ public final class GalleryListScene extends BaseScene
         }
 
         @Override
-        protected void onScrollToPosition(int postion) {
-            if (0 == postion) {
+        protected void onScrollToPosition(int position) {
+            if (0 == position) {
                 if (null != mSearchBarMover) {
                     mSearchBarMover.showSearchBar();
                 }

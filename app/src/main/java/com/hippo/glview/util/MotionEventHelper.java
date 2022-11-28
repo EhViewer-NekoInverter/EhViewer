@@ -15,7 +15,6 @@
  */
 package com.hippo.glview.util;
 
-import android.annotation.TargetApi;
 import android.graphics.Matrix;
 import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
@@ -34,7 +33,6 @@ public final class MotionEventHelper {
         }
     }
 
-    @TargetApi(ApiHelper.VERSION_CODES.HONEYCOMB)
     private static MotionEvent transformEventNew(MotionEvent e, Matrix m) {
         MotionEvent newEvent = MotionEvent.obtain(e);
         newEvent.transform(m);
@@ -71,11 +69,9 @@ public final class MotionEventHelper {
                     m, pointerCoords[i].orientation);
         }
 
-        MotionEvent n = MotionEvent.obtain(downTime, eventTime, action,
+        return MotionEvent.obtain(downTime, eventTime, action,
                 pointerCount, pointerIds, pointerCoords, metaState, xPrecision,
                 yPrecision, deviceId, edgeFlags, source, flags);
-
-        return n;
     }
 
     private static int[] getPointerIds(MotionEvent e) {

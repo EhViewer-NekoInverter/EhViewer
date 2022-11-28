@@ -122,20 +122,8 @@ public class FabLayout extends ViewGroup implements View.OnClickListener {
     private int getChildMeasureSpec(int parentMeasureSpec) {
         int parentMode = MeasureSpec.getMode(parentMeasureSpec);
         int parentSize = MeasureSpec.getSize(parentMeasureSpec);
-        int childMode;
-        int childSize;
-        switch (parentMode) {
-            default:
-            case MeasureSpec.AT_MOST:
-            case MeasureSpec.EXACTLY:
-                childMode = MeasureSpec.AT_MOST;
-                childSize = parentSize;
-                break;
-            case MeasureSpec.UNSPECIFIED:
-                childMode = MeasureSpec.UNSPECIFIED;
-                childSize = parentSize;
-        }
-        return MeasureSpec.makeMeasureSpec(childSize, childMode);
+        return MeasureSpec.makeMeasureSpec(parentSize,
+                parentMode == MeasureSpec.UNSPECIFIED ? MeasureSpec.UNSPECIFIED : MeasureSpec.AT_MOST);
     }
 
     @Override
@@ -356,7 +344,7 @@ public class FabLayout extends ViewGroup implements View.OnClickListener {
         Interpolator interpolator;
         if (expanded) {
             startTranslationY = mMainFabCenterY -
-                    (child.getTop() + (child.getHeight() / 2));
+                    (child.getTop() + (child.getHeight() / 2f));
             endTranslationY = 0f;
             startAlpha = 0f;
             endAlpha = 1f;
@@ -364,7 +352,7 @@ public class FabLayout extends ViewGroup implements View.OnClickListener {
         } else {
             startTranslationY = 0f;
             endTranslationY = mMainFabCenterY -
-                    (child.getTop() + (child.getHeight() / 2));
+                    (child.getTop() + (child.getHeight() / 2f));
             startAlpha = 1f;
             endAlpha = 0f;
             interpolator = AnimationUtils.SLOW_FAST_INTERPOLATOR;
@@ -425,8 +413,7 @@ public class FabLayout extends ViewGroup implements View.OnClickListener {
 
     @Override
     public void onRestoreInstanceState(Parcelable state) {
-        if (state instanceof Bundle) {
-            final Bundle savedState = (Bundle) state;
+        if (state instanceof final Bundle savedState) {
             super.onRestoreInstanceState(savedState.getParcelable(STATE_KEY_SUPER));
             setAutoCancel(savedState.getBoolean(STATE_KEY_AUTO_CANCEL));
             setExpanded(savedState.getBoolean(STATE_KEY_EXPANDED), false);

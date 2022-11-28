@@ -364,11 +364,7 @@ public final class ViewUtils {
     @SuppressWarnings("deprecation")
     public static void removeOnGlobalLayoutListener(ViewTreeObserver viewTreeObserver,
                                                     ViewTreeObserver.OnGlobalLayoutListener l) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            viewTreeObserver.removeGlobalOnLayoutListener(l);
-        } else {
-            viewTreeObserver.removeOnGlobalLayoutListener(l);
-        }
+        viewTreeObserver.removeOnGlobalLayoutListener(l);
     }
 
     /**
