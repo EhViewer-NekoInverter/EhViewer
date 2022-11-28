@@ -281,7 +281,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
     private Pair<String, String>[] mArchiveList;
     @State
     private int mState = STATE_INIT;
-    private boolean mModifingFavorites;
+    private boolean mModifyingFavorites;
 
     @Nullable
     private static String getArtist(GalleryTagGroup[] tagGroups) {
@@ -298,47 +298,21 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
 
     @StringRes
     private int getRatingText(float rating) {
-        int resId;
-        switch (Math.round(rating * 2)) {
-            case 0:
-                resId = R.string.rating0;
-                break;
-            case 1:
-                resId = R.string.rating1;
-                break;
-            case 2:
-                resId = R.string.rating2;
-                break;
-            case 3:
-                resId = R.string.rating3;
-                break;
-            case 4:
-                resId = R.string.rating4;
-                break;
-            case 5:
-                resId = R.string.rating5;
-                break;
-            case 6:
-                resId = R.string.rating6;
-                break;
-            case 7:
-                resId = R.string.rating7;
-                break;
-            case 8:
-                resId = R.string.rating8;
-                break;
-            case 9:
-                resId = R.string.rating9;
-                break;
-            case 10:
-                resId = R.string.rating10;
-                break;
-            default:
-                resId = R.string.rating_none;
-                break;
-        }
 
-        return resId;
+        return switch (Math.round(rating * 2)) {
+            case 0 -> R.string.rating0;
+            case 1 -> R.string.rating1;
+            case 2 -> R.string.rating2;
+            case 3 -> R.string.rating3;
+            case 4 -> R.string.rating4;
+            case 5 -> R.string.rating5;
+            case 6 -> R.string.rating6;
+            case 7 -> R.string.rating7;
+            case 8 -> R.string.rating8;
+            case 9 -> R.string.rating9;
+            case 10 -> R.string.rating10;
+            default -> R.string.rating_none;
+        };
     }
 
     private void handleArgs(Bundle args) {
@@ -362,7 +336,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
     }
 
     @Nullable
-    private String getGalleryDetailUrl(boolean allComment) {
+    private String getGalleryDetailUrl() {
         long gid;
         String token;
         if (mGalleryDetail != null) {
@@ -377,7 +351,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
         } else {
             return null;
         }
-        return EhUrl.getGalleryDetailUrl(gid, token, 0, allComment);
+        return EhUrl.getGalleryDetailUrl(gid, token, 0, false);
     }
 
     // -1 for error
@@ -390,18 +364,6 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
             return mGid;
         } else {
             return -1;
-        }
-    }
-
-    private String getToken() {
-        if (mGalleryDetail != null) {
-            return mGalleryDetail.token;
-        } else if (mGalleryInfo != null) {
-            return mGalleryInfo.token;
-        } else if (ACTION_GID_TOKEN.equals(mAction)) {
-            return mToken;
-        } else {
-            return null;
         }
     }
 
@@ -613,17 +575,17 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
             if (mGalleryDetail != null) {
                 bindViewSecond();
                 setTransitionName();
-                adjustViewVisibility(STATE_NORMAL, false);
+                adjustViewVisibility(STATE_NORMAL);
             } else if (mGalleryInfo != null) {
                 bindViewFirst();
                 setTransitionName();
-                adjustViewVisibility(STATE_REFRESH_HEADER, false);
+                adjustViewVisibility(STATE_REFRESH_HEADER);
             } else {
-                adjustViewVisibility(STATE_REFRESH, false);
+                adjustViewVisibility(STATE_REFRESH);
             }
         } else {
             mTip.setText(R.string.error_cannot_find_gallery);
-            adjustViewVisibility(STATE_FAILED, false);
+            adjustViewVisibility(STATE_FAILED);
         }
 
         EhApplication.getDownloadManager(context).addDownloadInfoListener(this);
@@ -729,12 +691,12 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
     private boolean request() {
         Context context = getContext();
         MainActivity activity = getMainActivity();
-        String url = getGalleryDetailUrl(false);
+        String url = getGalleryDetailUrl();
         if (null == context || null == activity || null == url) {
             return false;
         }
 
-        EhClient.Callback callback = new GetGalleryDetailListener(context,
+        EhClient.Callback<GalleryDetail> callback = new GetGalleryDetailListener(context,
                 activity.getStageId(), getTag());
         mRequestId = ((EhApplication) context.getApplicationContext()).putGlobalStuff(callback);
         EhRequest request = new EhRequest()
@@ -792,7 +754,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
         }
     }
 
-    private void adjustViewVisibility(int state, boolean animation) {
+    private void adjustViewVisibility(int state) {
         if (state == mState) {
             return;
         }
@@ -803,35 +765,33 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
         int oldState = mState;
         mState = state;
 
-        animation = !TRANSITION_ANIMATION_DISABLED && animation;
+        boolean animation = !TRANSITION_ANIMATION_DISABLED && animation;
 
         switch (state) {
-            case STATE_NORMAL:
+            case STATE_NORMAL -> {
                 setLightStatusBar(false);
                 // Show mMainView
                 mViewTransition.showView(0, animation);
                 // Show mBelowHeader
                 mViewTransition2.showView(0, animation);
-                break;
-            case STATE_REFRESH:
+            }
+            case STATE_REFRESH -> {
                 setLightStatusBar(true);
                 // Show mProgressView
                 mViewTransition.showView(1, animation);
-                break;
-            case STATE_REFRESH_HEADER:
+            }
+            case STATE_REFRESH_HEADER -> {
                 setLightStatusBar(false);
                 // Show mMainView
                 mViewTransition.showView(0, animation);
                 // Show mProgress
                 mViewTransition2.showView(1, animation);
-                break;
-            default:
-            case STATE_INIT:
-            case STATE_FAILED:
+            }
+            case STATE_INIT, STATE_FAILED -> {
                 setLightStatusBar(true);
                 // Show mFailedView
                 mViewTransition.showView(2, animation);
-                break;
+            }
         }
 
         if ((oldState == STATE_INIT || oldState == STATE_FAILED || oldState == STATE_REFRESH) &&
@@ -942,7 +902,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
     private void bindTags(GalleryTagGroup[] tagGroups) {
         Context context = getContext();
         LayoutInflater inflater = getLayoutInflater();
-        if (null == context || null == inflater || null == mTags || null == mNoTags) {
+        if (null == context || null == mTags || null == mNoTags) {
             return;
         }
 
@@ -1001,7 +961,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
     private void bindComments(GalleryComment[] comments) {
         Context context = getContext();
         LayoutInflater inflater = getLayoutInflater();
-        if (null == context || null == inflater || null == mComments || null == mCommentsText) {
+        if (null == context || null == mComments || null == mCommentsText) {
             return;
         }
 
@@ -1029,8 +989,13 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
             time.setText(ReadableTime.getTimeAgo(comment.time));
             ObservedTextView c = v.findViewById(R.id.comment);
             c.setMaxLines(5);
-            c.setText(Html.fromHtml(comment.comment, Html.FROM_HTML_MODE_LEGACY,
-                    new URLImageGetter(c, EhApplication.getConaco(context)), null));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                c.setText(Html.fromHtml(comment.comment, Html.FROM_HTML_MODE_LEGACY,
+                        new URLImageGetter(c, EhApplication.getConaco(context)), null));
+            } else {
+                c.setText(Html.fromHtml(comment.comment,
+                        new URLImageGetter(c, EhApplication.getConaco(context)), null));
+            }
             v.setBackgroundColor(Color.TRANSPARENT);
         }
     }
@@ -1040,7 +1005,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
         LayoutInflater inflater = getLayoutInflater();
         Resources resources = getResourcesOrNull();
         int previewNum = Settings.getPreviewNum();
-        if (null == inflater || null == resources || null == mGridLayout || null == mPreviewText) {
+        if (null == resources || null == mGridLayout || null == mPreviewText) {
             return;
         }
 
@@ -1101,14 +1066,14 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
         popup.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.action_open_in_other_app) {
-                String url = getGalleryDetailUrl(false);
+                String url = getGalleryDetailUrl();
                 Activity activity = getMainActivity();
                 if (null != url && null != activity) {
                     UrlOpener.openUrl(activity, url, false);
                 }
             } else if (itemId == R.id.action_refresh) {
                 if (mState != STATE_REFRESH && mState != STATE_REFRESH_HEADER) {
-                    adjustViewVisibility(STATE_REFRESH, true);
+                    adjustViewVisibility(STATE_REFRESH);
                     request();
                 }
             } else if (itemId == R.id.action_add_tag) {
@@ -1204,7 +1169,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
 
         if (mTip == v) {
             if (request()) {
-                adjustViewVisibility(STATE_REFRESH, true);
+                adjustViewVisibility(STATE_REFRESH);
             }
         } else if (mOtherActions == v) {
             ensurePopMenu();
@@ -1276,17 +1241,17 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
             args.putParcelable(GalleryInfoScene.KEY_GALLERY_DETAIL, mGalleryDetail);
             startScene(new Announcer(GalleryInfoScene.class).setArgs(args));
         } else if (mHeartGroup == v) {
-            if (mGalleryDetail != null && !mModifingFavorites) {
+            if (mGalleryDetail != null && !mModifyingFavorites) {
                 boolean remove = false;
                 if (EhDB.containLocalFavorites(mGalleryDetail.gid) || mGalleryDetail.isFavorited) {
-                    mModifingFavorites = true;
+                    mModifyingFavorites = true;
                     CommonOperations.removeFromFavorites(activity, mGalleryDetail,
                             new ModifyFavoritesListener(context,
                                     activity.getStageId(), getTag(), true));
                     remove = true;
                 }
                 if (!remove) {
-                    mModifingFavorites = true;
+                    mModifyingFavorites = true;
                     CommonOperations.addToFavorites(activity, mGalleryDetail,
                             new ModifyFavoritesListener(context,
                                     activity.getStageId(), getTag(), false));
@@ -1295,7 +1260,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
                 updateFavoriteDrawable();
             }
         } else if (mShare == v) {
-            String url = getGalleryDetailUrl(false);
+            String url = getGalleryDetailUrl();
             if (url != null) {
                 AppHelper.share(activity, url);
             }
@@ -1371,8 +1336,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
             }
         } else {
             Object o = v.getTag(R.id.tag);
-            if (o instanceof String) {
-                String tag = (String) o;
+            if (o instanceof String tag) {
                 ListUrlBuilder lub = new ListUrlBuilder();
                 lub.setMode(ListUrlBuilder.MODE_TAG);
                 lub.setKeyword(tag);
@@ -1525,17 +1489,17 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
             }
             return true;
         } else if (mHeartGroup == v) {
-            if (mGalleryDetail != null && !mModifingFavorites) {
+            if (mGalleryDetail != null && !mModifyingFavorites) {
                 boolean remove = false;
                 if (EhDB.containLocalFavorites(mGalleryDetail.gid) || mGalleryDetail.isFavorited) {
-                    mModifingFavorites = true;
+                    mModifyingFavorites = true;
                     CommonOperations.removeFromFavorites(activity, mGalleryDetail,
                             new ModifyFavoritesListener(activity,
                                     activity.getStageId(), getTag(), true));
                     remove = true;
                 }
                 if (!remove) {
-                    mModifingFavorites = true;
+                    mModifyingFavorites = true;
                     CommonOperations.addToFavorites(activity, mGalleryDetail,
                             new ModifyFavoritesListener(activity,
                                     activity.getStageId(), getTag(), false), true);
@@ -1591,25 +1555,13 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
             return;
         }
         switch (mDownloadState) {
-            default:
-            case DownloadInfo.STATE_INVALID:
-                mDownload.setText(R.string.download);
-                break;
-            case DownloadInfo.STATE_NONE:
-                mDownload.setText(R.string.download_state_none);
-                break;
-            case DownloadInfo.STATE_WAIT:
-                mDownload.setText(R.string.download_state_wait);
-                break;
-            case DownloadInfo.STATE_DOWNLOAD:
-                mDownload.setText(R.string.download_state_downloading);
-                break;
-            case DownloadInfo.STATE_FINISH:
-                mDownload.setText(R.string.download_state_downloaded);
-                break;
-            case DownloadInfo.STATE_FAILED:
-                mDownload.setText(R.string.download_state_failed);
-                break;
+            case DownloadInfo.STATE_INVALID -> mDownload.setText(R.string.download);
+            case DownloadInfo.STATE_NONE -> mDownload.setText(R.string.download_state_none);
+            case DownloadInfo.STATE_WAIT -> mDownload.setText(R.string.download_state_wait);
+            case DownloadInfo.STATE_DOWNLOAD ->
+                    mDownload.setText(R.string.download_state_downloading);
+            case DownloadInfo.STATE_FINISH -> mDownload.setText(R.string.download_state_downloaded);
+            case DownloadInfo.STATE_FAILED -> mDownload.setText(R.string.download_state_failed);
         }
     }
 
@@ -1669,7 +1621,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
     private void onGetGalleryDetailSuccess(GalleryDetail result) {
         mGalleryDetail = result;
         updateDownloadState();
-        adjustViewVisibility(STATE_NORMAL, true);
+        adjustViewVisibility(STATE_NORMAL);
         bindViewSecond();
     }
 
@@ -1679,7 +1631,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
         if (null != context && null != mTip) {
             String error = ExceptionUtils.getReadableString(e);
             mTip.setText(error);
-            adjustViewVisibility(STATE_FAILED, true);
+            adjustViewVisibility(STATE_FAILED);
         }
     }
 
@@ -1697,26 +1649,26 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
     }
 
     private void onModifyFavoritesSuccess(boolean addOrRemove) {
-        mModifingFavorites = false;
+        mModifyingFavorites = false;
         if (mGalleryDetail != null) {
             mGalleryDetail.isFavorited = !addOrRemove && mGalleryDetail.favoriteName != null;
             updateFavoriteDrawable();
         }
     }
 
-    private void onModifyFavoritesFailure(boolean addOrRemove) {
-        mModifingFavorites = false;
+    private void onModifyFavoritesFailure() {
+        mModifyingFavorites = false;
     }
 
-    private void onModifyFavoritesCancel(boolean addOrRemove) {
-        mModifingFavorites = false;
+    private void onModifyFavoritesCancel() {
+        mModifyingFavorites = false;
     }
 
     @Override
     public void onProvideAssistContent(AssistContent outContent) {
         super.onProvideAssistContent(outContent);
 
-        String url = getGalleryDetailUrl(false);
+        String url = getGalleryDetailUrl();
         if (url != null) {
             outContent.setWebUri(Uri.parse(url));
         }
@@ -1902,7 +1854,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
                     R.string.add_to_favorite_failure, LENGTH_LONG);
             GalleryDetailScene scene = getScene();
             if (scene != null) {
-                scene.onModifyFavoritesFailure(mAddOrRemove);
+                scene.onModifyFavoritesFailure();
             }
         }
 
@@ -1910,7 +1862,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
         public void onCancel() {
             GalleryDetailScene scene = getScene();
             if (scene != null) {
-                scene.onModifyFavoritesCancel(mAddOrRemove);
+                scene.onModifyFavoritesCancel();
             }
         }
 

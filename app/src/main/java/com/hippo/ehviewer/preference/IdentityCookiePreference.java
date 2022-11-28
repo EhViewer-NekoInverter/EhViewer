@@ -18,6 +18,7 @@ package com.hippo.ehviewer.preference;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.text.Html;
 import android.util.AttributeSet;
 
@@ -76,15 +77,9 @@ public class IdentityCookiePreference extends MessagePreference {
         for (int i = 0, n = cookies.size(); i < n; i++) {
             Cookie cookie = cookies.get(i);
             switch (cookie.name()) {
-                case EhCookieStore.KEY_IPD_MEMBER_ID:
-                    ipbMemberId = cookie.value();
-                    break;
-                case EhCookieStore.KEY_IPD_PASS_HASH:
-                    ipbPassHash = cookie.value();
-                    break;
-                case EhCookieStore.KEY_IGNEOUS:
-                    igneous = cookie.value();
-                    break;
+                case EhCookieStore.KEY_IPD_MEMBER_ID -> ipbMemberId = cookie.value();
+                case EhCookieStore.KEY_IPD_PASS_HASH -> ipbPassHash = cookie.value();
+                case EhCookieStore.KEY_IGNEOUS -> igneous = cookie.value();
             }
         }
 
@@ -92,7 +87,11 @@ public class IdentityCookiePreference extends MessagePreference {
             message = EhCookieStore.KEY_IPD_MEMBER_ID + ": " + ipbMemberId + "<br>"
                     + EhCookieStore.KEY_IPD_PASS_HASH + ": " + ipbPassHash + "<br>"
                     + EhCookieStore.KEY_IGNEOUS + ": " + igneous;
-            setDialogMessage(Html.fromHtml(getContext().getString(R.string.settings_eh_identity_cookies_signed, message), Html.FROM_HTML_MODE_LEGACY));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                setDialogMessage(Html.fromHtml(getContext().getString(R.string.settings_eh_identity_cookies_signed, message), Html.FROM_HTML_MODE_LEGACY));
+            } else {
+                setDialogMessage(Html.fromHtml(getContext().getString(R.string.settings_eh_identity_cookies_signed, message)));
+            }
             message = message.replace("<br>", "\n");
         } else {
             setDialogMessage(getContext().getString(R.string.settings_eh_identity_cookies_tourist));
