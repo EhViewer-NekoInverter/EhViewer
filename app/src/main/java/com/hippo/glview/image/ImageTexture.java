@@ -153,12 +153,6 @@ public class ImageTexture implements Texture, Animatable {
         }
 
         mTiles = list.toArray(new Tile[list.size()]);
-
-        if (!mImage.isCompleted()) {
-            Runnable runnable = new AnimateRunnable();
-            mAnimateRunnable = runnable;
-            sThreadExecutor.execute(runnable);
-        }
     }
 
     private static Tile obtainSmallTile() {
@@ -239,7 +233,7 @@ public class ImageTexture implements Texture, Animatable {
         }
 
         boolean end = mReleased.get() || mImage.isImageRecycled() || mNeedRelease.get() ||
-                (mImage.isCompleted() && mImage.getFrameCount() <= 1) || mRunning.get();
+                (!mImage.getAnimated()) || mRunning.get();
 
         synchronized (mImage) {
             mImageBusy = false;
@@ -597,25 +591,11 @@ public class ImageTexture implements Texture, Animatable {
                 mImageBusy = true;
             }
 
-            if (!mImage.isCompleted()) {
-                try {
-                    sPVLock.p();
-                } catch (InterruptedException e) {
-                    // Ignore
-                }
-                if (!mNeedRelease.get()) {
-                    mImage.complete();
-                }
-                sPVLock.v();
-            }
-
-            int frameCount = mImage.getFrameCount();
-
             synchronized (mImage) {
                 // Release image
                 mImageBusy = false;
                 // Check need release, frameCount <= 1
-                if (mNeedRelease.get() || frameCount <= 1) {
+                if (mNeedRelease.get() || !mImage.getAnimated()) {
                     mAnimateRunnable = null;
                     return;
                 }
@@ -637,7 +617,7 @@ public class ImageTexture implements Texture, Animatable {
                     mImageBusy = true;
                 }
 
-                mImage.advance();
+                mImage.start();
                 long delay = mImage.getDelay();
                 long time = System.nanoTime();
                 if (-1L != lastDelay) {

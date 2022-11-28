@@ -42,20 +42,8 @@ public class BatteryView extends AppCompatTextView {
 
     private BatteryDrawable mDrawable;
     private boolean mAttached = false;
-    private boolean mIsChargerWorking = false;    private final Runnable mCharger = new Runnable() {
+    private boolean mIsChargerWorking = false;
 
-        private int level = 0;
-
-        @Override
-        public void run() {
-            level += 2;
-            if (level > 100) {
-                level = 0;
-            }
-            mDrawable.setElect(level, false);
-            getHandler().postDelayed(mCharger, 200);
-        }
-    };
     public BatteryView(Context context) {
         super(context);
         init();
@@ -85,36 +73,7 @@ public class BatteryView extends AppCompatTextView {
         int height = (int) getTextSize();
         mDrawable.setBounds(0, 0, (int) (height / 0.618f), height);
         setCompoundDrawables(mDrawable, null, null, null);
-    }    private final BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
-
-        @Override
-        @SuppressLint("SetTextI18n")
-        public void onReceive(Context context, Intent intent) {
-
-            int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
-                    * 100 / intent.getIntExtra(BatteryManager.EXTRA_SCALE, 0);
-            boolean charging = (intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
-                    == BatteryManager.BATTERY_STATUS_CHARGING);
-
-            if (mLevel != level || mCharging != charging) {
-                mLevel = level;
-                mCharging = charging;
-                if (mCharging && mLevel != 100) {
-                    startCharger();
-                } else {
-                    stopCharger();
-                    mDrawable.setElect(mLevel);
-                }
-
-                if (level <= BatteryDrawable.WARN_LIMIT && !charging) {
-                    setTextColor(mWarningColor);
-                } else {
-                    setTextColor(mColor);
-                }
-                setText(mLevel + "%");
-            }
-        }
-    };
+    }
 
     @Override
     public void setTextColor(int color) {
@@ -148,7 +107,20 @@ public class BatteryView extends AppCompatTextView {
 
             registerReceiver();
         }
-    }
+    }    private final Runnable mCharger = new Runnable() {
+
+        private int level = 0;
+
+        @Override
+        public void run() {
+            level += 2;
+            if (level > 100) {
+                level = 0;
+            }
+            mDrawable.setElect(level, false);
+            getHandler().postDelayed(mCharger, 200);
+        }
+    };
 
     @Override
     protected void onDetachedFromWindow() {
@@ -174,6 +146,36 @@ public class BatteryView extends AppCompatTextView {
 
 
 
+    private final BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
+
+        @Override
+        @SuppressLint("SetTextI18n")
+        public void onReceive(Context context, Intent intent) {
+
+            int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
+                    * 100 / intent.getIntExtra(BatteryManager.EXTRA_SCALE, 0);
+            boolean charging = (intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
+                    == BatteryManager.BATTERY_STATUS_CHARGING);
+
+            if (mLevel != level || mCharging != charging) {
+                mLevel = level;
+                mCharging = charging;
+                if (mCharging && mLevel != 100) {
+                    startCharger();
+                } else {
+                    stopCharger();
+                    mDrawable.setElect(mLevel);
+                }
+
+                if (level <= BatteryDrawable.WARN_LIMIT && !charging) {
+                    setTextColor(mWarningColor);
+                } else {
+                    setTextColor(mColor);
+                }
+                setText(mLevel + "%");
+            }
+        }
+    };
 
 
 }

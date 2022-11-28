@@ -37,6 +37,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -65,6 +67,7 @@ import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
+import com.hippo.app.EditTextDialogBuilder;
 import com.hippo.ehviewer.AppConfig;
 import com.hippo.ehviewer.BuildConfig;
 import com.hippo.ehviewer.R;
@@ -101,6 +104,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 
 import rikka.core.res.ConfigurationKt;
 import rikka.core.res.ResourcesKt;
@@ -221,6 +225,9 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
     private int mSize;
     private int mCurrentIndex;
     private int mSavingPage = -1;
+    private EditTextDialogBuilder builder;
+    private boolean dialogShown = false;
+    private AlertDialog dialog;
 
     private void buildProvider() {
         if (mGalleryProvider != null) {
@@ -237,28 +244,15 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
             }
         } else if (Intent.ACTION_VIEW.equals(mAction)) {
             if (mUri != null) {
-                // Only support zip now
                 try {
                     grantUriPermission(BuildConfig.APPLICATION_ID, mUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 } catch (Exception e) {
-                    // Some stupid file manager send us a uri and don't allow us to read it
-                    // java.lang.SecurityException: UID 10671 does not have permission to
-                    // content://com.UCMobile.fileProvider/external_files/BaiduNetdisk/getvoice [user 0]
                     Toast.makeText(this, R.string.error_reading_failed, Toast.LENGTH_SHORT).show();
                 }
                 mGalleryProvider = new ArchiveGalleryProvider(this, mUri);
             }
         }
-    }    ActivityResultLauncher<String> requestStoragePermissionLauncher = registerForActivityResult(
-            new ActivityResultContracts.RequestPermission(),
-            result -> {
-                if (result && mSavingPage != -1) {
-                    saveImage(mSavingPage);
-                } else {
-                    Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show();
-                }
-                mSavingPage = -1;
-            });
+    }
 
     private void onInit() {
         Intent intent = getIntent();
@@ -331,10 +325,19 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
             onRestore(savedInstanceState);
         }
 
+        builder = new EditTextDialogBuilder(this, null, getString(R.string.archive_passwd));
+        builder.setTitle(getString(R.string.archive_need_passwd));
+        builder.setPositiveButton(getString(android.R.string.ok), null);
+        dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+
         if (mGalleryProvider == null) {
             finish();
             return;
         }
+
+        ArchiveGalleryProvider.showPasswd = new ShowPasswdDialogHandler(this);
+
         mGalleryProvider.start();
 
         // Get start page
@@ -396,21 +399,25 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
             if (mGalleryView == null) {
                 return false;
             }
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_SCROLL:
-                    if (event.getAxisValue(MotionEvent.AXIS_VSCROLL) < 0.0f) {
-                        if (mLayoutMode == GalleryView.LAYOUT_RIGHT_TO_LEFT) {
-                            mGalleryView.pageLeft();
-                        } else {
-                            mGalleryView.pageRight();
-                        }
-                    } else {
-                        if (mLayoutMode == GalleryView.LAYOUT_RIGHT_TO_LEFT) {
-                            mGalleryView.pageRight();
-                        } else {
-                            mGalleryView.pageLeft();
-                        }
+            if (event.getAction() == MotionEvent.ACTION_SCROLL) {
+                float scroll = event.getAxisValue(MotionEvent.AXIS_VSCROLL) * 300;
+                if (scroll < 0.0f) {
+                    if (mLayoutMode == GalleryView.LAYOUT_RIGHT_TO_LEFT) {
+                        mGalleryView.pageLeft();
+                    } else if (mLayoutMode == GalleryView.LAYOUT_LEFT_TO_RIGHT) {
+                        mGalleryView.pageRight();
+                    } else if (mLayoutMode == GalleryView.LAYOUT_TOP_TO_BOTTOM) {
+                        mGalleryView.onScroll(0, -scroll, 0, -scroll, 0, -scroll);
                     }
+                } else {
+                    if (mLayoutMode == GalleryView.LAYOUT_RIGHT_TO_LEFT) {
+                        mGalleryView.pageRight();
+                    } else if (mLayoutMode == GalleryView.LAYOUT_LEFT_TO_RIGHT) {
+                        mGalleryView.pageLeft();
+                    } else if (mLayoutMode == GalleryView.LAYOUT_TOP_TO_BOTTOM) {
+                        mGalleryView.onScroll(0, -scroll, 0, -scroll, 0, -scroll);
+                    }
+                }
             }
             return false;
         });
@@ -508,7 +515,16 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
         mSeekBar = null;
 
         SimpleHandler.getInstance().removeCallbacks(mHideSliderRunnable);
-    }
+    }    ActivityResultLauncher<String> requestStoragePermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            result -> {
+                if (result && mSavingPage != -1) {
+                    saveImage(mSavingPage);
+                } else {
+                    Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show();
+                }
+                mSavingPage = -1;
+            });
 
     @Override
     protected void onPause() {
@@ -845,7 +861,8 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
         intent.setAction(Intent.ACTION_SEND);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.putExtra(Intent.EXTRA_STREAM, uri);
-        intent.putExtra(Intent.EXTRA_TEXT, EhUrl.getGalleryDetailUrl(mGalleryInfo.gid, mGalleryInfo.token));
+        if (mGalleryInfo != null)
+            intent.putExtra(Intent.EXTRA_TEXT, EhUrl.getGalleryDetailUrl(mGalleryInfo.gid, mGalleryInfo.token));
         intent.setDataAndType(uri, mimeType);
 
         try {
@@ -1038,6 +1055,66 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
         String url = getGalleryDetailUrl();
         if (url != null) {
             outContent.setWebUri(Uri.parse(url));
+        }
+    }
+
+    private void showPasswdDialog() {
+        if (!dialogShown) {
+            dialogShown = true;
+            dialog.show();
+            if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+                    GalleryActivity.this.onProvidePasswd();
+                });
+            }
+            dialog.setOnCancelListener(v -> finish());
+        }
+    }
+
+    private void onProvidePasswd() {
+        String passwd = builder.getText();
+        if (passwd.isEmpty())
+            builder.setError(getString(R.string.passwd_cannot_be_empty));
+        else {
+            ArchiveGalleryProvider.passwd = passwd;
+            ArchiveGalleryProvider.pv.v();
+        }
+    }
+
+    private void onPasswdWrong() {
+        builder.setError(getString(R.string.passwd_wrong));
+    }
+
+    private void onPasswdCorrect() {
+        dialog.dismiss();
+    }
+
+    private static class ShowPasswdDialogHandler extends Handler {
+
+        //弱引用持有HandlerActivity , GC 回收时会被回收掉
+        private final WeakReference<GalleryActivity> weakReference;
+
+        public ShowPasswdDialogHandler(GalleryActivity activity) {
+            this.weakReference = new WeakReference(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            GalleryActivity activity = weakReference.get();
+            super.handleMessage(msg);
+            if (null != activity) {
+                switch (msg.what) {
+                    case 0:
+                        activity.showPasswdDialog();
+                        break;
+                    case 1:
+                        activity.onPasswdWrong();
+                        break;
+                    case 2:
+                        activity.onPasswdCorrect();
+                        break;
+                }
+            }
         }
     }
 
@@ -1300,6 +1377,8 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
             }
         }
     }
+
+
 
 
 }

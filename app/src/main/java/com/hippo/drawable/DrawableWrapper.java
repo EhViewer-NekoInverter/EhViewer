@@ -22,6 +22,7 @@ import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Region;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
 import androidx.annotation.NonNull;
@@ -29,17 +30,25 @@ import androidx.core.graphics.drawable.DrawableCompat;
 
 public class DrawableWrapper extends Drawable implements Drawable.Callback {
     private Drawable mDrawable;
+    private Rect mBounds;
 
     public DrawableWrapper(Drawable drawable) {
         this.setWrappedDrawable(drawable);
     }
 
     public void draw(@NonNull Canvas canvas) {
-        this.mDrawable.draw(canvas);
+        if (mDrawable instanceof BitmapDrawable bitmapDrawable) {
+            canvas.drawBitmap(bitmapDrawable.getBitmap(), null, mBounds, bitmapDrawable.getPaint());
+        } else {
+            synchronized (mDrawable) {
+                mDrawable.setBounds(mBounds);
+                mDrawable.draw(canvas);
+            }
+        }
     }
 
     protected void onBoundsChange(Rect bounds) {
-        this.mDrawable.setBounds(bounds);
+        mBounds = bounds;
     }
 
     public int getChangingConfigurations() {

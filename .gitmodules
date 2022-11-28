@@ -1,12 +1,9 @@
-[submodule "native/src/main/jni/a7zip/p7zip/p7zip"]
-	path = native/src/main/jni/a7zip/p7zip/p7zip
-	url = https://github.com/EhViewer-NekoInverter/p7zip
-[submodule "native/src/main/jni/image/libjpeg-turbo/libjpeg-turbo"]
-	path = native/src/main/jni/image/libjpeg-turbo/libjpeg-turbo
-	url = https://github.com/EhViewer-NekoInverter/libjpeg-turbo
-[submodule "native/src/main/jni/image/giflib/giflib"]
-	path = native/src/main/jni/image/giflib/giflib
-	url = https://github.com/EhViewer-NekoInverter/giflib
-[submodule "native/src/main/jni/image/libpng/libpng"]
-	path = native/src/main/jni/image/libpng/libpng
-	url = https://github.com/EhViewer-NekoInverter/libpng
+[submodule "app/src/main/cpp/libarchive"]
+	path = app/src/main/cpp/libarchive
+	url = https://github.com/EhViewer-NekoInverter/libarchive
+[submodule "app/src/main/cpp/liblzma"]
+	path = app/src/main/cpp/liblzma
+	url = https://github.com/EhViewer-NekoInverter/xz
+[submodule "app/src/main/cpp/nettle/nettle"]
+	path = app/src/main/cpp/nettle/nettle
+	url = https://github.com/EhViewer-NekoInverter/nettle

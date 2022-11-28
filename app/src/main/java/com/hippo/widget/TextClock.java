@@ -65,35 +65,15 @@ public class TextClock extends AppCompatTextView {
             }
             onTimeChanged();
         }
-    };    private final Runnable mTicker = new Runnable() {
-        @Override
-        public void run() {
-            onTimeChanged();
-
-            long now = SystemClock.uptimeMillis();
-            long next = now + (1000 - now % 1000);
-
-            getHandler().postAtTime(mTicker, next);
-        }
     };
+
     public TextClock(Context context) {
         this(context, null);
     }
+
     public TextClock(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
-    }    private final ContentObserver mFormatChangeObserver = new ContentObserver(new Handler()) {
-        @Override
-        public void onChange(boolean selfChange) {
-            chooseFormat();
-            onTimeChanged();
-        }
-
-        @Override
-        public void onChange(boolean selfChange, Uri uri) {
-            chooseFormat();
-            onTimeChanged();
-        }
-    };
+    }
 
     public TextClock(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
@@ -132,7 +112,17 @@ public class TextClock extends AppCompatTextView {
 
     public CharSequence getFormat24Hour() {
         return mFormat24;
-    }
+    }    private final Runnable mTicker = new Runnable() {
+        @Override
+        public void run() {
+            onTimeChanged();
+
+            long now = SystemClock.uptimeMillis();
+            long next = now + (1000 - now % 1000);
+
+            getHandler().postAtTime(mTicker, next);
+        }
+    };
 
     public void setFormat24Hour(CharSequence format) {
         mFormat24 = format;
@@ -237,7 +227,19 @@ public class TextClock extends AppCompatTextView {
         filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
 
         getContext().registerReceiver(mIntentReceiver, filter, null, getHandler());
-    }
+    }    private final ContentObserver mFormatChangeObserver = new ContentObserver(new Handler()) {
+        @Override
+        public void onChange(boolean selfChange) {
+            chooseFormat();
+            onTimeChanged();
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            chooseFormat();
+            onTimeChanged();
+        }
+    };
 
     private void registerObserver() {
         final ContentResolver resolver = getContext().getContentResolver();

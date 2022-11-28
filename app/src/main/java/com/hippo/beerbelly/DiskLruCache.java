@@ -167,6 +167,7 @@ public final class DiskLruCache implements Closeable {
      * its sequence number is not equal to its entry's sequence number.
      */
     private long nextSequenceNumber = 0;
+
     private DiskLruCache(File directory, int appVersion, int valueCount, long maxSize) {
         this.directory = directory;
         this.appVersion = appVersion;
@@ -175,21 +176,7 @@ public final class DiskLruCache implements Closeable {
         this.journalFileBackup = new File(directory, JOURNAL_FILE_BACKUP);
         this.valueCount = valueCount;
         this.maxSize = maxSize;
-    }    private final Callable<Void> cleanupCallable = new Callable<>() {
-        public Void call() throws Exception {
-            synchronized (DiskLruCache.this) {
-                if (journalWriter == null) {
-                    return null; // Closed.
-                }
-                trimToSize();
-                if (journalRebuildRequired()) {
-                    rebuildJournal();
-                    redundantOpCount = 0;
-                }
-            }
-            return null;
-        }
-    };
+    }
 
     /**
      * Opens the cache in {@code directory}, creating a cache if none exists
@@ -259,7 +246,21 @@ public final class DiskLruCache implements Closeable {
         if (!from.renameTo(to)) {
             throw new IOException();
         }
-    }
+    }    private final Callable<Void> cleanupCallable = new Callable<>() {
+        public Void call() throws Exception {
+            synchronized (DiskLruCache.this) {
+                if (journalWriter == null) {
+                    return null; // Closed.
+                }
+                trimToSize();
+                if (journalRebuildRequired()) {
+                    rebuildJournal();
+                    redundantOpCount = 0;
+                }
+            }
+            return null;
+        }
+    };
 
     private static String inputStreamToString(InputStream in) throws IOException {
         return Util.readFully(new InputStreamReader(in, Util.UTF_8));

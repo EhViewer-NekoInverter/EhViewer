@@ -16,7 +16,6 @@
 
 package com.hippo.ehviewer.ui.fragment;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 
@@ -33,11 +32,7 @@ public class AboutFragment extends BasePreferenceFragment {
     public void onCreatePreferences(@Nullable Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.about_settings);
         Preference author = findPreference(KEY_AUTHOR);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            author.setSummary(Html.fromHtml(getString(R.string.settings_about_author_summary).replace('$', '@'), Html.FROM_HTML_MODE_LEGACY));
-        } else {
-            author.setSummary(Html.fromHtml(getString(R.string.settings_about_author_summary).replace('$', '@')));
-        }
+        author.setSummary(Html.fromHtml(getString(R.string.settings_about_author_summary).replace('$', '@'), Html.FROM_HTML_MODE_LEGACY));
     }
 
     @Override

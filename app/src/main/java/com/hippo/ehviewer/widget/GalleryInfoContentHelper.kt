@@ -33,10 +33,12 @@ import kotlin.math.min
 abstract class GalleryInfoContentHelper : ContentHelper<GalleryInfo?>() {
     @JvmField
     var maxGid = -1
+
     @JvmField
     var minGid = -1
+
     @JvmField
-    var jumpTo : String? = null
+    var jumpTo: String? = null
     private val listener: FavouriteStatusRouter.Listener
 
     @SuppressLint("UseSparseArrays")

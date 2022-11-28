@@ -989,13 +989,8 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
             time.setText(ReadableTime.getTimeAgo(comment.time));
             ObservedTextView c = v.findViewById(R.id.comment);
             c.setMaxLines(5);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                c.setText(Html.fromHtml(comment.comment, Html.FROM_HTML_MODE_LEGACY,
-                        new URLImageGetter(c, EhApplication.getConaco(context)), null));
-            } else {
-                c.setText(Html.fromHtml(comment.comment,
-                        new URLImageGetter(c, EhApplication.getConaco(context)), null));
-            }
+            c.setText(Html.fromHtml(comment.comment, Html.FROM_HTML_MODE_LEGACY,
+                    new URLImageGetter(c, EhApplication.getConaco(context)), null));
             v.setBackgroundColor(Color.TRANSPARENT);
         }
     }

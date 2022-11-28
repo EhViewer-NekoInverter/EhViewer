@@ -857,14 +857,8 @@ public final class GalleryCommentsScene extends ToolbarScene
         }
 
         private CharSequence generateComment(Context context, ObservedTextView textView, GalleryComment comment) {
-            Spanned sp;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                sp = Html.fromHtml(comment.comment, Html.FROM_HTML_MODE_LEGACY, new URLImageGetter(textView,
-                        EhApplication.getConaco(context)), null);
-            } else {
-                sp = Html.fromHtml(comment.comment, new URLImageGetter(textView,
-                        EhApplication.getConaco(context)), null);
-            }
+            Spanned sp = Html.fromHtml(comment.comment, Html.FROM_HTML_MODE_LEGACY, new URLImageGetter(textView,
+                    EhApplication.getConaco(context)), null);
 
             SpannableStringBuilder ssb = new SpannableStringBuilder(sp);
 

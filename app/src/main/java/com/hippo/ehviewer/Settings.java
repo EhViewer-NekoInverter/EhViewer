@@ -41,6 +41,7 @@ import com.hippo.yorozuya.NumberUtils;
 
 import java.io.File;
 import java.util.Locale;
+import java.util.Set;
 
 public class Settings {
 
@@ -250,6 +251,7 @@ public class Settings {
     private static final boolean DEFAULT_REMOVE_IMAGE_FILES = true;
     private static final String KEY_CLIPBOARD_TEXT_HASH_CODE = "clipboard_text_hash_code";
     private static final int DEFAULT_CLIPBOARD_TEXT_HASH_CODE = 0;
+    private static final String KEY_ARCHIVE_PASSWDS = "archive_passwds";
     private static Context sContext;
     private static SharedPreferences sSettingsPre;
     private static EhConfig sEhConfig;
@@ -354,6 +356,21 @@ public class Settings {
 
     public static void putString(String key, String value) {
         sSettingsPre.edit().putString(key, value).apply();
+    }
+
+    public static Set<String> getStringSet(String key) {
+        return sSettingsPre.getStringSet(key, null);
+    }
+
+    public static void putStringToStringSet(String key, String value) {
+        Set<String> set = getStringSet(key);
+        if (set == null)
+            set = Set.of(value);
+        else if (set.contains(value))
+            return;
+        else
+            set.add(value);
+        sSettingsPre.edit().putStringSet(key, set).apply();
     }
 
     public static int getIntFromStr(String key, int defValue) {
@@ -987,5 +1004,13 @@ public class Settings {
 
     public static EhConfig getEhConfig() {
         return sEhConfig;
+    }
+
+    public static Set<String> getArchivePasswds() {
+        return getStringSet(KEY_ARCHIVE_PASSWDS);
+    }
+
+    public static void putPasswdToArchivePasswds(String value) {
+        putStringToStringSet(KEY_ARCHIVE_PASSWDS, value);
     }
 }

@@ -18,7 +18,6 @@ package com.hippo.ehviewer.preference;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Build;
 import android.text.Html;
 import android.util.AttributeSet;
 
@@ -87,11 +86,7 @@ public class IdentityCookiePreference extends MessagePreference {
             message = EhCookieStore.KEY_IPD_MEMBER_ID + ": " + ipbMemberId + "<br>"
                     + EhCookieStore.KEY_IPD_PASS_HASH + ": " + ipbPassHash + "<br>"
                     + EhCookieStore.KEY_IGNEOUS + ": " + igneous;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                setDialogMessage(Html.fromHtml(getContext().getString(R.string.settings_eh_identity_cookies_signed, message), Html.FROM_HTML_MODE_LEGACY));
-            } else {
-                setDialogMessage(Html.fromHtml(getContext().getString(R.string.settings_eh_identity_cookies_signed, message)));
-            }
+            setDialogMessage(Html.fromHtml(getContext().getString(R.string.settings_eh_identity_cookies_signed, message), Html.FROM_HTML_MODE_LEGACY));
             message = message.replace("<br>", "\n");
         } else {
             setDialogMessage(getContext().getString(R.string.settings_eh_identity_cookies_tourist));

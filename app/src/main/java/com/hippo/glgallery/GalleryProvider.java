@@ -245,18 +245,14 @@ public abstract class GalleryProvider {
         }
 
         public void add(Integer key, ImageWrapper value) {
-            if (value.getFormat() != Image.FORMAT_GIF && value.obtain()) {
-                put(key, value);
-            }
+            if (!value.getAnimated())
+                if (value.obtain())
+                    put(key, value);
         }
 
         @Override
         protected int sizeOf(Integer key, ImageWrapper value) {
-            int size = value.getWidth() * value.getHeight() * 4;
-            if (value.getFormat() == Image.FORMAT_GIF) {
-                size *= 5;
-            }
-            return size;
+            return value.getWidth() * value.getHeight() * 4;
         }
 
         @Override

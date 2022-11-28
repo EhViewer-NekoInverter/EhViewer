@@ -308,6 +308,7 @@ public class EhApplication extends SceneApplication {
 
         super.onCreate();
 
+        Image.initialize(this);
         Native.initialize();
         ClipboardUtil.initialize(this);
         GetText.initialize(this);

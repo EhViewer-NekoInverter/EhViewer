@@ -6,7 +6,8 @@ plugins {
 
 android {
     compileSdkVersion 33
-    buildToolsVersion "33.0.0"
+    buildToolsVersion "33.0.1"
+    ndkVersion "25.1.8937393"
 
     Properties localProperties = new Properties()
     if (project.rootProject.file('local.properties').exists()) {
@@ -33,11 +34,23 @@ android {
 
     defaultConfig {
         applicationId "org.moedog.ehviewer"
-        minSdkVersion 23
+        minSdkVersion 28
         targetSdkVersion 33
-        versionCode 114531
-        versionName "1.7.27-final"
+        versionCode 172800
+        versionName "1.7.28.0b1"
         resConfigs 'zh', 'zh-rCN', 'zh-rHK', 'zh-rTW', 'es', 'ja', 'ko', 'fr', 'de', 'th'
+
+        externalNativeBuild {
+            cmake {
+                arguments '-DANDROID_STL=none'
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path 'src/main/cpp/CMakeLists.txt'
+        }
     }
 
     compileOptions {
@@ -119,7 +132,6 @@ dependencies {
     implementation 'dev.rikka.rikkax.preference:simplemenu-preference:1.0.3'
     implementation 'org.greenrobot:greendao:3.3.0'
     implementation 'org.jsoup:jsoup:1.15.3'
-    implementation projects.native
 }
 
 configurations.all {

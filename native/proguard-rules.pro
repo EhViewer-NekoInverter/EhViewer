@@ -1,2 +1,0 @@
--keep class com.hippo.a7zip.* { *; }
--keep class com.hippo.image.* { *; }

@@ -23,6 +23,7 @@ import com.hippo.conaco.ValueHelper;
 import com.hippo.image.ImageBitmap;
 import com.hippo.streampipe.InputStreamPipe;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 
 public class ImageBitmapHelper implements ValueHelper<ImageBitmap> {
@@ -34,7 +35,8 @@ public class ImageBitmapHelper implements ValueHelper<ImageBitmap> {
     public ImageBitmap decode(@NonNull InputStreamPipe isPipe) {
         try {
             isPipe.obtain();
-            return ImageBitmap.decode(isPipe.open());
+            FileInputStream is = (FileInputStream) isPipe.open();
+            return ImageBitmap.decode(is);
         } catch (OutOfMemoryError | IOException e) {
             return null;
         } finally {

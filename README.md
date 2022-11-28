@@ -7,7 +7,7 @@
   <a href="https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml">
     <img src="https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml/badge.svg" alt="Github Actions">
   </a>
-  <a href="https://github.com/EhViewer-NekoInverter/EhViewer/blob/eh-1.7.27.x/LICENSE">
+  <a href="https://github.com/EhViewer-NekoInverter/EhViewer/blob/eh-1.7.28.x/LICENSE">
     <img src="https://img.shields.io/github/license/EhViewer-NekoInverter/EhViewer" alt="LICENSE">
   </a>
 </p>
@@ -54,7 +54,9 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 # 下载
 
-**注：需要 Android 8 及以上版本系统，如果闪退那就是不兼容，换别的用吧**
+最后一个支持 Android 6 的版本请前往 [v1.7.27-final Github Release](https://github.com/EhViewer-NekoInverter/EhViewer/releases/tag/v1.7.27.final) 下载
+
+**注：从 v1.7.28 开始需要 Android 9 及以上版本系统，如果闪退那就是不兼容，换别的用吧**
 
 推荐前往 [Github Actions](https://github.com/EhViewer-NekoInverter/EhViewer/actions) 下载最新 CI 版本，需要登录 Github 账号
 
@@ -155,22 +157,26 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 本项目受到了诸多开源项目的帮助
 
-- [AOSP](https://source.android.com/)
+- [AOSP & AndroidX](https://source.android.com/)
 - [android-advancedrecyclerview](https://github.com/h6ah4i/android-advancedrecyclerview)
 - [material-components-android](https://github.com/material-components/material-components-android)
 - [material-design-icons](https://github.com/google/material-design-icons)
 - [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/)
 - [apng](http://apng.sourceforge.net/)
 - [FullDraggableDrawer](https://github.com/PureWriter/FullDraggableDrawer)
-- [giflib](http://giflib.sourceforge.net)
+- [GnuTLS](https://gnutls.org/)
 - [greenDAO](https://github.com/greenrobot/greenDAO)
 - [jsoup](https://github.com/jhy/jsoup)
-- [libjpeg-turbo](http://libjpeg-turbo.virtualgl.org/)
-- [libpng](http://www.libpng.org/pub/png/libpng.html)
+- [libarchive](http://www.libarchive.org/)
 - [okhttp](https://github.com/square/okhttp)
 - [RikkaX](https://github.com/RikkaApps/RikkaX)
 - [roaster](https://github.com/forge/roaster)
 - [TapTargetView](https://github.com/KeepSafe/TapTargetView)
+- [XZ Utils](https://tukaani.org/xz/)
+
+部分代码来源
+
+- [Ehviewer-Overhauled](https://github.com/Ehviewer-Overhauled/Ehviewer)
 
 标签翻译数据
 
@@ -182,6 +188,7 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
     Copyright 2014-2019 Hippo Seven
     Copyright 2020-2022 NekoInverter
+    Copyright 2022 Moedog, Tarsin Norbin, and other contributors
 
     EhViewer is free software:
     you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,

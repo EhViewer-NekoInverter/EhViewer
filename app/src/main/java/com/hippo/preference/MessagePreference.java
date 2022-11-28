@@ -18,7 +18,6 @@ package com.hippo.preference;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.os.Build;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
@@ -53,11 +52,7 @@ public class MessagePreference extends DialogPreference {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MessagePreference, defStyleAttr, defStyleRes);
         String message = a.getString(R.styleable.MessagePreference_dialogMessage);
         if (a.getBoolean(R.styleable.MessagePreference_dialogMessageHtml, false)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                mDialogMessage = Html.fromHtml(message, Html.FROM_HTML_MODE_LEGACY);
-            } else {
-                mDialogMessage = Html.fromHtml(message);
-            }
+            mDialogMessage = Html.fromHtml(message, Html.FROM_HTML_MODE_LEGACY);
         } else {
             mDialogMessage = message;
         }

@@ -3,9 +3,9 @@ name: CI
 on:
   push:
     branches:
-      - eh-1.7.27.x
+      - '*'
     tags-ignore:
-      - "*"
+      - '*'
 
 jobs:
   linux:
