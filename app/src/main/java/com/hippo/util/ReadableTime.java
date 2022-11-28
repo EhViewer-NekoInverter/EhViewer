@@ -128,7 +128,7 @@ public final class ReadableTime {
 
     public static String getFilenamableTime(long time) {
         synchronized (sDateFormatLock) {
-            return FILENAMABLE_DATE_FORMAT.format(Instant.ofEpochMilli(time));
+            return FILENAMABLE_DATE_FORMAT.format(Instant.ofEpochMilli(time).atOffset(ZoneOffset.UTC));
         }
     }
 }
