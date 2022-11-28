@@ -16,6 +16,7 @@
 
 package com.hippo.ehviewer.ui.fragment;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 
@@ -27,13 +28,16 @@ import com.hippo.ehviewer.R;
 public class AboutFragment extends BasePreferenceFragment {
 
     private static final String KEY_AUTHOR = "author";
-    private static final String KEY_CHECK_FOR_UPDATES = "check_for_updates";
 
     @Override
     public void onCreatePreferences(@Nullable Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.about_settings);
         Preference author = findPreference(KEY_AUTHOR);
-        author.setSummary(Html.fromHtml(getString(R.string.settings_about_author_summary).replace('$', '@'), Html.FROM_HTML_MODE_LEGACY));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            author.setSummary(Html.fromHtml(getString(R.string.settings_about_author_summary).replace('$', '@'), Html.FROM_HTML_MODE_LEGACY));
+        } else {
+            author.setSummary(Html.fromHtml(getString(R.string.settings_about_author_summary).replace('$', '@')));
+        }
     }
 
     @Override

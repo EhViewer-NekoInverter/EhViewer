@@ -389,7 +389,7 @@ public final class GalleryCommentsScene extends ToolbarScene
                     } else if (id == R.id.edit_comment) {
                         prepareEditComment(comment.id);
                         if (!mInAnimation && mEditPanel != null && mEditPanel.getVisibility() != View.VISIBLE) {
-                            showEditPanel(true);
+                            showEditPanel();
                         }
                     }
                 }).show();
@@ -402,8 +402,7 @@ public final class GalleryCommentsScene extends ToolbarScene
         }
 
         RecyclerView.ViewHolder holder = parent.getChildViewHolder(view);
-        if (holder instanceof ActualCommentHolder) {
-            ActualCommentHolder commentHolder = (ActualCommentHolder) holder;
+        if (holder instanceof ActualCommentHolder commentHolder) {
             ClickableSpan span = commentHolder.comment.getCurrentSpan();
             commentHolder.comment.clearCurrentSpan();
 
@@ -436,7 +435,7 @@ public final class GalleryCommentsScene extends ToolbarScene
             return;
         }
 
-        if (mGalleryDetail == null || mGalleryDetail.comments == null || mGalleryDetail.comments.comments == null || mGalleryDetail.comments.comments.length <= 0) {
+        if (mGalleryDetail == null || mGalleryDetail.comments == null || mGalleryDetail.comments.comments == null || mGalleryDetail.comments.comments.length == 0) {
             mViewTransition.showView(1, animation);
         } else {
             mViewTransition.showView(0, animation);
@@ -495,17 +494,8 @@ public final class GalleryCommentsScene extends ToolbarScene
                 }).start();
     }
 
-    private void showEditPanel(boolean animation) {
-        if (animation) {
-            showEditPanelWithAnimation();
-        } else {
-            if (null == mFab || null == mEditPanel) {
-                return;
-            }
-
-            ((View) mFab).setVisibility(View.INVISIBLE);
-            mEditPanel.setVisibility(View.VISIBLE);
-        }
+    private void showEditPanel() {
+        showEditPanelWithAnimation();
     }
 
     private void hideEditPanelWithAnimation() {
@@ -554,18 +544,9 @@ public final class GalleryCommentsScene extends ToolbarScene
         animator.start();
     }
 
-    private void hideEditPanel(boolean animation) {
+    private void hideEditPanel() {
         hideSoftInput();
-        if (animation) {
-            hideEditPanelWithAnimation();
-        } else {
-            if (null == mFab || null == mEditPanel) {
-                return;
-            }
-
-            ((View) mFab).setVisibility(View.VISIBLE);
-            mEditPanel.setVisibility(View.INVISIBLE);
-        }
+        hideEditPanelWithAnimation();
     }
 
     @Nullable
@@ -588,7 +569,7 @@ public final class GalleryCommentsScene extends ToolbarScene
         if (mFab == v) {
             if (!mInAnimation) {
                 prepareNewComment();
-                showEditPanel(true);
+                showEditPanel();
             }
         } else if (mSendImage == v) {
             if (!mInAnimation) {
@@ -609,7 +590,7 @@ public final class GalleryCommentsScene extends ToolbarScene
                                 activity.getStageId(), getTag(), mCommentId));
                 EhApplication.getEhClient(context).execute(request);
                 hideSoftInput();
-                hideEditPanel(true);
+                hideEditPanel();
             }
         }
     }
@@ -620,12 +601,13 @@ public final class GalleryCommentsScene extends ToolbarScene
             return;
         }
         if (null != mEditPanel && mEditPanel.getVisibility() == View.VISIBLE) {
-            hideEditPanel(true);
+            hideEditPanel();
         } else {
             finish();
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void onRefreshGallerySuccess(GalleryCommentList result) {
         if (mGalleryDetail == null || mAdapter == null) {
             return;
@@ -656,6 +638,7 @@ public final class GalleryCommentsScene extends ToolbarScene
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void onCommentGallerySuccess(GalleryCommentList result) {
         if (mGalleryDetail == null || mAdapter == null) {
             return;
@@ -874,8 +857,14 @@ public final class GalleryCommentsScene extends ToolbarScene
         }
 
         private CharSequence generateComment(Context context, ObservedTextView textView, GalleryComment comment) {
-            Spanned sp = Html.fromHtml(comment.comment, Html.FROM_HTML_MODE_LEGACY, new URLImageGetter(textView,
-                    EhApplication.getConaco(context)), null);
+            Spanned sp;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                sp = Html.fromHtml(comment.comment, Html.FROM_HTML_MODE_LEGACY, new URLImageGetter(textView,
+                        EhApplication.getConaco(context)), null);
+            } else {
+                sp = Html.fromHtml(comment.comment, new URLImageGetter(textView,
+                        EhApplication.getConaco(context)), null);
+            }
 
             SpannableStringBuilder ssb = new SpannableStringBuilder(sp);
 
@@ -928,16 +917,12 @@ public final class GalleryCommentsScene extends ToolbarScene
         @NonNull
         @Override
         public CommentHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            switch (viewType) {
-                case TYPE_COMMENT:
-                    return new ActualCommentHolder(mInflater, parent);
-                case TYPE_MORE:
-                    return new MoreCommentHolder(mInflater, parent);
-                case TYPE_PROGRESS:
-                    return new ProgressCommentHolder(mInflater, parent);
-                default:
-                    throw new IllegalStateException("Invalid view type: " + viewType);
-            }
+            return switch (viewType) {
+                case TYPE_COMMENT -> new ActualCommentHolder(mInflater, parent);
+                case TYPE_MORE -> new MoreCommentHolder(mInflater, parent);
+                case TYPE_PROGRESS -> new ProgressCommentHolder(mInflater, parent);
+                default -> throw new IllegalStateException("Invalid view type: " + viewType);
+            };
         }
 
         @Override
