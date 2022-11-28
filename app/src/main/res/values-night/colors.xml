@@ -25,7 +25,7 @@
     <color name="progress">@color/grey_600</color>
     <color name="tag_group_background">@color/grey_775</color>
     <color name="tag_background">@color/grey_775</color>
-    <color name="gallery_detail_button_background">@color/grey_800</color>
+    <color name="gallery_detail_button_background">@color/grey_775</color>
 
     <!-- divider -->
     <color name="divider">#20ffffff</color>

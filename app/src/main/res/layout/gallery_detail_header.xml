@@ -130,6 +130,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/keyline_margin"
             android:layout_marginRight="@dimen/keyline_margin"
+            app:cardBackgroundColor="?attr/galleryDetailButtonBackgroundColor"
             app:cardUseCompatPadding="true">
 
             <LinearLayout
@@ -143,7 +144,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="?selectableItemBackgroundBorderless"
                     android:clickable="true"
                     android:focusable="true"
                     android:textColor="?attr/textColorThemePrimary" />
@@ -161,7 +161,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="?selectableItemBackgroundBorderless"
                     android:clickable="true"
                     android:focusable="true"
                     android:text="@string/read"
