@@ -35,8 +35,8 @@ android {
         applicationId "org.moedog.ehviewer"
         minSdkVersion 23
         targetSdkVersion 33
-        versionCode 114530
-        versionName "1.7.27.8"
+        versionCode 114531
+        versionName "1.7.27-final"
         resConfigs 'zh', 'zh-rCN', 'zh-rHK', 'zh-rTW', 'es', 'ja', 'ko', 'fr', 'de', 'th'
     }
 
