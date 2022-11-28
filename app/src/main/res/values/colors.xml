@@ -49,8 +49,8 @@
     <color name="tag_background">@color/colorPrimary</color>
     <color name="tag_background_black">@color/grey_875</color>
 
-    <color name="gallery_detail_button_background">@color/grey_100</color>
-    <color name="gallery_detail_button_background_black">@color/grey_900</color>
+    <color name="gallery_detail_button_background">@color/colorBackground</color>
+    <color name="gallery_detail_button_background_black">@color/grey_875</color>
 
     <color name="red_500">#fff44336</color>
     <color name="teal_500">#ff009688</color>
