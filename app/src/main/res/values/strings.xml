@@ -49,7 +49,6 @@
     <string name="register">Register</string>
     <string name="sign_in_via_webview">Sign in via WebView</string>
     <string name="sign_in_via_cookies">Sign in via cookies</string>
-    <string name="display_name">Display name</string>
     <string name="sign_in_first">Please sign in first</string>
 
     <string name="default_display_name">Little Hippo</string>
@@ -63,8 +62,6 @@
     <string name="found_cookies">Found cookies!</string>
 
     <string name="invalid_download_location">It seems download location is not available. Please set it in Settings.</string>
-
-    <string name="cellular_network_warning">Connected to cellular networks</string>
 
     <string name="clipboard_gallery_url_snack_message">There is a gallery url in the clipboard</string>
     <string name="clipboard_gallery_url_snack_action">View</string>
@@ -104,9 +101,7 @@
     <string name="error_cant_find_activity">Can\'t find the application</string>
     <string name="error_cannot_parse_the_url">Can\'t parse the url</string>
     <string name="error_not_folder_path">Not folder path</string>
-    <string name="error_no_provider">No provider</string>
     <string name="error_decoding_failed">Decoding failed</string>
-    <string name="error_not_found">Not found</string>
     <string name="error_empty">Empty</string>
     <string name="error_invalid_archive">Invalid archive</string>
     <string name="error_reading_failed">Reading Failed</string>
@@ -121,7 +116,6 @@
     <string name="error_invalid_number">Invalid number</string>
     <string name="error_please_login_first">Please login first</string>
     <string name="error_empty_html">Empty page</string>
-    <string name="error_cant_get_image">Can\'t get image</string>
 
     <string name="kokomade_tip">Settings->Eh->Gallery Site->e-hentai</string>
 
@@ -184,7 +178,6 @@
     <string name="add_to_favourites">Add to favourites</string>
     <string name="remove_from_favourites">Remove from favourites</string>
 
-    <string name="stop_downloading">Stop downloading</string>
     <string name="delete_downloads">Delete downloads</string>
 
     <string name="quick_search">Quick search</string>
@@ -194,7 +187,6 @@
     <string name="delete">Delete</string>
     <string name="delete_quick_search_title">Delete Quick Search</string>
     <string name="delete_quick_search_message">Delete \"%s\"?</string>
-    <string name="no_quick_search">Quick search will be shown here</string>
     <string name="add_quick_search_tip">The state of gallery list will be saved as quick search. Perform a search first to save the state of search panel.</string>
     <string name="readme">README</string>
     <string name="image_search_not_quick_search">Can\'t add image search as quick search</string>
@@ -220,7 +212,6 @@
     </plurals>
     <string name="favored_times">\u2665 %d</string>
     <string name="rating_text">%1$s (%2$.2f, %3$d)</string>
-    <string name="favorites">Favorites</string>
     <string name="torrent_count">Torrent (%d)</string>
     <string name="share">Share</string>
     <string name="rate">Rate</string>
@@ -342,7 +333,6 @@
     <string name="download_remove_dialog_message_2">Remove %d items from download list ?</string>
     <string name="download_remove_dialog_check_text">Delete image files</string>
     <string name="stat_download_action_stop_all">Stop all</string>
-    <string name="drawer_download_label_title">Label</string>
     <string name="default_download_label_name">Default</string>
     <string name="download_move_dialog_title">Move</string>
     <string name="download_labels">Download labels</string>
@@ -358,7 +348,6 @@
     <string name="added_to_download_list">Added to download list</string>
 
     <!-- Download label -->
-    <string name="no_download_label">Download labels will be shown here</string>
     <string name="add">Add</string>
     <string name="new_label_title">New label</string>
     <string name="label_text_is_empty">Label text is empty</string>
@@ -406,7 +395,7 @@
     <string name="hosts">Custom hosts.txt</string>
     <string name="hosts_tip">hosts.txt</string>
     <string name="hosts_host">Host</string>
-    <string name="hosts_ip">IP1(+IP2+IP3...)</string>
+    <string name="hosts_ip">IP1(+IP2+IP3…)</string>
     <string name="add_host">Add a host</string>
     <string name="add_host_add">Add</string>
     <string name="edit_host">Edit the host</string>
@@ -420,8 +409,7 @@
     <string name="page_menu_refresh">@string/refresh</string>
     <string name="page_menu_share">@string/share</string>
     <string name="page_menu_save">Save</string>
-    <string name="page_menu_save_to">Save to...</string>
-    <string name="page_menu_add_bookmark">Add a bookmark</string>
+    <string name="page_menu_save_to">Save to…</string>
     <string name="gallery_menu_title">Menu</string>
     <string name="share_image">Share image</string>
     <string name="image_saved">Image saved to %s</string>
@@ -473,7 +461,6 @@
     <string name="settings_eh_preview_num">The maximum number of previews on the gallery details page</string>
     <string name="settings_eh_filter">Block gallery</string>
     <string name="settings_eh_filter_summary">Block gallery by title, uploader and tags</string>
-    <string name="settings_eh_cellular_network_warning">Cellular network warning</string>
     <string name="settings_eh_request_news">Request news page on start</string>
     <string name="settings_eh_hide_hv_events">Hide HV event Notifications</string>
 
@@ -530,7 +517,6 @@
     <string name="settings_download_download_origin_image_summary">It is dangerous! You may get 509 error</string>
     <string name="settings_download_restore_download_items">Restore download items</string>
     <string name="settings_download_restore_download_items_summary">Restore all download items in download location</string>
-    <string name="settings_download_restoring">Restoring</string>
     <string name="settings_download_restore_not_found">Not found download items to restore</string>
     <string name="settings_download_restore_failed">Restore failed</string>
     <string name="settings_download_restore_successfully">Restore %d items successfully</string>
@@ -588,18 +574,12 @@
     <string name="settings_about_source">Source</string>
     <string name="settings_about_version">Build version</string>
 
-    <string name="proxy_enable">Enable</string>
-    <string name="proxy_enabled">Enabled</string>
-    <string name="proxy_disabled">Disabled</string>
     <string name="proxy_direct">Direct</string>
     <string name="proxy_system">System Proxy</string>
     <string name="proxy_host_or_ip">Host or IP</string>
     <string name="proxy_port">Port</string>
-    <string name="proxy_domain_not_supported">Domain is not supported</string>
     <string name="proxy_invalid_port">Invalid port</string>
 
-    <string name="cant_get_data_dir">Can\'t get data dir</string>
-    <string name="cant_find_any_data">Can\'t find any data</string>
     <string name="cant_read_the_file">Can\'t read the file</string>
 
     <string name="app_language_system">System Language (Default)</string>
@@ -627,9 +607,7 @@
     <string name="move_favorites_dialog_title">Move favorites</string>
     <string name="default_favorites_collection">Default favorites collection</string>
     <string name="let_me_select">Let me select</string>
-    <string name="favorites_info">Favorites info</string>
     <string name="collections">Collections</string>
-    <string name="count">Count</string>
     <string name="need_sign_in">Signing in is required</string>
 
     <!-- Progress Scene -->

@@ -33,7 +33,6 @@
         android:visibility="gone" />
 
     <HorizontalScrollView
-        android:id="@+id/actions_scroll_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

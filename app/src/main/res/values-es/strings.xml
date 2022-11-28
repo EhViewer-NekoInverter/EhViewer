@@ -33,7 +33,6 @@
     <string name="register">Registrarse</string>
     <string name="sign_in_via_webview">Iniciar sesión vía web</string>
     <string name="sign_in_via_cookies">Iniciar sesión vía cookies</string>
-    <string name="display_name">Nombre para mostrar</string>
     <string name="sign_in_first">Por favor, inicie sesión primero</string>
 
     <string name="default_display_name">Little Hippo</string>
@@ -48,8 +47,6 @@
 
     <string name="invalid_download_location">Parece que la ubicación de descarga no está disponible. Establece la ubicación en Configuración.</string>
 
-    <string name="cellular_network_warning">Conectado a redes móviles</string>
-
     <string name="error_bad_status_code">Bad status code: %d</string>
     <string name="error_timeout">Sin tiempo</string>
     <string name="error_unknown_host">Host desconocido</string>
@@ -59,9 +56,7 @@
     <string name="error_cant_find_activity">No se encuentra la aplicación</string>
     <string name="error_cannot_parse_the_url">No se puede analizar el URL</string>
     <string name="error_not_folder_path">Sin ruta del directorio</string>
-    <string name="error_no_provider">Sin proveedor</string>
     <string name="error_decoding_failed">Decodificación fallida</string>
-    <string name="error_not_found">No encontrado</string>
     <string name="error_empty">Vacío</string>
     <string name="error_reading_failed">Lectura Fallida</string>
     <string name="error_out_of_range">Fuera de rango</string>
@@ -132,7 +127,6 @@
     <string name="delete">Eliminar</string>
     <string name="delete_quick_search_title">Eliminar búsqueda rápida</string>
     <string name="delete_quick_search_message">¿Eliminar \"%s\"?</string>
-    <string name="no_quick_search">La búsqueda rápida se muestra acá</string>
     <string name="add_quick_search_tip">El estado de la lista de galerías se guardará como búsqueda rápida. Aplique la búsqueda primero si desea guardar el estado del panel de búsqueda.</string>
     <string name="readme">LÉEME</string>
     <string name="image_search_not_quick_search">No se puede añadir la búsqueda de imágenes como búsqueda rápida</string>
@@ -158,7 +152,6 @@
     </plurals>
     <string name="favored_times">\u2665 %d</string>
     <string name="rating_text">%1$s (%2$.2f, %3$d)</string>
-    <string name="favorites">Favoritos</string>
     <string name="torrent_count">Torrent (%d)</string>
     <string name="share">Compartir</string>
     <string name="rate">Valorar</string>
@@ -271,7 +264,6 @@
     <string name="download_remove_dialog_message_2">¿Borrar %d galerías de la lista de descargas?</string>
     <string name="download_remove_dialog_check_text">Borrar imágenes</string>
     <string name="stat_download_action_stop_all">Detener todo</string>
-    <string name="drawer_download_label_title">Etiquetas</string>
     <string name="default_download_label_name">Predeterminado</string>
     <string name="download_move_dialog_title">Mover</string>
     <string name="download_labels">Descargar etiquetas</string>
@@ -287,7 +279,6 @@
     <string name="added_to_download_list">Añadido a la lista de descargas</string>
 
     <!-- Download label -->
-    <string name="no_download_label">Las etiquetas de descarga se muestran acá</string>
     <string name="add">Añadir</string>
     <string name="new_label_title">Nueva etiqueta</string>
     <string name="label_text_is_empty">Nombre de la etiqueta vacía</string>
@@ -328,7 +319,7 @@
     <string name="hosts">hosts.txt personalizado </string>
     <string name="hosts_tip">hosts.txt</string>
     <string name="hosts_host">Anfitrión</string>
-    <string name="hosts_ip">IP1(+IP2+IP3...)</string>
+    <string name="hosts_ip">IP1(+IP2+IP3…)</string>
     <string name="add_host">Añadir una anfitrión</string>
     <string name="add_host_add">Añadir</string>
     <string name="edit_host">Anfitrión</string>
@@ -343,7 +334,6 @@
     <string name="page_menu_share">@string/share</string>
     <string name="page_menu_save">Guardar</string>
     <string name="page_menu_save_to">Guardar en…</string>
-    <string name="page_menu_add_bookmark">Añadir a marcadores</string>
     <string name="gallery_menu_title">Menú</string>
     <string name="share_image">Compartir imagen</string>
     <string name="image_saved">Imagen guardada en  %s</string>
@@ -382,7 +372,6 @@
     <string name="settings_eh_show_gallery_pages_summary">Se verá cuántas páginas tiene una galería</string>
     <string name="settings_eh_filter">Filtrado de galerías</string>
     <string name="settings_eh_filter_summary">Filtrado de galerías por título, uploader y etiquetas. Para más detalles presiona el ícono (i) en la parte superior del menú</string>
-    <string name="settings_eh_cellular_network_warning">Advertencia de redes móviles</string>
 
     <string name="settings_read">Lectura</string>
     <string name="settings_read_screen_rotation">Orientación de la pantalla</string>
@@ -433,7 +422,6 @@
     <string name="settings_download_download_origin_image_summary">¡Cuidado! Podrías recibir error 509</string>
     <string name="settings_download_restore_download_items">Restaurar los elementos de descarga</string>
     <string name="settings_download_restore_download_items_summary">Restaurar todos los elementos de descarga en la ruta de descarga</string>
-    <string name="settings_download_restoring">Restaurando…</string>
     <string name="settings_download_restore_not_found">No se han encontrado elementos para restaurar</string>
     <string name="settings_download_restore_failed">Restauración fallida</string>
     <string name="settings_download_restore_successfully">Restauración de %d elementos completados</string>
@@ -473,14 +461,9 @@
     <string name="settings_about_source">Código fuente</string>
     <string name="settings_about_version">Versión de compilación</string>
 
-    <string name="proxy_enable">Habilitar</string>
-    <string name="proxy_enabled">Habilitado</string>
     <string name="proxy_port">Puerto</string>
-    <string name="proxy_domain_not_supported">Dominio no soportado</string>
     <string name="proxy_invalid_port">Puerto Invalido</string>
 
-    <string name="cant_get_data_dir">No se puede obtener el directorio de datos</string>
-    <string name="cant_find_any_data">No se pueden encuentran datos</string>
     <string name="cant_read_the_file">No se puede leer el archivo</string>
     <string name="app_language_system">Lenguaje del sistema (Defecto)</string>
 
@@ -497,9 +480,7 @@
     <string name="move_favorites_dialog_title">Mover favoritos</string>
     <string name="default_favorites_collection">Colección de favoritos por defecto</string>
     <string name="let_me_select">Déjame elegir</string>
-    <string name="favorites_info">Información de favoritos</string>
     <string name="collections">Colección</string>
-    <string name="count">Contar</string>
     <string name="need_sign_in">Se necesita iniciar sesión</string>
 
     <!-- Progress Scene -->

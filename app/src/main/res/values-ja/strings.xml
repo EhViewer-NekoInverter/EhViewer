@@ -33,7 +33,6 @@
     <string name="register">登録</string>
     <string name="sign_in_via_webview">Webでログイン</string>
     <string name="sign_in_via_cookies">Cookieでログイン</string>
-    <string name="display_name">ニックネーム</string>
     <string name="sign_in_first">ログインしてください</string>
 
     <string name="default_display_name">Little Hippo</string>
@@ -48,8 +47,6 @@
 
     <string name="invalid_download_location">ダウンロードパスは現在利用できません。ダウンロードパスを設定してください。</string>
 
-    <string name="cellular_network_warning">モバイルネットワークに接続しています</string>
-
     <string name="clipboard_gallery_url_snack_message">クリップボードにはギャラリーURLが検出されました。</string>
     <string name="clipboard_gallery_url_snack_action">移動</string>
 
@@ -62,9 +59,7 @@
     <string name="error_cant_find_activity">アクティビティが見つかりません。</string>
     <string name="error_cannot_parse_the_url">リンクを解析できません。</string>
     <string name="error_not_folder_path">フォルダが見つかりません。</string>
-    <string name="error_no_provider">プロバイダが見つかりません。</string>
     <string name="error_decoding_failed">デコードに失敗しました。</string>
-    <string name="error_not_found">見つかりませんでした。</string>
     <string name="error_empty">空</string>
     <string name="error_invalid_archive">無効なアーカイブファイルです</string>
     <string name="error_reading_failed">読み込めませんでした。</string>
@@ -136,8 +131,6 @@
     <string name="add_to_favourites">お気に入りに追加</string>
     <string name="remove_from_favourites">お気に入りから削除</string>
 
-    <string name="stop_downloading">ダウンロードを停止</string>
-
     <string name="quick_search">クイック検索</string>
     <string name="quick_search_tip">「+」をタップしてクイック検索を追加します</string>
     <string name="add_quick_search_dialog_title">クイック検索を追加</string>
@@ -145,7 +138,6 @@
     <string name="delete">削除</string>
     <string name="delete_quick_search_title">クイック検索を削除</string>
     <string name="delete_quick_search_message">「%s」を削除しますか？</string>
-    <string name="no_quick_search">クイック検索はここに表示されます</string>
     <string name="add_quick_search_tip">ギャラリー検索結果の設定などはクイック検索として保存されます。検索の設定などを保存するには、まず検索を実行してください。</string>
     <string name="readme">説明</string>
     <string name="image_search_not_quick_search">画像検索をクイック検索として追加できませんでした。</string>
@@ -170,7 +162,6 @@
     </plurals>
     <string name="favored_times">\u2665 %d</string>
     <string name="rating_text">%1$s (%2$.2f, %3$d)</string>
-    <string name="favorites">お気に入り</string>
     <string name="torrent_count">トレント (%d)</string>
     <string name="share">共有</string>
     <string name="rate">評価</string>
@@ -284,7 +275,6 @@
     <string name="download_remove_dialog_message_2">ダウンロードリストから%d件のタスクを削除しますか？</string>
     <string name="download_remove_dialog_check_text">画像ファイルを削除</string>
     <string name="stat_download_action_stop_all">すべて停止</string>
-    <string name="drawer_download_label_title">ラベル</string>
     <string name="default_download_label_name">デフォルト</string>
     <string name="download_move_dialog_title">移動</string>
     <string name="download_labels">ダウンロードラベル</string>
@@ -300,7 +290,6 @@
     <string name="added_to_download_list">ダウンロードリストに追加しました</string>
 
     <!-- Download label -->
-    <string name="no_download_label">ダウンロードラベルはここに表示されます</string>
     <string name="add">追加</string>
     <string name="new_label_title">ラベルを作成</string>
     <string name="label_text_is_empty">ラベルテキストを入力してください</string>
@@ -346,7 +335,7 @@
     <string name="hosts">カスタムhosts.txt</string>
     <string name="hosts_tip">hosts.txt</string>
     <string name="hosts_host">ホスト</string>
-    <string name="hosts_ip">IP1(+IP2+IP3...)</string>
+    <string name="hosts_ip">IP1(+IP2+IP3…)</string>
     <string name="add_host">ホストを追加</string>
     <string name="add_host_add">追加</string>
     <string name="edit_host">ホストを編集</string>
@@ -361,7 +350,6 @@
     <string name="page_menu_share">@string/share</string>
     <string name="page_menu_save">保存</string>
     <string name="page_menu_save_to">名前を付けて保存</string>
-    <string name="page_menu_add_bookmark">ブックマークに追加</string>
     <string name="gallery_menu_title">メニュー</string>
     <string name="share_image">画像を共有</string>
     <string name="image_saved">画像は%sに保存されました</string>
@@ -404,7 +392,6 @@
     <string name="settings_eh_show_gallery_pages_summary">リストにギャラリーのページの数量を表示します</string>
     <string name="settings_eh_filter">ギャラリーをブロック</string>
     <string name="settings_eh_filter_summary">タイトル、アップローダ、もしくはタグで望ましくないギャラリーを除外</string>
-    <string name="settings_eh_cellular_network_warning">モバイルネットワーク警告</string>
 
     <string name="settings_read">閲覧</string>
     <string name="settings_read_screen_rotation">画面の向き</string>
@@ -454,7 +441,6 @@
     <string name="settings_download_download_origin_image_summary">有効にすると、ダウンロード制限にもっとはやく達する恐れがあります</string>
     <string name="settings_download_restore_download_items">ダウンロードタスクを復元</string>
     <string name="settings_download_restore_download_items_summary">ダウンロードディレクトリのダウンロードタスクを復元</string>
-    <string name="settings_download_restoring">復元中</string>
     <string name="settings_download_restore_not_found">復元可能なダウンロードが見つかりません</string>
     <string name="settings_download_restore_failed">復元できませんでした</string>
     <string name="settings_download_restore_successfully">%d件のタスクが復元されました</string>
@@ -502,18 +488,12 @@
     <string name="settings_about_source">ソース</string>
     <string name="settings_about_version">バージョン番号</string>
 
-    <string name="proxy_enable">有効にする</string>
-    <string name="proxy_enabled">有効</string>
-    <string name="proxy_disabled">無効</string>
     <string name="proxy_direct">ダイレクト</string>
     <string name="proxy_system">システムプロキシ</string>
     <string name="proxy_host_or_ip">ホスト名又はIP</string>
     <string name="proxy_port">ポート</string>
-    <string name="proxy_domain_not_supported">ドメインには対応していません</string>
     <string name="proxy_invalid_port">入力したポートは無効です</string>
 
-    <string name="cant_get_data_dir">データフォルダを取得できませんでした</string>
-    <string name="cant_find_any_data">データが見つかりません</string>
     <string name="cant_read_the_file">ファイルを読み取れませんでした</string>
 
     <string name="app_language_system">システム言語（既定）</string>
@@ -531,9 +511,7 @@
     <string name="move_favorites_dialog_title">お気に入りを移動</string>
     <string name="default_favorites_collection">既定のお気に入りリスト</string>
     <string name="let_me_select">手動で選択</string>
-    <string name="favorites_info">お気に入り情報</string>
     <string name="collections">お気に入りコレクション</string>
-    <string name="count">数量</string>
     <string name="need_sign_in">ログインが必要</string>
 
     <!-- Progress Scene -->

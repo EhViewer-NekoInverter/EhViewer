@@ -12,8 +12,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -82,7 +81,6 @@
             android:text="@string/search_sp" />
 
         <EditText
-            android:id="@+id/spf"
             android:layout_width="64dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -90,7 +88,8 @@
             android:layout_marginRight="@dimen/advance_search_table_item_margin"
             android:imeOptions="actionNext"
             android:inputType="number"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:importantForAutofill="no" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -102,7 +101,6 @@
             android:textColor="?android:attr/textColorPrimary" />
 
         <EditText
-            android:id="@+id/spt"
             android:layout_width="64dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -110,7 +108,8 @@
             android:layout_marginRight="@dimen/advance_search_table_item_margin"
             android:imeOptions="actionNone"
             android:inputType="number"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:importantForAutofill="no" />
 
         <TextView
             android:layout_width="wrap_content"

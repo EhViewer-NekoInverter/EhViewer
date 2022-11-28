@@ -20,7 +20,7 @@
     android:layout_height="match_parent"
     app:fitsSystemWindowsInsets="top|bottom">
 
-    <com.hippo.widget.MaxSizeContainer xmlns:app="http://schemas.android.com/apk/res-auto"
+    <com.hippo.widget.MaxSizeContainer
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
