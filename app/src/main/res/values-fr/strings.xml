@@ -33,7 +33,6 @@
     <string name="register">Créer un compte</string>
     <string name="sign_in_via_webview">Se connecter via WebView</string>
     <string name="sign_in_via_cookies">Se connecter à l\'aide de cookies</string>
-    <string name="display_name">Nickname</string>
     <string name="sign_in_first">Connectez-vous pour continuer</string>
 
     <string name="default_display_name">Pétit Hippo</string>
@@ -48,8 +47,6 @@
 
     <string name="invalid_download_location">La location de téléchargement actuelle n\'est pas disponible. Choissez-en une à nouveau dans les Paramétres.</string>
 
-    <string name="cellular_network_warning">Vous utilisez les données mobiles</string>
-
     <string name="clipboard_gallery_url_snack_message">Un lien d\'un galerie est détecté dans les presse-papiers. </string>
     <string name="clipboard_gallery_url_snack_action">Aller</string>
 
@@ -62,9 +59,7 @@
     <string name="error_cant_find_activity">Impossible de trouver l\'application</string>
     <string name="error_cannot_parse_the_url">Impossible de parser le lien URL</string>
     <string name="error_not_folder_path">Chemin de dossier invalide</string>
-    <string name="error_no_provider">Aucun fournisseur</string>
     <string name="error_decoding_failed">Échec de décodage</string>
-    <string name="error_not_found">Introuvable</string>
     <string name="error_empty">Vide</string>
     <string name="error_invalid_archive">Fiche d\'achives invalide</string>
     <string name="error_reading_failed">Échec de lecture</string>
@@ -135,8 +130,6 @@
     <string name="add_to_favourites">Ajouter à favori</string>
     <string name="remove_from_favourites">Retirer de favori</string>
 
-    <string name="stop_downloading">Arrêter le téléchargement</string>
-
     <string name="quick_search">Recherche rapide</string>
     <string name="quick_search_tip">Appuyez sur \"+\" pour ajouter une Recherche rapide</string>
     <string name="add_quick_search_dialog_title">Ajouter la Recherche rapide</string>
@@ -144,7 +137,6 @@
     <string name="delete">Supprimer</string>
     <string name="delete_quick_search_title">Supprimer les Recherches rapides</string>
     <string name="delete_quick_search_message">Supprimer \"%s\" ?</string>
-    <string name="no_quick_search">Recherches rapides s\'afficheront ici.</string>
     <string name="add_quick_search_tip">Le resultat de la liste de galerie sera sauvegardé comme une Recherche rapide. Cherchez d\'abord pour sauvegarder l\'état du panneau recherche.</string>
     <string name="readme">README</string>
     <string name="image_search_not_quick_search">Impossible d\'ajouter recherche d\'une image comme une Recherche rapide.</string>
@@ -170,7 +162,6 @@
     </plurals>
     <string name="favored_times">\u2665 %d</string>
     <string name="rating_text">%1$s (%2$.2f, %3$d)</string>
-    <string name="favorites">Favoris</string>
     <string name="torrent_count">Torrent (%d)</string>
     <string name="share">Partager</string>
     <string name="rate">Noter</string>
@@ -284,7 +275,6 @@
     <string name="download_remove_dialog_message_2">Retirer %d articles de la liste de téléchargement ?</string>
     <string name="download_remove_dialog_check_text">Supprimer fiches d\'image</string>
     <string name="stat_download_action_stop_all">Arrêter tout</string>
-    <string name="drawer_download_label_title">Label</string>
     <string name="default_download_label_name">Défaut</string>
     <string name="download_move_dialog_title">Déplacer</string>
     <string name="download_labels">Labels de téléchargement</string>
@@ -300,7 +290,6 @@
     <string name="added_to_download_list">Ajouté à la liste de téléchargement</string>
 
     <!-- Download label -->
-    <string name="no_download_label">Vos labels de téléchargement s\'affichera ici</string>
     <string name="add">Ajouter</string>
     <string name="new_label_title">Nouveau label</string>
     <string name="label_text_is_empty">Entrez le texte du label</string>
@@ -345,7 +334,7 @@
     <string name="hosts">Personnalisé hosts.txt</string>
     <string name="hosts_tip">hosts.txt</string>
     <string name="hosts_host">Hôte</string>
-    <string name="hosts_ip">IP1(+IP2+IP3...)</string>
+    <string name="hosts_ip">IP1(+IP2+IP3…)</string>
     <string name="add_host">Ajouter hôte</string>
     <string name="add_host_add">Ajouter</string>
     <string name="edit_host">Modifier hôte</string>
@@ -360,7 +349,6 @@
     <string name="page_menu_share">@string/share</string>
     <string name="page_menu_save">Enregistrer</string>
     <string name="page_menu_save_to">Enregistrer sous…</string>
-    <string name="page_menu_add_bookmark">Ajouter un signet</string>
     <string name="gallery_menu_title">Menu</string>
     <string name="share_image">Partager l\'image</string>
     <string name="image_saved">Image sauvegardée à %s</string>
@@ -403,7 +391,6 @@
     <string name="settings_eh_show_gallery_pages_summary">Montrer le nombre des pages des galerie dans la liste des galeries</string>
     <string name="settings_eh_filter">Bloqueur des galeries</string>
     <string name="settings_eh_filter_summary">Filtrer les galerie par les titres, les uploaders ou les tags</string>
-    <string name="settings_eh_cellular_network_warning">Avertissement de données mobiles</string>
 
     <string name="settings_read">Lecture</string>
     <string name="settings_read_screen_rotation">Rotation d\'écran</string>
@@ -454,7 +441,6 @@
     <string name="settings_download_download_origin_image_summary">Vous allez obtenir l\'erreur 509 plus facilement</string>
     <string name="settings_download_restore_download_items">Rétablir les galeries téléchargées</string>
     <string name="settings_download_restore_download_items_summary">Rétablir tous objets déjà téléchargés dans la destination de téléchargement</string>
-    <string name="settings_download_restoring">Rétablissement en cours</string>
     <string name="settings_download_restore_not_found">Aucun objet trouvé à rétablir</string>
     <string name="settings_download_restore_failed">Échec de rétablissement</string>
     <string name="settings_download_restore_successfully">%d objets rétablis avec succès</string>
@@ -502,18 +488,12 @@
     <string name="settings_about_source">Source</string>
     <string name="settings_about_version">Numéro de version</string>
 
-    <string name="proxy_enable">Activer</string>
-    <string name="proxy_enabled">Activé</string>
-    <string name="proxy_disabled">Non activé</string>
     <string name="proxy_direct">Directement</string>
     <string name="proxy_system">Déterminé par le systéme</string>
     <string name="proxy_host_or_ip">Nom d\'hôte ou IP</string>
     <string name="proxy_port">Port</string>
-    <string name="proxy_domain_not_supported">Le domaine n\'est pas compatible</string>
     <string name="proxy_invalid_port">Port invalide</string>
 
-    <string name="cant_get_data_dir">Échec d\'obtention du répertoire données</string>
-    <string name="cant_find_any_data">Aucune donnée trouvée</string>
     <string name="cant_read_the_file">Impossible de lire le fiche</string>
 
     <string name="app_language_system">Langue du système (défaut)</string>
@@ -531,9 +511,7 @@
     <string name="move_favorites_dialog_title">Déplacer favoris</string>
     <string name="default_favorites_collection">Collection favoris par défaut</string>
     <string name="let_me_select">Sélectionner manuellement</string>
-    <string name="favorites_info">Infos de favoris</string>
     <string name="collections">Collections</string>
-    <string name="count">Total</string>
     <string name="need_sign_in">Vous devez vous connecter</string>
 
     <!-- Progress Scene -->

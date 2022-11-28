@@ -35,7 +35,7 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <com.hippo.widget.MaxSizeContainer xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.hippo.widget.MaxSizeContainer
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

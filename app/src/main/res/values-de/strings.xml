@@ -34,7 +34,6 @@
     <string name="register">Konto erstellen</string>
     <string name="sign_in_via_webview">Mit WebView anmelden</string>
     <string name="sign_in_via_cookies">Mit den Cookies anmelden</string>
-    <string name="display_name">Spitzname</string>
     <string name="sign_in_first">Melde dich zunächst an</string>
 
     <string name="default_display_name">Kleines Nilpferd</string>
@@ -49,8 +48,6 @@
 
     <string name="invalid_download_location">Der Downloadpfad ist nicht verfügbar. Geh zu die Einstellungen und stelle einen neue Pfad fest.</string>
 
-    <string name="cellular_network_warning">Zu den mobilen Daten verbunden.</string>
-
     <string name="clipboard_gallery_url_snack_message">Ein Link von einen Galerie wurde in Zwischenablage erkennt.</string>
     <string name="clipboard_gallery_url_snack_action">Gehen</string>
 
@@ -63,9 +60,7 @@
     <string name="error_cant_find_activity">Die Application wurde nicht gefunden</string>
     <string name="error_cannot_parse_the_url">Die URL konnte analysiert nicht werden</string>
     <string name="error_not_folder_path">Der Ordnerpfad ist ungültig</string>
-    <string name="error_no_provider">Keiner Anbieter</string>
     <string name="error_decoding_failed">Dekodierung fehlgeschlagen</string>
-    <string name="error_not_found">Nicht gefunden</string>
     <string name="error_empty">Leer</string>
     <string name="error_invalid_archive">Ungültige Archivdatei</string>
     <string name="error_reading_failed">Lesefehler</string>
@@ -134,8 +129,6 @@
     <string name="add_to_favourites">Zu den Favoriten hinzufügen</string>
     <string name="remove_from_favourites">Aus den Favoriten entfernen</string>
 
-    <string name="stop_downloading">Download stoppen</string>
-
     <string name="quick_search">Sofortsuche</string>
     <string name="quick_search_tip">Tippe an +, um eine Sofortsuche hinzuzufügen</string>
     <string name="add_quick_search_dialog_title">Sofortsuche hinzufügen</string>
@@ -143,7 +136,6 @@
     <string name="delete">Löschen</string>
     <string name="delete_quick_search_title">Sofortsuche löschen</string>
     <string name="delete_quick_search_message">%s löschen?</string>
-    <string name="no_quick_search">Deine Sofortsuchen werden hier angezeigt</string>
     <string name="add_quick_search_tip">Das Suchergebnis wird als eine Sofortsuche gespeichert. Suche etwas zuerst, um das Ergebnis zu speichern.</string>
     <string name="readme">README</string>
     <string name="image_search_not_quick_search">Die Bildsuchen können als Sofortsuchen gespeichert nicht werden.</string>
@@ -165,7 +157,6 @@
     <string name="more_information">Weitere Informationen</string>
     <string name="favored_times">♥ %d</string>
     <string name="rating_text">%1$s (%2$.2f, %3$d)</string>
-    <string name="favorites">Favoriten</string>
     <string name="torrent_count">Torrent (%d)</string>
     <string name="share">Teilen</string>
     <string name="rate">Bewerten</string>
@@ -279,7 +270,6 @@
     <string name="download_remove_dialog_message_2">%d Downloads aus der Downloadliste entfernen?</string>
     <string name="download_remove_dialog_check_text">Bilddateien löschen</string>
     <string name="stat_download_action_stop_all">Alle stopppen</string>
-    <string name="drawer_download_label_title">Etikette</string>
     <string name="default_download_label_name">Standard</string>
     <string name="download_move_dialog_title">"Verschieben "</string>
     <string name="download_labels">Download-Etikette</string>
@@ -295,7 +285,6 @@
     <string name="added_to_download_list">Zu Download-Liste hinzugefügt</string>
 
     <!-- Download label -->
-    <string name="no_download_label">Download-Etikette werden hier angezeigt</string>
     <string name="add">Hinzufügen</string>
     <string name="new_label_title">Neue Etikette</string>
     <string name="label_text_is_empty">Inhalt der Etikette erforderlich</string>
@@ -339,7 +328,7 @@
     <string name="hosts">Angepasstes hosts.txt</string>
     <string name="hosts_tip">hosts.txt</string>
     <string name="hosts_host">Host</string>
-    <string name="hosts_ip">IP1(+IP2+IP3...)</string>
+    <string name="hosts_ip">IP1(+IP2+IP3…)</string>
     <string name="add_host">Host hinzufügen</string>
     <string name="add_host_add">Hinzufügen</string>
     <string name="edit_host">Host bearbeiten</string>
@@ -354,7 +343,6 @@
     <string name="page_menu_share">@string/share</string>
     <string name="page_menu_save">Speichern</string>
     <string name="page_menu_save_to">Speichern unter …</string>
-    <string name="page_menu_add_bookmark">Zu Lesezeichen hinzufügen</string>
     <string name="gallery_menu_title">Menü</string>
     <string name="share_image">Das Bild teilen</string>
     <string name="image_saved">Das Bild wurde zu %s gespeichert</string>
@@ -397,7 +385,6 @@
     <string name="settings_eh_show_gallery_pages_summary">Die Galerieseitenzahle in der Galerieliste anzeigen</string>
     <string name="settings_eh_filter">Galerie-Blocker</string>
     <string name="settings_eh_filter_summary">Nach Titel, Uploader order Etiketten die unerwünschten Galerien verstecken</string>
-    <string name="settings_eh_cellular_network_warning">Achtung auf mobile Daten anzeigen</string>
 
     <string name="settings_read">Lesen</string>
     <string name="settings_read_screen_rotation">Richtung des Bildschirms</string>
@@ -448,7 +435,6 @@
     <string name="settings_download_download_origin_image_summary">Wenn es aktiviert wird, wird der 509-Fehler dir schneller widerfahren</string>
     <string name="settings_download_restore_download_items">Download-Elemente wiederherstellen</string>
     <string name="settings_download_restore_download_items_summary">Alle Download-Elemente im Downloadpfad wiederherstellen</string>
-    <string name="settings_download_restoring">Elemente werden wiederhergestellt</string>
     <string name="settings_download_restore_not_found">Keine zu wiederhestellenden Elemente</string>
     <string name="settings_download_restore_failed">Wiederherstellung gescheitert</string>
     <string name="settings_download_restore_successfully">%d Element(e) wiederhergestellt</string>
@@ -496,18 +482,12 @@
     <string name="settings_about_source">Quellcode</string>
     <string name="settings_about_version">Versionnummer</string>
 
-    <string name="proxy_enable">Aktivieren</string>
-    <string name="proxy_enabled">Aktiviert</string>
-    <string name="proxy_disabled">Nicht aktiviert</string>
     <string name="proxy_direct">Direkt</string>
     <string name="proxy_system">Vom System festgelegt</string>
     <string name="proxy_host_or_ip">Hostname oder IP</string>
     <string name="proxy_port">Port</string>
-    <string name="proxy_domain_not_supported">Der Domain ist nicht unterstützt.</string>
     <string name="proxy_invalid_port">Ungültiger Port</string>
 
-    <string name="cant_get_data_dir">Datenverzeichnis konnte geladen werden</string>
-    <string name="cant_find_any_data">Keine Daten gefunden</string>
     <string name="cant_read_the_file">Datei kann nicht gelesen werden</string>
 
     <string name="app_language_system">Sprache des Systems (Standard)</string>
@@ -525,9 +505,7 @@
     <string name="move_favorites_dialog_title">Favoriten verschieben</string>
     <string name="default_favorites_collection">Standard-Favoriten</string>
     <string name="let_me_select">Manuell auswählen</string>
-    <string name="favorites_info">Favoriten-Info</string>
     <string name="collections">Kollektionen</string>
-    <string name="count">Zahl</string>
     <string name="need_sign_in">Du musst dich zuerst anmelden</string>
 
     <!-- Progress Scene -->

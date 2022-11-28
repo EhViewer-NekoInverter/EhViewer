@@ -23,7 +23,6 @@
     android:padding="@dimen/keyline_margin">
 
     <TextView
-        android:id="@+id/click_more_comments"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

@@ -70,7 +70,8 @@
             android:minHeight="56dp"
             android:padding="@dimen/keyline_margin"
             android:textColor="?colorOnPrimarySurface"
-            android:theme="@style/CommentEditText" />
+            android:theme="@style/CommentEditText"
+            android:importantForAutofill="no" />
 
         <ImageView
             android:id="@+id/send"

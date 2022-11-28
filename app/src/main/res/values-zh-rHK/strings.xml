@@ -33,7 +33,6 @@
     <string name="register">註冊</string>
     <string name="sign_in_via_webview">通過網頁登錄</string>
     <string name="sign_in_via_cookies">通過 Cookie 登錄</string>
-    <string name="display_name">暱稱</string>
     <string name="sign_in_first">請先登錄</string>
 
     <string name="default_display_name">Little Hippo</string>
@@ -48,8 +47,6 @@
 
     <string name="invalid_download_location">似乎下載路徑不可用。請到重新設置下載路徑。</string>
 
-    <string name="cellular_network_warning">正在使用移動網絡</string>
-
     <string name="clipboard_gallery_url_snack_message">剪切板裏有畫廊鏈接</string>
     <string name="clipboard_gallery_url_snack_action">查看</string>
 
@@ -62,9 +59,7 @@
     <string name="error_cant_find_activity">找不到相應的應用</string>
     <string name="error_cannot_parse_the_url">無法解析鏈接</string>
     <string name="error_not_folder_path">非文件夾路徑</string>
-    <string name="error_no_provider">無 provider</string>
     <string name="error_decoding_failed">解碼失敗</string>
-    <string name="error_not_found">未找到</string>
     <string name="error_empty">空</string>
     <string name="error_invalid_archive">無效的壓縮包</string>
     <string name="error_reading_failed">讀取失敗</string>
@@ -79,7 +74,6 @@
     <string name="error_invalid_number">非法數字</string>
     <string name="error_please_login_first">請先登陸</string>
     <string name="error_empty_html">頁面內容為空</string>
-    <string name="error_cant_get_image">無法獲取圖片</string>
 
     <string name="kokomade_tip">設置->Eh->畫廊站點->e-hentai</string>
 
@@ -140,7 +134,6 @@
     <string name="add_to_favourites">收藏</string>
     <string name="remove_from_favourites">移除收藏</string>
 
-    <string name="stop_downloading">停止下載</string>
     <string name="delete_downloads">刪除下載</string>
 
     <string name="quick_search">快速搜索</string>
@@ -150,7 +143,6 @@
     <string name="delete">刪除</string>
     <string name="delete_quick_search_title">刪除快速搜索</string>
     <string name="delete_quick_search_message">刪除“%s”？</string>
-    <string name="no_quick_search">這裏是快速搜索</string>
     <string name="add_quick_search_tip">畫廊列表的狀態將被保存為快速搜索。如果你想保存搜索面板的狀態，請先執行搜索。</string>
     <string name="readme">讀我</string>
     <string name="image_search_not_quick_search">無法添加圖片搜索為快速搜索</string>
@@ -175,7 +167,6 @@
     </plurals>
     <string name="favored_times">\u2665 %d</string>
     <string name="rating_text">%1$s (%2$.2f, %3$d)</string>
-    <string name="favorites">收藏</string>
     <string name="torrent_count">種子 (%d)</string>
     <string name="share">分享</string>
     <string name="rate">評分</string>
@@ -296,7 +287,6 @@
     <string name="download_remove_dialog_message_2">從下載列表移除 %d 項？</string>
     <string name="download_remove_dialog_check_text">刪除圖片文件</string>
     <string name="stat_download_action_stop_all">全部停止</string>
-    <string name="drawer_download_label_title">標籤</string>
     <string name="default_download_label_name">默認</string>
     <string name="download_move_dialog_title">移動</string>
     <string name="download_labels">下載標籤</string>
@@ -312,7 +302,6 @@
     <string name="added_to_download_list">已添加至下載列表</string>
 
     <!-- Download label -->
-    <string name="no_download_label">這裏是下載標籤</string>
     <string name="add">添加</string>
     <string name="new_label_title">新標籤</string>
     <string name="label_text_is_empty">標籤文本為空</string>
@@ -360,7 +349,7 @@
     <string name="hosts">自定義 hosts.txt</string>
     <string name="hosts_tip">hosts.txt</string>
     <string name="hosts_host">Host</string>
-    <string name="hosts_ip">IP1(+IP2+IP3...)</string>
+    <string name="hosts_ip">IP1(+IP2+IP3…)</string>
     <string name="add_host">添加 host</string>
     <string name="add_host_add">添加</string>
     <string name="edit_host">編輯 host</string>
@@ -375,7 +364,6 @@
     <string name="page_menu_share">@string/share</string>
     <string name="page_menu_save">保存</string>
     <string name="page_menu_save_to">保存到…</string>
-    <string name="page_menu_add_bookmark">添加書籤</string>
     <string name="gallery_menu_title">菜單</string>
     <string name="share_image">分享圖片</string>
     <string name="image_saved">圖片已保存至 %s</string>
@@ -427,7 +415,6 @@
     <string name="settings_eh_preview_num">畫廊詳情頁預覽圖最大數量</string>
     <string name="settings_eh_filter">屏蔽畫廊</string>
     <string name="settings_eh_filter_summary">根據標題、上傳者、標籤屏蔽畫廊</string>
-    <string name="settings_eh_cellular_network_warning">移動網絡警告</string>
     <string name="settings_eh_request_news">啟動時請求新聞頁面</string>
     <string name="settings_eh_hide_hv_events">隱藏 HV 事件通知</string>
 
@@ -484,7 +471,6 @@
     <string name="settings_download_download_origin_image_summary">這很危險！勾選此項會導致下載配額迅速流失</string>
     <string name="settings_download_restore_download_items">恢復下載項</string>
     <string name="settings_download_restore_download_items_summary">恢復下載目錄裏的所有下載項</string>
-    <string name="settings_download_restoring">恢復中</string>
     <string name="settings_download_restore_not_found">未找到可恢復下載項</string>
     <string name="settings_download_restore_failed">恢復失敗</string>
     <string name="settings_download_restore_successfully">成功恢復 %d 項</string>
@@ -540,18 +526,12 @@
     <string name="settings_about_source">源碼</string>
     <string name="settings_about_version">版本號</string>
 
-    <string name="proxy_enable">啟用</string>
-    <string name="proxy_enabled">已啟用</string>
-    <string name="proxy_disabled">未啟用</string>
     <string name="proxy_direct">直接連接</string>
     <string name="proxy_system">系統代理</string>
     <string name="proxy_host_or_ip">主機或 IP</string>
     <string name="proxy_port">端口</string>
-    <string name="proxy_domain_not_supported">不支持域名</string>
     <string name="proxy_invalid_port">無效的端口</string>
 
-    <string name="cant_get_data_dir">無法獲取數據文件夾</string>
-    <string name="cant_find_any_data">找不到任何數據</string>
     <string name="cant_read_the_file">無法讀取文件</string>
 
     <string name="app_language_system">系統語言（默認）</string>
@@ -569,9 +549,7 @@
     <string name="move_favorites_dialog_title">移動收藏</string>
     <string name="default_favorites_collection">默認收藏夾</string>
     <string name="let_me_select">讓我選擇</string>
-    <string name="favorites_info">收藏信息</string>
     <string name="collections">收藏夾</string>
-    <string name="count">數量</string>
     <string name="need_sign_in">需要登錄</string>
 
     <!-- Progress Scene -->

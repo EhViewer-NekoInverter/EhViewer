@@ -32,7 +32,6 @@
     <string name="register">ลงทะเบียน</string>
     <string name="sign_in_via_webview">ลงชื่อเข้าใช้ผ่านมุมมองเว็บไซต์</string>
     <string name="sign_in_via_cookies">ลงชื่อเข้าใช้ผ่านคุกกี้</string>
-    <string name="display_name">ชื่อเล่นที่จะแสดง</string>
     <string name="sign_in_first">โปรดลงชื่อเข้าใช้ก่อนเป็นอันดับแรก</string>
 
     <string name="default_display_name">เจ้าฮิปโปโปเตมัสตัวน้อย</string>
@@ -47,8 +46,6 @@
 
     <string name="invalid_download_location">ดูเหมือนที่อยู่ในการดาวน์โหลดนั้นไม่พร้อมใช้งาน โปรดตั้งค่าในเมนูการตั้งค่า</string>
 
-    <string name="cellular_network_warning">มีการเชื่อมต่อเครือข่ายมือถืออยู่</string>
-
     <string name="clipboard_gallery_url_snack_message">มีลิงค์ของเว็บแกลเลอรี่อยู่ในคลิปบอร์ด</string>
     <string name="clipboard_gallery_url_snack_action">ดู</string>
 
@@ -61,9 +58,7 @@
     <string name="error_cant_find_activity">หาแอปพลิเคชั่นไม่เจอ</string>
     <string name="error_cannot_parse_the_url">ไม่สามารถวิเคราะห์ URL </string>
     <string name="error_not_folder_path">ไม่พบโฟลเดอร์ปลายทาง</string>
-    <string name="error_no_provider">ไม่มีผู้ให้บริการ</string>
     <string name="error_decoding_failed">การถอดรหัสล้มเหลว</string>
-    <string name="error_not_found">ไม่พบ</string>
     <string name="error_empty">ว่างเปล่า</string>
     <string name="error_invalid_archive">การจัดเก็บไม่ถูกต้อง</string>
     <string name="error_reading_failed">การอ่านล้มเหลว</string>
@@ -131,7 +126,6 @@
     <string name="delete">ลบ</string>
     <string name="delete_quick_search_title">ลบตัวค้นหาอย่างด่วน</string>
     <string name="delete_quick_search_message">ลบ \"%s\" หรือไม่?</string>
-    <string name="no_quick_search">การค้นหาอย่างด่วนจะแสดงอยู่ตรงนี้</string>
     <string name="add_quick_search_tip">รายการของแกลเลอรี่ต่างๆจะถูกบันทึกเป็นการค้นหาอย่างด่วน ต้องทำการค้นหาก่อนเพื่อบันทึกลงในรายการของแผงการค้นหา</string>
     <string name="readme">อ่านก่อนสักนิด</string>
     <string name="image_search_not_quick_search">ไม่สามารถเพิ่มรูปในการค้นหาให้เป็นการค้นหาอย่างด่วนได้</string>
@@ -156,7 +150,6 @@
     </plurals>
     <string name="favored_times">\u2665 %d</string>
     <string name="rating_text">%1$s (%2$.2f, %3$d)</string>
-    <string name="favorites">รายการโปรด</string>
     <string name="torrent_count">Torrent (%d)</string>
     <string name="share">แชร์</string>
     <string name="rate">คะแนน</string>
@@ -267,7 +260,6 @@
     <string name="download_remove_dialog_message_2">ต้องการลบ %d รายการจากรายการดาวน์โหลดไหม?</string>
     <string name="download_remove_dialog_check_text">ลบไฟล์ภาพด้วย</string>
     <string name="stat_download_action_stop_all">หยุดทั้งหมด</string>
-    <string name="drawer_download_label_title">ป้ายชื่อ</string>
     <string name="default_download_label_name">ค่าเริ่มต้น</string>
     <string name="download_move_dialog_title">ย้าย</string>
     <string name="download_labels">ป้ายชื่อดาวน์โหลด</string>
@@ -283,7 +275,6 @@
     <string name="added_to_download_list">เพิ่มเข้าในรายการดาวน์โหลดแล้ว</string>
 
     <!-- Download label -->
-    <string name="no_download_label">ชื่อป้ายดาวน์โหลดจะอยู่ตรงนี้</string>
     <string name="add">เพิ่ม</string>
     <string name="new_label_title">ป้ายชื่ออันใหม่</string>
     <string name="label_text_is_empty">ข้อความป้ายชื่อว่างอยู่</string>
@@ -335,7 +326,6 @@
     <string name="page_menu_share">แชร์</string>
     <string name="page_menu_save">บันทึก</string>
     <string name="page_menu_save_to">บันทึกลงที่…</string>
-    <string name="page_menu_add_bookmark">เพิ่มบุคมาร์ก</string>
     <string name="gallery_menu_title">เมนู</string>
     <string name="share_image">แชร์รูปภาพ</string>
     <string name="image_saved">ภาพถูกบันทึกไปที่ %s</string>
@@ -376,7 +366,6 @@
     <string name="settings_eh_show_tag_translations_summary">แสดงแท็กการแปลภาษาแทนที่ข้อความต้นฉบับ (อาจใช้เวลามากขึ้นเพื่อดาวน์โหลดไฟล์ข้อมูล)</string>
     <string name="settings_eh_tag_translations_source">Placeholder</string>
     <string name="settings_eh_tag_translations_source_url">https://placeholder</string>
-    <string name="settings_eh_cellular_network_warning">เตือนการใช้เครือข่ายมือถือ</string>
 
     <string name="settings_read">การอ่าน</string>
     <string name="settings_read_screen_rotation">ทิศทางของหน้าจอ</string>
@@ -427,7 +416,6 @@
     <string name="settings_download_download_origin_image_summary">อันตรายนะ! คุณอาจจะเจอรหัสข้อผิดพลาด 509 ได้</string>
     <string name="settings_download_restore_download_items">คืนรายการดาวน์โหลด</string>
     <string name="settings_download_restore_download_items_summary">คืนรายการดาวน์โหลดทั้งหมดในแหล่งดาวน์โหลด</string>
-    <string name="settings_download_restoring">กำลังคืนค่า</string>
     <string name="settings_download_restore_not_found">ไม่พบรายการดาวน์โหลดที่จะคืนค่า</string>
     <string name="settings_download_restore_failed">การคืนค่าล้มเหลว</string>
     <string name="settings_download_restore_successfully">การคืนค่า %d รายการสำเร็จแล้ว</string>
@@ -474,18 +462,12 @@
     <string name="settings_about_source">ซอร์สโค้ด</string>
     <string name="settings_about_version">เวอร์ชั่นแอป</string>
 
-    <string name="proxy_enable">เปิดใช้งาน</string>
-    <string name="proxy_enabled">เปิดใช้งานแล้ว</string>
-    <string name="proxy_disabled">ปิดใช้งานแล้ว</string>
     <string name="proxy_direct">โดยตรง</string>
     <string name="proxy_system">พร็อกซี่ของระบบ</string>
     <string name="proxy_host_or_ip">โฮสต์ หรือ ไอพี</string>
     <string name="proxy_port">พอร์ต</string>
-    <string name="proxy_domain_not_supported">ไม่รองรับโดเมนนี้</string>
     <string name="proxy_invalid_port">เลขพอร์ตไม่ถูกต้อง</string>
 
-    <string name="cant_get_data_dir">ไม่สามารถรับข้อมูลได้</string>
-    <string name="cant_find_any_data">ค้นหาไฟล์ต่างๆไม่เจอ</string>
     <string name="cant_read_the_file">ไม่สามารถอ่านไฟล์ได้</string>
 
     <string name="app_language_system">ภาษาของระบบ (ค่าเริ่มต้น)</string>
@@ -503,9 +485,7 @@
     <string name="move_favorites_dialog_title">ย้ายรายการโปรด</string>
     <string name="default_favorites_collection">ค่าเริ่มต้นของที่เก็บรายการโปรด</string>
     <string name="let_me_select">ขอให้ฉันเลือกนะ</string>
-    <string name="favorites_info">ข้อมูลรายการโปรด</string>
     <string name="collections">คอลเลคชั่น</string>
-    <string name="count">จำนวน</string>
     <string name="need_sign_in">จำเป็นต้องลงชื่อเข้าใช้ก่อน</string>
 
     <!-- Progress Scene -->

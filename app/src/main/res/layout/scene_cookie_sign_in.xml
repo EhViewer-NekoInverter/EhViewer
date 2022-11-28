@@ -23,7 +23,7 @@
     android:padding="@dimen/keyline_margin"
     app:fitsSystemWindowsInsets="top|bottom">
 
-    <ImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -61,7 +61,6 @@
                 android:minWidth="@dimen/single_max_width">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/ipb_member_id"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
@@ -82,7 +81,6 @@
                 android:minWidth="@dimen/single_max_width">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/ipb_pass_hash"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
@@ -103,7 +101,6 @@
                 android:minWidth="@dimen/single_max_width">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/igneous"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionDone"
