@@ -468,7 +468,8 @@ public class ContentLayout extends FrameLayout {
 
         public void onGetPageData(int taskId, int pages, int nextPage, List<E> data) {
             if (mCurrentTaskId == taskId) {
-                int dataSize;
+                int dataSize = data.size();
+                int oldDataSize = mData.size();
 
                 switch (mCurrentTaskType) {
                     case TYPE_REFRESH:
@@ -477,7 +478,7 @@ public class ContentLayout extends FrameLayout {
                         mPages = pages;
                         mNextPage = nextPage;
                         mPageDivider.clear();
-                        mPageDivider.add(data.size());
+                        mPageDivider.add(dataSize);
 
                         if (data.isEmpty()) {
                             mData.clear();
@@ -512,7 +513,6 @@ public class ContentLayout extends FrameLayout {
                     case TYPE_PRE_PAGE:
                     case TYPE_PRE_PAGE_KEEP_POS:
                         removeDuplicateData(data, 0, CHECK_DUPLICATE_RANGE);
-                        dataSize = data.size();
                         for (int i = 0, n = mPageDivider.size(); i < n; i++) {
                             mPageDivider.set(i, mPageDivider.get(i) + dataSize);
                         }
@@ -544,7 +544,7 @@ public class ContentLayout extends FrameLayout {
                         } else {
                             mData.addAll(0, data);
                             onAddData(data);
-                            notifyItemRangeInserted(0, data.size());
+                            notifyItemRangeInserted(0, dataSize);
 
                             // Ui change, show content
                             mRefreshLayout.setRefreshing(false);
@@ -567,9 +567,7 @@ public class ContentLayout extends FrameLayout {
                         break;
                     case TYPE_NEXT_PAGE:
                     case TYPE_NEXT_PAGE_KEEP_POS:
-                        removeDuplicateData(data, mData.size() - CHECK_DUPLICATE_RANGE, mData.size());
-                        dataSize = data.size();
-                        int oldDataSize = mData.size();
+                        removeDuplicateData(data, oldDataSize - CHECK_DUPLICATE_RANGE, oldDataSize);
                         mPageDivider.add(oldDataSize + dataSize);
                         mEndPage++;
                         mNextPage = nextPage;
@@ -623,7 +621,7 @@ public class ContentLayout extends FrameLayout {
                         mNextPage = nextPage;
                         mPages = pages;
                         mPageDivider.clear();
-                        mPageDivider.add(data.size());
+                        mPageDivider.add(dataSize);
 
                         if (data.isEmpty()) {
                             mData.clear();
@@ -675,7 +673,7 @@ public class ContentLayout extends FrameLayout {
                         toRemove.clear();
                         removeDuplicateData(data, oldIndexStart - CHECK_DUPLICATE_RANGE, oldIndexStart + CHECK_DUPLICATE_RANGE);
                         int newIndexStart = oldIndexStart;
-                        int newIndexEnd = newIndexStart + data.size();
+                        int newIndexEnd = newIndexStart + dataSize;
                         mData.addAll(oldIndexStart, data);
                         onAddData(data);
                         notifyDataSetChanged();
