@@ -32,18 +32,18 @@ android {
         minSdkVersion 28
         targetSdkVersion 33
         versionCode 172800
-        versionName "1.7.28.0b1"
+        versionName "1.7.28.0-b1"
         resConfigs 'zh', 'zh-rCN', 'zh-rHK', 'zh-rTW', 'es', 'ja', 'ko', 'fr', 'de', 'th'
     }
 
     externalNativeBuild {
         cmake {
+            version "3.25.0"
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
 
     compileOptions {
-        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
@@ -96,8 +96,6 @@ tasks.withType(JavaCompile) {
 }
 
 dependencies {
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
-
     implementation 'androidx.activity:activity:1.6.1'
     implementation 'androidx.biometric:biometric:1.1.0'
     implementation 'androidx.browser:browser:1.4.0'

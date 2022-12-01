@@ -21,3 +21,7 @@
 -allowaccessmodification
 -mergeinterfacesaggressively
 -overloadaggressively
+
+-dontwarn net.sqlcipher.Cursor
+-dontwarn net.sqlcipher.database.**
+-dontwarn rx.**

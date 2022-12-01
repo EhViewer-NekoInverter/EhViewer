@@ -177,6 +177,8 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
     @Nullable
     private TextView mCategory;
     @Nullable
+    private ImageView mBackAction;
+    @Nullable
     private ImageView mOtherActions;
     @Nullable
     private ViewGroup mActionGroup;
@@ -502,6 +504,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
         mTitle = (TextView) ViewUtils.$$(mHeader, R.id.title);
         mUploader = (TextView) ViewUtils.$$(mHeader, R.id.uploader);
         mCategory = (TextView) ViewUtils.$$(mHeader, R.id.category);
+        mBackAction = (ImageView) ViewUtils.$$(mHeader, R.id.back_action);
         mOtherActions = (ImageView) ViewUtils.$$(mHeader, R.id.other_actions);
         mActionGroup = (ViewGroup) ViewUtils.$$(mHeader, R.id.action_card);
         mDownload = (TextView) ViewUtils.$$(mActionGroup, R.id.download);
@@ -509,6 +512,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
 
         mUploader.setOnClickListener(this);
         mCategory.setOnClickListener(this);
+        mBackAction.setOnClickListener(this);
         mOtherActions.setOnClickListener(this);
         mDownload.setOnClickListener(this);
         mDownload.setOnLongClickListener(this);
@@ -575,17 +579,17 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
             if (mGalleryDetail != null) {
                 bindViewSecond();
                 setTransitionName();
-                adjustViewVisibility(STATE_NORMAL);
+                adjustViewVisibility(STATE_NORMAL, false);
             } else if (mGalleryInfo != null) {
                 bindViewFirst();
                 setTransitionName();
-                adjustViewVisibility(STATE_REFRESH_HEADER);
+                adjustViewVisibility(STATE_REFRESH_HEADER, false);
             } else {
-                adjustViewVisibility(STATE_REFRESH);
+                adjustViewVisibility(STATE_REFRESH, false);
             }
         } else {
             mTip.setText(R.string.error_cannot_find_gallery);
-            adjustViewVisibility(STATE_FAILED);
+            adjustViewVisibility(STATE_FAILED, false);
         }
 
         EhApplication.getDownloadManager(context).addDownloadInfoListener(this);
@@ -615,6 +619,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
         mTitle = null;
         mUploader = null;
         mCategory = null;
+        mBackAction = null;
         mOtherActions = null;
         mActionGroup = null;
         mDownload = null;
@@ -754,7 +759,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
         }
     }
 
-    private void adjustViewVisibility(int state) {
+    private void adjustViewVisibility(int state, boolean animation) {
         if (state == mState) {
             return;
         }
@@ -765,7 +770,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
         int oldState = mState;
         mState = state;
 
-        boolean animation = !TRANSITION_ANIMATION_DISABLED && animation;
+        animation = !TRANSITION_ANIMATION_DISABLED && animation;
 
         switch (state) {
             case STATE_NORMAL -> {
@@ -1068,7 +1073,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
                 }
             } else if (itemId == R.id.action_refresh) {
                 if (mState != STATE_REFRESH && mState != STATE_REFRESH_HEADER) {
-                    adjustViewVisibility(STATE_REFRESH);
+                    adjustViewVisibility(STATE_REFRESH, true);
                     request();
                 }
             } else if (itemId == R.id.action_add_tag) {
@@ -1164,8 +1169,10 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
 
         if (mTip == v) {
             if (request()) {
-                adjustViewVisibility(STATE_REFRESH);
+                adjustViewVisibility(STATE_REFRESH, true);
             }
+        } else if (mBackAction == v) {
+            onBackPressed();
         } else if (mOtherActions == v) {
             ensurePopMenu();
             if (mPopupMenu != null) {
@@ -1616,7 +1623,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
     private void onGetGalleryDetailSuccess(GalleryDetail result) {
         mGalleryDetail = result;
         updateDownloadState();
-        adjustViewVisibility(STATE_NORMAL);
+        adjustViewVisibility(STATE_NORMAL, true);
         bindViewSecond();
     }
 
@@ -1626,7 +1633,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
         if (null != context && null != mTip) {
             String error = ExceptionUtils.getReadableString(e);
             mTip.setText(error);
-            adjustViewVisibility(STATE_FAILED);
+            adjustViewVisibility(STATE_FAILED, true);
         }
     }
 
