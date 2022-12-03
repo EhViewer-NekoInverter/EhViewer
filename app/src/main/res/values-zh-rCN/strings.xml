@@ -395,10 +395,8 @@
     <string name="settings_eh_detail_size_long">长</string>
     <string name="settings_eh_detail_size_short">短</string>
     <string name="settings_eh_list_tile_thumb_size">详情模式下缩略图大小</string>
-    <string name="settings_eh_thumb_size">缩略图大小</string>
-    <string name="settings_eh_thumb_size_large">大</string>
-    <string name="settings_eh_thumb_size_middle">中</string>
-    <string name="settings_eh_thumb_size_small">小</string>
+    <string name="settings_eh_thumb_size">缩略图模式下缩略图大小</string>
+    <string name="settings_eh_thumb_size_summary">以及画廊详情页预览图大小</string>
     <string name="settings_eh_thumb_resolution">缩略图分辨率</string>
     <string name="settings_eh_thumb_resolution_summary">%s，指定分辨率可能使获取缩略图失败</string>
     <string name="settings_eh_thumb_resolution_auto">自动</string>
@@ -413,6 +411,7 @@
     <string name="settings_eh_tag_translations_source">补充翻译（由 EhTagTranslation 提供）</string>
     <string name="settings_eh_tag_translations_source_url">https://github.com/EhTagTranslation/Editor/wiki</string>
     <string name="settings_eh_preview_num">画廊详情页预览图最大数量</string>
+    <string name="settings_eh_preview_num_summary">由于历史因素，此值过大会导致卡顿</string>
     <string name="settings_eh_filter">屏蔽画廊</string>
     <string name="settings_eh_filter_summary">根据标题、上传者、标签屏蔽画廊</string>
     <string name="settings_eh_request_news">启动时请求新闻页面</string>

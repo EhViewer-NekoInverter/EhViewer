@@ -395,10 +395,8 @@
     <string name="settings_eh_detail_size_long">長</string>
     <string name="settings_eh_detail_size_short">短</string>
     <string name="settings_eh_list_tile_thumb_size">詳細資料模式下縮圖大小</string>
-    <string name="settings_eh_thumb_size">縮圖大小</string>
-    <string name="settings_eh_thumb_size_large">大</string>
-    <string name="settings_eh_thumb_size_middle">中</string>
-    <string name="settings_eh_thumb_size_small">小</string>
+    <string name="settings_eh_thumb_size">縮圖模式下縮圖大小</string>
+    <string name="settings_eh_thumb_size_summary">以及圖庫詳情頁預覽圖大小</string>
     <string name="settings_eh_thumb_resolution">縮圖解析度</string>
     <string name="settings_eh_thumb_resolution_summary">%s，指定解析度可能會使縮圖取得失敗</string>
     <string name="settings_eh_thumb_resolution_auto">自動</string>
@@ -413,6 +411,7 @@
     <string name="settings_eh_tag_translations_source">補充翻譯（由 EhTagTranslation 提供）</string>
     <string name="settings_eh_tag_translations_source_url">https://github.com/EhTagTranslation/Editor/wiki</string>
     <string name="settings_eh_preview_num">圖庫詳情頁預覽圖最大數量</string>
+    <string name="settings_eh_preview_num_summary">由於歷史因素，此值過大會導致卡頓</string>
     <string name="settings_eh_filter">遮蔽圖庫</string>
     <string name="settings_eh_filter_summary">根據標題、上傳者、標籤遮蔽圖庫</string>
     <string name="settings_eh_request_news">啟動時請求新聞頁面</string>
@@ -513,7 +512,7 @@
     <string name="settings_advanced_import_data_summary">從之前儲存的檔案匯入</string>
     <string name="settings_advanced_import_data_successfully">成功將資料匯入</string>
     <string name="settings_advanced_backup_favorite">備份收藏列表</string>
-    <string name="settings_advanced_backup_favorite_summary">備份雲端收藏列表到本地</string>
+    <string name="settings_advanced_backup_favorite_summary">備份雲端收藏列表到本機</string>
     <string name="settings_advanced_backup_favorite_start">正在備份收藏列表 %s</string>
     <string name="settings_advanced_backup_favorite_nothing">沒有可以備份的收藏列表</string>
     <string name="settings_advanced_backup_favorite_success">備份收藏列表成功</string>
@@ -643,4 +642,9 @@
     <string name="app_link_not_verified_message">對於 Android 12 及更新的版本，您需要手動增加連結到已驗證連結才能在 EhViewer 中打開 E-Hentai 連結。</string>
     <string name="app_link_not_verified_title">應用連結未驗證</string>
     <string name="open_by_default">預設打開</string>
+
+    <string name="archive_passwd">封存文件密碼</string>
+    <string name="archive_need_passwd">封存文件需要密碼</string>
+    <string name="passwd_wrong">密碼錯誤</string>
+    <string name="passwd_cannot_be_empty">密碼不能為空</string>
 </resources>

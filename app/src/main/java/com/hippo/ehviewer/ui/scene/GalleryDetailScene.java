@@ -1020,7 +1020,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
             mPreviewText.setText(R.string.more_previews);
         }
 
-        int columnWidth = resources.getDimensionPixelOffset(Settings.getThumbSizeResId());
+        int columnWidth = Settings.getThumbSize();
         mGridLayout.setColumnSize(columnWidth);
         mGridLayout.setStrategy(SimpleGridAutoSpanLayout.STRATEGY_SUITABLE_SIZE);
         int size = Math.min(previewSet.size(), previewNum);

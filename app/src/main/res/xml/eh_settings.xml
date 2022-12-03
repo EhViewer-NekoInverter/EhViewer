@@ -84,15 +84,6 @@
         app:entryValues="@array/list_mode_entry_values"
         app:iconSpaceReserved="false" />
 
-    <SeekBarPreference
-        android:defaultValue="40"
-        android:key="list_tile_size"
-        android:title="@string/settings_eh_list_tile_thumb_size"
-        android:max="60"
-        app:iconSpaceReserved="false"
-        app:min="20"
-        app:showSeekBarValue="true" />
-
     <rikka.preference.SimpleMenuPreference
         android:defaultValue="0"
         android:key="detail_size"
@@ -102,14 +93,26 @@
         app:entryValues="@array/detail_size_entry_values"
         app:iconSpaceReserved="false" />
 
-    <rikka.preference.SimpleMenuPreference
-        android:defaultValue="1"
-        android:key="thumb_size"
-        android:summary="%s"
+    <SeekBarPreference
+        android:defaultValue="40"
+        android:key="list_tile_size"
+        android:max="60"
+        android:title="@string/settings_eh_list_tile_thumb_size"
+        app:iconSpaceReserved="false"
+        app:min="20"
+        app:showSeekBarValue="true"
+        app:singleLineTitle="false" />
+
+    <SeekBarPreference
+        android:defaultValue="3"
+        android:key="thumb_size_"
+        android:max="10"
+        android:summary="@string/settings_eh_thumb_size_summary"
         android:title="@string/settings_eh_thumb_size"
-        app:entries="@array/thumb_size_entries"
-        app:entryValues="@array/thumb_size_entry_values"
-        app:iconSpaceReserved="false" />
+        app:iconSpaceReserved="false"
+        app:min="1"
+        app:showSeekBarValue="true"
+        app:singleLineTitle="false" />
 
     <rikka.preference.SimpleMenuPreference
         android:defaultValue="0"
@@ -157,12 +160,13 @@
     <SeekBarPreference
         android:defaultValue="60"
         android:key="preview_num"
-        android:title="@string/settings_eh_preview_num"
         android:max="200"
-        app:singleLineTitle="false"
+        android:summary="@string/settings_eh_preview_num_summary"
+        android:title="@string/settings_eh_preview_num"
         app:iconSpaceReserved="false"
         app:min="0"
-        app:showSeekBarValue="true" />
+        app:showSeekBarValue="true"
+        app:singleLineTitle="false" />
 
     <Preference
         android:fragment="com.hippo.ehviewer.ui.fragment.FilterFragment"

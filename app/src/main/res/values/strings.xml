@@ -441,10 +441,8 @@
     <string name="settings_eh_detail_size_long">Long</string>
     <string name="settings_eh_detail_size_short">Short</string>
     <string name="settings_eh_list_tile_thumb_size">Thumb size in detail mode</string>
-    <string name="settings_eh_thumb_size">Thumb size</string>
-    <string name="settings_eh_thumb_size_large">Large</string>
-    <string name="settings_eh_thumb_size_middle">Middle</string>
-    <string name="settings_eh_thumb_size_small">Small</string>
+    <string name="settings_eh_thumb_size">Thumb size in thumb mode</string>
+    <string name="settings_eh_thumb_size_summary">And preview image size on the gallery details page</string>
     <string name="settings_eh_thumb_resolution">Thumb resolution</string>
     <string name="settings_eh_thumb_resolution_summary">Currently %s. Certain resolutions might cause getting thumb failed</string>
     <string name="settings_eh_thumb_resolution_auto">Auto</string>
@@ -459,6 +457,7 @@
     <string name="settings_eh_tag_translations_source">Placeholder</string>
     <string name="settings_eh_tag_translations_source_url">https://placeholder</string>
     <string name="settings_eh_preview_num">The maximum number of previews on the gallery details page</string>
+    <string name="settings_eh_preview_num_summary">For historical reasons, large value could cause lag</string>
     <string name="settings_eh_filter">Block gallery</string>
     <string name="settings_eh_filter_summary">Block gallery by title, uploader and tags</string>
     <string name="settings_eh_request_news">Request news page on start</string>
