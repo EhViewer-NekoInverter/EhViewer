@@ -58,7 +58,7 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 **注：从 v1.7.28 开始需要 Android 9 及以上版本系统，如果闪退那就是不兼容，换别的用吧**
 
-推荐前往 [Github Actions](https://github.com/EhViewer-NekoInverter/EhViewer/actions) 下载最新 CI 版本，需要登录 Github 账号
+推荐前往 [Github Actions](https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml) 下载最新 CI 版本，需要登录 Github 账号
 
 也可以前往 [Github Releases](https://github.com/EhViewer-NekoInverter/EhViewer/releases) 下载发行版，无需登录账号，但可能不是最新的
 
@@ -160,9 +160,6 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 - [AOSP & AndroidX](https://source.android.com/)
 - [android-advancedrecyclerview](https://github.com/h6ah4i/android-advancedrecyclerview)
 - [material-components-android](https://github.com/material-components/material-components-android)
-- [material-design-icons](https://github.com/google/material-design-icons)
-- [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/)
-- [apng](http://apng.sourceforge.net/)
 - [FullDraggableDrawer](https://github.com/PureWriter/FullDraggableDrawer)
 - [GnuTLS](https://gnutls.org/)
 - [greenDAO](https://github.com/greenrobot/greenDAO)
