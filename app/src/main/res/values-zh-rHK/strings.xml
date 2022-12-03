@@ -629,7 +629,6 @@
     <string name="follow_app">跟隨應用</string>
     <string name="action_add_tag">添加標籤</string>
     <string name="action_add_tag_tip">添加新標籤，用逗號「，」分割</string>
-    <string name="error_no_webview">WebView 不可用</string>
     <string name="comment_user_uploader">%s （上傳者）</string>
     <string name="settings_eh_metered_network_warning">流量計費網絡警告</string>
     <string name="metered_network_warning">正在使用流量計費網絡</string>
