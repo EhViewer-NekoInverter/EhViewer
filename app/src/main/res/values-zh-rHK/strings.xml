@@ -624,7 +624,6 @@
     <string name="tag_vote_successfully">投票成功</string>
     <string name="from_clipboard">從剪貼板導入</string>
     <string name="from_clipboard_error">未在剪貼板中發現 Cookies。</string>
-    <string name="delete_search_history">從搜索記錄中刪除「%s」？</string>
     <string name="read_theme">色彩主題</string>
     <string name="follow_app">跟隨應用</string>
     <string name="action_add_tag">添加標籤</string>
