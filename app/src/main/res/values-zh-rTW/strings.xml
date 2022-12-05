@@ -244,6 +244,8 @@
     <string name="comment_successfully">留言成功</string>
     <string name="comment_failed">留言失敗</string>
     <string name="copy_comment_text">複製留言文字</string>
+    <string name="block_commenter">遮蔽評論者</string>
+    <string name="filter_the_commenter">遮蔽評論者“%s”？</string>
     <string name="edit_comment">修改留言</string>
     <string name="edit_comment_successfully">留言已被修改</string>
     <string name="edit_comment_failed">修改留言失敗</string>
@@ -318,18 +320,20 @@
     <string name="clear_all_history">清除所有歷史紀錄？</string>
 
     <!-- Filter -->
-    <string name="filter">遮蔽圖庫</string>
+    <string name="filter">遮蔽列表</string>
     <string name="no_filter">這裡是遮蔽列表</string>
     <string name="filter_title">標題</string>
     <string name="filter_uploader">上傳者</string>
     <string name="filter_tag">標籤</string>
     <string name="filter_tag_namespace">標籤組</string>
+    <string name="filter_commenter">評論者</string>
+    <string name="filter_comment">評論</string>
     <string name="delete_filter">刪除遮蔽項“%s”？</string>
     <string name="tip">提示</string>
     <string name="add_filter">新增遮蔽項</string>
     <string name="show_definition">檢視定義</string>
     <string name="filter_text">遮蔽項文字</string>
-    <string name="filter_tip">該遮蔽系統會在 EHentai 網站遮蔽系統的基礎上繼續遮蔽圖庫。\n\n標題遮蔽項：排除標題含有該關鍵字的圖庫。\n\n上傳者遮蔽項：排除該上傳者上傳的圖庫。\n\n標籤遮蔽項：排除包含該標籤的圖庫，這會使獲取圖庫列表花費更多時間。\n\n標籤組遮蔽項：排除包含該標籤組的圖庫，這會使獲取圖庫列表花費更多時間。</string>
+    <string name="filter_tip">該遮蔽系統會在 EHentai 網站遮蔽系統的基礎上繼續遮蔽圖庫。\n\n標題遮蔽項：排除標題含有該關鍵字的圖庫。\n\n上傳者遮蔽項：排除該上傳者上傳的圖庫。\n\n標籤遮蔽項：排除包含該標籤的圖庫，這會使獲取圖庫列表花費更多時間。\n\n標籤組遮蔽項：排除包含該標籤組的圖庫，這會使獲取圖庫列表花費更多時間。\n\n評論者遮蔽項：排除該評論者發布的評論。\n\n評論遮蔽項：排除包含該關鍵詞或符合該正則表達式的評論。</string>
 
     <!-- Set Security -->
     <string name="set_pattern_protection">設定圖形解鎖</string>
@@ -412,8 +416,8 @@
     <string name="settings_eh_tag_translations_source_url">https://github.com/EhTagTranslation/Editor/wiki</string>
     <string name="settings_eh_preview_num">圖庫詳情頁預覽圖最大數量</string>
     <string name="settings_eh_preview_num_summary">由於歷史因素，此值過大會導致卡頓</string>
-    <string name="settings_eh_filter">遮蔽圖庫</string>
-    <string name="settings_eh_filter_summary">根據標題、上傳者、標籤遮蔽圖庫</string>
+    <string name="settings_eh_filter">遮蔽列表</string>
+    <string name="settings_eh_filter_summary">根據標題、上傳者、標籤、評論者遮蔽圖庫或評論</string>
     <string name="settings_eh_request_news">啟動時請求新聞頁面</string>
     <string name="settings_eh_hide_hv_events">隱藏 HV 事件通知</string>
 

@@ -24,6 +24,7 @@ import com.hippo.ehviewer.dao.Filter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public final class EhFilter {
 
@@ -31,12 +32,16 @@ public final class EhFilter {
     public static final int MODE_UPLOADER = 1;
     public static final int MODE_TAG = 2;
     public static final int MODE_TAG_NAMESPACE = 3;
+    public static final int MODE_COMMENTER = 4;
+    public static final int MODE_COMMENT = 5;
     private static final String TAG = EhFilter.class.getSimpleName();
     private static EhFilter sInstance;
     private final List<Filter> mTitleFilterList = new ArrayList<>();
     private final List<Filter> mUploaderFilterList = new ArrayList<>();
     private final List<Filter> mTagFilterList = new ArrayList<>();
     private final List<Filter> mTagNamespaceFilterList = new ArrayList<>();
+    private final List<Filter> mCommenterFilterList = new ArrayList<>();
+    private final List<Filter> mCommentFilterList = new ArrayList<>();
 
     private EhFilter() {
         List<Filter> list = EhDB.getAllFilter();
@@ -57,6 +62,12 @@ public final class EhFilter {
                 case MODE_TAG_NAMESPACE:
                     filter.text = filter.text.toLowerCase();
                     mTagNamespaceFilterList.add(filter);
+                    break;
+                case MODE_COMMENTER:
+                    mCommenterFilterList.add(filter);
+                    break;
+                case MODE_COMMENT:
+                    mCommentFilterList.add(filter);
                     break;
                 default:
                     Log.d(TAG, "Unknown mode: " + filter.mode);
@@ -88,6 +99,14 @@ public final class EhFilter {
         return mTagNamespaceFilterList;
     }
 
+    public List<Filter> getCommenterFilterList() {
+        return mCommenterFilterList;
+    }
+
+    public List<Filter> getCommentFilterList() {
+        return mCommentFilterList;
+    }
+
     public synchronized boolean addFilter(Filter filter) {
         // enable filter by default before it is added to database
         filter.enable = true;
@@ -108,6 +127,12 @@ public final class EhFilter {
             case MODE_TAG_NAMESPACE:
                 filter.text = filter.text.toLowerCase();
                 mTagNamespaceFilterList.add(filter);
+                break;
+            case MODE_COMMENTER:
+                mCommenterFilterList.add(filter);
+                break;
+            case MODE_COMMENT:
+                mCommentFilterList.add(filter);
                 break;
             default:
                 Log.d(TAG, "Unknown mode: " + filter.mode);
@@ -135,6 +160,12 @@ public final class EhFilter {
                 break;
             case MODE_TAG_NAMESPACE:
                 mTagNamespaceFilterList.remove(filter);
+                break;
+            case MODE_COMMENTER:
+                mCommenterFilterList.remove(filter);
+                break;
+            case MODE_COMMENT:
+                mCommentFilterList.remove(filter);
                 break;
             default:
                 Log.d(TAG, "Unknown mode: " + filter.mode);
@@ -266,6 +297,40 @@ public final class EhFilter {
                     if (filters.get(i).enable && matchTagNamespace(tag, filters.get(i).text)) {
                         return false;
                     }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public synchronized boolean filterCommenter(String commenter) {
+        if (null == commenter) {
+            return false;
+        }
+
+        List<Filter> filters = mCommenterFilterList;
+        if (filters.size() > 0) {
+            for (int i = 0, n = filters.size(); i < n; i++) {
+                if (filters.get(i).enable && commenter.equals(filters.get(i).text)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public synchronized boolean filterComment(String comment) {
+        if (null == comment) {
+            return false;
+        }
+
+        List<Filter> filters = mCommentFilterList;
+        if (filters.size() > 0) {
+            for (int i = 0, n = filters.size(); i < n; i++) {
+                if (filters.get(i).enable && (comment.contains(filters.get(i).text) || Pattern.matches(filters.get(i).text, comment))) {
+                    return false;
                 }
             }
         }

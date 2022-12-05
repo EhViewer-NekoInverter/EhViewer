@@ -193,9 +193,9 @@
     <string name="remove_from_favorite_success">移除收藏</string>
     <string name="add_to_favorite_failure">添加收藏失敗</string>
     <string name="remove_from_favorite_failure">移除收藏失敗</string>
-    <string name="filter_the_uploader">遮蔽上傳者“%s”？</string>
-    <string name="filter_the_tag">遮蔽標籤“%s”？</string>
-    <string name="filter_added">已新增遮蔽項</string>
+    <string name="filter_the_uploader">屏蔽上傳者“%s”？</string>
+    <string name="filter_the_tag">屏蔽標籤“%s”？</string>
+    <string name="filter_added">已新增屏蔽項</string>
     <string name="newer_version_avaliable">此畫廊有新版本可用。</string>
     <string name="newer_version_title">%1$s, 添加於 %2$s</string>
 
@@ -244,6 +244,8 @@
     <string name="comment_successfully">評論成功</string>
     <string name="comment_failed">評論失敗</string>
     <string name="copy_comment_text">複製評論文字</string>
+    <string name="block_commenter">屏蔽評論者</string>
+    <string name="filter_the_commenter">屏蔽評論者“%s”？</string>
     <string name="edit_comment">修改評論</string>
     <string name="edit_comment_successfully">評論已被修改</string>
     <string name="edit_comment_failed">修改評論失敗</string>
@@ -318,18 +320,20 @@
     <string name="clear_all_history">清除所有閲讀歷史？</string>
 
     <!-- Filter -->
-    <string name="filter">屏蔽畫廊</string>
+    <string name="filter">屏蔽列表</string>
     <string name="no_filter">這裏是屏蔽列表</string>
     <string name="filter_title">標題</string>
     <string name="filter_uploader">上傳者</string>
     <string name="filter_tag">標籤</string>
     <string name="filter_tag_namespace">標籤組</string>
+    <string name="filter_commenter">評論者</string>
+    <string name="filter_comment">評論</string>
     <string name="delete_filter">刪除屏蔽項“%s”？</string>
     <string name="tip">提示</string>
     <string name="add_filter">添加屏蔽項</string>
     <string name="show_definition">查看定義</string>
     <string name="filter_text">屏蔽項文本</string>
-    <string name="filter_tip">該屏蔽系統會在 EHentai 網站屏蔽系統的基礎上繼續屏蔽畫廊。\n\n標題屏蔽項：排除標題含有該關鍵字的畫廊。\n\n上傳者屏蔽項：排除該上傳者上傳的畫廊。\n\n標籤屏蔽項：排除包含該標籤的畫廊，這會使獲取畫廊列表花費更多時間。\n\n標籤組屏蔽項：排除包含該標籤組的畫廊，這會使獲取畫廊列表花費更多時間。</string>
+    <string name="filter_tip">該屏蔽系統會在 EHentai 網站屏蔽系統的基礎上繼續屏蔽畫廊。\n\n標題屏蔽項：排除標題含有該關鍵字的畫廊。\n\n上傳者屏蔽項：排除該上傳者上傳的畫廊。\n\n標籤屏蔽項：排除包含該標籤的畫廊，這會使獲取畫廊列表花費更多時間。\n\n標籤組屏蔽項：排除包含該標籤組的畫廊，這會使獲取畫廊列表花費更多時間。\n\n評論者屏蔽項：排除該評論者發布的評論。\n\n評論屏蔽項：排除包含該關鍵詞或符合該正則表達式的評論。</string>
 
     <!-- Set Security -->
     <string name="set_pattern_protection">設置圖案保護</string>
@@ -412,8 +416,8 @@
     <string name="settings_eh_tag_translations_source_url">https://github.com/EhTagTranslation/Editor/wiki</string>
     <string name="settings_eh_preview_num">畫廊詳情頁預覽圖最大數量</string>
     <string name="settings_eh_preview_num_summary">由於歷史因素，此值過大會導致卡頓</string>
-    <string name="settings_eh_filter">屏蔽畫廊</string>
-    <string name="settings_eh_filter_summary">根據標題、上傳者、標籤屏蔽畫廊</string>
+    <string name="settings_eh_filter">屏蔽列表</string>
+    <string name="settings_eh_filter_summary">根據標題、上傳者、標籤、評論者屏蔽畫廊或評論</string>
     <string name="settings_eh_request_news">啟動時請求新聞頁面</string>
     <string name="settings_eh_hide_hv_events">隱藏 HV 事件通知</string>
 

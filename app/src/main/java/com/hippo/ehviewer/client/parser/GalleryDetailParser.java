@@ -19,6 +19,7 @@ package com.hippo.ehviewer.client.parser;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.hippo.ehviewer.client.EhFilter;
 import com.hippo.ehviewer.client.EhUtils;
 import com.hippo.ehviewer.client.data.GalleryComment;
 import com.hippo.ehviewer.client.data.GalleryCommentList;
@@ -441,6 +442,13 @@ public class GalleryDetailParser {
             comment.user = c3.child(0).text();
             // comment
             comment.comment = JsoupUtils.getElementByClass(element, "c6").html();
+            // filter comment
+            if (!comment.uploader) {
+                EhFilter sEhFilter = EhFilter.getInstance();
+                if (!sEhFilter.filterCommenter(comment.user) || !sEhFilter.filterComment(comment.comment)) {
+                    return null;
+                }
+            }
             // last edited
             Element c8 = JsoupUtils.getElementByClass(element, "c8");
             if (c8 != null) {
