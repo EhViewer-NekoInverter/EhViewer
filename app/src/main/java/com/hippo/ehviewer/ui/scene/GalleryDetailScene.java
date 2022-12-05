@@ -1474,7 +1474,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
 
         EhRequest request = new EhRequest()
                 .setMethod(EhClient.METHOD_VOTE_TAG)
-                .setArgs(mGalleryDetail.apiUid, mGalleryDetail.apiKey, mGalleryDetail.gid, mGalleryDetail.token, tag, vote)
+                .setArgs(mGalleryDetail.apiUid, mGalleryDetail.apiKey, mGalleryDetail.gid, mGalleryDetail.token, tag.replace("，", ","), vote)
                 .setCallback(new VoteTagListener(context,
                         activity.getStageId(), getTag()));
         EhApplication.getEhClient(context).execute(request);
