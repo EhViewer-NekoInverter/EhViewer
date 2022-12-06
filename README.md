@@ -162,7 +162,6 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 - [material-components-android](https://github.com/material-components/material-components-android)
 - [FullDraggableDrawer](https://github.com/PureWriter/FullDraggableDrawer)
 - [GnuTLS](https://gnutls.org/)
-- [greenDAO](https://github.com/greenrobot/greenDAO)
 - [jsoup](https://github.com/jhy/jsoup)
 - [libarchive](http://www.libarchive.org/)
 - [okhttp](https://github.com/square/okhttp)
