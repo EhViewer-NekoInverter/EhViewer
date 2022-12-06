@@ -333,7 +333,7 @@
     <string name="add_filter">添加屏蔽项</string>
     <string name="show_definition">查看定义</string>
     <string name="filter_text">屏蔽项文本</string>
-    <string name="filter_tip">该屏蔽系统会在 EHentai 网站屏蔽系统的基础上继续屏蔽画廊。\n\n标题屏蔽项：排除标题含有该关键字的画廊。\n\n上传者屏蔽项：排除该上传者上传的画廊。\n\n标签屏蔽项：排除包含该标签的画廊，这会使获取画廊列表花费更多时间。\n\n标签组屏蔽项：排除包含该标签组的画廊，这会使获取画廊列表花费更多时间。\n\n评论者屏蔽项：排除该评论者发布的评论。\n\n评论屏蔽项：排除包含该关键词或符合该正则表达式的评论。</string>
+    <string name="filter_tip">该屏蔽系统会在 EHentai 网站屏蔽系统的基础上继续屏蔽画廊。\n\n标题屏蔽项：排除标题含有该关键字的画廊。\n\n上传者屏蔽项：排除该上传者上传的画廊。\n\n标签屏蔽项：排除包含该标签的画廊，这会使获取画廊列表花费更多时间。\n\n标签组屏蔽项：排除包含该标签组的画廊，这会使获取画廊列表花费更多时间。\n\n评论者屏蔽项：排除该评论者发布的评论。\n\n评论屏蔽项：排除匹配该正则表达式的评论。</string>
 
     <!-- Set Security -->
     <string name="set_pattern_protection">设置图案保护</string>

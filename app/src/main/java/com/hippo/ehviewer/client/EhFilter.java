@@ -24,6 +24,7 @@ import com.hippo.ehviewer.dao.Filter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class EhFilter {
@@ -329,8 +330,10 @@ public final class EhFilter {
         List<Filter> filters = mCommentFilterList;
         if (filters.size() > 0) {
             for (int i = 0, n = filters.size(); i < n; i++) {
-                if (filters.get(i).enable && (comment.contains(filters.get(i).text) || Pattern.matches(filters.get(i).text, comment))) {
-                    return false;
+                if (filters.get(i).enable) {
+                    Pattern p = Pattern.compile(filters.get(i).text);
+                    Matcher m = p.matcher(comment);
+                    if (m.find()) return false;
                 }
             }
         }

@@ -333,7 +333,7 @@
     <string name="add_filter">新增遮蔽項</string>
     <string name="show_definition">檢視定義</string>
     <string name="filter_text">遮蔽項文字</string>
-    <string name="filter_tip">該遮蔽系統會在 EHentai 網站遮蔽系統的基礎上繼續遮蔽圖庫。\n\n標題遮蔽項：排除標題含有該關鍵字的圖庫。\n\n上傳者遮蔽項：排除該上傳者上傳的圖庫。\n\n標籤遮蔽項：排除包含該標籤的圖庫，這會使獲取圖庫列表花費更多時間。\n\n標籤組遮蔽項：排除包含該標籤組的圖庫，這會使獲取圖庫列表花費更多時間。\n\n評論者遮蔽項：排除該評論者發布的評論。\n\n評論遮蔽項：排除包含該關鍵詞或符合該正則表達式的評論。</string>
+    <string name="filter_tip">該遮蔽系統會在 EHentai 網站遮蔽系統的基礎上繼續遮蔽圖庫。\n\n標題遮蔽項：排除標題含有該關鍵字的圖庫。\n\n上傳者遮蔽項：排除該上傳者上傳的圖庫。\n\n標籤遮蔽項：排除包含該標籤的圖庫，這會使獲取圖庫列表花費更多時間。\n\n標籤組遮蔽項：排除包含該標籤組的圖庫，這會使獲取圖庫列表花費更多時間。\n\n評論者遮蔽項：排除該評論者發布的評論。\n\n評論遮蔽項：排除匹配該正則表達式的評論。</string>
 
     <!-- Set Security -->
     <string name="set_pattern_protection">設定圖形解鎖</string>
