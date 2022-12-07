@@ -24,7 +24,6 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -85,7 +84,6 @@ import java.util.Collections;
 import java.util.List;
 
 import rikka.core.res.ResourcesKt;
-import rikka.recyclerview.RecyclerViewKt;
 
 public class HistoryScene extends ToolbarScene {
 
@@ -231,8 +229,6 @@ public class HistoryScene extends ToolbarScene {
         mRecyclerView.addItemDecoration(decoration);
         guardManager.attachRecyclerView(mRecyclerView);
         swipeManager.attachRecyclerView(mRecyclerView);
-        RecyclerViewKt.fixEdgeEffect(mRecyclerView, false, true);
-        RecyclerViewKt.addEdgeSpacing(mRecyclerView, 4, 4, 4, 4, TypedValue.COMPLEX_UNIT_DIP);
 
         mFastScroller.attachToRecyclerView(mRecyclerView);
         HandlerDrawable handlerDrawable = new HandlerDrawable();

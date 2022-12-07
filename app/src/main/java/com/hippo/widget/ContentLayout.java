@@ -24,7 +24,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -57,7 +56,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import rikka.core.res.ResourcesKt;
-import rikka.recyclerview.RecyclerViewKt;
 
 public class ContentLayout extends FrameLayout {
 
@@ -124,9 +122,6 @@ public class ContentLayout extends FrameLayout {
                 resources.getColor(R.color.loading_indicator_green),
                 resources.getColor(R.color.loading_indicator_orange));
         mBottomProgress.setIndeterminateAnimationType(LinearProgressIndicator.INDETERMINATE_ANIMATION_TYPE_CONTIGUOUS);
-
-        RecyclerViewKt.addEdgeSpacing(mRecyclerView, 4, 4, 4, 4, TypedValue.COMPLEX_UNIT_DIP);
-        RecyclerViewKt.fixEdgeEffect(mRecyclerView, false, true);
 
         mRecyclerViewOriginBottom = mRecyclerView.getPaddingBottom();
         mFastScrollerOriginBottom = mFastScroller.getPaddingBottom();

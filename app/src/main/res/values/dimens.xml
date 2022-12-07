@@ -98,6 +98,7 @@
     <dimen name="fab_layout_secondary_margin">16dp</dimen>
     <dimen name="fab_size">56dp</dimen>
     <dimen name="fab_min_size">40dp</dimen>
+    <dimen name="fab_rv_padding_size">80dp</dimen>
 
     <!-- Slider -->
     <dimen name="slider_bubble_width">26dp</dimen>
@@ -121,6 +122,8 @@
     <!-- Custom preference -->
 
     <!-- Gallery -->
+    <dimen name="gallery_content_margin_h">4dp</dimen>
+    <dimen name="gallery_content_margin_v">4dp</dimen>
     <dimen name="gallery_pager_interval">48dp</dimen>
     <dimen name="gallery_scroll_interval">28dp</dimen>
     <dimen name="gallery_page_min_height">256dp</dimen>

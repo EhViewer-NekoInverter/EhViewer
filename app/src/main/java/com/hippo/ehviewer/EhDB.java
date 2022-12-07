@@ -65,7 +65,7 @@ public class EhDB {
 
     private static final int CUR_DB_VER = 4;
 
-    private static final int MAX_HISTORY_COUNT = 200;
+    private static final int MAX_HISTORY_COUNT = 400;
 
     private static EhDatabase db;
 
