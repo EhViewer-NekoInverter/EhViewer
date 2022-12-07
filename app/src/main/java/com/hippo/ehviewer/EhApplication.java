@@ -322,10 +322,6 @@ public class EhApplication extends SceneApplication {
         EhEngine.initialize();
         BitmapUtils.initialize(this);
 
-        if (EhDB.needMerge()) {
-            EhDB.mergeOldDB(this);
-        }
-
         // Locales can be managed by system automatically above Snow Cone v2
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
             LocaleDelegate.setDefaultLocale(Settings.getLocale());
