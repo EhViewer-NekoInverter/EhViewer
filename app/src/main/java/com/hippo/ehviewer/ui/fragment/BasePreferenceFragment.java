@@ -24,10 +24,13 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.hippo.ehviewer.R;
 import com.hippo.ehviewer.ui.SettingsActivity;
 
 public class BasePreferenceFragment extends PreferenceFragmentCompat
@@ -56,6 +59,22 @@ public class BasePreferenceFragment extends PreferenceFragmentCompat
     @Override
     public void onCreatePreferences(@Nullable Bundle savedInstanceState, String rootKey) {
 
+    }
+
+    @Override
+    public boolean onPreferenceTreeClick(Preference preference) {
+        String key = preference.getKey();
+        try {
+            Fragment classObj = (Fragment)Class.forName(key).newInstance();
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .replace(R.id.fragment, classObj)
+                    .addToBackStack(null)
+                    .commitAllowingStateLoss();
+        } catch (ClassNotFoundException | IllegalAccessException | java.lang.InstantiationException ignored) {
+        }
+        return true;
     }
 
     private void setTitle(@StringRes int string) {
