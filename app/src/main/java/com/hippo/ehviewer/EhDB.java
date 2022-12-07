@@ -25,6 +25,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.paging.PagingSource;
 import androidx.room.Room;
 
 import com.hippo.ehviewer.client.data.GalleryInfo;
@@ -539,8 +540,12 @@ public class EhDB {
         dao.update(list);
     }
 
-    public static synchronized List<HistoryInfo> getHistoryLazyList() {
+    public static synchronized List<HistoryInfo> getHistoryList() {
         return db.historyDao().list();
+    }
+
+    public static synchronized PagingSource<Integer, HistoryInfo> getHistoryLazyList() {
+        return db.historyDao().listLazy();
     }
 
     public static synchronized void putHistoryInfo(GalleryInfo galleryInfo) {
@@ -703,59 +708,79 @@ public class EhDB {
             EhDatabase oldRoomDatabase = Room.databaseBuilder(context, EhDatabase.class, tmpDBName)
                     .createFromFile(file).allowMainThreadQueries().build();
 
+            // Download label
+            DownloadManager manager = EhApplication.getDownloadManager();
+            try {
+                List<DownloadLabel> downloadLabelList = oldRoomDatabase.downloadLabelDao().list();
+                manager.addDownloadLabel(downloadLabelList);
+            } catch (Exception ignored) {
+            }
 
             // Downloads
-            DownloadManager manager = EhApplication.getDownloadManager(context);
-            List<DownloadInfo> downloadInfoList = oldRoomDatabase.downloadsDao().list();
-            manager.addDownload(downloadInfoList, false);
-
-            // Download label
-            List<DownloadLabel> downloadLabelList = oldRoomDatabase.downloadLabelDao().list();
-            manager.addDownloadLabel(downloadLabelList);
+            try {
+                List<DownloadInfo> downloadInfoList = oldRoomDatabase.downloadsDao().list();
+                manager.addDownload(downloadInfoList, false);
+            } catch (Exception ignored) {
+            }
 
             // Download dirname
-            List<DownloadDirname> downloadDirnameList = oldRoomDatabase.downloadDirnameDao().list();
-            for (DownloadDirname dirname : downloadDirnameList) {
-                putDownloadDirname(dirname.getGid(), dirname.getDirname());
+            try {
+                List<DownloadDirname> downloadDirnameList = oldRoomDatabase.downloadDirnameDao().list();
+                for (DownloadDirname dirname : downloadDirnameList) {
+                    putDownloadDirname(dirname.getGid(), dirname.getDirname());
+                }
+            } catch (Exception ignored) {
             }
 
             // History
-            List<HistoryInfo> historyInfoList = oldRoomDatabase.historyDao().list();
-            putHistoryInfo(historyInfoList);
+            try {
+                List<HistoryInfo> historyInfoList = oldRoomDatabase.historyDao().list();
+                putHistoryInfo(historyInfoList);
+            } catch (Exception ignored) {
+            }
 
             // QuickSearch
-            List<QuickSearch> quickSearchList = oldRoomDatabase.quickSearchDao().list();
-            List<QuickSearch> currentQuickSearchList = db.quickSearchDao().list();
-            List<QuickSearch> importList = new ArrayList<>();
-            for (QuickSearch quickSearch : quickSearchList) {
-                String name = quickSearch.name;
-                for (QuickSearch q : currentQuickSearchList) {
-                    if (ObjectUtils.equal(q.name, name)) {
-                        // The same name
-                        name = null;
-                        break;
+            try {
+                List<QuickSearch> quickSearchList = oldRoomDatabase.quickSearchDao().list();
+                List<QuickSearch> currentQuickSearchList = db.quickSearchDao().list();
+                List<QuickSearch> importList = new ArrayList<>();
+                for (QuickSearch quickSearch : quickSearchList) {
+                    String name = quickSearch.name;
+                    for (QuickSearch q : currentQuickSearchList) {
+                        if (ObjectUtils.equal(q.name, name)) {
+                            // The same name
+                            name = null;
+                            break;
+                        }
                     }
+                    if (null == name) {
+                        continue;
+                    }
+                    importList.add(quickSearch);
                 }
-                if (null == name) {
-                    continue;
-                }
-                importList.add(quickSearch);
+                importQuickSearch(importList);
+            } catch (Exception ignored) {
             }
-            importQuickSearch(importList);
 
             // LocalFavorites
-            List<LocalFavoriteInfo> localFavoriteInfoList = oldRoomDatabase.localFavoritesDao().list();
-            for (LocalFavoriteInfo info : localFavoriteInfoList) {
-                putLocalFavorites(info);
+            try {
+                List<LocalFavoriteInfo> localFavoriteInfoList = oldRoomDatabase.localFavoritesDao().list();
+                for (LocalFavoriteInfo info : localFavoriteInfoList) {
+                    putLocalFavorites(info);
+                }
+            } catch (Exception ignored) {
             }
 
             // Filter
-            List<Filter> filterList = oldRoomDatabase.filterDao().list();
-            List<Filter> currentFilterList = db.filterDao().list();
-            for (Filter filter : filterList) {
-                if (!currentFilterList.contains(filter)) {
-                    addFilter(filter);
+            try {
+                List<Filter> filterList = oldRoomDatabase.filterDao().list();
+                List<Filter> currentFilterList = db.filterDao().list();
+                for (Filter filter : filterList) {
+                    if (!currentFilterList.contains(filter)) {
+                        addFilter(filter);
+                    }
                 }
+            } catch (Exception ignored) {
             }
 
             return null;
