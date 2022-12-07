@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="art/launcher_icon-web.png" width="150">
+  <img src="art/launcher_icon-web.webp" width="150">
   <br>EhViewer-NekoInverter<br>
 </h1>
 
@@ -151,7 +151,8 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 # 截图
 
-![screenshot-01](art/screenshot-01.png)
+![screenshot-01](art/screenshot-01.webp)
+![screenshot-02](art/screenshot-02.webp)
 
 # 感谢
 
