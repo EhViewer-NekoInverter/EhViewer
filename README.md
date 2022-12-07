@@ -5,10 +5,13 @@
 
 <p align="center">
   <a href="https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml">
-    <img src="https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml/badge.svg" alt="Github Actions">
+    <img src="https://img.shields.io/github/workflow/status/EhViewer-NekoInverter/EhViewer/CI?style=flat-square" alt="Github Actions">
   </a>
   <a href="https://github.com/EhViewer-NekoInverter/EhViewer/blob/eh-1.7.28.x/LICENSE">
-    <img src="https://img.shields.io/github/license/EhViewer-NekoInverter/EhViewer" alt="LICENSE">
+    <img src="https://img.shields.io/github/license/EhViewer-NekoInverter/EhViewer?style=flat-square" alt="LICENSE">
+  </a>
+  <a href="https://github.com/EhViewer-NekoInverter/Ehviewer/releases">
+    <img src="https://img.shields.io/github/v/release/EhViewer-NekoInverter/Ehviewer?style=flat-square&include_prereleases" alt="Release">
   </a>
 </p>
 
