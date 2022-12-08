@@ -428,15 +428,21 @@ public class DownloadsScene extends ToolbarScene
             return;
         }
 
+        Rect bounds = new Rect(LayoutUtils.dp2pix(requireContext(), 50 + 20),
+                LayoutUtils.dp2pix(requireContext(), 140 + 20),
+                LayoutUtils.dp2pix(requireContext(), 50 - 20),
+                LayoutUtils.dp2pix(requireContext(), 140 - 20));
+
         TapTargetView.showFor(requireActivity(),
-                TapTarget.forView(((DownloadHolder) holder).thumb,
+                TapTarget.forBounds(bounds,
                                 getString(R.string.guide_download_thumb_title),
                                 getString(R.string.guide_download_thumb_text))
+                        .outerCircleColor(R.color.colorPrimary)
                         .transparentTarget(true),
                 new TapTargetView.Listener() {
                     @Override
                     public void onTargetDismissed(TapTargetView view, boolean userInitiated) {
-                        super.onTargetDismissed(view, userInitiated);
+                        super.onTargetClick(view);
                         Settings.putGuideDownloadThumb(false);
                         guideDownloadLabels();
                     }
