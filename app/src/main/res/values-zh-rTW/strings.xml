@@ -536,6 +536,7 @@
     <string name="proxy_invalid_port">無效的通訊埠</string>
 
     <string name="cant_read_the_file">無法讀取檔案</string>
+    <string name="db_version_too_high">數據庫版本過高</string>
 
     <string name="app_language_system">系統語言（預設）</string>
 
