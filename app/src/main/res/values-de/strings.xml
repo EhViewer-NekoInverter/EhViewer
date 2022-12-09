@@ -78,7 +78,7 @@
     <string name="app_waring">Inhalt dieser App kommt aus dem Internet, von dem einige dir körperlichen oder emotionalen Schaden zufügen kann. Du hast es wirklich erfahrt und möchtest immer noch fortsetzen.</string>
     <string name="error_username_cannot_empty">Gibt den Nutzername ein</string>
     <string name="error_password_cannot_empty">Gibt das Passwort ein</string>
-    <string name="skip_signing_in">Anmeldung überspringen</string>
+    <string name="tourist_mode">Anmeldung überspringen</string>
     <string name="sign_in_failed">Anmeldung fehlgeschlagen</string>
     <string name="press_twice_exit">Darauf erneut antippen, um die App zu beenden</string>
     <string name="get_it">Verstanden</string>
@@ -374,9 +374,6 @@
     <string name="settings_eh_detail_size_long">Lange</string>
     <string name="settings_eh_detail_size_short">Kurz</string>
     <string name="settings_eh_thumb_size">Größe des Miniaturbilds</string>
-    <string name="settings_eh_thumb_size_large">Groß</string>
-    <string name="settings_eh_thumb_size_middle">Mittel</string>
-    <string name="settings_eh_thumb_size_small">Klein</string>
     <string name="settings_eh_thumb_resolution">Auflösung der Miniaturbilder</string>
     <string name="settings_eh_thumb_resolution_summary">Nun %s. Mit abnormale Auflösung kann die Miniaturbilder nicht normalerweise geladen werden.</string>
     <string name="settings_eh_thumb_resolution_auto">Automatisch</string>

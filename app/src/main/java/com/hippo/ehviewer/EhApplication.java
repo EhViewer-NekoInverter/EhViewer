@@ -26,6 +26,7 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Debug;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -324,7 +325,10 @@ public class EhApplication extends SceneApplication {
             EhDB.mergeOldDB(this);
         }
 
-        LocaleDelegate.setDefaultLocale(Settings.getLocale());
+        // Locales can be managed by system automatically above Snow Cone v2
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
+            LocaleDelegate.setDefaultLocale(Settings.getLocale());
+
         DayNightDelegate.setApplicationContext(this);
         DayNightDelegate.setDefaultNightMode(Settings.getTheme());
 

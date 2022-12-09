@@ -77,7 +77,7 @@
     <string name="app_waring">このアプリの内容はインターネットから取得したものです。その内容の一部は使用者のお体や心理に傷つける恐れがあります。それでも続行しますか？</string>
     <string name="error_username_cannot_empty">ユーザー名を入力してください。</string>
     <string name="error_password_cannot_empty">パスワードを入力してください。</string>
-    <string name="skip_signing_in">ログインをスキップ</string>
+    <string name="tourist_mode">ログインをスキップ</string>
     <string name="sign_in_failed">ログインに失敗しました。</string>
     <string name="press_twice_exit">もう一度押して終了します</string>
     <string name="get_it">了解</string>
@@ -381,9 +381,6 @@
     <string name="settings_eh_detail_size_long">長い</string>
     <string name="settings_eh_detail_size_short">短い</string>
     <string name="settings_eh_thumb_size">サムネイルサイズ</string>
-    <string name="settings_eh_thumb_size_large">大</string>
-    <string name="settings_eh_thumb_size_middle">中</string>
-    <string name="settings_eh_thumb_size_small">小</string>
     <string name="settings_eh_thumb_resolution">サムネイル解像度</string>
     <string name="settings_eh_thumb_resolution_summary">%s。解像度を正しく設定しないと、サムネイルを取得できない場合があります</string>
     <string name="settings_eh_thumb_resolution_auto">自動</string>

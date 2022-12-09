@@ -72,7 +72,7 @@
     <string name="app_waring">El contenido de esta aplicación es de Internet. Algunas de ellas pueden causarle daño psicológico. Ahora sabes los riesgos anteriormente mencionado y te gustaría asumirlos</string>
     <string name="error_username_cannot_empty">El usuario no puede estar vacío</string>
     <string name="error_password_cannot_empty">La contraseña no puede estar vacía</string>
-    <string name="skip_signing_in">Saltar inicio de sesión</string>
+    <string name="tourist_mode">Saltar inicio de sesión</string>
     <string name="sign_in_failed">Inicio de sesión fallido</string>
     <string name="press_twice_exit">Presione una vez más para salir</string>
     <string name="get_it">Entendido</string>
@@ -360,9 +360,6 @@
     <string name="settings_eh_detail_size_long">Largo</string>
     <string name="settings_eh_detail_size_short">Corto</string>
     <string name="settings_eh_thumb_size">Tamaño de vista previa</string>
-    <string name="settings_eh_thumb_size_large">Largo</string>
-    <string name="settings_eh_thumb_size_middle">Medio</string>
-    <string name="settings_eh_thumb_size_small">Pequeño</string>
     <string name="settings_eh_thumb_resolution">Resolución de vista previa</string>
     <string name="settings_eh_thumb_resolution_summary">%s, las resoluciones especiales podrían causar errores en la vista previa</string>
     <string name="settings_eh_thumb_resolution_auto">Automático</string>

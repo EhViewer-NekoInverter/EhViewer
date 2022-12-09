@@ -340,11 +340,15 @@ public class FilterFragment extends BaseFragment {
         private final List<Filter> mUploaderFilterList;
         private final List<Filter> mTagFilterList;
         private final List<Filter> mTagNamespaceFilterList;
+        private final List<Filter> mCommenterFilterList;
+        private final List<Filter> mCommentFilterList;
 
         private Filter mTitleHeader;
         private Filter mUploaderHeader;
         private Filter mTagHeader;
         private Filter mTagNamespaceHeader;
+        private Filter mCommenterHeader;
+        private Filter mCommentHeader;
 
         public FilterList() {
             mEhFilter = EhFilter.getInstance();
@@ -352,6 +356,8 @@ public class FilterFragment extends BaseFragment {
             mUploaderFilterList = mEhFilter.getUploaderFilterList();
             mTagFilterList = mEhFilter.getTagFilterList();
             mTagNamespaceFilterList = mEhFilter.getTagNamespaceFilterList();
+            mCommenterFilterList = mEhFilter.getCommenterFilterList();
+            mCommentFilterList = mEhFilter.getCommentFilterList();
         }
 
         public int size() {
@@ -363,6 +369,10 @@ public class FilterFragment extends BaseFragment {
             size = mTagFilterList.size();
             count += 0 == size ? 0 : size + 1;
             size = mTagNamespaceFilterList.size();
+            count += 0 == size ? 0 : size + 1;
+            size = mCommenterFilterList.size();
+            count += 0 == size ? 0 : size + 1;
+            size = mCommentFilterList.size();
             count += 0 == size ? 0 : size + 1;
             return count;
         }
@@ -401,6 +411,24 @@ public class FilterFragment extends BaseFragment {
                 mTagNamespaceHeader.text = getString(R.string.filter_tag_namespace);
             }
             return mTagNamespaceHeader;
+        }
+
+        private Filter getCommenterHeader() {
+            if (null == mCommenterHeader) {
+                mCommenterHeader = new Filter();
+                mCommenterHeader.mode = MODE_HEADER;
+                mCommenterHeader.text = getString(R.string.filter_commenter);
+            }
+            return mCommenterHeader;
+        }
+
+        private Filter getCommentHeader() {
+            if (null == mCommentHeader) {
+                mCommentHeader = new Filter();
+                mCommentHeader.mode = MODE_HEADER;
+                mCommentHeader.text = getString(R.string.filter_comment);
+            }
+            return mCommentHeader;
         }
 
         public Filter get(int index) {
@@ -443,6 +471,28 @@ public class FilterFragment extends BaseFragment {
                     return getTagNamespaceHeader();
                 } else if (index <= size) {
                     return mTagNamespaceFilterList.get(index - 1);
+                } else {
+                    index -= size + 1;
+                }
+            }
+
+            size = mCommenterFilterList.size();
+            if (0 != size) {
+                if (index == 0) {
+                    return getCommenterHeader();
+                } else if (index <= size) {
+                    return mCommenterFilterList.get(index - 1);
+                } else {
+                    index -= size + 1;
+                }
+            }
+
+            size = mCommentFilterList.size();
+            if (0 != size) {
+                if (index == 0) {
+                    return getCommentHeader();
+                } else if (index <= size) {
+                    return mCommentFilterList.get(index - 1);
                 }
             }
 

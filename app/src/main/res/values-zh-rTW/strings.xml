@@ -80,7 +80,7 @@
     <string name="app_waring">本應用程式中內容來自網際網路，部分內容可能對您的生理及心理造成難以恢復的傷害。本應用程式的作者不會對由其所造成的任何影響負責。\n\n未成年人應在監護人指導下使用本應用程式。\n\n繼續使用即代表您同意上述條款。</string>
     <string name="error_username_cannot_empty">使用者名稱欄位不能為空</string>
     <string name="error_password_cannot_empty">密碼欄位不能為空</string>
-    <string name="skip_signing_in">略過登入</string>
+    <string name="tourist_mode">遊客模式</string>
     <string name="sign_in_failed">登入失敗</string>
     <string name="sign_in_failed_tip">若持續出錯，請嘗試“通過網頁登入”或“通過 Cookie 登入”。</string>
     <string name="press_twice_exit">再按一次離開</string>
@@ -244,6 +244,8 @@
     <string name="comment_successfully">留言成功</string>
     <string name="comment_failed">留言失敗</string>
     <string name="copy_comment_text">複製留言文字</string>
+    <string name="block_commenter">遮蔽評論者</string>
+    <string name="filter_the_commenter">遮蔽評論者“%s”？</string>
     <string name="edit_comment">修改留言</string>
     <string name="edit_comment_successfully">留言已被修改</string>
     <string name="edit_comment_failed">修改留言失敗</string>
@@ -318,18 +320,20 @@
     <string name="clear_all_history">清除所有歷史紀錄？</string>
 
     <!-- Filter -->
-    <string name="filter">遮蔽圖庫</string>
+    <string name="filter">遮蔽列表</string>
     <string name="no_filter">這裡是遮蔽列表</string>
     <string name="filter_title">標題</string>
     <string name="filter_uploader">上傳者</string>
     <string name="filter_tag">標籤</string>
     <string name="filter_tag_namespace">標籤組</string>
+    <string name="filter_commenter">評論者</string>
+    <string name="filter_comment">評論</string>
     <string name="delete_filter">刪除遮蔽項“%s”？</string>
     <string name="tip">提示</string>
     <string name="add_filter">新增遮蔽項</string>
     <string name="show_definition">檢視定義</string>
     <string name="filter_text">遮蔽項文字</string>
-    <string name="filter_tip">該遮蔽系統會在 EHentai 網站遮蔽系統的基礎上繼續遮蔽圖庫。\n\n標題遮蔽項：排除標題含有該關鍵字的圖庫。\n\n上傳者遮蔽項：排除該上傳者上傳的圖庫。\n\n標籤遮蔽項：排除包含該標籤的圖庫，這會使獲取圖庫列表花費更多時間。\n\n標籤組遮蔽項：排除包含該標籤組的圖庫，這會使獲取圖庫列表花費更多時間。</string>
+    <string name="filter_tip">該遮蔽系統會在 EHentai 網站遮蔽系統的基礎上繼續遮蔽圖庫。\n\n標題遮蔽項：排除標題含有該關鍵字的圖庫。\n\n上傳者遮蔽項：排除該上傳者上傳的圖庫。\n\n標籤遮蔽項：排除包含該標籤的圖庫，這會使獲取圖庫列表花費更多時間。\n\n標籤組遮蔽項：排除包含該標籤組的圖庫，這會使獲取圖庫列表花費更多時間。\n\n評論者遮蔽項：排除該評論者發布的評論。\n\n評論遮蔽項：排除匹配該正則表達式的評論。</string>
 
     <!-- Set Security -->
     <string name="set_pattern_protection">設定圖形解鎖</string>
@@ -395,10 +399,8 @@
     <string name="settings_eh_detail_size_long">長</string>
     <string name="settings_eh_detail_size_short">短</string>
     <string name="settings_eh_list_tile_thumb_size">詳細資料模式下縮圖大小</string>
-    <string name="settings_eh_thumb_size">縮圖大小</string>
-    <string name="settings_eh_thumb_size_large">大</string>
-    <string name="settings_eh_thumb_size_middle">中</string>
-    <string name="settings_eh_thumb_size_small">小</string>
+    <string name="settings_eh_thumb_size">縮圖模式下縮圖大小</string>
+    <string name="settings_eh_thumb_size_summary">以及圖庫詳情頁預覽圖大小</string>
     <string name="settings_eh_thumb_resolution">縮圖解析度</string>
     <string name="settings_eh_thumb_resolution_summary">%s，指定解析度可能會使縮圖取得失敗</string>
     <string name="settings_eh_thumb_resolution_auto">自動</string>
@@ -413,8 +415,9 @@
     <string name="settings_eh_tag_translations_source">補充翻譯（由 EhTagTranslation 提供）</string>
     <string name="settings_eh_tag_translations_source_url">https://github.com/EhTagTranslation/Editor/wiki</string>
     <string name="settings_eh_preview_num">圖庫詳情頁預覽圖最大數量</string>
-    <string name="settings_eh_filter">遮蔽圖庫</string>
-    <string name="settings_eh_filter_summary">根據標題、上傳者、標籤遮蔽圖庫</string>
+    <string name="settings_eh_preview_num_summary">由於歷史因素，此值過大會導致卡頓</string>
+    <string name="settings_eh_filter">遮蔽列表</string>
+    <string name="settings_eh_filter_summary">根據標題、上傳者、標籤、評論者遮蔽圖庫或評論</string>
     <string name="settings_eh_request_news">啟動時請求新聞頁面</string>
     <string name="settings_eh_hide_hv_events">隱藏 HV 事件通知</string>
 
@@ -513,7 +516,7 @@
     <string name="settings_advanced_import_data_summary">從之前儲存的檔案匯入</string>
     <string name="settings_advanced_import_data_successfully">成功將資料匯入</string>
     <string name="settings_advanced_backup_favorite">備份收藏列表</string>
-    <string name="settings_advanced_backup_favorite_summary">備份雲端收藏列表到本地</string>
+    <string name="settings_advanced_backup_favorite_summary">備份雲端收藏列表到本機</string>
     <string name="settings_advanced_backup_favorite_start">正在備份收藏列表 %s</string>
     <string name="settings_advanced_backup_favorite_nothing">沒有可以備份的收藏列表</string>
     <string name="settings_advanced_backup_favorite_success">備份收藏列表成功</string>
@@ -533,6 +536,7 @@
     <string name="proxy_invalid_port">無效的通訊埠</string>
 
     <string name="cant_read_the_file">無法讀取檔案</string>
+    <string name="db_version_too_high">數據庫版本過高</string>
 
     <string name="app_language_system">系統語言（預設）</string>
 
@@ -625,7 +629,6 @@
     <string name="tag_vote_successfully">投票成功</string>
     <string name="from_clipboard">從剪貼板匯入</string>
     <string name="from_clipboard_error">未在剪貼板中發現 Cookies。</string>
-    <string name="delete_search_history">從搜索記錄中刪除“%s”？</string>
     <string name="read_theme">色彩主題</string>
     <string name="follow_app">跟隨應用</string>
     <string name="action_add_tag">增加標籤</string>

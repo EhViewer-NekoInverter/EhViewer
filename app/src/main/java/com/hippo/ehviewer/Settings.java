@@ -62,8 +62,8 @@ public class Settings {
     private static final int DEFAULT_LIST_THUMB_SIZE = 40;
     public static boolean LIST_THUMB_SIZE_INITED = false;
     private static int LIST_THUMB_SIZE = 40;
-    public static final String KEY_THUMB_SIZE = "thumb_size";
-    private static final int DEFAULT_THUMB_SIZE = 1;
+    public static final String KEY_THUMB_SIZE = "thumb_size_";
+    private static final int DEFAULT_THUMB_SIZE = 3;
     private static final String KEY_THUMB_RESOLUTION = "thumb_resolution";
     private static final int DEFAULT_THUMB_RESOLUTION = 0;
     private static final String KEY_SHOW_JPN_TITLE = "show_jpn_title";
@@ -430,20 +430,12 @@ public class Settings {
     }
 
     public static int getThumbSize() {
-        return getIntFromStr(KEY_THUMB_SIZE, DEFAULT_THUMB_SIZE);
+        return dip2px(getInt(KEY_THUMB_SIZE, DEFAULT_THUMB_SIZE));
     }
 
-    @DimenRes
-    public static int getThumbSizeResId() {
-        switch (getThumbSize()) {
-            case 0:
-                return R.dimen.gallery_grid_column_width_large;
-            default:
-            case 1:
-                return R.dimen.gallery_grid_column_width_middle;
-            case 2:
-                return R.dimen.gallery_grid_column_width_small;
-        }
+    public static int dip2px(int dpValue) {
+        final float scale = sContext.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * 40 * scale + 0.5f);
     }
 
     public static int getThumbResolution() {

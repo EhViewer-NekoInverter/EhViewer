@@ -80,7 +80,7 @@
     <string name="app_waring">本應用中內容來自互聯網，部分內容可能對您的生理及心理造成難以恢復的傷害。本應用作者不會對由本應用造成的任何後果負責。\n\n未成年人應在監護人指導下使用本應用。</string>
     <string name="error_username_cannot_empty">用户名不可為空</string>
     <string name="error_password_cannot_empty">密碼不可為空</string>
-    <string name="skip_signing_in">跳過登錄</string>
+    <string name="tourist_mode">遊客模式</string>
     <string name="sign_in_failed">登錄失敗</string>
     <string name="sign_in_failed_tip">若持續出錯，請嘗試“通過網頁登錄”或“通過 Cookie 登錄”。</string>
     <string name="press_twice_exit">再按一次退出</string>
@@ -193,9 +193,9 @@
     <string name="remove_from_favorite_success">移除收藏</string>
     <string name="add_to_favorite_failure">添加收藏失敗</string>
     <string name="remove_from_favorite_failure">移除收藏失敗</string>
-    <string name="filter_the_uploader">遮蔽上傳者“%s”？</string>
-    <string name="filter_the_tag">遮蔽標籤“%s”？</string>
-    <string name="filter_added">已新增遮蔽項</string>
+    <string name="filter_the_uploader">屏蔽上傳者“%s”？</string>
+    <string name="filter_the_tag">屏蔽標籤“%s”？</string>
+    <string name="filter_added">已新增屏蔽項</string>
     <string name="newer_version_avaliable">此畫廊有新版本可用。</string>
     <string name="newer_version_title">%1$s, 添加於 %2$s</string>
 
@@ -244,6 +244,8 @@
     <string name="comment_successfully">評論成功</string>
     <string name="comment_failed">評論失敗</string>
     <string name="copy_comment_text">複製評論文字</string>
+    <string name="block_commenter">屏蔽評論者</string>
+    <string name="filter_the_commenter">屏蔽評論者“%s”？</string>
     <string name="edit_comment">修改評論</string>
     <string name="edit_comment_successfully">評論已被修改</string>
     <string name="edit_comment_failed">修改評論失敗</string>
@@ -318,18 +320,20 @@
     <string name="clear_all_history">清除所有閲讀歷史？</string>
 
     <!-- Filter -->
-    <string name="filter">屏蔽畫廊</string>
+    <string name="filter">屏蔽列表</string>
     <string name="no_filter">這裏是屏蔽列表</string>
     <string name="filter_title">標題</string>
     <string name="filter_uploader">上傳者</string>
     <string name="filter_tag">標籤</string>
     <string name="filter_tag_namespace">標籤組</string>
+    <string name="filter_commenter">評論者</string>
+    <string name="filter_comment">評論</string>
     <string name="delete_filter">刪除屏蔽項“%s”？</string>
     <string name="tip">提示</string>
     <string name="add_filter">添加屏蔽項</string>
     <string name="show_definition">查看定義</string>
     <string name="filter_text">屏蔽項文本</string>
-    <string name="filter_tip">該屏蔽系統會在 EHentai 網站屏蔽系統的基礎上繼續屏蔽畫廊。\n\n標題屏蔽項：排除標題含有該關鍵字的畫廊。\n\n上傳者屏蔽項：排除該上傳者上傳的畫廊。\n\n標籤屏蔽項：排除包含該標籤的畫廊，這會使獲取畫廊列表花費更多時間。\n\n標籤組屏蔽項：排除包含該標籤組的畫廊，這會使獲取畫廊列表花費更多時間。</string>
+    <string name="filter_tip">該屏蔽系統會在 EHentai 網站屏蔽系統的基礎上繼續屏蔽畫廊。\n\n標題屏蔽項：排除標題含有該關鍵字的畫廊。\n\n上傳者屏蔽項：排除該上傳者上傳的畫廊。\n\n標籤屏蔽項：排除包含該標籤的畫廊，這會使獲取畫廊列表花費更多時間。\n\n標籤組屏蔽項：排除包含該標籤組的畫廊，這會使獲取畫廊列表花費更多時間。\n\n評論者屏蔽項：排除該評論者發布的評論。\n\n評論屏蔽項：排除匹配該正則表達式的評論。</string>
 
     <!-- Set Security -->
     <string name="set_pattern_protection">設置圖案保護</string>
@@ -395,10 +399,8 @@
     <string name="settings_eh_detail_size_long">長</string>
     <string name="settings_eh_detail_size_short">短</string>
     <string name="settings_eh_list_tile_thumb_size">詳情模式下縮略圖大小</string>
-    <string name="settings_eh_thumb_size">縮略圖大小</string>
-    <string name="settings_eh_thumb_size_large">大</string>
-    <string name="settings_eh_thumb_size_middle">中</string>
-    <string name="settings_eh_thumb_size_small">小</string>
+    <string name="settings_eh_thumb_size">縮略圖模式下縮略圖大小</string>
+    <string name="settings_eh_thumb_size_summary">以及畫廊詳情頁預覽圖大小</string>
     <string name="settings_eh_thumb_resolution">縮略圖分辨率</string>
     <string name="settings_eh_thumb_resolution_summary">%s，指定分辨率可能使獲取縮略圖失敗</string>
     <string name="settings_eh_thumb_resolution_auto">自動</string>
@@ -413,8 +415,9 @@
     <string name="settings_eh_tag_translations_source">補充翻譯（由 EhTagTranslation 提供）</string>
     <string name="settings_eh_tag_translations_source_url">https://github.com/EhTagTranslation/Editor/wiki</string>
     <string name="settings_eh_preview_num">畫廊詳情頁預覽圖最大數量</string>
-    <string name="settings_eh_filter">屏蔽畫廊</string>
-    <string name="settings_eh_filter_summary">根據標題、上傳者、標籤屏蔽畫廊</string>
+    <string name="settings_eh_preview_num_summary">由於歷史因素，此值過大會導致卡頓</string>
+    <string name="settings_eh_filter">屏蔽列表</string>
+    <string name="settings_eh_filter_summary">根據標題、上傳者、標籤、評論者屏蔽畫廊或評論</string>
     <string name="settings_eh_request_news">啟動時請求新聞頁面</string>
     <string name="settings_eh_hide_hv_events">隱藏 HV 事件通知</string>
 
@@ -533,6 +536,7 @@
     <string name="proxy_invalid_port">無效的端口</string>
 
     <string name="cant_read_the_file">無法讀取文件</string>
+    <string name="db_version_too_high">數據庫版本過高</string>
 
     <string name="app_language_system">系統語言（默認）</string>
 
@@ -625,7 +629,6 @@
     <string name="tag_vote_successfully">投票成功</string>
     <string name="from_clipboard">從剪貼板導入</string>
     <string name="from_clipboard_error">未在剪貼板中發現 Cookies。</string>
-    <string name="delete_search_history">從搜索記錄中刪除「%s」？</string>
     <string name="read_theme">色彩主題</string>
     <string name="follow_app">跟隨應用</string>
     <string name="action_add_tag">添加標籤</string>

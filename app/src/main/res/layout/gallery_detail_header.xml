@@ -57,7 +57,7 @@
                 android:layout_width="@dimen/gallery_detail_thumb_width"
                 android:layout_height="@dimen/gallery_detail_thumb_height"
                 android:layout_marginLeft="@dimen/keyline_margin"
-                android:layout_marginTop="@dimen/keyline_margin"
+                android:layout_marginTop="48dp"
                 android:layout_marginBottom="@dimen/keyline_margin" />
 
             <TextView
@@ -106,18 +106,34 @@
                 android:textStyle="bold" />
 
             <ImageView
+                android:id="@+id/back_action"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:background="?selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingLeft="12dp"
+                android:paddingTop="12dp"
+                android:paddingRight="12dp"
+                android:paddingBottom="12dp"
+                app:srcCompat="@drawable/v_arrow_left_dark_x24"
+                app:tint="@color/primary_drawable_black" />
+
+            <ImageView
                 android:id="@+id/other_actions"
                 android:layout_width="48dp"
-                android:layout_height="56dp"
+                android:layout_height="48dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
                 android:background="?selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:focusable="true"
                 android:paddingLeft="12dp"
-                android:paddingTop="16dp"
+                android:paddingTop="12dp"
                 android:paddingRight="12dp"
-                android:paddingBottom="16dp"
+                android:paddingBottom="12dp"
                 app:srcCompat="@drawable/v_dots_vertical_secondary_dark_x24"
                 app:tint="@color/primary_drawable_black" />
 

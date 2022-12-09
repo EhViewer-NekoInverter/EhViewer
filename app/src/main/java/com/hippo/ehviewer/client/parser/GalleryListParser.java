@@ -24,7 +24,6 @@ import androidx.annotation.NonNull;
 import com.hippo.ehviewer.EhDB;
 import com.hippo.ehviewer.client.EhUtils;
 import com.hippo.ehviewer.client.data.GalleryInfo;
-import com.hippo.ehviewer.client.data.GalleryTagGroup;
 import com.hippo.ehviewer.client.exception.ParseException;
 import com.hippo.util.ExceptionUtils;
 import com.hippo.util.JsoupUtils;
@@ -66,16 +65,6 @@ public class GalleryListParser {
             new String[]{"80", "0", "128"},
             new String[]{"224", "128", "224"},
     };
-
-    private static int parsePages(Document d, String body) throws ParseException {
-        try {
-            Elements es = d.getElementsByClass("ptt").first().child(0).child(0).children();
-            return Integer.parseInt(es.get(es.size() - 2).text().trim());
-        } catch (Throwable e) {
-            ExceptionUtils.throwIfFatal(e);
-            throw new ParseException("Can't parse gallery list pages", body);
-        }
-    }
 
     private static String parseRating(String ratingStyle) {
         Matcher m = PATTERN_RATING.matcher(ratingStyle);
@@ -147,21 +136,19 @@ public class GalleryListParser {
                 children = child.children();
             }
             gi.title = child.text().trim();
-
-            Element tbody = JsoupUtils.getElementByTag(glname, "tbody");
-            if (tbody != null) {
-                ArrayList<String> tags = new ArrayList<>();
-                GalleryTagGroup[] groups = GalleryDetailParser.parseTagGroups(tbody.children());
-                for (GalleryTagGroup group : groups) {
-                    for (int j = 0; j < group.size(); j++) {
-                        tags.add(group.groupName + ":" + group.getTagAt(j));
-                    }
-                }
-                gi.simpleTags = tags.toArray(new String[tags.size()]);
-            }
         }
         if (gi.title == null) {
             return null;
+        }
+
+        // Tags
+        Elements gts = e.select(".gt, .gtl");
+        if (gts.size() != 0) {
+            ArrayList<String> tags = new ArrayList<>();
+            for (Element gt : gts) {
+                tags.add(gt.attr("title"));
+            }
+            gi.simpleTags = tags.toArray(new String[0]);
         }
 
         // Category
@@ -267,10 +254,12 @@ public class GalleryListParser {
             if (children.size() > uploaderIndex) {
                 Element div = children.get(uploaderIndex);
                 if (div != null) {
-                    gi.disowned = "opacity:0.5".equals(div.attr("style"));
+                    gi.disowned = div.attr("style").contains("opacity:0.5");
                     Element a = div.children().first();
                     if (a != null) {
                         gi.uploader = a.text().trim();
+                    } else {
+                        gi.uploader = div.text().trim();
                     }
                 }
             }
@@ -309,8 +298,10 @@ public class GalleryListParser {
             assert next != null;
             Matcher matcherPrev = PATTERN_PREV_PAGE.matcher(prev.attr("href"));
             Matcher matcherNext = PATTERN_NEXT_PAGE.matcher(next.attr("href"));
-            if (matcherPrev.find()) result.prevGid = NumberUtils.parseIntSafely(matcherPrev.group(1), 0);
-            if (matcherNext.find()) result.nextGid = NumberUtils.parseIntSafely(matcherNext.group(1), 0);
+            if (matcherPrev.find())
+                result.prevGid = NumberUtils.parseIntSafely(matcherPrev.group(1), 0);
+            if (matcherNext.find())
+                result.nextGid = NumberUtils.parseIntSafely(matcherNext.group(1), 0);
             result.founds = Integer.MAX_VALUE;
         } catch (Throwable e) {
             ExceptionUtils.throwIfFatal(e);

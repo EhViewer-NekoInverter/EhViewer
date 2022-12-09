@@ -675,14 +675,8 @@ public class SearchBar extends MaterialCardView implements View.OnClickListener,
 
         @Override
         public boolean onLongClick() {
-            new AlertDialog.Builder(getContext())
-                    .setMessage(getContext().getString(R.string.delete_search_history, mKeyword))
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .setPositiveButton(R.string.delete, (dialog, which) -> {
-                        mSearchDatabase.deleteQuery(mKeyword);
-                        updateSuggestions(false);
-                    })
-                    .show();
+            mSearchDatabase.deleteQuery(mKeyword);
+            updateSuggestions(false);
             return true;
         }
     }

@@ -75,7 +75,7 @@
     <string name="app_waring">เนื้อหาภายในแอปพลิเคชั่นนี้มาจากอินเทอร์เน็ตทั้งหมด อาจมีเนื้อหาบางอย่างที่มีผลต่อร่างกายหรือจิตใจของคุณ คุณจะต้องยอมรับความเสี่ยงที่ดังกล่าว และดำเนินการต่อไป</string>
     <string name="error_username_cannot_empty">ชื่อผู้ใช้ห้ามเว้นว่างไว้</string>
     <string name="error_password_cannot_empty">รหัสผ่านห้ามเว้นว่างไว้</string>
-    <string name="skip_signing_in">ดำเนินการต่อโดยไม่ต้องลงชื่อเข้าระบบ</string>
+    <string name="tourist_mode">ดำเนินการต่อโดยไม่ต้องลงชื่อเข้าระบบ</string>
     <string name="sign_in_failed">การลงชื่อเข้าใช้ล้มเหลว</string>
     <string name="press_twice_exit">กดสองครั้งเพื่อออก</string>
     <string name="get_it">เข้าใจแล้ว ไม่ต้องแสดงอีก</string>
@@ -353,9 +353,6 @@
     <string name="settings_eh_detail_size_long">อย่างยาว</string>
     <string name="settings_eh_detail_size_short">อย่างสั้น</string>
     <string name="settings_eh_thumb_size">ขนาดภาพตัวอย่าง</string>
-    <string name="settings_eh_thumb_size_large">ใหญ่</string>
-    <string name="settings_eh_thumb_size_middle">กลาง</string>
-    <string name="settings_eh_thumb_size_small">เล็ก</string>
     <string name="settings_eh_thumb_resolution">ความละเอียดภาพตัวอย่าง</string>
     <string name="settings_eh_thumb_resolution_summary">ค่าตอนนี้เป็น %s. การตั้งความละเอียดที่แน่นอนอาจจะส่งผลต่อการโหลดตัวอย่างที่อาจจะไม่สำเร็จด้วย</string>
     <string name="settings_eh_thumb_resolution_auto">อัตโนมัติ</string>

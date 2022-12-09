@@ -726,7 +726,7 @@ public class EhDB {
                 upgradeDB(db, oldVersion);
                 db.setVersion(newVersion);
             } else if (oldVersion > newVersion) {
-                return context.getString(R.string.cant_read_the_file);
+                return context.getString(R.string.db_version_too_high);
             }
 
             DaoMaster daoMaster = new DaoMaster(db);

@@ -122,7 +122,7 @@
     <string name="app_waring">The content of this application is from the Internet. Some of it may do physical or mental harm to you. You have learnt the risks above and would like to undertake them.</string>
     <string name="error_username_cannot_empty">Username cannot be an empty string</string>
     <string name="error_password_cannot_empty">Password cannot be an empty string</string>
-    <string name="skip_signing_in">Continue without signing in</string>
+    <string name="tourist_mode">Continue without signing in</string>
     <string name="sign_in_failed">Sign in failed</string>
     <string name="sign_in_failed_tip">If this issue continues, try \"Sign in via WebView\" or \"Sign in via cookies\"</string>
     <string name="press_twice_exit">Press twice to exit</string>
@@ -290,6 +290,8 @@
     <string name="comment_successfully">Comment post successfully</string>
     <string name="comment_failed">Failed to post the comment</string>
     <string name="copy_comment_text">Copy comment text</string>
+    <string name="block_commenter">Block the commenter</string>
+    <string name="filter_the_commenter">Block the commenter \"%s\"?</string>
     <string name="edit_comment">Edit comment</string>
     <string name="edit_comment_successfully">The comment has been edited</string>
     <string name="edit_comment_failed">Failed to edit the comment</string>
@@ -364,18 +366,20 @@
     <string name="clear_all_history">Clear all history?</string>
 
     <!-- Filter -->
-    <string name="filter">Block gallery</string>
+    <string name="filter">Blockers</string>
     <string name="no_filter">Blockers will be shown here</string>
     <string name="filter_title">Title</string>
     <string name="filter_uploader">Uploader</string>
     <string name="filter_tag">Tag</string>
     <string name="filter_tag_namespace">Tag namespace</string>
+    <string name="filter_commenter">Commenter</string>
+    <string name="filter_comment">Comment Regex</string>
     <string name="delete_filter">Delete blocker \"%s\"?</string>
     <string name="tip">Tip</string>
     <string name="add_filter">Add blocker</string>
     <string name="show_definition">Show definition</string>
     <string name="filter_text">Blocker text</string>
-    <string name="filter_tip">This blocking system filters the result of EHentai website blocking system.\n\nTitle Blocker: exclude the gallery whose title contains the word.\n\nUploader Blocker: exclude the gallery which was uploaded by the uploader.\n\nTag Blocker: exclude the gallery which contain the tag, it takes more time to get gallery list.\n\nTag Namespace Blocker: exclude the gallery which contain the tag namespace, it takes more time to get gallery list.</string>
+    <string name="filter_tip">This blocking system filters the result of EHentai website blocking system.\n\nTitle Blocker: exclude the gallery whose title contains the word.\n\nUploader Blocker: exclude the gallery which was uploaded by the uploader.\n\nTag Blocker: exclude the gallery which contain the tag, it takes more time to get gallery list.\n\nTag Namespace Blocker: exclude the gallery which contain the tag namespace, it takes more time to get gallery list.\n\nCommenter Blocker: exclude the comments posted by the commenter.\n\nComment Blocker: exclude the comments matching the regex.</string>
 
     <!-- Set Security -->
     <string name="set_pattern_protection">Set pattern protection</string>
@@ -441,10 +445,8 @@
     <string name="settings_eh_detail_size_long">Long</string>
     <string name="settings_eh_detail_size_short">Short</string>
     <string name="settings_eh_list_tile_thumb_size">Thumb size in detail mode</string>
-    <string name="settings_eh_thumb_size">Thumb size</string>
-    <string name="settings_eh_thumb_size_large">Large</string>
-    <string name="settings_eh_thumb_size_middle">Middle</string>
-    <string name="settings_eh_thumb_size_small">Small</string>
+    <string name="settings_eh_thumb_size">Thumb size in thumb mode</string>
+    <string name="settings_eh_thumb_size_summary">And preview image size on the gallery details page</string>
     <string name="settings_eh_thumb_resolution">Thumb resolution</string>
     <string name="settings_eh_thumb_resolution_summary">Currently %s. Certain resolutions might cause getting thumb failed</string>
     <string name="settings_eh_thumb_resolution_auto">Auto</string>
@@ -459,8 +461,9 @@
     <string name="settings_eh_tag_translations_source">Placeholder</string>
     <string name="settings_eh_tag_translations_source_url">https://placeholder</string>
     <string name="settings_eh_preview_num">The maximum number of previews on the gallery details page</string>
-    <string name="settings_eh_filter">Block gallery</string>
-    <string name="settings_eh_filter_summary">Block gallery by title, uploader and tags</string>
+    <string name="settings_eh_preview_num_summary">For historical reasons, large value could cause lag</string>
+    <string name="settings_eh_filter">Blockers</string>
+    <string name="settings_eh_filter_summary">Block gallery or comment by title, uploader, tags and commenter</string>
     <string name="settings_eh_request_news">Request news page on start</string>
     <string name="settings_eh_hide_hv_events">Hide HV event Notifications</string>
 
@@ -581,6 +584,7 @@
     <string name="proxy_invalid_port">Invalid port</string>
 
     <string name="cant_read_the_file">Can\'t read the file</string>
+    <string name="db_version_too_high">Database version too high</string>
 
     <string name="app_language_system">System Language (Default)</string>
     <string name="app_language_de" translatable="false">Deutsch</string>
@@ -690,7 +694,6 @@
     <string name="tag_vote_successfully">Vote successfully</string>
     <string name="from_clipboard">From clipboard</string>
     <string name="from_clipboard_error">No cookies found in clipboard.</string>
-    <string name="delete_search_history">Delete \"%s\" from search history?</string>
     <string name="read_theme">Color theme</string>
     <string name="follow_app">Follow app</string>
     <string name="action_add_tag">Add tag</string>

@@ -6,7 +6,7 @@ plugins {
 
 android {
     compileSdkVersion 33
-    buildToolsVersion "33.0.0"
+    buildToolsVersion "33.0.1"
 
     Properties localProperties = new Properties()
     if (project.rootProject.file('local.properties').exists()) {
@@ -18,7 +18,6 @@ android {
             enable = true
             reset()
             include 'arm64-v8a', 'x86_64', 'armeabi-v7a', 'x86'
-            universalApk = true
         }
     }
 
@@ -35,7 +34,7 @@ android {
         applicationId "org.moedog.ehviewer"
         minSdkVersion 23
         targetSdkVersion 33
-        versionCode 114531
+        versionCode 114532
         versionName "1.7.27-final"
         resConfigs 'zh', 'zh-rCN', 'zh-rHK', 'zh-rTW', 'es', 'ja', 'ko', 'fr', 'de', 'th'
     }
@@ -99,6 +98,7 @@ dependencies {
     implementation 'androidx.activity:activity:1.6.1'
     implementation 'androidx.biometric:biometric:1.1.0'
     implementation 'androidx.browser:browser:1.4.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.core:core:1.9.0'
     implementation 'androidx.fragment:fragment:1.5.4'
     implementation 'androidx.preference:preference:1.2.0'
