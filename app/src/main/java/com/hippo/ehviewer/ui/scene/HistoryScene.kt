@@ -61,6 +61,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import rikka.core.res.resolveColor
 
+@SuppressLint("NotifyDataSetChanged")
 class HistoryScene : ToolbarScene() {
     private var mRecyclerView: EasyRecyclerView? = null
     private val mAdapter: HistoryAdapter by lazy {
@@ -136,7 +137,7 @@ class HistoryScene : ToolbarScene() {
         val recyclerView = ViewUtils.`$$`(content, R.id.recycler_view) as EasyRecyclerView
         val mFastScroller = ViewUtils.`$$`(content, R.id.fast_scroller) as FastScroller
         val mTip = ViewUtils.`$$`(view, R.id.tip) as TextView
-        ViewTransition(content, mTip)
+        val mViewTransition = ViewTransition(content, mTip)
         val resources = requireContext().resources
         val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.big_history)
         drawable!!.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
@@ -167,6 +168,15 @@ class HistoryScene : ToolbarScene() {
                 mAdapter.submitData(
                     value
                 )
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            mAdapter.onPagesUpdatedFlow.collectLatest {
+                if (mAdapter.itemCount == 0) {
+                    mViewTransition.showView(1, true)
+                } else {
+                    mViewTransition.showView(0, true)
+                }
             }
         }
         return view
@@ -376,7 +386,6 @@ class HistoryScene : ToolbarScene() {
         private val mGi: GalleryInfo
     ) : DialogInterface.OnClickListener {
         override fun onClick(dialog: DialogInterface, which: Int) {
-            mRecyclerView?.outOfCustomChoiceMode()
             val downloadManager = EhApplication.getDownloadManager(requireContext())
             val downloadInfo = downloadManager.getDownloadInfo(mGi.gid) ?: return
             val label = if (which == 0) null else mLabels[which]
