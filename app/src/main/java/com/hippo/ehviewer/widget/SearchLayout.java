@@ -47,6 +47,7 @@ import com.hippo.easyrecyclerview.SimpleHolder;
 import com.hippo.ehviewer.R;
 import com.hippo.ehviewer.client.data.ListUrlBuilder;
 import com.hippo.ehviewer.client.exception.EhException;
+import com.hippo.ehviewer.GetText;
 import com.hippo.widget.RadioGridGroup;
 import com.hippo.yorozuya.ViewUtils;
 
@@ -253,8 +254,15 @@ public class SearchLayout extends EasyRecyclerView implements CompoundButton.OnC
                 if (mEnableAdvance) {
                     urlBuilder.setAdvanceSearch(mTableAdvanceSearch.getAdvanceSearch());
                     urlBuilder.setMinRating(mTableAdvanceSearch.getMinRating());
-                    urlBuilder.setPageFrom(mTableAdvanceSearch.getPageFrom());
-                    urlBuilder.setPageTo(mTableAdvanceSearch.getPageTo());
+                    int pageFrom = mTableAdvanceSearch.getPageFrom();
+                    int pageTo = mTableAdvanceSearch.getPageTo();
+                    if (pageTo != -1 && pageTo < 10) {
+                        throw new EhException(GetText.getString(R.string.search_sp_err1));
+                    } else if (pageFrom != -1 && pageTo != -1 && pageTo - pageFrom < 20) {
+                        throw new EhException(GetText.getString(R.string.search_sp_err2));
+                    }
+                    urlBuilder.setPageFrom(pageFrom);
+                    urlBuilder.setPageTo(pageTo);
                 }
                 break;
             case SEARCH_MODE_IMAGE:

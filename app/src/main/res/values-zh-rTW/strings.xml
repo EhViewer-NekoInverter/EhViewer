@@ -121,6 +121,8 @@
     <string name="search_sr">最低評分：</string>
     <string name="search_sp">頁數：</string>
     <string name="search_sp_to">到</string>
+    <string name="search_sp_err1">頁數最大值至少為 10</string>
+    <string name="search_sp_err2">頁數範圍差至少為 20</string>
     <string name="search_sf">禁用排除項：</string>
     <string name="search_sfl">語言</string>
     <string name="search_sfu">上傳者</string>
