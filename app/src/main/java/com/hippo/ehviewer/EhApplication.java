@@ -94,7 +94,6 @@ import rikka.material.app.LocaleDelegate;
 
 public class EhApplication extends SceneApplication {
 
-    public static final boolean BETA = false;
     private static final String TAG = EhApplication.class.getSimpleName();
     private static final String KEY_GLOBAL_STUFF_NEXT_ID = "global_stuff_next_id";
     private static final boolean DEBUG_CONACO = false;
@@ -365,7 +364,7 @@ public class EhApplication extends SceneApplication {
         // Update version code
         try {
             PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
-            Settings.putVersionCode(pi.versionCode);
+            Settings.putVersionCode((int) pi.getLongVersionCode());
         } catch (PackageManager.NameNotFoundException e) {
             // Ignore
         }
@@ -392,12 +391,8 @@ public class EhApplication extends SceneApplication {
                 String referer = EhUrl.REFERER_E;
                 Request request = new EhRequestBuilder(EhUrl.HOST_E + "news.php", referer).build();
                 Call call = getOkHttpClient(this).newCall(request);
-                try {
-                    Response response = call.execute();
+                try (Response response = call.execute()) {
                     ResponseBody responseBody = response.body();
-                    if (responseBody == null) {
-                        return;
-                    }
                     String body = responseBody.string();
                     String html = EventPaneParser.parse(body);
                     if (html != null) {
@@ -418,7 +413,7 @@ public class EhApplication extends SceneApplication {
         if (activity != null) {
             activity.runOnUiThread(() -> {
                 AlertDialog dialog = new AlertDialog.Builder(activity)
-                        .setMessage(Html.fromHtml(html))
+                        .setMessage(Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY))
                         .setPositiveButton(android.R.string.ok, null)
                         .create();
                 dialog.setOnShowListener(d -> {
