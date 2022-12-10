@@ -237,8 +237,8 @@ public abstract class GalleryProvider {
 
     private static class ImageCache extends LruCache<Integer, ImageWrapper> {
 
-        private static final long MAX_CACHE_SIZE = 128 * 1024 * 1024;
-        private static final long MIN_CACHE_SIZE = 32 * 1024 * 1024;
+        private static final long MAX_CACHE_SIZE = 256 * 1024 * 1024;
+        private static final long MIN_CACHE_SIZE = 128 * 1024 * 1024;
 
         public ImageCache() {
             super((int) MathUtils.clamp(OSUtils.getTotalMemory() / 16, MIN_CACHE_SIZE, MAX_CACHE_SIZE));
