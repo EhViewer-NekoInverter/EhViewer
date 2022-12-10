@@ -113,7 +113,7 @@ public final class SignInScene extends SolidScene implements EditText.OnEditorAc
         outState.putInt(KEY_REQUEST_ID, mRequestId);
     }
 
-    @Nullable
+    @NonNull
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -282,7 +282,7 @@ public final class SignInScene extends SolidScene implements EditText.OnEditorAc
         // Clean up for sign in
         EhUtils.signOut(context);
 
-        EhCallback callback = new SignInListener(context,
+        EhCallback<?, ?> callback = new SignInListener(context,
                 activity.getStageId(), getTag());
         mRequestId = ((EhApplication) context.getApplicationContext()).putGlobalStuff(callback);
         EhRequest request = new EhRequest()
@@ -304,13 +304,16 @@ public final class SignInScene extends SolidScene implements EditText.OnEditorAc
         hideSoftInput();
         showProgress(true);
 
-        EhCallback callback = new GetProfileListener(context,
+        EhCallback<?, ?> callback = new GetProfileListener(context,
                 activity.getStageId(), getTag());
         mRequestId = ((EhApplication) context.getApplicationContext()).putGlobalStuff(callback);
         EhRequest request = new EhRequest()
                 .setMethod(EhClient.METHOD_GET_PROFILE)
                 .setCallback(callback);
         EhApplication.getEhClient(context).execute(request);
+
+        EhApplication.getEhClient(context).execute(new EhRequest()
+                .setMethod(EhClient.METHOD_GET_UCONFIG));
     }
 
     private void redirectTo() {
