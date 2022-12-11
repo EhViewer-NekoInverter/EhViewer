@@ -132,8 +132,6 @@ public class Settings {
     private static final int DEFAULT_DOWNLOAD_DELAY = 0;
     private static final String KEY_PRELOAD_IMAGE = "preload_image";
     private static final int DEFAULT_PRELOAD_IMAGE = 5;
-    public static final String KEY_IMAGE_RESOLUTION = "image_size";
-    private static final String DEFAULT_IMAGE_RESOLUTION = EhConfig.IMAGE_SIZE_AUTO;
     private static final String KEY_DOWNLOAD_ORIGIN_IMAGE = "download_origin_image";
     private static final boolean DEFAULT_DOWNLOAD_ORIGIN_IMAGE = false;
     /********************
@@ -288,8 +286,6 @@ public class Settings {
 
     private static EhConfig loadEhConfig() {
         EhConfig ehConfig = new EhConfig();
-        ehConfig.imageSize = getImageResolution();
-        ehConfig.setDirty();
         return ehConfig;
     }
 
@@ -665,16 +661,6 @@ public class Settings {
 
     public static int getPreloadImage() {
         return getIntFromStr(KEY_PRELOAD_IMAGE, DEFAULT_PRELOAD_IMAGE);
-    }
-
-    public static String getImageResolution() {
-        return getString(KEY_IMAGE_RESOLUTION, DEFAULT_IMAGE_RESOLUTION);
-    }
-
-    public static void putImageResolution(String value) {
-        sEhConfig.imageSize = value;
-        sEhConfig.setDirty();
-        putString(KEY_IMAGE_RESOLUTION, value);
     }
 
     public static boolean getDownloadOriginImage() {

@@ -469,9 +469,6 @@
     <string name="settings_download_download_delay_summary">每次下載延時 %s 毫秒</string>
     <string name="settings_download_preload_image">預載圖片</string>
     <string name="settings_download_preload_image_summary">向後預載 %s 張圖片</string>
-    <string name="settings_download_image_resolution">圖片解析度</string>
-    <string name="settings_download_image_resolution_summary">%s，大於 1280x 的解析度可能不會生效</string>
-    <string name="settings_download_image_resolution_auto">自動</string>
     <string name="settings_download_download_origin_image">下載原圖</string>
     <string name="settings_download_download_origin_image_summary">這很危險！勾選這個選項會導致圖片流量配額快速耗用</string>
     <string name="settings_download_restore_download_items">回復下載的檔案</string>

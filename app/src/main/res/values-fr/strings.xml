@@ -431,9 +431,6 @@
     <string name="settings_download_multi_thread_download_summary">Jusqu\'à %s image(s)</string>
     <string name="settings_download_preload_image">Charger les images d\'avance</string>
     <string name="settings_download_preload_image_summary">Charger les prochaine %s images</string>
-    <string name="settings_download_image_resolution">Resolution d\'image</string>
-    <string name="settings_download_image_resolution_summary">%s, résolutions mieux que 1280x riquent de ne pas fonctionner</string>
-    <string name="settings_download_image_resolution_auto">Auto</string>
     <string name="settings_download_download_origin_image">Télécharger l\'images originales</string>
     <string name="settings_download_download_origin_image_summary">Vous allez obtenir l\'erreur 509 plus facilement</string>
     <string name="settings_download_restore_download_items">Rétablir les galeries téléchargées</string>

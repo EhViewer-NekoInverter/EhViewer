@@ -388,9 +388,6 @@
     <string name="settings_download_multi_thread_download_summary">%s개 이미지까지</string>
     <string name="settings_download_preload_image">이미지 미리 불러오기</string>
     <string name="settings_download_preload_image_summary">다음 %s개 이미지를 미리 불러옴</string>
-    <string name="settings_download_image_resolution">이미지 해상도</string>
-    <string name="settings_download_image_resolution_summary">1280x 이상으로 설정하면 작동하지 않을 수 있습니다. 현재 설정\u003a \u005b%s\u005d</string>
-    <string name="settings_download_image_resolution_auto">자동</string>
     <string name="settings_download_download_origin_image">원본 이미지 다운로드</string>
     <string name="settings_download_download_origin_image_summary">이 옵션은 위험합니다! 509 오류가 발생할 수 있습니다.</string>
     <string name="settings_download_restore_download_items">다운로드 항목 복구</string>

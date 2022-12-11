@@ -425,9 +425,6 @@
     <string name="settings_download_multi_thread_download_summary">Bis zu %s Bild(er)</string>
     <string name="settings_download_preload_image">Bilder vorabladen</string>
     <string name="settings_download_preload_image_summary">Die nächste %s Bilder vorabladen</string>
-    <string name="settings_download_image_resolution">Auflösung der Bilder</string>
-    <string name="settings_download_image_resolution_summary">%s. Auflösung über 1280x funktioniert möglicherweise nicht</string>
-    <string name="settings_download_image_resolution_auto">Automatisch</string>
     <string name="settings_download_download_origin_image">Originale Bilder herunterladen</string>
     <string name="settings_download_download_origin_image_summary">Wenn es aktiviert wird, wird der 509-Fehler dir schneller widerfahren</string>
     <string name="settings_download_restore_download_items">Download-Elemente wiederherstellen</string>

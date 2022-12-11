@@ -412,9 +412,6 @@
     <string name="settings_download_multi_thread_download_summary">Máximo de %s imágenes</string>
     <string name="settings_download_preload_image">Precargar imagen</string>
     <string name="settings_download_preload_image_summary">Precargar las siguientes %s imágenes</string>
-    <string name="settings_download_image_resolution">Resolución de la imagen</string>
-    <string name="settings_download_image_resolution_summary">%s, resoluciones mayores a 1280x podrían dar error</string>
-    <string name="settings_download_image_resolution_auto">Auto</string>
     <string name="settings_download_download_origin_image">Descargar imagen original</string>
     <string name="settings_download_download_origin_image_summary">¡Cuidado! Podrías recibir error 509</string>
     <string name="settings_download_restore_download_items">Restaurar los elementos de descarga</string>

@@ -431,9 +431,6 @@
     <string name="settings_download_multi_thread_download_summary">同時に最大%s枚の画像をダウンロードできる</string>
     <string name="settings_download_preload_image">画像をプリロード</string>
     <string name="settings_download_preload_image_summary">%s枚の画像をプリロードします</string>
-    <string name="settings_download_image_resolution">画像解像度</string>
-    <string name="settings_download_image_resolution_summary">現在は%sです。1280xを超える解像度は不安定です</string>
-    <string name="settings_download_image_resolution_auto">自動</string>
     <string name="settings_download_download_origin_image">オリジナル画像をダウンロード</string>
     <string name="settings_download_download_origin_image_summary">有効にすると、ダウンロード制限にもっとはやく達する恐れがあります</string>
     <string name="settings_download_restore_download_items">ダウンロードタスクを復元</string>

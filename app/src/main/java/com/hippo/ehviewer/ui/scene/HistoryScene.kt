@@ -243,7 +243,7 @@ class HistoryScene : ToolbarScene() {
         val context = requireContext()
         val activity = mainActivity ?: return false
         val downloaded = mDownloadManager.getDownloadState(gi.gid) != DownloadInfo.STATE_INVALID
-        val favourited = gi.favoriteSlot != -2
+        val favourited = gi.favoriteSlot != -2 || EhDB.containLocalFavorites(gi.gid)
         val items = if (downloaded) arrayOf<CharSequence>(
             context.getString(R.string.read),
             context.getString(R.string.delete_downloads),
@@ -252,7 +252,7 @@ class HistoryScene : ToolbarScene() {
         ) else arrayOf<CharSequence>(
             context.getString(R.string.read),
             context.getString(R.string.download),
-            context.getString(if (favourited) R.string.remove_from_favourites else R.string.add_to_favourites),
+            context.getString(if (favourited) R.string.remove_from_favourites else R.string.add_to_favourites)
         )
         val icons = if (downloaded) intArrayOf(
             R.drawable.v_book_open_x24,
@@ -262,7 +262,7 @@ class HistoryScene : ToolbarScene() {
         ) else intArrayOf(
             R.drawable.v_book_open_x24,
             R.drawable.v_download_x24,
-            if (favourited) R.drawable.v_heart_broken_x24 else R.drawable.v_heart_x24,
+            if (favourited) R.drawable.v_heart_broken_x24 else R.drawable.v_heart_x24
         )
         AlertDialog.Builder(context)
             .setTitle(EhUtils.getSuitableTitle(gi))
