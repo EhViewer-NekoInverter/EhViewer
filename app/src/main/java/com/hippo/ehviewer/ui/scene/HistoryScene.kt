@@ -379,6 +379,7 @@ class HistoryScene : ToolbarScene() {
         val simpleLanguage: TextView = itemView.findViewById(R.id.simple_language)
         val pages: TextView = itemView.findViewById(R.id.pages)
         val downloaded: ImageView = itemView.findViewById(R.id.downloaded)
+        val favourited: ImageView = itemView.findViewById(R.id.favourited)
     }
 
     private inner class MoveDialogHelper(
@@ -441,6 +442,8 @@ class HistoryScene : ToolbarScene() {
             }
             holder.downloaded.visibility =
                 if (mDownloadManager.containDownloadInfo(gi.gid)) View.VISIBLE else View.GONE
+            holder.favourited.visibility =
+                if (gi.favoriteSlot != -2) View.VISIBLE else View.GONE
             // Update transition name
             ViewCompat.setTransitionName(
                 holder.thumb,
