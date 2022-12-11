@@ -58,8 +58,6 @@ import java.util.List;
 public class EhDB {
     private static final int CUR_DB_VER = 4;
 
-    private static final int MAX_HISTORY_COUNT = 400;
-
     private static EhDatabase db;
 
     private static void upgradeDB(SQLiteDatabase db, int oldVersion) {
@@ -349,8 +347,6 @@ public class EhDB {
             info = new HistoryInfo(galleryInfo);
             info.time = System.currentTimeMillis();
             dao.insert(info);
-            List<HistoryInfo> list = dao.list(MAX_HISTORY_COUNT, -1);
-            dao.delete(list);
         }
     }
 
@@ -361,9 +357,6 @@ public class EhDB {
                 dao.insert(info);
             }
         }
-
-        List<HistoryInfo> list = dao.list(MAX_HISTORY_COUNT, -1);
-        dao.delete(list);
     }
 
     public static synchronized void deleteHistoryInfo(HistoryInfo info) {
