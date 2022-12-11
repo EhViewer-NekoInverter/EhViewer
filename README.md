@@ -11,6 +11,9 @@
     <img src="https://img.shields.io/github/license/EhViewer-NekoInverter/EhViewer?style=flat-square" alt="LICENSE">
   </a>
   <a href="https://github.com/EhViewer-NekoInverter/Ehviewer/releases">
+    <img src="https://img.shields.io/github/downloads/EhViewer-NekoInverter/EhViewer/total.svg?style=flat-square" alt="Downloads">
+  </a>
+  <a href="https://github.com/EhViewer-NekoInverter/Ehviewer/releases">
     <img src="https://img.shields.io/github/v/release/EhViewer-NekoInverter/Ehviewer?style=flat-square&include_prereleases" alt="Release">
   </a>
 </p>
@@ -57,9 +60,9 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 # 下载
 
-最后一个支持 Android 6 的版本请前往 [v1.7.27-final Github Release](https://github.com/EhViewer-NekoInverter/EhViewer/releases/tag/v1.7.27.final) 下载
+**注：需要 Android 9 及以上版本系统 (唯一一个支持 Android 6 的版本：[v1.7.27-final](https://github.com/EhViewer-NekoInverter/EhViewer/releases/tag/v1.7.27.final))，如果闪退那就是不兼容，换别的用吧**
 
-**注：从 v1.7.28 开始需要 Android 9 及以上版本系统，如果闪退那就是不兼容，换别的用吧**
+**警告⚠：由于本软件完全开源，任何人都可以修改后重新构建，所以请勿从其他来源下载，以免下载到奇怪的东西**
 
 推荐前往 [Github Actions](https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml) 下载最新 CI 版本，需要登录 Github 账号
 
@@ -102,7 +105,7 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 **无法翻页/跳页**
 
-- 网站更新去掉了页码，详见 [https://forums.e-hentai.org/index.php?showtopic=261743](https://forums.e-hentai.org/index.php?showtopic=261743)
+- 请阅读 [https://forums.e-hentai.org/index.php?showtopic=261743](https://forums.e-hentai.org/index.php?showtopic=261743)
 - 目前表站和里站均已应用此更改，请及时更新你的软件
 
 **挂梯子后打不开**
@@ -111,16 +114,18 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 **无法直连**
 
-- 目前 E 站部分 IP 被墙，域名前置功能可能无效，请关闭后使用梯子访问
+- 本软件默认关闭此功能，如有需要请自行打开“域名前置”
+- 受网络情况影响，该功能可能无效，建议关闭后使用梯子访问
 
 **登录界面被跳过**
 
 - 检查是否使用了具有跳广告等功能的软件
+- 新版本已修正此问题
 
 **首次登录进不去里站**
 
-- 确保你的账号有里站权限，且**登录时必须使用干净的欧美 IP**，登录成功后可换用其他 IP 不受影响
-- 你也可以使用 Cookie 登录
+- 确保你的账号有里站权限，且**登录时必须使用干净的 IP，建议欧美**，登录成功后可换用其他 IP 不受影响
+- 你也可以尝试使用 Cookie 登录
 - 不要讲什么浏览器、别的 APP 打得开，退出重登一样会进不去
 
 **其它任何白屏、509、Sad Panda 问题**
@@ -129,11 +134,11 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 **标签汉化没效果**
 
-- 汉化包为在线资源，请确保你的网络可以访问 GitHub，然后多开关几次试试
+- 汉化包为在线资源，需要花费时间从 GitHub 下载，请确保你的网络可以访问 GitHub，然后多开关几次试试
 
 **主页上传者和评分区域重叠**
 
-- 调节详情模式下缩略图大小
+- 调节“详情模式下缩略图大小”设置
 
 **我订阅了标签，但是订阅页面提示我没有订阅**
 
@@ -141,12 +146,10 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 **这个软件怎么报毒啊**
 
-- 本程序完全开源，构建全部由 Github Action 完成，如有问题请自行审查代码
-- a.gray.sexpay.m 灰色.性支付 是一种脑瘤病毒，建议反馈系统厂商去医院挂个脑科解决
-
-**哪个版本好用，有什么区别**
-
-- 一个个试，爱用哪个用哪个
+- 如果你是从本页面提供的地址下载的，请放心使用
+- 本软件完全开源，构建全部由 Github Action 自行完成，如有疑问可自行审查代码
+- 本软件中可能包含的 a.gray.sexpay.m (灰色.性支付) 是一种国产脑瘤病毒，需要反馈系统厂商去医院挂个脑科解决
+- 还有疑问？建议直接卸载
 
 **其他问题**
 
