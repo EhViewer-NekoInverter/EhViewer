@@ -1379,6 +1379,13 @@ public class FavoritesScene extends BaseScene implements
         }
 
         @Override
+        protected void notifyItemRangeChanged(int positionStart, int itemCount) {
+            if (mAdapter != null) {
+                mAdapter.notifyItemRangeChanged(positionStart, itemCount);
+            }
+        }
+
+        @Override
         public void onShowView(View hiddenView, View shownView) {
             if (null != mSearchBarMover) {
                 mSearchBarMover.showSearchBar();
