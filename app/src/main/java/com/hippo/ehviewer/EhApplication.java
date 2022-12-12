@@ -71,6 +71,7 @@ import com.hippo.yorozuya.OSUtils;
 import com.hippo.yorozuya.SimpleHandler;
 
 import java.io.File;
+import java.net.Proxy;
 import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -176,6 +177,7 @@ public class EhApplication extends SceneApplication {
                     trustManager = new EhX509TrustManager();
                 }
                 builder.sslSocketFactory(new EhSSLSocketFactory(), trustManager);
+                builder.proxy(Proxy.NO_PROXY);
             }
 
             application.mOkHttpClient = builder.build();
