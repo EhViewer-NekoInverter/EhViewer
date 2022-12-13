@@ -37,6 +37,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.hippo.easyrecyclerview.EasyRecyclerView;
 import com.hippo.easyrecyclerview.MarginItemDecoration;
+import com.hippo.easyrecyclerview.NoAlphaItemAnimator;
 import com.hippo.ehviewer.EhApplication;
 import com.hippo.ehviewer.R;
 import com.hippo.ehviewer.Settings;
@@ -154,6 +155,7 @@ public class GalleryPreviewsScene extends ToolbarScene {
         int padding = LayoutUtils.dp2pix(context, 4);
         MarginItemDecoration decoration = new MarginItemDecoration(padding, padding, padding, padding, padding);
         mRecyclerView.addItemDecoration(decoration);
+        mRecyclerView.setItemAnimator(new NoAlphaItemAnimator());
 
         mHelper = new GalleryPreviewHelper();
         mContentLayout.setHelper(mHelper);

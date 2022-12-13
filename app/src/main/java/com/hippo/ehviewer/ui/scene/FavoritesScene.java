@@ -59,6 +59,7 @@ import com.hippo.drawable.DrawerArrowDrawable;
 import com.hippo.easyrecyclerview.EasyRecyclerView;
 import com.hippo.easyrecyclerview.FastScroller;
 import com.hippo.easyrecyclerview.LinearDividerItemDecoration;
+import com.hippo.easyrecyclerview.NoAlphaItemAnimator;
 import com.hippo.ehviewer.EhApplication;
 import com.hippo.ehviewer.EhDB;
 import com.hippo.ehviewer.R;
@@ -286,6 +287,7 @@ public class FavoritesScene extends BaseScene implements
         mRecyclerView.setClipChildren(false);
         mRecyclerView.setChoiceMode(EasyRecyclerView.CHOICE_MODE_MULTIPLE_CUSTOM);
         mRecyclerView.setCustomCheckedListener(this);
+        mRecyclerView.setItemAnimator(new NoAlphaItemAnimator());
 
         fastScroller.setPadding(fastScroller.getPaddingLeft(), fastScroller.getPaddingTop() + paddingTopSB,
                 fastScroller.getPaddingRight(), fastScroller.getPaddingBottom());
