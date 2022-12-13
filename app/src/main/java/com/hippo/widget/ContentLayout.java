@@ -218,6 +218,7 @@ public class ContentLayout extends FrameLayout {
         private static final String KEY_START_PAGE = "start_page";
         private static final String KEY_END_PAGE = "end_page";
         private static final String KEY_PAGES = "pages";
+        private static final String KEY_LAST_PAGE_COUNT = "last_page_count";
         /**
          * Generate task id
          */
@@ -258,6 +259,7 @@ public class ContentLayout extends FrameLayout {
         private int mCurrentTaskId;
         private int mCurrentTaskType;
         private int mCurrentTaskPage;
+        private int mLastPageCount;
         private final SwipeRefreshLayout.OnRefreshListener mOnRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -467,6 +469,8 @@ public class ContentLayout extends FrameLayout {
             if (mCurrentTaskId == taskId) {
                 int dataSize = data.size();
                 int oldDataSize = mData.size();
+                int lastPageCount = mLastPageCount;
+                mLastPageCount = dataSize;
 
                 switch (mCurrentTaskType) {
                     case TYPE_REFRESH:
@@ -542,7 +546,7 @@ public class ContentLayout extends FrameLayout {
                             mData.addAll(0, data);
                             onAddData(data);
                             notifyItemRangeInserted(0, dataSize);
-                            notifyItemRangeChanged(dataSize, oldDataSize);
+                            notifyItemRangeChanged(dataSize, lastPageCount);
 
                             // Ui change, show content
                             mRefreshLayout.setRefreshing(false);
@@ -924,6 +928,7 @@ public class ContentLayout extends FrameLayout {
             bundle.putInt(KEY_START_PAGE, mStartPage);
             bundle.putInt(KEY_END_PAGE, mEndPage);
             bundle.putInt(KEY_PAGES, mPages);
+            bundle.putInt(KEY_LAST_PAGE_COUNT, mLastPageCount);
             return bundle;
         }
 
@@ -949,6 +954,7 @@ public class ContentLayout extends FrameLayout {
                 mStartPage = bundle.getInt(KEY_START_PAGE);
                 mEndPage = bundle.getInt(KEY_END_PAGE);
                 mPages = bundle.getInt(KEY_PAGES);
+                mLastPageCount = bundle.getInt(KEY_LAST_PAGE_COUNT);
 
                 notifyDataSetChanged();
 
