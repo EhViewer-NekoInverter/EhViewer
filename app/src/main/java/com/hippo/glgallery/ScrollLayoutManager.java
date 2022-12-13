@@ -196,12 +196,13 @@ class ScrollLayoutManager extends GalleryView.LayoutManager {
         return null;
     }
 
-    private boolean isInScreen(GalleryPageView page) {
+    private boolean isInScreen(GalleryPageView page, boolean includeFirst) {
         int height = mGalleryView.getHeight();
         Rect bound = page.bounds();
         int pageTop = bound.top;
         int pageBottom = bound.bottom;
-        return (pageTop >= 0 && pageTop < height) || (pageBottom > 0 && pageBottom <= height) ||
+        return (includeFirst && pageTop >= 0 && pageTop < height) ||
+                (pageBottom > 0 && pageBottom <= height) ||
                 (pageTop < 0 && pageBottom > height);
     }
 
@@ -511,7 +512,7 @@ class ScrollLayoutManager extends GalleryView.LayoutManager {
                     continue;
                 }
 
-                if (isInScreen(page)) {
+                if (isInScreen(page, true)) {
                     mFirstShownPageIndex = page.getIndex();
                     break;
                 }
@@ -835,7 +836,7 @@ class ScrollLayoutManager extends GalleryView.LayoutManager {
             GalleryPageView previousPage = null;
             GalleryPageView firstShownPage = null;
             for (GalleryPageView p : mPages) {
-                if (isInScreen(p)) {
+                if (isInScreen(p, true)) {
                     firstShownPage = p;
                     break;
                 }
@@ -888,7 +889,7 @@ class ScrollLayoutManager extends GalleryView.LayoutManager {
             GalleryPageView lastShownPage = null;
             GalleryPageView nextPage = null;
             for (GalleryPageView p : mPages) {
-                if (isInScreen(p)) {
+                if (isInScreen(p, true)) {
                     lastShownPage = p;
                 } else if (null != lastShownPage) {
                     nextPage = p;
@@ -937,12 +938,13 @@ class ScrollLayoutManager extends GalleryView.LayoutManager {
 
     @Override
     public int getCurrentIndex() {
+        int index = GalleryPageView.INVALID_INDEX;
         for (GalleryPageView page : mPages) {
-            if (isInScreen(page)) {
-                return page.getIndex();
+            if (isInScreen(page, false)) {
+                index = page.getIndex();
             }
         }
-        return GalleryPageView.INVALID_INDEX;
+        return index;
     }
 
     @Override
