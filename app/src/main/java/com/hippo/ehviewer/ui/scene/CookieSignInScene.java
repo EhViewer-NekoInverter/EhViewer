@@ -35,7 +35,9 @@ import androidx.appcompat.app.AlertDialog;
 import com.google.android.material.textfield.TextInputLayout;
 import com.hippo.ehviewer.EhApplication;
 import com.hippo.ehviewer.R;
+import com.hippo.ehviewer.client.EhClient;
 import com.hippo.ehviewer.client.EhCookieStore;
+import com.hippo.ehviewer.client.EhRequest;
 import com.hippo.ehviewer.client.EhUrl;
 import com.hippo.ehviewer.client.EhUtils;
 import com.hippo.util.ClipboardUtil;
@@ -67,31 +69,6 @@ public class CookieSignInScene extends SolidScene implements EditText.OnEditorAc
     private View mOk;
     @Nullable
     private TextView mFromClipboard;
-
-    // false for error
-    private static boolean checkIpbMemberId(String id) {
-        for (int i = 0, n = id.length(); i < n; i++) {
-            char ch = id.charAt(i);
-            if (!(ch >= '0' && ch <= '9')) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static boolean checkIpbPassHash(String hash) {
-        if (32 != hash.length()) {
-            return false;
-        }
-
-        for (int i = 0, n = hash.length(); i < n; i++) {
-            char ch = hash.charAt(i);
-            if (!(ch >= '0' && ch <= '9') && !(ch >= 'a' && ch <= 'z')) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     private static Cookie newCookie(String name, String value, String domain) {
         return new Cookie.Builder().name(name).value(value)
@@ -216,19 +193,33 @@ public class CookieSignInScene extends SolidScene implements EditText.OnEditorAc
 
         hideSoftInput();
 
-        if (!checkIpbMemberId(ipbMemberId) || !(checkIpbPassHash(ipbPassHash))) {
-            new AlertDialog.Builder(context).setTitle(R.string.waring)
-                    .setMessage(R.string.wrong_cookie_warning)
-                    .setPositiveButton(R.string.i_will_check_it, null)
-                    .setNegativeButton(R.string.i_dont_think_so, (dialog, which) -> {
-                        storeCookie(ipbMemberId, ipbPassHash, igneous);
-                        setResult(RESULT_OK, null);
-                        finish();
-                    }).show();
-        } else {
-            storeCookie(ipbMemberId, ipbPassHash, igneous);
+        storeCookie(ipbMemberId, ipbPassHash, igneous);
+
+        EhRequest request = new EhRequest()
+                .setMethod(EhClient.METHOD_GET_PROFILE)
+                .setCallback(new CookieSignInListener());
+        EhApplication.getEhClient(context).execute(request);
+    }
+
+    private class CookieSignInListener implements EhClient.Callback<Object> {
+        @Override
+        public void onSuccess(Object result) {
             setResult(RESULT_OK, null);
             finish();
+        }
+
+        @Override
+        public void onFailure(Exception e) {
+            Context context = requireContext();
+            EhApplication.getEhCookieStore(context).signOut();
+            new AlertDialog.Builder(context).setTitle(R.string.sign_in_failed)
+                    .setMessage(ExceptionUtils.getReadableString(e) + "\n\n" + getString(R.string.wrong_cookie_warning))
+                    .setPositiveButton(R.string.get_it, null).show();
+        }
+
+        @Override
+        public void onCancel() {
+            EhApplication.getEhCookieStore(requireContext()).signOut();
         }
     }
 
