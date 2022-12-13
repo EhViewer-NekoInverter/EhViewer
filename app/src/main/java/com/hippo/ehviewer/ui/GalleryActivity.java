@@ -689,6 +689,9 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
         if (fromUser && null != start) {
             start.setText(Integer.toString(progress + 1));
         }
+        if (fromUser && null != mGalleryView) {
+            mGalleryView.setCurrentPage(progress);
+        }
     }
 
     @Override
@@ -699,10 +702,6 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         SimpleHandler.getInstance().postDelayed(mHideSliderRunnable, HIDE_SLIDER_DELAY);
-        int progress = seekBar.getProgress();
-        if (progress != mCurrentIndex && null != mGalleryView) {
-            mGalleryView.setCurrentPage(progress);
-        }
     }
 
     @Override
