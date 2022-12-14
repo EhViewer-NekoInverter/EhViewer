@@ -17,5 +17,6 @@
 <resources>
 
     <bool name="dad_spin_bars">true</bool>
+    <bool name="tag_translatable">false</bool>
 
 </resources>
