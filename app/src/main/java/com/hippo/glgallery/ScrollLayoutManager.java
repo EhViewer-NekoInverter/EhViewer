@@ -41,7 +41,7 @@ class ScrollLayoutManager extends GalleryView.LayoutManager {
     private static final float RESERVATION = 1f;
 
     private static final float MAX_SCALE = 2.0f;
-    private static final float MIN_SCALE = 1.0f;
+    private static final float MIN_SCALE = 0.5f;
     private static final float SCALE_ERROR = 0.01f;
 
     private static final int INVALID_TOP = Integer.MAX_VALUE;
@@ -541,7 +541,9 @@ class ScrollLayoutManager extends GalleryView.LayoutManager {
 
         float startScale = mScale;
         float endScale;
-        if (startScale < MAX_SCALE - SCALE_ERROR) {
+        if (startScale < RESERVATION - SCALE_ERROR) {
+            endScale = RESERVATION;
+        } else if (startScale < MAX_SCALE - SCALE_ERROR) {
             endScale = MAX_SCALE;
         } else {
             endScale = MIN_SCALE;
