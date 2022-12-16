@@ -5,7 +5,7 @@
 
 <p align="center">
   <a href="https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml">
-    <img src="https://img.shields.io/github/workflow/status/EhViewer-NekoInverter/EhViewer/CI?style=flat-square" alt="Github Actions">
+    <img src="https://img.shields.io/github/actions/workflow/status/EhViewer-NekoInverter/EhViewer/ci.yml?branch=eh-1.7.28.x&style=flat-square" alt="Github Actions">
   </a>
   <a href="https://github.com/EhViewer-NekoInverter/EhViewer/blob/eh-1.7.28.x/LICENSE">
     <img src="https://img.shields.io/github/license/EhViewer-NekoInverter/EhViewer?style=flat-square" alt="LICENSE">
