@@ -68,6 +68,13 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 也可以前往 [Github Releases](https://github.com/EhViewer-NekoInverter/EhViewer/releases) 下载发行版，无需登录账号，但可能不是最新的
 
+# 表扬
+
+倒卖狗多来点，欢迎大家补充
+
+- QQ: 2469613065
+![2469613065](art/2469613065.webp)
+
 # 链接
 
 **注：所有 APP 均为第三方，请勿在 E 站评论区提及 APP，维护评论区整洁你我有责，看到相关评论请点个踩再走**
