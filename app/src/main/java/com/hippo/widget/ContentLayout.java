@@ -872,7 +872,7 @@ public class ContentLayout extends FrameLayout {
                 LayoutManagerUtils.scrollToPositionWithOffset(mRecyclerView.getLayoutManager(), position, 0);
                 onScrollToPosition(position);
             } else if (page == mStartPage - 1) {
-                mRefreshLayout.setRefreshing(false);
+                mRefreshLayout.setRefreshing(true);
                 mBottomProgress.hide();
 
                 mCurrentTaskId = mIdGenerator.nextId();
@@ -881,14 +881,14 @@ public class ContentLayout extends FrameLayout {
                 getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage);
             } else if (page == mEndPage) {
                 mRefreshLayout.setRefreshing(false);
-                mBottomProgress.hide();
+                mBottomProgress.show();
 
                 mCurrentTaskId = mIdGenerator.nextId();
                 mCurrentTaskType = TYPE_NEXT_PAGE;
                 mCurrentTaskPage = page;
                 getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage);
             } else {
-                mRefreshLayout.setRefreshing(false);
+                mRefreshLayout.setRefreshing(true);
                 mBottomProgress.hide();
 
                 mCurrentTaskId = mIdGenerator.nextId();
@@ -899,7 +899,7 @@ public class ContentLayout extends FrameLayout {
         }
 
         protected void doGoToPage(int page) {
-            mRefreshLayout.setRefreshing(false);
+            mRefreshLayout.setRefreshing(true);
             mBottomProgress.hide();
             mCurrentTaskId = mIdGenerator.nextId();
             mCurrentTaskType = TYPE_SOMEWHERE;
