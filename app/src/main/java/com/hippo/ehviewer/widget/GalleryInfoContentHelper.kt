@@ -58,10 +58,6 @@ abstract class GalleryInfoContentHelper : ContentHelper<GalleryInfo?>() {
         EhApplication.getFavouriteStatusRouter().removeListener(listener)
     }
 
-    override fun onAddData(data: GalleryInfo?) {
-        data?.let { map[data.gid] = data }
-    }
-
     override fun onAddData(data: List<GalleryInfo?>) {
         for (info in data) {
             info?.let {
@@ -72,10 +68,6 @@ abstract class GalleryInfoContentHelper : ContentHelper<GalleryInfo?>() {
                 map[info.gid] = info
             }
         }
-    }
-
-    override fun onRemoveData(data: GalleryInfo?) {
-        data?.let { map.remove(data.gid) }
     }
 
     override fun onRemoveData(data: List<GalleryInfo?>) {

@@ -45,8 +45,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -1672,7 +1672,7 @@ public final class GalleryListScene extends BaseScene
                         return;
                     }
 
-                    mUrlBuilder.set(mQuickSearchList.get(position));
+                    mUrlBuilder.set(mQuickSearchList.get(holder.getBindingAdapterPosition()));
                     mUrlBuilder.setNextGid(0);
                     onUpdateUrlBuilder();
                     mHelper.refresh();
@@ -1685,7 +1685,7 @@ public final class GalleryListScene extends BaseScene
                     popupMenu.show();
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
-                        final QuickSearch quickSearch = mQuickSearchList.get(position);
+                        final QuickSearch quickSearch = mQuickSearchList.get(holder.getBindingAdapterPosition());
 
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
@@ -1695,7 +1695,7 @@ public final class GalleryListScene extends BaseScene
                                         .setMessage(getString(R.string.delete_quick_search_message, quickSearch.name))
                                         .setPositiveButton(R.string.delete, (dialog, which) -> {
                                             EhDB.deleteQuickSearch(quickSearch);
-                                            mQuickSearchList.remove(position);
+                                            mQuickSearchList.remove(holder.getBindingAdapterPosition());
                                             notifyDataSetChanged();
                                         })
                                         .setNegativeButton(android.R.string.cancel, null)
@@ -1952,23 +1952,9 @@ public final class GalleryListScene extends BaseScene
         }
 
         @Override
-        protected void notifyItemRangeRemoved(int positionStart, int itemCount) {
-            if (null != mAdapter) {
-                mAdapter.notifyItemRangeRemoved(positionStart, itemCount);
-            }
-        }
-
-        @Override
         protected void notifyItemRangeInserted(int positionStart, int itemCount) {
             if (null != mAdapter) {
                 mAdapter.notifyItemRangeInserted(positionStart, itemCount);
-            }
-        }
-
-        @Override
-        protected void notifyItemRangeChanged(int positionStart, int itemCount) {
-            if (null != mAdapter) {
-                mAdapter.notifyItemRangeChanged(positionStart, itemCount);
             }
         }
 

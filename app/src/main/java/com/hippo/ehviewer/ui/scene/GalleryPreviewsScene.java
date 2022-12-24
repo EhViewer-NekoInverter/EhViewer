@@ -142,7 +142,6 @@ public class GalleryPreviewsScene extends ToolbarScene {
 
         Context context = getContext();
         AssertUtils.assertNotNull(context);
-        Resources resources = context.getResources();
 
         mAdapter = new GalleryPreviewAdapter();
         mRecyclerView.setAdapter(mAdapter);
@@ -377,21 +376,11 @@ public class GalleryPreviewsScene extends ToolbarScene {
         }
 
         @Override
-        protected void notifyItemRangeRemoved(int positionStart, int itemCount) {
-            if (mAdapter != null) {
-                mAdapter.notifyItemRangeRemoved(positionStart, itemCount);
-            }
-        }
-
-        @Override
         protected void notifyItemRangeInserted(int positionStart, int itemCount) {
             if (mAdapter != null) {
                 mAdapter.notifyItemRangeInserted(positionStart, itemCount);
             }
         }
-
-        @Override
-        protected void notifyItemRangeChanged(int positionStart, int itemCount) {}
 
         @Override
         protected boolean isDuplicate(GalleryPreview d1, GalleryPreview d2) {

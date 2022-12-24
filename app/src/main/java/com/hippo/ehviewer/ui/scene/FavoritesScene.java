@@ -730,9 +730,7 @@ public class FavoritesScene extends BaseScene implements
                 .setSelection(toDate)
                 .build();
         datePicker.show(requireActivity().getSupportFragmentManager(), "date-picker");
-        datePicker.addOnPositiveButtonClickListener(v -> {
-            mHelper.goTo(v);
-        });
+        datePicker.addOnPositiveButtonClickListener(v -> mHelper.goTo(v));
     }
 
     @Override
@@ -773,11 +771,10 @@ public class FavoritesScene extends BaseScene implements
         }
 
         switch (position) {
-            case 3: { // Check all
+            case 3 -> { // Check all
                 mRecyclerView.checkAll();
-                break;
             }
-            case 4: { // Download
+            case 4 -> { // Download
                 Activity activity = getMainActivity();
                 if (activity != null) {
                     CommonOperations.startDownload(getMainActivity(), mModifyGiList, false);
@@ -786,9 +783,8 @@ public class FavoritesScene extends BaseScene implements
                 if (mRecyclerView != null && mRecyclerView.isInCustomChoice()) {
                     mRecyclerView.outOfCustomChoiceMode();
                 }
-                break;
             }
-            case 5: { // Delete
+            case 5 -> { // Delete
                 DeleteDialogHelper helper = new DeleteDialogHelper();
                 new AlertDialog.Builder(context)
                         .setTitle(R.string.delete_favorites_dialog_title)
@@ -796,9 +792,8 @@ public class FavoritesScene extends BaseScene implements
                         .setPositiveButton(android.R.string.ok, helper)
                         .setOnCancelListener(helper)
                         .show();
-                break;
             }
-            case 6: { // Move
+            case 6 -> { // Move
                 MoveDialogHelper helper = new MoveDialogHelper();
                 // First is local favorite, the other 10 is cloud favorite
                 String[] array = new String[11];
@@ -809,7 +804,6 @@ public class FavoritesScene extends BaseScene implements
                         .setItems(array, helper)
                         .setOnCancelListener(helper)
                         .show();
-                break;
             }
         }
     }
@@ -916,7 +910,7 @@ public class FavoritesScene extends BaseScene implements
             updateSearchBar();
             assert mUrlBuilder != null;
 
-            int pages = 0;
+            int pages;
             if (result.nextPage == null)
                 pages = mHelper.pgCounter + 1;
             else
@@ -1367,23 +1361,9 @@ public class FavoritesScene extends BaseScene implements
         }
 
         @Override
-        protected void notifyItemRangeRemoved(int positionStart, int itemCount) {
-            if (mAdapter != null) {
-                mAdapter.notifyItemRangeRemoved(positionStart, itemCount);
-            }
-        }
-
-        @Override
         protected void notifyItemRangeInserted(int positionStart, int itemCount) {
             if (mAdapter != null) {
                 mAdapter.notifyItemRangeInserted(positionStart, itemCount);
-            }
-        }
-
-        @Override
-        protected void notifyItemRangeChanged(int positionStart, int itemCount) {
-            if (mAdapter != null) {
-                mAdapter.notifyItemRangeChanged(positionStart, itemCount);
             }
         }
 
@@ -1400,8 +1380,8 @@ public class FavoritesScene extends BaseScene implements
         }
 
         @Override
-        protected void onScrollToPosition(int postion) {
-            if (0 == postion) {
+        protected void onScrollToPosition(int position) {
+            if (0 == position) {
                 if (null != mSearchBarMover) {
                     mSearchBarMover.showSearchBar();
                 }
