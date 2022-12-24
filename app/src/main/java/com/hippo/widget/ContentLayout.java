@@ -546,7 +546,6 @@ public class ContentLayout extends FrameLayout {
                             mData.addAll(0, data);
                             onAddData(data);
                             notifyItemRangeInserted(0, dataSize);
-                            notifyItemRangeChanged(dataSize, lastPageCount);
 
                             // Ui change, show content
                             mRefreshLayout.setRefreshing(false);
