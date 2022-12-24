@@ -59,7 +59,6 @@ import com.hippo.drawable.DrawerArrowDrawable;
 import com.hippo.easyrecyclerview.EasyRecyclerView;
 import com.hippo.easyrecyclerview.FastScroller;
 import com.hippo.easyrecyclerview.LinearDividerItemDecoration;
-import com.hippo.easyrecyclerview.NoAlphaItemAnimator;
 import com.hippo.ehviewer.EhApplication;
 import com.hippo.ehviewer.EhDB;
 import com.hippo.ehviewer.R;
@@ -287,7 +286,6 @@ public class FavoritesScene extends BaseScene implements
         mRecyclerView.setClipChildren(false);
         mRecyclerView.setChoiceMode(EasyRecyclerView.CHOICE_MODE_MULTIPLE_CUSTOM);
         mRecyclerView.setCustomCheckedListener(this);
-        mRecyclerView.setItemAnimator(new NoAlphaItemAnimator());
 
         fastScroller.setPadding(fastScroller.getPaddingLeft(), fastScroller.getPaddingTop() + paddingTopSB,
                 fastScroller.getPaddingRight(), fastScroller.getPaddingBottom());
@@ -910,24 +908,22 @@ public class FavoritesScene extends BaseScene implements
             updateSearchBar();
             assert mUrlBuilder != null;
 
-            int pages;
-            if (result.nextPage == null)
-                pages = mHelper.pgCounter + 1;
-            else
-                pages = Integer.MAX_VALUE;
+            int pages = (result.nextPage == null) ? mHelper.pgCounter + 1 : Integer.MAX_VALUE;
 
             String prev = result.prevPage, next = result.nextPage;
             switch (mHelper.operation) {
-                case -1:
-                    if (prev != null) mHelper.upperPage = prev;
-                    break;
-                case 1:
-                    if (next != null) mHelper.lowerPage = next;
-                    break;
-                default:
+                case -1 -> {
+                    if (prev != null)
+                        mHelper.upperPage = prev;
+                }
+                case 1 -> {
+                    if (next != null)
+                        mHelper.lowerPage = next;
+                }
+                default -> {
                     mHelper.upperPage = prev;
                     mHelper.lowerPage = next;
-                    break;
+                }
             }
 
             mHelper.onGetPageData(taskId, pages, mHelper.pgCounter + 1, result.galleryInfoList);

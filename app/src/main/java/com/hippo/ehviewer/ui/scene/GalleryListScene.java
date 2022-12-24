@@ -81,7 +81,6 @@ import com.hippo.drawable.DrawerArrowDrawable;
 import com.hippo.easyrecyclerview.EasyRecyclerView;
 import com.hippo.easyrecyclerview.FastScroller;
 import com.hippo.easyrecyclerview.LinearDividerItemDecoration;
-import com.hippo.easyrecyclerview.NoAlphaItemAnimator;
 import com.hippo.ehviewer.EhApplication;
 import com.hippo.ehviewer.EhDB;
 import com.hippo.ehviewer.FavouriteStatusRouter;
@@ -596,7 +595,6 @@ public final class GalleryListScene extends BaseScene
         mRecyclerView.setClipToPadding(false);
         mRecyclerView.setClipChildren(false);
         mRecyclerView.addOnScrollListener(mOnScrollListener);
-        mRecyclerView.setItemAnimator(new NoAlphaItemAnimator());
 
         fastScroller.setPadding(fastScroller.getPaddingLeft(), fastScroller.getPaddingTop() + paddingTopSB,
                 fastScroller.getPaddingRight(), fastScroller.getPaddingBottom());
