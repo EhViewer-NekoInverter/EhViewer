@@ -644,7 +644,7 @@ public class SearchBar extends MaterialCardView implements View.OnClickListener,
                     temp = text.substring(0, text.lastIndexOf(" ")) + " " + temp;
                 }
                 mEditText.setText(temp);
-                mEditText.setSelection(editable.length());
+                mEditText.setSelection(temp.length());
             }
         }
     }

@@ -420,15 +420,33 @@ public class EhTagDatabase {
                     searchHints.add(pair);
                 }
             }
-            if (searchHints.size() > 20) {
+
+            if (searchHints.size() >= 50) {
                 break;
             }
-
         }
+
+        ArrayList<Pair<String, String>> searchHintsR = (ArrayList<Pair<String, String>>) searchHints.clone();
+        for (Pair<String, String> searchHint : searchHintsR) {
+            String tag = searchHint.second, hint = searchHint.first, tagN = null;
+            int index = tag.indexOf(':');
+            if (index > 0 && index < tag.length() - 1)
+                tagN = tag.substring(index + 1);
+
+            if (equalsIgnoreSpace(keyword, hint) || equalsIgnoreSpace(keyword, tag) || equalsIgnoreSpace(keyword, tagN)) {
+                searchHints.remove(searchHint);
+                searchHints.add(0, searchHint);
+            }
+        }
+
         return searchHints;
     }
 
     private boolean containsIgnoreSpace(String text, String key) {
         return text != null && text.replace(" ", "").contains(key.replace(" ", ""));
+    }
+
+    private boolean equalsIgnoreSpace(String keyword, String text) {
+        return keyword != null && keyword.replaceAll("\\s*", "").equals(text.replaceAll("\\s*", ""));
     }
 }
