@@ -19,6 +19,7 @@
 
 #include <assert.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
@@ -87,9 +88,22 @@ static inline int filename_is_playable_file(const char *name) {
 static inline int compare_entries(const void *a, const void *b) {
     const char *fa = ((entry *) a)->filename;
     const char *fb = ((entry *) b)->filename;
-    int a_len = (int) strlen(fa);
-    int b_len = (int) strlen(fb);
-    return a_len == b_len ? strcmp(fa, fb) : a_len - b_len;
+    int i, na, nb;
+    for (i = 0; fa[i] || fb[i]; i++) {
+        if (fa[i] >= '0' && fa[i] <= '9' && fb[i] >= '0' && fb[i] <= '9') {
+            sscanf(fa + i, "%d", &na);
+            sscanf(fb + i, "%d", &nb);
+            if (na > nb)
+                return 1;
+            else if (na < nb)
+                return -1;
+        } else if (fa[i] > fb[i]) {
+            return 1;
+        } else if (fa[i] < fb[i]) {
+            return -1;
+        }
+    }
+    return 0;
 }
 
 static long archive_map_entries_index(archive_ctx *ctx) {
