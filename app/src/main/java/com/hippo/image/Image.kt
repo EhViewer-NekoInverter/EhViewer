@@ -179,7 +179,7 @@ class Image private constructor(
 
         @Throws(DecodeException::class)
         @JvmStatic
-        fun decode(stream: FileInputStream, hardware: Boolean = true): Image {
+        fun decode(stream: FileInputStream, hardware: Boolean = false): Image {
             val src = ImageDecoder.createSource(
                 stream.channel.map(
                     FileChannel.MapMode.READ_ONLY, 0,
@@ -191,7 +191,7 @@ class Image private constructor(
 
         @Throws(DecodeException::class)
         @JvmStatic
-        fun decode(buffer: ByteBuffer, hardware: Boolean = true, release: () -> Unit? = {}): Image {
+        fun decode(buffer: ByteBuffer, hardware: Boolean = false, release: () -> Unit? = {}): Image {
             val src = ImageDecoder.createSource(buffer)
             return Image(src, hardware = hardware) {
                 release()
