@@ -426,8 +426,7 @@ public class EhTagDatabase {
             }
         }
 
-        ArrayList<Pair<String, String>> searchHintsR = (ArrayList<Pair<String, String>>) searchHints.clone();
-        for (Pair<String, String> searchHint : searchHintsR) {
+        for (Pair<String, String> searchHint : (ArrayList<Pair<String, String>>) searchHints.clone()) {
             String tag = searchHint.second, hint = searchHint.first, tagN = null;
             int index = tag.indexOf(':');
             if (index > 0 && index < tag.length() - 1)
@@ -447,6 +446,6 @@ public class EhTagDatabase {
     }
 
     private boolean equalsIgnoreSpace(String keyword, String text) {
-        return keyword != null && keyword.replaceAll("\\s*", "").equals(text.replaceAll("\\s*", ""));
+        return keyword != null && text != null && keyword.replaceAll("\\s*", "").equals(text.replaceAll("\\s*", ""));
     }
 }
