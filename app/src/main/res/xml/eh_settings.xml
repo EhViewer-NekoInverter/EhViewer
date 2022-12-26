@@ -82,14 +82,15 @@
         app:entryValues="@array/list_mode_entry_values"
         app:iconSpaceReserved="false" />
 
-    <rikka.preference.SimpleMenuPreference
-        android:defaultValue="0"
-        android:key="detail_size"
-        android:summary="%s"
+    <SeekBarPreference
+        android:defaultValue="8"
+        android:key="detail_size_"
+        android:max="12"
         android:title="@string/settings_eh_detail_size"
-        app:entries="@array/detail_size_entries"
-        app:entryValues="@array/detail_size_entry_values"
-        app:iconSpaceReserved="false" />
+        app:iconSpaceReserved="false"
+        app:min="6"
+        app:showSeekBarValue="true"
+        app:singleLineTitle="false" />
 
     <SeekBarPreference
         android:defaultValue="40"

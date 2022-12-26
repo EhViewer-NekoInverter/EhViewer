@@ -443,9 +443,7 @@
     <string name="settings_eh_list_mode">List mode</string>
     <string name="settings_eh_list_mode_detail">Detail</string>
     <string name="settings_eh_list_mode_thumb">Thumb</string>
-    <string name="settings_eh_detail_size">Detail size</string>
-    <string name="settings_eh_detail_size_long">Long</string>
-    <string name="settings_eh_detail_size_short">Short</string>
+    <string name="settings_eh_detail_size">Item width in detail mode</string>
     <string name="settings_eh_list_tile_thumb_size">Thumb size in detail mode</string>
     <string name="settings_eh_thumb_size">Thumb size in thumb mode</string>
     <string name="settings_eh_thumb_size_summary">And preview image size on the gallery details page</string>

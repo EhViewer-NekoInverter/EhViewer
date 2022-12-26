@@ -397,9 +397,7 @@
     <string name="settings_eh_list_mode">列表模式</string>
     <string name="settings_eh_list_mode_detail">詳細資料</string>
     <string name="settings_eh_list_mode_thumb">縮圖</string>
-    <string name="settings_eh_detail_size">詳細大小</string>
-    <string name="settings_eh_detail_size_long">長</string>
-    <string name="settings_eh_detail_size_short">短</string>
+    <string name="settings_eh_detail_size">詳細資料模式下條目寬度</string>
     <string name="settings_eh_list_tile_thumb_size">詳細資料模式下縮圖大小</string>
     <string name="settings_eh_thumb_size">縮圖模式下縮圖大小</string>
     <string name="settings_eh_thumb_size_summary">以及圖庫詳情頁預覽圖大小</string>

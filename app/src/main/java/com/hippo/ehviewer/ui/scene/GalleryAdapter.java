@@ -107,7 +107,7 @@ abstract class GalleryAdapter extends RecyclerView.Adapter<GalleryHolder> {
         RecyclerView recyclerView = mRecyclerView;
         switch (type) {
             case GalleryAdapter.TYPE_LIST -> {
-                int columnWidth = mResources.getDimensionPixelOffset(Settings.getDetailSizeResId());
+                int columnWidth = Settings.getDetailSize();
                 mLayoutManager.setColumnSize(columnWidth);
                 mLayoutManager.setStrategy(AutoStaggeredGridLayoutManager.STRATEGY_MIN_SIZE);
                 if (null != mGirdDecoration) {

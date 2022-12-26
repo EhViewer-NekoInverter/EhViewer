@@ -57,8 +57,8 @@ public class Settings {
     private static final int DEFAULT_LAUNCH_PAGE = 0;
     public static final String KEY_LIST_MODE = "list_mode";
     private static final int DEFAULT_LIST_MODE = 0;
-    public static final String KEY_DETAIL_SIZE = "detail_size";
-    private static final int DEFAULT_DETAIL_SIZE = 0;
+    public static final String KEY_DETAIL_SIZE = "detail_size_";
+    private static final int DEFAULT_DETAIL_SIZE = 8;
     public static final String KEY_LIST_THUMB_SIZE = "list_tile_size";
     private static final int DEFAULT_LIST_THUMB_SIZE = 40;
     public static boolean LIST_THUMB_SIZE_INITED = false;
@@ -418,18 +418,7 @@ public class Settings {
     }
 
     public static int getDetailSize() {
-        return getIntFromStr(KEY_DETAIL_SIZE, DEFAULT_DETAIL_SIZE);
-    }
-
-    @DimenRes
-    public static int getDetailSizeResId() {
-        switch (getDetailSize()) {
-            default:
-            case 0:
-                return R.dimen.gallery_list_column_width_long;
-            case 1:
-                return R.dimen.gallery_list_column_width_short;
-        }
+        return dip2px(40 * getInt(KEY_DETAIL_SIZE, DEFAULT_DETAIL_SIZE));
     }
 
     public static int getListThumbSize() {
@@ -443,12 +432,12 @@ public class Settings {
     }
 
     public static int getThumbSize() {
-        return dip2px(getInt(KEY_THUMB_SIZE, DEFAULT_THUMB_SIZE));
+        return dip2px(40 * getInt(KEY_THUMB_SIZE, DEFAULT_THUMB_SIZE));
     }
 
     public static int dip2px(int dpValue) {
         final float scale = sContext.getResources().getDisplayMetrics().density;
-        return (int) (dpValue * 40 * scale + 0.5f);
+        return (int) (dpValue * scale + 0.5f);
     }
 
     public static int getThumbResolution() {

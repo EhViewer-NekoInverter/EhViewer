@@ -50,16 +50,6 @@
         <item>3</item>
     </string-array>
 
-    <string-array name="detail_size_entries" translatable="false">
-        <item>@string/settings_eh_detail_size_long</item>
-        <item>@string/settings_eh_detail_size_short</item>
-    </string-array>
-
-    <string-array name="detail_size_entry_values" translatable="false">
-        <item>0</item>
-        <item>1</item>
-    </string-array>
-
     <string-array name="thumb_resolution_entries" translatable="false">
         <item>@string/settings_eh_thumb_resolution_auto</item>
         <item>250x</item>
