@@ -54,30 +54,19 @@
 
 NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
-本人与 NekoInverter 无任何关系，本仓库仅作自用目的，不开放 issue，有问题请看下面的 [常见问题](#问题)
+由于本人水平不足，本分支不接受功能请求，如果您有什么好想法或者发现什么问题欢迎直接提交 PR，软件常见的使用问题请参阅下面的 [常见问题](#问题)
 
-如果你可以接受 MD3 风格，那使用 [彩E](https://github.com/Ehviewer-Overhauled/Ehviewer) 应该是更好的选择，我建立本仓库就是因为实在不能接受 MD3！不要大圆角！不要大色块！😡😡
+综上，如果您可以接受 MD3 风格，那使用 [彩E](https://github.com/Ehviewer-Overhauled/Ehviewer) 应该是更好的选择，我建立本仓库就是因为实在不能接受 MD3！不要大圆角！不要大色块！😡😡
 
 # 下载
 
-**注：需要 Android 9 及以上版本系统 (唯一一个支持 Android 6 的版本：[v1.7.27-final](https://github.com/EhViewer-NekoInverter/EhViewer/releases/tag/v1.7.27.final))，如果闪退那就是不兼容，换别的用吧**
-
-**警告⚠：由于本软件完全开源，任何人都可以修改后重新构建，所以请勿从其他来源下载，以免下载到奇怪的东西**
+**注：需要 Android 9 及以上版本系统 (唯一一个支持 Android 6 的版本：[v1.7.27-final](https://github.com/EhViewer-NekoInverter/EhViewer/releases/tag/v1.7.27.final))**
 
 推荐前往 [Github Actions](https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml) 下载最新 CI 版本，需要登录 Github 账号
 
 也可以前往 [Github Releases](https://github.com/EhViewer-NekoInverter/EhViewer/releases) 下载发行版，无需登录账号，但可能不是最新的
 
-# 表扬
-
-倒卖狗多来点，欢迎大家补充
-
-- QQ: 2469613065
-![2469613065](art/2469613065.webp)
-
 # 链接
-
-**注：所有 APP 均为第三方，请勿在 E 站评论区提及 APP，维护评论区整洁你我有责，看到相关评论请点个踩再走**
 
 **EhViewer 各版本链接**
 
@@ -153,9 +142,8 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 **这个软件怎么报毒啊**
 
-- 如果你是从本页面提供的地址下载的，请放心使用
-- 本软件完全开源，构建全部由 Github Action 自行完成，如有疑问可自行审查代码
-- 本软件中可能包含的 a.gray.sexpay.m (灰色.性支付) 是一种国产脑瘤病毒，需要反馈系统厂商去医院挂个脑科解决
+- 本软件完全开源，构建全部由 Github Action 完成，如有疑问可自行审查代码
+- 本软件中包含的 a.gray.sexpay.m (灰色.性支付) 是一种国产脑瘤病毒，需要反馈系统厂商去医院挂个脑科解决
 - 还有疑问？建议直接卸载
 
 **其他问题**
