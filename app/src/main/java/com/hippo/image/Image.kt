@@ -82,6 +82,7 @@ class Image private constructor(
 
     @Synchronized
     fun recycle() {
+        if (mObtainedDrawable == null) return
         if (mObtainedDrawable is AnimatedImageDrawable) {
             (mObtainedDrawable as AnimatedImageDrawable?)?.stop()
         }
