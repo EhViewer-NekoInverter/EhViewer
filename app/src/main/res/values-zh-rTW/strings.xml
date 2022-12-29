@@ -267,6 +267,7 @@
     <!-- Gallery Previews -->
     <string name="gallery_previews">圖庫預覽</string>
     <string name="go_to">跳到</string>
+    <string name="go_to_gid">GID，留空跳轉末頁</string>
 
     <!-- Download -->
     <string name="scene_download_title">正在下載 - %s</string>

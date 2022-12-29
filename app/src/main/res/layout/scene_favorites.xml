@@ -59,6 +59,12 @@
             style="@style/Widget.FloatingActionButton.Accent.Mini"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:srcCompat="@drawable/v_last_page_x24" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            style="@style/Widget.FloatingActionButton.Accent.Mini"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:srcCompat="@drawable/v_refresh_dark_x24" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

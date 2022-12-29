@@ -313,6 +313,7 @@
     <!-- Gallery Previews -->
     <string name="gallery_previews">Gallery Previews</string>
     <string name="go_to">Go to</string>
+    <string name="go_to_gid">GID, leave blank for last page</string>
 
     <!-- Download -->
     <string name="scene_download_title">Download - %s</string>

@@ -118,15 +118,14 @@ public class FavListUrlBuilder implements Parcelable {
                 }
             }
         }
-        if (mJumpTo != null && !mJumpTo.isEmpty()) {
-            ub.addQuery("seek", mJumpTo);
-            mNext = "2022";
-        }
         if (mPrev != null && !mPrev.isEmpty()) {
             ub.addQuery("prev", mPrev);
         }
         if (mNext != null && !mNext.isEmpty()) {
             ub.addQuery("next", mNext);
+        }
+        if (mJumpTo != null && !mJumpTo.isEmpty()) {
+            ub.addQuery("seek", mJumpTo);
         }
         return ub.build();
     }

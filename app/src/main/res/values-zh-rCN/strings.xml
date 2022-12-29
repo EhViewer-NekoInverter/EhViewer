@@ -267,6 +267,7 @@
     <!-- Gallery Previews -->
     <string name="gallery_previews">画廊预览</string>
     <string name="go_to">跳页</string>
+    <string name="go_to_gid">GID，留空跳转末页</string>
 
     <!-- Download -->
     <string name="scene_download_title">下载 - %s</string>

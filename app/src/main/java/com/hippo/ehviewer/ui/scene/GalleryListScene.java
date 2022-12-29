@@ -511,6 +511,7 @@ public final class GalleryListScene extends BaseScene
 
         // Update fab visibility
         mFabLayout.setSecondaryFabVisibilityAt(1, !isPopular);
+        mFabLayout.setSecondaryFabVisibilityAt(2, !isTopList && !isPopular);
 
         // Update normal search mode
         mSearchLayout.setNormalSearchMode(mode == ListUrlBuilder.MODE_SUBSCRIPTION
@@ -982,8 +983,43 @@ public final class GalleryListScene extends BaseScene
                     .setSelection(toDate)
                     .build();
             datePicker.show(requireActivity().getSupportFragmentManager(), "date-picker");
-            datePicker.addOnPositiveButtonClickListener(v -> mHelper.goTo(v));
+            datePicker.addOnPositiveButtonClickListener(v -> mHelper.goTo(v, true));
         }
+    }
+
+    private void showGidDialog() {
+        Context context = getContext();
+        if (null == context || null == mHelper) {
+            return;
+        }
+
+        final EditTextDialogBuilder builder = new EditTextDialogBuilder(context, null, getString(R.string.go_to_gid));
+        builder.setTitle(R.string.go_to);
+        builder.setPositiveButton(android.R.string.ok, null);
+        final AlertDialog dialog = builder.show();
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String text = builder.getText().trim();
+            // Empty, go to last page
+            if (TextUtils.isEmpty(text)) {
+                dialog.dismiss();
+                mHelper.goTo("1", false);
+                return;
+            }
+            // Not empty, check number
+            int goTo;
+            try {
+                goTo = Integer.parseInt(text) + 1;
+            } catch (NumberFormatException e) {
+                builder.setError(getString(R.string.error_invalid_number));
+                return;
+            }
+            if (goTo < 2) {
+                builder.setError(getString(R.string.error_out_of_range));
+                return;
+            }
+            dialog.dismiss();
+            mHelper.goTo(Integer.toString(goTo), true);
+        });
     }
 
     @Override
@@ -997,10 +1033,12 @@ public final class GalleryListScene extends BaseScene
             case 0 -> openDrawer(Gravity.RIGHT);
             // Go to
             case 1 -> {
-                if (mHelper.canGoTo()) showGoToDialog();
+                if (!mIsTopList || mHelper.canGoTo()) showGoToDialog();
             }
+            // Last page
+            case 2 -> showGidDialog();
             // Refresh
-            case 2 -> mHelper.refresh();
+            case 3 -> mHelper.refresh();
         }
 
         view.setExpanded(false);

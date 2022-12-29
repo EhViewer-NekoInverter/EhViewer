@@ -128,13 +128,13 @@ public class FavoritesScene extends BaseScene implements
         @Override
         public void run() {
             if (mFabLayout != null) {
-                updateJumpFab(); // Index: 1
+                updateJumpFab(); // Index: 1, 2
                 mFabLayout.setSecondaryFabVisibilityAt(0, true);
-                mFabLayout.setSecondaryFabVisibilityAt(2, true);
-                mFabLayout.setSecondaryFabVisibilityAt(3, false);
+                mFabLayout.setSecondaryFabVisibilityAt(3, true);
                 mFabLayout.setSecondaryFabVisibilityAt(4, false);
                 mFabLayout.setSecondaryFabVisibilityAt(5, false);
                 mFabLayout.setSecondaryFabVisibilityAt(6, false);
+                mFabLayout.setSecondaryFabVisibilityAt(7, false);
             }
         }
     };
@@ -398,6 +398,7 @@ public class FavoritesScene extends BaseScene implements
     private void updateJumpFab() {
         if (mFabLayout != null && mUrlBuilder != null) {
             mFabLayout.setSecondaryFabVisibilityAt(1, mUrlBuilder.getFavCat() != FavListUrlBuilder.FAV_CAT_LOCAL);
+            mFabLayout.setSecondaryFabVisibilityAt(2, mUrlBuilder.getFavCat() != FavListUrlBuilder.FAV_CAT_LOCAL);
         }
     }
 
@@ -726,7 +727,7 @@ public class FavoritesScene extends BaseScene implements
                 .setSelection(toDate)
                 .build();
         datePicker.show(requireActivity().getSupportFragmentManager(), "date-picker");
-        datePicker.addOnPositiveButtonClickListener(v -> mHelper.goTo(v));
+        datePicker.addOnPositiveButtonClickListener(v -> mHelper.goTo(v, true));
     }
 
     @Override
@@ -742,11 +743,11 @@ public class FavoritesScene extends BaseScene implements
                 // Open right
                 case 0 -> openDrawer(Gravity.RIGHT);
                 // Go to
-                case 1 -> {
-                    if (mHelper.canGoTo()) showGoToDialog();
-                }
+                case 1 -> showGoToDialog();
+                // Last page
+                case 2 -> mHelper.goTo("1-0", false);
                 // Refresh
-                case 2 -> mHelper.refresh();
+                case 3 -> mHelper.refresh();
             }
             view.setExpanded(false);
             return;
@@ -764,10 +765,12 @@ public class FavoritesScene extends BaseScene implements
         }
 
         switch (position) {
-            case 3 -> { // Check all
+            // Check all
+            case 4 -> {
                 mRecyclerView.checkAll();
             }
-            case 4 -> { // Download
+            // Download
+            case 5 -> {
                 Activity activity = getMainActivity();
                 if (activity != null) {
                     CommonOperations.startDownload(getMainActivity(), mModifyGiList, false);
@@ -777,7 +780,8 @@ public class FavoritesScene extends BaseScene implements
                     mRecyclerView.outOfCustomChoiceMode();
                 }
             }
-            case 5 -> { // Delete
+            // Delete
+            case 6 -> {
                 DeleteDialogHelper helper = new DeleteDialogHelper();
                 new AlertDialog.Builder(context)
                         .setTitle(R.string.delete_favorites_dialog_title)
@@ -786,7 +790,8 @@ public class FavoritesScene extends BaseScene implements
                         .setOnCancelListener(helper)
                         .show();
             }
-            case 6 -> { // Move
+            // Move
+            case 7 -> {
                 MoveDialogHelper helper = new MoveDialogHelper();
                 // First is local favorite, the other 10 is cloud favorite
                 String[] array = new String[11];
@@ -814,10 +819,11 @@ public class FavoritesScene extends BaseScene implements
             mFabLayout.setSecondaryFabVisibilityAt(0, false);
             mFabLayout.setSecondaryFabVisibilityAt(1, false);
             mFabLayout.setSecondaryFabVisibilityAt(2, false);
-            mFabLayout.setSecondaryFabVisibilityAt(3, true);
+            mFabLayout.setSecondaryFabVisibilityAt(3, false);
             mFabLayout.setSecondaryFabVisibilityAt(4, true);
             mFabLayout.setSecondaryFabVisibilityAt(5, true);
             mFabLayout.setSecondaryFabVisibilityAt(6, true);
+            mFabLayout.setSecondaryFabVisibilityAt(7, true);
         }
     }
 
