@@ -205,6 +205,8 @@ public class ContentLayout extends FrameLayout {
         private static final String KEY_START_PAGE = "start_page";
         private static final String KEY_END_PAGE = "end_page";
         private static final String KEY_PAGES = "pages";
+        private static final String KEY_PREV = "prev";
+        private static final String KEY_NEXT = "next";
         /**
          * Generate task id
          */
@@ -242,17 +244,19 @@ public class ContentLayout extends FrameLayout {
          */
         private int mPages;
         private int mNextPage;
+        private String mPrev;
+        private String mNext;
         private int mCurrentTaskId;
         private int mCurrentTaskType;
         private int mCurrentTaskPage;
         private final SwipeRefreshLayout.OnRefreshListener mOnRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (mStartPage > 0) {
+                if (mPrev != null || mStartPage > 0) {
                     mCurrentTaskId = mIdGenerator.nextId();
                     mCurrentTaskType = TYPE_PRE_PAGE_KEEP_POS;
                     mCurrentTaskPage = mStartPage - 1;
-                    getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage);
+                    getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, mPrev, false);
                 } else {
                     doRefresh();
                 }
@@ -263,31 +267,28 @@ public class ContentLayout extends FrameLayout {
         private final RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                if (!mRefreshLayout.isRefreshing() && !recyclerView.canScrollVertically(1) && mEndPage < mPages) {
-                    // Get next page
-                    mBottomProgress.show();
-                    if (mEndPage < mPages) {
+                if (!mRefreshLayout.isRefreshing() && !recyclerView.canScrollVertically(1)) {
+                    if (mNext != null || mEndPage < mPages) {
+                    	mBottomProgress.show();
                         // Get next page
                         // Fill pages before NextPage with empty list
                         while (mNextPage > mEndPage && mEndPage < mPages) {
                             mCurrentTaskId = mIdGenerator.nextId();
                             mCurrentTaskType = TYPE_NEXT_PAGE_KEEP_POS;
                             mCurrentTaskPage = mEndPage;
-                            onGetPageData(mCurrentTaskId, mPages, mNextPage, Collections.emptyList());
+                            onGetPageData(mCurrentTaskId, mPages, mNextPage, null, null, Collections.emptyList());
                         }
                         mCurrentTaskId = mIdGenerator.nextId();
                         mCurrentTaskType = TYPE_NEXT_PAGE_KEEP_POS;
                         mCurrentTaskPage = mEndPage;
-                        getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage);
-                    } else if (mEndPage == mPages) {
+                        getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, mNext, true);
+                    } else if (mStartPage > 0 && mEndPage == mPages) {
+                    	mBottomProgress.show();
                         // Refresh last page
                         mCurrentTaskId = mIdGenerator.nextId();
                         mCurrentTaskType = TYPE_REFRESH_PAGE;
                         mCurrentTaskPage = mEndPage - 1;
-                        getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage);
-                    } else {
-                        Log.e(TAG, "Try to footer refresh, but mEndPage = " + mEndPage + ", mPages = " + mPages);
-                        mBottomProgress.hide();
+                        getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, null, true);
                     }
                 }
             }
@@ -320,12 +321,14 @@ public class ContentLayout extends FrameLayout {
         }
 
         /**
-         * Call {@link #onGetPageData(int, int, int, List)} when get data
+         * Call {@link #onGetPageData(int, int, int, String, String, List)} when get data
          *
          * @param taskId task id
          * @param page   the page to get
+         * @param index  the index to get
+         * @param isNext the index is next or prev
          */
-        protected abstract void getPageData(int taskId, int type, int page);
+        protected abstract void getPageData(int taskId, int type, int page, String index, boolean isNext);
 
         protected abstract Context getContext();
 
@@ -406,7 +409,7 @@ public class ContentLayout extends FrameLayout {
         protected void onClearData() {
         }
 
-        public void onGetPageData(int taskId, int pages, int nextPage, List<E> data) {
+        public void onGetPageData(int taskId, int pages, int nextPage, String prev, String next, List<E> data) {
             if (mCurrentTaskId == taskId) {
                 int dataSize = data.size();
                 int oldDataSize = mData.size();
@@ -417,6 +420,8 @@ public class ContentLayout extends FrameLayout {
                         mEndPage = 1;
                         mPages = pages;
                         mNextPage = nextPage;
+                        mPrev = prev;
+                        mNext = next;
                         mPageDivider.clear();
                         mPageDivider.add(dataSize);
                         if (data.isEmpty()) {
@@ -457,6 +462,7 @@ public class ContentLayout extends FrameLayout {
                         mPageDivider.add(0, dataSize);
                         mStartPage--;
                         mPages = Math.max(mEndPage, pages);
+                        mPrev = prev;
                         // assert mStartPage >= 0
 
                         if (data.isEmpty()) {
@@ -509,6 +515,7 @@ public class ContentLayout extends FrameLayout {
                         mEndPage++;
                         mNextPage = nextPage;
                         mPages = Math.max(mEndPage, pages);
+                        mNext = next;
                         if (data.isEmpty()) {
                             // OK, that's all
                             if (mData.isEmpty()) {
@@ -556,6 +563,8 @@ public class ContentLayout extends FrameLayout {
                         mEndPage = mCurrentTaskPage + 1;
                         mNextPage = nextPage;
                         mPages = pages;
+                        mPrev = prev;
+                        mNext = next;
                         mPageDivider.clear();
                         mPageDivider.add(dataSize);
                         if (data.isEmpty()) {
@@ -659,10 +668,6 @@ public class ContentLayout extends FrameLayout {
             mViewTransition.showView(0);
         }
 
-        protected void beforeRefresh() {
-
-        }
-
         private boolean isContentShowing() {
             return mViewTransition.getShownViewIndex() == 0;
         }
@@ -684,12 +689,11 @@ public class ContentLayout extends FrameLayout {
             showText(mEmptyString);
         }
 
-        protected void doRefresh() {
-            beforeRefresh();
+        private void doRefresh() {
             mCurrentTaskId = mIdGenerator.nextId();
             mCurrentTaskType = TYPE_REFRESH;
             mCurrentTaskPage = 0;
-            getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage);
+            getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, null, true);
         }
 
         /**
@@ -768,7 +772,7 @@ public class ContentLayout extends FrameLayout {
                 mCurrentTaskId = mIdGenerator.nextId();
                 mCurrentTaskType = TYPE_PRE_PAGE;
                 mCurrentTaskPage = page;
-                getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage);
+                getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, null, true);
             } else if (page == mEndPage) {
                 mRefreshLayout.setRefreshing(false);
                 mBottomProgress.show();
@@ -776,7 +780,7 @@ public class ContentLayout extends FrameLayout {
                 mCurrentTaskId = mIdGenerator.nextId();
                 mCurrentTaskType = TYPE_NEXT_PAGE;
                 mCurrentTaskPage = page;
-                getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage);
+                getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, null, true);
             } else {
                 mRefreshLayout.setRefreshing(true);
                 mBottomProgress.hide();
@@ -784,20 +788,22 @@ public class ContentLayout extends FrameLayout {
                 mCurrentTaskId = mIdGenerator.nextId();
                 mCurrentTaskType = TYPE_SOMEWHERE;
                 mCurrentTaskPage = page;
-                getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage);
+                getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, null, true);
             }
         }
 
-        protected void doGoToPage(int page) {
+        public void goTo(String index, boolean isNext) {
             mRefreshLayout.setRefreshing(true);
             mBottomProgress.hide();
             mCurrentTaskId = mIdGenerator.nextId();
             mCurrentTaskType = TYPE_SOMEWHERE;
-            mCurrentTaskPage = page;
-            getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage);
+            mCurrentTaskPage = 0;
+            getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, index, isNext);
         }
 
         protected Parcelable saveInstanceState(Parcelable superState) {
+            cancelCurrentTask();
+
             Bundle bundle = new Bundle();
             bundle.putParcelable(KEY_SUPER, superState);
             int shownView = mViewTransition.getShownViewIndex();
@@ -818,6 +824,8 @@ public class ContentLayout extends FrameLayout {
             bundle.putInt(KEY_START_PAGE, mStartPage);
             bundle.putInt(KEY_END_PAGE, mEndPage);
             bundle.putInt(KEY_PAGES, mPages);
+            bundle.putString(KEY_PREV, mPrev);
+            bundle.putString(KEY_NEXT, mNext);
             return bundle;
         }
 
@@ -842,6 +850,8 @@ public class ContentLayout extends FrameLayout {
                 mStartPage = bundle.getInt(KEY_START_PAGE);
                 mEndPage = bundle.getInt(KEY_END_PAGE);
                 mPages = bundle.getInt(KEY_PAGES);
+                mPrev = bundle.getString(KEY_PREV);
+                mNext = bundle.getString(KEY_NEXT);
 
                 notifyDataSetChanged();
 
@@ -850,6 +860,8 @@ public class ContentLayout extends FrameLayout {
                     mStartPage = 0;
                     mEndPage = 0;
                     mPages = 0;
+                    mPrev = null;
+                    mNext = null;
                     firstRefresh();
                 }
 

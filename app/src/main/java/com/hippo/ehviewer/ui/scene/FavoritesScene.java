@@ -24,7 +24,6 @@ import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.SparseBooleanArray;
 import android.view.Display;
@@ -129,15 +128,14 @@ public class FavoritesScene extends BaseScene implements
         @Override
         public void run() {
             if (mFabLayout != null) {
+                updateJumpFab(); // Index: 1
                 mFabLayout.setSecondaryFabVisibilityAt(0, true);
-                mFabLayout.setSecondaryFabVisibilityAt(1, true);
                 mFabLayout.setSecondaryFabVisibilityAt(2, true);
                 mFabLayout.setSecondaryFabVisibilityAt(3, false);
                 mFabLayout.setSecondaryFabVisibilityAt(4, false);
                 mFabLayout.setSecondaryFabVisibilityAt(5, false);
                 mFabLayout.setSecondaryFabVisibilityAt(6, false);
             }
-            updateJumpFab();
         }
     };
     @Nullable
@@ -741,17 +739,14 @@ public class FavoritesScene extends BaseScene implements
 
         if (!mRecyclerView.isInCustomChoice()) {
             switch (position) {
-                case 0: // Open right
-                    openDrawer(Gravity.RIGHT);
-                    break;
-                case 1: // Go to
-                    if (mHelper.canGoTo()) {
-                        showGoToDialog();
-                    }
-                    break;
-                case 2: // Refresh
-                    mHelper.refresh();
-                    break;
+                // Open right
+                case 0 -> openDrawer(Gravity.RIGHT);
+                // Go to
+                case 1 -> {
+                    if (mHelper.canGoTo()) showGoToDialog();
+                }
+                // Refresh
+                case 2 -> mHelper.refresh();
             }
             view.setExpanded(false);
             return;
@@ -908,25 +903,7 @@ public class FavoritesScene extends BaseScene implements
             updateSearchBar();
             assert mUrlBuilder != null;
 
-            int pages = (result.nextPage == null) ? mHelper.pgCounter + 1 : Integer.MAX_VALUE;
-
-            String prev = result.prevPage, next = result.nextPage;
-            switch (mHelper.operation) {
-                case -1 -> {
-                    if (prev != null)
-                        mHelper.upperPage = prev;
-                }
-                case 1 -> {
-                    if (next != null)
-                        mHelper.lowerPage = next;
-                }
-                default -> {
-                    mHelper.upperPage = prev;
-                    mHelper.lowerPage = next;
-                }
-            }
-
-            mHelper.onGetPageData(taskId, pages, mHelper.pgCounter + 1, result.galleryInfoList);
+            mHelper.onGetPageData(taskId, 0, 0, result.prev, result.next, result.galleryInfoList);
 
             if (mDrawerAdapter != null) {
                 mDrawerAdapter.notifyDataSetChanged();
@@ -952,9 +929,9 @@ public class FavoritesScene extends BaseScene implements
             }
 
             if (list.size() == 0) {
-                mHelper.onGetPageData(taskId, 0, 0, Collections.EMPTY_LIST);
+                mHelper.onGetPageData(taskId, 0, 0, null, null, Collections.EMPTY_LIST);
             } else {
-                mHelper.onGetPageData(taskId, 1, 0, list);
+                mHelper.onGetPageData(taskId, 1, 0, null, null, list);
             }
 
             if (TextUtils.isEmpty(keyword)) {
@@ -1245,18 +1222,13 @@ public class FavoritesScene extends BaseScene implements
     }
 
     private class FavoritesHelper extends GalleryInfoContentHelper {
-        public String upperPage = null;
-        public String lowerPage = null;
-        public int operation = 0;
-        public int pgCounter = 0;
 
         @Override
-        protected void getPageData(final int taskId, int type, int page) {
+        protected void getPageData(final int taskId, int type, int page, String index, boolean isNext) {
             MainActivity activity = getMainActivity();
             if (null == activity || null == mUrlBuilder || null == mClient) {
                 return;
             }
-            pgCounter = page;
 
             if (mEnableModify) {
                 mEnableModify = false;
@@ -1296,7 +1268,7 @@ public class FavoritesScene extends BaseScene implements
                         url = mUrlBuilder.build();
                     }
 
-                    mUrlBuilder.setNext(lowerPage);
+                    mUrlBuilder.setIndex(index, true);
                     EhRequest request = new EhRequest();
                     request.setMethod(EhClient.METHOD_MODIFY_FAVORITES);
                     request.setCallback(new GetFavoritesListener(getContext(),
@@ -1309,24 +1281,8 @@ public class FavoritesScene extends BaseScene implements
                 final String keyword = mUrlBuilder.getKeyword();
                 SimpleHandler.getInstance().post(() -> onGetFavoritesLocal(keyword, taskId));
             } else {
-                String prev = null, next = null;
-                if (jumpTo != null) {
-                    next = Integer.toString(minGid);
-                    operation = 0;
-                } else if (page != 0) {
-                    if (page >= mHelper.getPageForTop()) {
-                        next = lowerPage;
-                        operation = 1;
-                    } else {
-                        prev = upperPage;
-                        operation = -1;
-                    }
-                }
-                mUrlBuilder.setPrev(prev);
-                mUrlBuilder.setNext(next);
-
+                mUrlBuilder.setIndex(index, isNext);
                 mUrlBuilder.setJumpTo(jumpTo);
-                jumpTo = null;
 
                 String url = mUrlBuilder.build();
                 EhRequest request = new EhRequest();
@@ -1382,35 +1338,6 @@ public class FavoritesScene extends BaseScene implements
                     mSearchBarMover.showSearchBar();
                 }
             }
-        }
-
-        @Override
-        protected void onClearData() {
-            super.onClearData();
-        }
-
-        @Override
-        protected void beforeRefresh() {
-            super.beforeRefresh();
-            upperPage = null;
-            lowerPage = null;
-            operation = 0;
-        }
-
-        @Override
-        protected Parcelable saveInstanceState(Parcelable superState) {
-            Bundle bundle = (Bundle) super.saveInstanceState(superState);
-            bundle.putString(KEY_UPPER_PAGE, upperPage);
-            bundle.putString(KEY_LOWER_PAGE, lowerPage);
-            return bundle;
-        }
-
-        @Override
-        protected Parcelable restoreInstanceState(Parcelable state) {
-            Bundle bundle = (Bundle) state;
-            upperPage = bundle.getString(KEY_UPPER_PAGE);
-            lowerPage = bundle.getString(KEY_LOWER_PAGE);
-            return super.restoreInstanceState(state);
         }
     }
 }
