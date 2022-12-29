@@ -138,7 +138,6 @@ class HistoryScene : ToolbarScene() {
         val mFastScroller = ViewUtils.`$$`(content, R.id.fast_scroller) as FastScroller
         val mTip = ViewUtils.`$$`(view, R.id.tip) as TextView
         val mViewTransition = ViewTransition(content, mTip)
-        val resources = requireContext().resources
         val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.big_history)
         drawable!!.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
         mTip.setCompoundDrawables(null, drawable, null, null)

@@ -58,6 +58,7 @@ public class EhFragment extends BasePreferenceFragment {
             getPreferenceScreen().removePreference(showTagTranslations);
             getPreferenceScreen().removePreference(tagTranslationsSource);
         }
+        updateListPreference(Settings.getListMode());
     }
 
     @Override
@@ -66,17 +67,14 @@ public class EhFragment extends BasePreferenceFragment {
         if (Settings.KEY_THEME.equals(key)) {
             DayNightDelegate.setDefaultNightMode(Integer.parseInt((String) newValue));
             requireActivity().recreate();
-            return true;
         } else if (Settings.KEY_GALLERY_SITE.equals(key)) {
             requireActivity().setResult(Activity.RESULT_OK);
-            return true;
         } else if (Settings.KEY_LIST_MODE.equals(key)) {
+            updateListPreference(Integer.parseInt((String) newValue));
             requireActivity().setResult(Activity.RESULT_OK);
-            return true;
         } else if (Settings.KEY_LIST_THUMB_SIZE.equals(key)) {
             Settings.LIST_THUMB_SIZE_INITED = false;
             requireActivity().setResult(Activity.RESULT_OK);
-            return true;
         } else if (Settings.KEY_DETAIL_SIZE.equals(key)) {
             requireActivity().setResult(Activity.RESULT_OK);
         } else if (Settings.KEY_THUMB_SIZE.equals(key)) {
@@ -89,7 +87,6 @@ public class EhFragment extends BasePreferenceFragment {
             if ((requireActivity().getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_YES) > 0) {
                 requireActivity().recreate();
             }
-            return true;
         }
         return true;
     }
@@ -97,5 +94,12 @@ public class EhFragment extends BasePreferenceFragment {
     @Override
     public int getFragmentTitle() {
         return R.string.settings_eh;
+    }
+
+    private void updateListPreference(int newValue) {
+        findPreference(Settings.KEY_DETAIL_SIZE).setVisible(newValue == 0);
+        findPreference(Settings.KEY_LIST_THUMB_SIZE).setVisible(newValue == 0);
+        findPreference(Settings.KEY_THUMB_SIZE).setVisible(newValue == 1);
+        findPreference(Settings.KEY_THUMB_SHOW_TITLE).setVisible(newValue == 1);
     }
 }

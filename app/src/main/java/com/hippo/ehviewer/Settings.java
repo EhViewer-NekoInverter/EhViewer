@@ -64,7 +64,9 @@ public class Settings {
     public static boolean LIST_THUMB_SIZE_INITED = false;
     private static int LIST_THUMB_SIZE = 40;
     public static final String KEY_THUMB_SIZE = "thumb_size_";
-    private static final int DEFAULT_THUMB_SIZE = 3;
+    private static final int DEFAULT_THUMB_SIZE = 4;
+    public static final String KEY_THUMB_SHOW_TITLE = "thumb_show_title";
+    private static final boolean DEFAULT_THUMB_SHOW_TITLE = true;
     private static final String KEY_THUMB_RESOLUTION = "thumb_resolution";
     private static final int DEFAULT_THUMB_RESOLUTION = 0;
     private static final String KEY_SHOW_JPN_TITLE = "show_jpn_title";
@@ -77,6 +79,8 @@ public class Settings {
     private static final boolean DEFAULT_SHOW_TAG_TRANSLATIONS = false;
     private static final String KEY_PREVIEW_NUM = "preview_num";
     private static final int DEFAULT_PREVIEW_NUM = 60;
+    private static final String KEY_PREVIEW_SIZE = "preview_size";
+    private static final int DEFAULT_PREVIEW_SIZE = 3;
     private static final String KEY_METERED_NETWORK_WARNING = "cellular_network_warning";
     private static final boolean DEFAULT_METERED_NETWORK_WARNING = false;
     private static final String KEY_REQUEST_NEWS = "request_news";
@@ -440,6 +444,10 @@ public class Settings {
         return (int) (dpValue * scale + 0.5f);
     }
 
+    public static boolean getThumbShowTitle() {
+        return getBoolean(KEY_THUMB_SHOW_TITLE, DEFAULT_THUMB_SHOW_TITLE);
+    }
+
     public static int getThumbResolution() {
         return getIntFromStr(KEY_THUMB_RESOLUTION, DEFAULT_THUMB_RESOLUTION);
     }
@@ -466,6 +474,10 @@ public class Settings {
 
     public static int getPreviewNum() {
         return getInt(KEY_PREVIEW_NUM, DEFAULT_PREVIEW_NUM);
+    }
+
+    public static int getPreviewSize() {
+        return dip2px(40 * getInt(KEY_PREVIEW_SIZE, DEFAULT_PREVIEW_SIZE));
     }
 
     public static boolean getMeteredNetworkWarning() {

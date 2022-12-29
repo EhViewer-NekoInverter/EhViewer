@@ -400,7 +400,7 @@
     <string name="settings_eh_detail_size">詳細資料模式下條目寬度</string>
     <string name="settings_eh_list_tile_thumb_size">詳細資料模式下縮圖大小</string>
     <string name="settings_eh_thumb_size">縮圖模式下縮圖大小</string>
-    <string name="settings_eh_thumb_size_summary">以及圖庫詳情頁預覽圖大小</string>
+    <string name="settings_eh_thumb_show_title">縮圖模式下顯示圖庫標題</string>
     <string name="settings_eh_thumb_resolution">縮圖解析度</string>
     <string name="settings_eh_thumb_resolution_summary">%s，指定解析度可能會使縮圖取得失敗</string>
     <string name="settings_eh_thumb_resolution_auto">自動</string>
@@ -416,6 +416,7 @@
     <string name="settings_eh_tag_translations_source_url">https://github.com/EhTagTranslation/Editor/wiki</string>
     <string name="settings_eh_preview_num">圖庫詳情頁預覽圖最大數量</string>
     <string name="settings_eh_preview_num_summary">由於歷史因素，此值過大會導致卡頓</string>
+    <string name="settings_eh_preview_size">圖庫詳情頁預覽圖大小</string>
     <string name="settings_eh_filter">遮蔽列表</string>
     <string name="settings_eh_filter_summary">根據標題、上傳者、標籤、評論者遮蔽圖庫或評論</string>
     <string name="settings_eh_request_news">啟動時請求新聞頁面</string>

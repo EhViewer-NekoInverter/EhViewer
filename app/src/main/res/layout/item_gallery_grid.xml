@@ -26,13 +26,48 @@
     android:clickable="true"
     android:focusable="true">
 
-    <com.hippo.ehviewer.widget.TileThumb
-        android:id="@+id/thumb"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:foreground="@drawable/tile_background"
-        android:scaleType="centerCrop"
-        app:retryType="none" />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.hippo.ehviewer.widget.TileThumb
+            android:id="@+id/thumb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foreground="@drawable/tile_background"
+            android:scaleType="centerCrop"
+            app:retryType="none" />
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/CardTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/thumb"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginBottom="4dp" />
+
+        <com.hippo.ehviewer.widget.SimpleRatingView
+            android:id="@+id/rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="4dp"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/pages"
+            style="@style/CardMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignBottom="@id/rating"
+            android:layout_marginRight="4dp" />
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/category"
@@ -47,7 +82,6 @@
         android:layout_gravity="top|right"
         android:layout_marginRight="2dp"
         android:textColor="@android:color/white"
-        android:textSize="10dp"
         android:textStyle="bold"
         tools:ignore="SpUsage" />
 

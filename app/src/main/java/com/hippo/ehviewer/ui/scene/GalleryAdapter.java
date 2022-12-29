@@ -20,6 +20,7 @@ import android.annotation.SuppressLint;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -154,11 +155,25 @@ abstract class GalleryAdapter extends RecyclerView.Adapter<GalleryHolder> {
 
         GalleryHolder holder = new GalleryHolder(mInflater.inflate(layoutId, parent, false));
 
-        if (viewType == TYPE_LIST) {
-            ViewGroup.LayoutParams lp = holder.thumb.getLayoutParams();
-            lp.width = mListThumbWidth;
-            lp.height = mListThumbHeight;
-            holder.thumb.setLayoutParams(lp);
+        switch (viewType) {
+            case TYPE_LIST -> {
+                ViewGroup.LayoutParams lp = holder.thumb.getLayoutParams();
+                lp.width = mListThumbWidth;
+                lp.height = mListThumbHeight;
+                holder.thumb.setLayoutParams(lp);
+            }
+            case TYPE_GRID -> {
+                int columnWidth = Settings.getThumbSize();
+                int textSize = columnWidth / 15;
+                ViewGroup.LayoutParams lp = holder.category.getLayoutParams();
+                lp.width = columnWidth / 5;
+                lp.height = (int) (lp.width * 0.75);
+                holder.category.setLayoutParams(lp);
+                holder.simpleLanguage.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+                holder.pages.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+                holder.title.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+                holder.title.setMaxLines(2);
+            }
         }
 
         holder.card.setOnClickListener(v -> onItemClick(holder.itemView, holder.getBindingAdapterPosition()));
@@ -221,6 +236,25 @@ abstract class GalleryAdapter extends RecyclerView.Adapter<GalleryHolder> {
             case TYPE_GRID -> {
                 ((TileThumb) holder.thumb).setThumbSize(gi.thumbWidth, gi.thumbHeight);
                 holder.thumb.load(EhCacheKeyFactory.getThumbKey(gi.gid), gi.thumb);
+                if (Settings.getThumbShowTitle()) {
+                    holder.title.setText(EhUtils.getSuitableTitle(gi));
+                    holder.title.setVisibility(View.VISIBLE);
+                    holder.rating.setRating(gi.rating);
+                    holder.rating.setVisibility(View.VISIBLE);
+                    if (gi.pages == 0 || !Settings.getShowGalleryPages()) {
+                        holder.pages.setText(null);
+                        holder.pages.setVisibility(View.GONE);
+                    } else {
+                        holder.pages.setText(gi.pages + "P");
+                        holder.pages.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    holder.title.setText(null);
+                    holder.title.setVisibility(View.GONE);
+                    holder.rating.setVisibility(View.GONE);
+                    holder.pages.setText(null);
+                    holder.pages.setVisibility(View.GONE);
+                }
                 View category = holder.category;
                 Drawable drawable = category.getBackground();
                 int color = EhUtils.getCategoryColor(gi.category);

@@ -36,7 +36,6 @@ import java.io.FileInputStream
 import java.nio.ByteBuffer
 import java.nio.channels.FileChannel
 import kotlin.jvm.Throws
-import kotlin.math.max
 import kotlin.math.min
 
 class Image private constructor(
@@ -52,18 +51,16 @@ class Image private constructor(
         mObtainedDrawable = null
         source?.let {
             mObtainedDrawable =
-                ImageDecoder.decodeDrawable(source) { decoder: ImageDecoder, info: ImageInfo, src: Source ->
+                ImageDecoder.decodeDrawable(source) { decoder: ImageDecoder, info: ImageInfo, _: Source ->
                     decoder.allocator = if (hardware) ALLOCATOR_DEFAULT else ALLOCATOR_SOFTWARE
                     // Sadly we must use software memory since we need copy it to tile buffer, fuck glgallery
                     // Idk it will cause how much performance regression
 
                     decoder.setTargetSampleSize(
-                        max(
-                            min(
-                                info.size.width / (2 * screenWidth),
-                                info.size.height / (2 * screenHeight)
-                            ), 1
-                        )
+                        min(
+                            info.size.width / (2 * screenWidth),
+                            info.size.height / (2 * screenHeight)
+                        ).coerceAtLeast(1)
                     )
                     // Don't
                 } // Should we lazy decode it?

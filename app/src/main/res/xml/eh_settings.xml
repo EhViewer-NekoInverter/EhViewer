@@ -103,15 +103,20 @@
         app:singleLineTitle="false" />
 
     <SeekBarPreference
-        android:defaultValue="3"
+        android:defaultValue="4"
         android:key="thumb_size_"
         android:max="10"
-        android:summary="@string/settings_eh_thumb_size_summary"
         android:title="@string/settings_eh_thumb_size"
         app:iconSpaceReserved="false"
-        app:min="1"
+        app:min="2"
         app:showSeekBarValue="true"
         app:singleLineTitle="false" />
+
+    <SwitchPreferenceCompat
+        android:defaultValue="true"
+        android:key="thumb_show_title"
+        android:title="@string/settings_eh_thumb_show_title"
+        app:iconSpaceReserved="false" />
 
     <rikka.preference.SimpleMenuPreference
         android:defaultValue="0"
@@ -143,6 +148,27 @@
         android:title="@string/settings_eh_show_gallery_comments"
         app:iconSpaceReserved="false" />
 
+    <SeekBarPreference
+        android:defaultValue="60"
+        android:key="preview_num"
+        android:max="200"
+        android:summary="@string/settings_eh_preview_num_summary"
+        android:title="@string/settings_eh_preview_num"
+        app:iconSpaceReserved="false"
+        app:min="0"
+        app:showSeekBarValue="true"
+        app:singleLineTitle="false" />
+
+    <SeekBarPreference
+        android:defaultValue="3"
+        android:key="preview_size"
+        android:max="10"
+        android:title="@string/settings_eh_preview_size"
+        app:iconSpaceReserved="false"
+        app:min="1"
+        app:showSeekBarValue="true"
+        app:singleLineTitle="false" />
+
     <SwitchPreferenceCompat
         android:defaultValue="false"
         android:key="show_tag_translations"
@@ -155,17 +181,6 @@
         android:title="@string/settings_eh_tag_translations_source"
         app:iconSpaceReserved="false"
         app:url="@string/settings_eh_tag_translations_source_url" />
-
-    <SeekBarPreference
-        android:defaultValue="60"
-        android:key="preview_num"
-        android:max="200"
-        android:summary="@string/settings_eh_preview_num_summary"
-        android:title="@string/settings_eh_preview_num"
-        app:iconSpaceReserved="false"
-        app:min="0"
-        app:showSeekBarValue="true"
-        app:singleLineTitle="false" />
 
     <Preference
         android:key="com.hippo.ehviewer.ui.fragment.FilterFragment"
