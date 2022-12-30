@@ -269,7 +269,7 @@ public class ContentLayout extends FrameLayout {
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 if (!mRefreshLayout.isRefreshing() && !recyclerView.canScrollVertically(1)) {
                     if (mNext != null || mEndPage < mPages) {
-                    	mBottomProgress.show();
+                        mBottomProgress.show();
                         // Get next page
                         // Fill pages before NextPage with empty list
                         while (mNextPage > mEndPage && mEndPage < mPages) {
@@ -283,7 +283,7 @@ public class ContentLayout extends FrameLayout {
                         mCurrentTaskPage = mEndPage;
                         getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, mNext, true);
                     } else if (mStartPage > 0 && mEndPage == mPages) {
-                    	mBottomProgress.show();
+                        mBottomProgress.show();
                         // Refresh last page
                         mCurrentTaskId = mIdGenerator.nextId();
                         mCurrentTaskType = TYPE_REFRESH_PAGE;
@@ -370,6 +370,11 @@ public class ContentLayout extends FrameLayout {
             } else {
                 return null;
             }
+        }
+
+        @Nullable
+        public E getFirstVisibleItem() {
+            return getDataAtEx(LayoutManagerUtils.getFirstVisibleItemPosition(mRecyclerView.getLayoutManager()));
         }
 
         public int size() {

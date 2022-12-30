@@ -75,12 +75,12 @@ public class Settings {
     private static final boolean DEFAULT_SHOW_GALLERY_PAGES = true;
     private static final String KEY_SHOW_COMMENTS = "show_gallery_comments";
     private static final boolean DEFAULT_SHOW_COMMENTS = true;
-    public static final String KEY_SHOW_TAG_TRANSLATIONS = "show_tag_translations";
-    private static final boolean DEFAULT_SHOW_TAG_TRANSLATIONS = false;
     private static final String KEY_PREVIEW_NUM = "preview_num";
     private static final int DEFAULT_PREVIEW_NUM = 60;
     private static final String KEY_PREVIEW_SIZE = "preview_size";
     private static final int DEFAULT_PREVIEW_SIZE = 3;
+    public static final String KEY_SHOW_TAG_TRANSLATIONS = "show_tag_translations";
+    private static final boolean DEFAULT_SHOW_TAG_TRANSLATIONS = false;
     private static final String KEY_METERED_NETWORK_WARNING = "cellular_network_warning";
     private static final boolean DEFAULT_METERED_NETWORK_WARNING = false;
     private static final String KEY_REQUEST_NEWS = "request_news";
@@ -243,6 +243,8 @@ public class Settings {
     private static final String DEFAULT_AVATAR = null;
     private static final String KEY_QUICK_SEARCH_TIP = "quick_search_tip";
     private static final boolean DEFAULT_QUICK_SEARCH_TIP = true;
+    private static final String KEY_QS_SAVE_PROGRESS = "qs_save_progress";
+    private static final boolean DEFAULT_QS_SAVE_PROGRESS = false;
     private static final String KEY_HAS_DEFAULT_DOWNLOAD_LABEL = "has_default_download_label";
     private static final boolean DEFAULT_HAS_DOWNLOAD_LABEL = false;
     private static final String KEY_DEFAULT_DOWNLOAD_LABEL = "default_download_label";
@@ -464,20 +466,20 @@ public class Settings {
         return getBoolean(KEY_SHOW_COMMENTS, DEFAULT_SHOW_COMMENTS);
     }
 
-    public static boolean getShowTagTranslations() {
-        return getBoolean(KEY_SHOW_TAG_TRANSLATIONS, DEFAULT_SHOW_TAG_TRANSLATIONS);
-    }
-
-    public static void putShowTagTranslations(boolean value) {
-        putBoolean(KEY_SHOW_TAG_TRANSLATIONS, value);
-    }
-
     public static int getPreviewNum() {
         return getInt(KEY_PREVIEW_NUM, DEFAULT_PREVIEW_NUM);
     }
 
     public static int getPreviewSize() {
         return dip2px(40 * getInt(KEY_PREVIEW_SIZE, DEFAULT_PREVIEW_SIZE));
+    }
+
+    public static boolean getShowTagTranslations() {
+        return getBoolean(KEY_SHOW_TAG_TRANSLATIONS, DEFAULT_SHOW_TAG_TRANSLATIONS);
+    }
+
+    public static void putShowTagTranslations(boolean value) {
+        putBoolean(KEY_SHOW_TAG_TRANSLATIONS, value);
     }
 
     public static boolean getMeteredNetworkWarning() {
@@ -939,6 +941,14 @@ public class Settings {
 
     public static void putQuickSearchTip(boolean value) {
         putBoolean(KEY_QUICK_SEARCH_TIP, value);
+    }
+
+    public static boolean getQSSaveProgress() {
+        return getBoolean(KEY_QS_SAVE_PROGRESS, DEFAULT_QS_SAVE_PROGRESS);
+    }
+
+    public static void putQSSaveProgress(boolean value) {
+        putBoolean(KEY_QS_SAVE_PROGRESS, value);
     }
 
     public static boolean getHasDefaultDownloadLabel() {

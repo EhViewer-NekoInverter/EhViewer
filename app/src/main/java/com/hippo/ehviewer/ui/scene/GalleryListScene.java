@@ -75,6 +75,7 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableItemViewHolder;
 import com.hippo.app.CheckBoxDialogBuilder;
+import com.hippo.app.EditTextCheckBoxDialogBuilder;
 import com.hippo.app.EditTextDialogBuilder;
 import com.hippo.drawable.AddDeleteDrawable;
 import com.hippo.drawable.DrawerArrowDrawable;
@@ -731,7 +732,7 @@ public final class GalleryListScene extends BaseScene
                                           final EasyRecyclerView recyclerView, final TextView tip) {
         Context context = getContext();
         final ListUrlBuilder urlBuilder = mUrlBuilder;
-        if (null == context || null == urlBuilder) {
+        if (null == context || null == urlBuilder || null == mHelper) {
             return;
         }
 
@@ -741,16 +742,24 @@ public final class GalleryListScene extends BaseScene
             return;
         }
 
+        // Get next gid
+        GalleryInfo gi = mHelper.getFirstVisibleItem();
+        String next = gi != null ? "@" + (gi.gid + 1) : null;
+
         // Check duplicate
         for (QuickSearch q : mQuickSearchList) {
             if (urlBuilder.equalsQuickSearch(q)) {
-                showTip(getString(R.string.duplicate_quick_search, q.name), LENGTH_LONG);
-                return;
+                int index = q.name.lastIndexOf("@");
+                if (index != -1 && q.name.substring(index).equals(next)) {
+                    showTip(getString(R.string.duplicate_quick_search, q.name), LENGTH_LONG);
+                    return;
+                }
             }
         }
 
-        final EditTextDialogBuilder builder = new EditTextDialogBuilder(context,
-                getSuitableTitleForUrlBuilder(context.getResources(), urlBuilder, false), getString(R.string.quick_search));
+        final EditTextCheckBoxDialogBuilder builder = new EditTextCheckBoxDialogBuilder(context,
+                getSuitableTitleForUrlBuilder(context.getResources(), urlBuilder, false), getString(R.string.quick_search),
+                getString(R.string.save_progress), Settings.getQSSaveProgress());
         builder.setTitle(R.string.add_quick_search_dialog_title);
         builder.setPositiveButton(android.R.string.ok, null);
         final AlertDialog dialog = builder.show();
@@ -761,6 +770,13 @@ public final class GalleryListScene extends BaseScene
             if (TextUtils.isEmpty(text)) {
                 builder.setError(getString(R.string.name_is_empty));
                 return;
+            }
+
+            // Add gid
+            boolean checked = builder.isChecked();
+            Settings.putQSSaveProgress(checked);
+            if (checked && next != null) {
+                text += next;
             }
 
             // Check name duplicate
@@ -999,13 +1015,7 @@ public final class GalleryListScene extends BaseScene
         final AlertDialog dialog = builder.show();
         dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(v -> {
             String text = builder.getText().trim();
-            // Empty, go to last page
-            if (TextUtils.isEmpty(text)) {
-                dialog.dismiss();
-                mHelper.goTo("1", false);
-                return;
-            }
-            // Not empty, check number
+            if (TextUtils.isEmpty(text)) text = "0";
             int goTo;
             try {
                 goTo = Integer.parseInt(text) + 1;
@@ -1013,7 +1023,7 @@ public final class GalleryListScene extends BaseScene
                 builder.setError(getString(R.string.error_invalid_number));
                 return;
             }
-            if (goTo < 2) {
+            if (goTo < 1) {
                 builder.setError(getString(R.string.error_out_of_range));
                 return;
             }
@@ -1698,11 +1708,11 @@ public final class GalleryListScene extends BaseScene
                         return;
                     }
 
-                    mUrlBuilder.set(mQuickSearchList.get(holder.getBindingAdapterPosition()));
-                    mUrlBuilder.setIndex(null, true);
-                    mUrlBuilder.setJumpTo(null);
+                    QuickSearch quickSearch = mQuickSearchList.get(holder.getBindingAdapterPosition());
+                    mUrlBuilder.set(quickSearch);
                     onUpdateUrlBuilder();
-                    mHelper.refresh();
+                    int index = quickSearch.name.lastIndexOf("@");
+                    mHelper.goTo(index != -1 ? quickSearch.name.substring(index + 1) : null, true);
                     setState(STATE_NORMAL);
                     closeDrawer(Gravity.RIGHT);
                 });
@@ -1745,8 +1755,6 @@ public final class GalleryListScene extends BaseScene
                     }
 
                     mUrlBuilder.setKeyword(String.valueOf(keywords[position]));
-                    mUrlBuilder.setIndex(null, true);
-                    mUrlBuilder.setJumpTo(null);
                     onUpdateUrlBuilder();
                     mHelper.refresh();
                     setState(STATE_NORMAL);
