@@ -280,6 +280,7 @@
     <string name="download_state_failed">失敗</string>
     <string name="download_state_failed_2">%d 未完成</string>
     <string name="download_state_finish">已完成</string>
+    <string name="download_search">搜索標題</string>
     <string name="stat_509_alert_title">509 警告</string>
     <string name="stat_509_alert_text">圖片配額已用盡。請停止下載，休息一下。</string>
     <string name="stat_download_done_title">下載結束</string>

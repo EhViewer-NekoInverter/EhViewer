@@ -326,6 +326,7 @@
     <string name="download_state_failed">Failed</string>
     <string name="download_state_failed_2">%d incomplete</string>
     <string name="download_state_finish">Done</string>
+    <string name="download_search">Search title</string>
     <string name="stat_509_alert_title">509 Alert</string>
     <string name="stat_509_alert_text">Image limit has been reached. Please stop download and have a relax.</string>
     <string name="stat_download_done_title">Download Finished</string>

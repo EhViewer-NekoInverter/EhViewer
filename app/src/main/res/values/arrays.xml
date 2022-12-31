@@ -273,6 +273,7 @@
         <item>@string/download_state_downloading</item>
         <item>@string/download_state_finish</item>
         <item>@string/download_state_failed</item>
+        <item>@string/download_search</item>
     </string-array>
 
     <string-array name="read_theme_entries">

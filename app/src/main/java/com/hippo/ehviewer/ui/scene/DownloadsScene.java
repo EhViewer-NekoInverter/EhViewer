@@ -157,6 +157,8 @@ public class DownloadsScene extends ToolbarScene
 
     private int mType = -1;
 
+    private String mKeyword;
+
     private static void deleteFileAsync(UniFile... files) {
         //noinspection deprecation
         new AsyncTask<UniFile, Void, Void>() {
@@ -270,6 +272,7 @@ public class DownloadsScene extends ToolbarScene
         if (null == mDownloadManager) {
             return;
         }
+
         List<DownloadInfo> list;
         if (mLabel == null) {
             list = mDownloadManager.getDefaultDownloadInfoList();
@@ -284,7 +287,8 @@ public class DownloadsScene extends ToolbarScene
         if (mType != -1) {
             mList = new ArrayList<>();
             for (DownloadInfo info : list) {
-                if (info.state == mType) {
+                if (mKeyword != null && (info.title.toLowerCase().contains(mKeyword) ||
+                        info.titleJpn.toLowerCase().contains(mKeyword)) || info.state == mType) {
                     mList.add(info);
                 }
             }
@@ -521,10 +525,15 @@ public class DownloadsScene extends ToolbarScene
         if (id == R.id.action_filter) {
             new AlertDialog.Builder(requireActivity())
                     .setSingleChoiceItems(R.array.download_state, mType + 1, (dialog, which) -> {
-                        mType = which - 1;
-                        updateForLabel();
-                        updateView();
                         dialog.dismiss();
+                        if (which == 6) {
+                            showSearchTitleDialog();
+                        } else {
+                            mType = which - 1;
+                            mKeyword = null;
+                            updateForLabel();
+                            updateView();
+                        }
                     })
                     .show();
             return true;
@@ -570,6 +579,30 @@ public class DownloadsScene extends ToolbarScene
             return true;
         }
         return false;
+    }
+
+    private void showSearchTitleDialog() {
+        Context context = getContext();
+        if (null == context) {
+            return;
+        }
+
+        final EditTextDialogBuilder builder = new EditTextDialogBuilder(context, null, getString(R.string.download_search));
+        builder.setTitle(R.string.search);
+        builder.setPositiveButton(android.R.string.ok, null);
+        final AlertDialog dialog = builder.show();
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String text = builder.getText().trim();
+            if (TextUtils.isEmpty(text)) {
+                builder.setError(getString(R.string.text_is_empty));
+            } else {
+                mType = 5;
+                mKeyword = text.toLowerCase();
+                dialog.dismiss();
+                updateForLabel();
+                updateView();
+            }
+        });
     }
 
     public void updateView() {
