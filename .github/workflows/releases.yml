@@ -43,9 +43,11 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           body: Bump Version
+          discussion_category_name: Announcements
           files: |
             app/build/outputs/apk/release/EhViewer-NekoInverter-universal.apk
             app/build/outputs/apk/release/EhViewer-NekoInverter-arm64-v8a.apk
             app/build/outputs/apk/release/EhViewer-NekoInverter-x86_64.apk
             app/build/outputs/apk/release/EhViewer-NekoInverter-x86.apk
             app/build/outputs/apk/release/EhViewer-NekoInverter-armeabi-v7a.apk
+            app/build/outputs/mapping/release/mapping.txt
