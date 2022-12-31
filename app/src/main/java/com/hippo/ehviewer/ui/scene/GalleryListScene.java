@@ -1028,7 +1028,7 @@ public final class GalleryListScene extends BaseScene
                 return;
             }
             dialog.dismiss();
-            mHelper.goTo(Integer.toString(goTo), true);
+            mHelper.goTo(Integer.toString(goTo), goTo != 1);
         });
     }
 
