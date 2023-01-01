@@ -127,7 +127,7 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
     Copyright 2014-2019 Hippo Seven
     Copyright 2020-2022 NekoInverter
-    Copyright 2022 Moedog, Tarsin Norbin, and other contributors
+    Copyright 2022-2023 Moedog, Tarsin Norbin, and other contributors
 
     EhViewer is free software:
     you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
