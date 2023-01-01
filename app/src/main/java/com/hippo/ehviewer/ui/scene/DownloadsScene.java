@@ -106,6 +106,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -156,6 +158,8 @@ public class DownloadsScene extends ToolbarScene
     private List<String> mLabels;
 
     private int mType = -1;
+
+    private int mSort = 0;
 
     private String mKeyword;
 
@@ -294,6 +298,22 @@ public class DownloadsScene extends ToolbarScene
             }
         } else {
             mList = list;
+        }
+
+        if (mSort == 1) {
+            Collections.shuffle(mList);
+        } else {
+            Collections.sort(mList, new Comparator<DownloadInfo>() {
+                @Override
+                public int compare(DownloadInfo o1, DownloadInfo o2) {
+                    return switch (mSort) {
+                        case 0 -> (int) o2.time - (int) o1.time;
+                        case 2 -> EhUtils.getSuitableTitle(o1).compareTo(EhUtils.getSuitableTitle(o2));
+                        case 3 -> o1.category - o2.category;
+                        default -> 0;
+                    };
+                }
+            });
         }
 
         if (mAdapter != null) {
@@ -526,8 +546,10 @@ public class DownloadsScene extends ToolbarScene
             new AlertDialog.Builder(requireActivity())
                     .setSingleChoiceItems(R.array.download_state, mType + 1, (dialog, which) -> {
                         dialog.dismiss();
-                        if (which == 6) {
-                            showSearchTitleDialog();
+                        if (which == 7) {
+                            showSortByDialog();
+                        } else if (which == 6) {
+                            showFilterTitleDialog();
                         } else {
                             mType = which - 1;
                             mKeyword = null;
@@ -581,13 +603,19 @@ public class DownloadsScene extends ToolbarScene
         return false;
     }
 
-    private void showSearchTitleDialog() {
-        Context context = getContext();
-        if (null == context) {
-            return;
-        }
+    private void showSortByDialog() {
+        new AlertDialog.Builder(requireActivity())
+                .setSingleChoiceItems(R.array.download_sort, mSort, (dialog, which) -> {
+                    mSort = which;
+                    dialog.dismiss();
+                    updateForLabel();
+                    updateView();
+                })
+                .show();
+    }
 
-        final EditTextDialogBuilder builder = new EditTextDialogBuilder(context, null, getString(R.string.download_search));
+    private void showFilterTitleDialog() {
+        final EditTextDialogBuilder builder = new EditTextDialogBuilder(requireActivity(), null, getString(R.string.download_filter_title));
         builder.setTitle(R.string.search);
         builder.setPositiveButton(android.R.string.ok, null);
         final AlertDialog dialog = builder.show();

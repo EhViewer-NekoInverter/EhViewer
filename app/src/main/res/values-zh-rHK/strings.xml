@@ -280,7 +280,12 @@
     <string name="download_state_failed">失敗</string>
     <string name="download_state_failed_2">%d 未完成</string>
     <string name="download_state_finish">已完成</string>
-    <string name="download_search">搜索標題</string>
+    <string name="download_filter_title">過濾標題</string>
+    <string name="download_sort_by">排序規則</string>
+    <string name="download_sort_default">默認</string>
+    <string name="download_sort_shuffle">隨機</string>
+    <string name="download_sort_title">標題</string>
+    <string name="download_sort_category">分類</string>
     <string name="stat_509_alert_title">509 警告</string>
     <string name="stat_509_alert_text">圖片配額已用盡。請停止下載，休息一下。</string>
     <string name="stat_download_done_title">下載結束</string>
@@ -615,7 +620,7 @@
     <string name="favorite_name">收藏畫廊</string>
 
     <string name="black_dark_theme">純黑深色主題</string>
-    <string name="download_filter">過濾</string>
+    <string name="download_filter">排序与過濾</string>
     <string name="download_all">全部</string>
     <string name="download_start_all_reversed">全部開始（倒序）</string>
 

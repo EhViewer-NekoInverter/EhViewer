@@ -326,7 +326,12 @@
     <string name="download_state_failed">Failed</string>
     <string name="download_state_failed_2">%d incomplete</string>
     <string name="download_state_finish">Done</string>
-    <string name="download_search">Search title</string>
+    <string name="download_filter_title">Filter title</string>
+    <string name="download_sort_by">Sort by</string>
+    <string name="download_sort_default">Default</string>
+    <string name="download_sort_shuffle">Random</string>
+    <string name="download_sort_title">Title</string>
+    <string name="download_sort_category">Category</string>
     <string name="stat_509_alert_title">509 Alert</string>
     <string name="stat_509_alert_text">Image limit has been reached. Please stop download and have a relax.</string>
     <string name="stat_download_done_title">Download Finished</string>
@@ -680,7 +685,7 @@
     <string name="favorite_name">Favorite</string>
 
     <string name="black_dark_theme">Black dark theme</string>
-    <string name="download_filter">Filter</string>
+    <string name="download_filter">Filter and sort</string>
     <string name="download_all">All</string>
     <string name="download_start_all_reversed">Start all (reversed)</string>
 
