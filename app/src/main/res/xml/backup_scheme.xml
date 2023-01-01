@@ -21,6 +21,15 @@
         path="eh.db" />
     <include
         domain="database"
+        path="eh.db-shm" />
+    <include
+        domain="database"
+        path="eh.db-wal" />
+    <include
+        domain="database"
+        path="hosts.db" />
+    <include
+        domain="database"
         path="search_database.db" />
 
 </full-backup-content>

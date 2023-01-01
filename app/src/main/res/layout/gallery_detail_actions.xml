@@ -37,8 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:clipToPadding="false"
-        android:paddingLeft="@dimen/keyline_margin"
-        android:paddingRight="@dimen/keyline_margin"
+        android:paddingHorizontal="@dimen/keyline_margin"
         android:scrollbars="none">
 
         <LinearLayout

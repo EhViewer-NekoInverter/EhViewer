@@ -34,7 +34,7 @@
         android:title="@string/settings_about_latest_release"
         app:enableCopying="true"
         app:iconSpaceReserved="false"
-        app:url="https://github.com/EhViewer-NekoInverter/EhViewer/actions" />
+        app:url="https://github.com/EhViewer-NekoInverter/EhViewer/releases" />
 
     <com.hippo.preference.UrlPreference
         android:key="source"

@@ -94,10 +94,8 @@
                 android:clipToPadding="false"
                 android:gravity="bottom"
                 android:orientation="vertical"
-                android:paddingLeft="12dp"
-                android:paddingTop="4dp"
-                android:paddingRight="12dp"
-                android:paddingBottom="4dp">
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp">
 
                 <Button
                     android:id="@+id/sign_in"
@@ -122,10 +120,8 @@
                 android:clipToPadding="false"
                 android:gravity="center_horizontal"
                 android:orientation="horizontal"
-                android:paddingLeft="12dp"
-                android:paddingTop="4dp"
-                android:paddingRight="12dp"
-                android:paddingBottom="4dp">
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp">
 
                 <TextView
                     android:id="@+id/sign_in_via_webview"

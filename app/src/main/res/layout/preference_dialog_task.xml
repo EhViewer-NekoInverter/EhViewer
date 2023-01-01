@@ -18,10 +18,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:paddingLeft="?attr/dialogPreferredPadding"
-    android:paddingTop="@dimen/abc_dialog_padding_top_material"
-    android:paddingRight="?attr/dialogPreferredPadding"
-    android:paddingBottom="@dimen/abc_dialog_padding_top_material">
+    android:paddingHorizontal="?attr/dialogPreferredPadding"
+    android:paddingVertical="@dimen/abc_dialog_padding_top_material">
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         style="@style/ProgressView"

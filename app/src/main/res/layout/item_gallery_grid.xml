@@ -44,10 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/thumb"
-            android:layout_marginLeft="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginRight="4dp"
-            android:layout_marginBottom="4dp" />
+            android:layout_margin="4dp" />
 
         <com.hippo.ehviewer.widget.SimpleRatingView
             android:id="@+id/rating"

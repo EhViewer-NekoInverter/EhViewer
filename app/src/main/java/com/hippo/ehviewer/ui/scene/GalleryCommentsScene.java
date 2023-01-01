@@ -298,6 +298,7 @@ public final class GalleryCommentsScene extends ToolbarScene
         if (mGalleryDetail == null || mGalleryDetail.comments == null || mGalleryDetail.comments.comments == null) {
             return;
         }
+
         GalleryComment[] oldCommentsList = mGalleryDetail.comments.comments;
         GalleryComment[] newCommentsList = new GalleryComment[oldCommentsList.length - 1];
         for (int i = 0, j = 0; i < oldCommentsList.length; i++) {
@@ -306,6 +307,7 @@ public final class GalleryCommentsScene extends ToolbarScene
                 j++;
             }
         }
+
         mGalleryDetail.comments.comments = newCommentsList;
         mAdapter.notifyDataSetChanged();
         updateView(true);

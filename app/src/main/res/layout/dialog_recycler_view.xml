@@ -18,5 +18,4 @@
     style="@style/Indicating"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/abc_dialog_padding_top_material"
-    android:paddingBottom="@dimen/abc_dialog_padding_top_material" />
+    android:paddingVertical="@dimen/abc_dialog_padding_top_material" />

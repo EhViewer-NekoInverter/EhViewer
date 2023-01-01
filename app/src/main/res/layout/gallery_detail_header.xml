@@ -65,8 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@id/thumb"
-                android:layout_marginLeft="@dimen/keyline_margin"
-                android:layout_marginRight="@dimen/keyline_margin"
+                android:layout_marginHorizontal="@dimen/keyline_margin"
                 android:layout_toRightOf="@id/thumb"
                 android:ellipsize="end"
                 android:maxLines="5"
@@ -97,10 +96,8 @@
                 android:layout_marginRight="@dimen/keyline_margin"
                 android:background="@drawable/category_background"
                 android:ellipsize="end"
-                android:paddingLeft="8dp"
-                android:paddingTop="2dp"
-                android:paddingRight="8dp"
-                android:paddingBottom="2dp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="2dp"
                 android:singleLine="true"
                 android:textAllCaps="true"
                 android:textStyle="bold" />
@@ -114,10 +111,7 @@
                 android:background="?selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:focusable="true"
-                android:paddingLeft="12dp"
-                android:paddingTop="12dp"
-                android:paddingRight="12dp"
-                android:paddingBottom="12dp"
+                android:padding="12dp"
                 app:srcCompat="@drawable/v_arrow_left_dark_x24"
                 app:tint="@color/primary_drawable_black" />
 
@@ -130,10 +124,7 @@
                 android:background="?selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:focusable="true"
-                android:paddingLeft="12dp"
-                android:paddingTop="12dp"
-                android:paddingRight="12dp"
-                android:paddingBottom="12dp"
+                android:padding="12dp"
                 app:srcCompat="@drawable/v_dots_vertical_secondary_dark_x24"
                 app:tint="@color/primary_drawable_black" />
 
@@ -144,8 +135,7 @@
             style="@style/CardView.Normal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/keyline_margin"
-            android:layout_marginRight="@dimen/keyline_margin"
+            android:layout_marginHorizontal="@dimen/keyline_margin"
             app:cardBackgroundColor="?attr/galleryDetailButtonBackgroundColor"
             app:cardUseCompatPadding="true">
 
@@ -167,8 +157,7 @@
                 <View
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginVertical="8dp"
                     android:background="?attr/dividerColor" />
 
                 <TextView

@@ -18,17 +18,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingLeft="?attr/dialogPreferredPadding"
-    android:paddingTop="18dp"
-    android:paddingRight="?attr/dialogPreferredPadding">
+    android:paddingHorizontal="?attr/dialogPreferredPadding"
+    android:paddingTop="18dp">
 
     <com.hippo.widget.CuteSpinner
         android:id="@+id/type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:entries="@array/proxy_types"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp" />
+        android:paddingVertical="8dp" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/ip_input_layout"

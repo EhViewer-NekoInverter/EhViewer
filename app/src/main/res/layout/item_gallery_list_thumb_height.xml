@@ -46,10 +46,8 @@
         android:layout_marginTop="4dp"
         android:layout_marginBottom="8dp"
         android:lines="1"
-        android:paddingLeft="8dp"
-        android:paddingTop="2dp"
-        android:paddingRight="8dp"
-        android:paddingBottom="2dp"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="2dp"
         android:textAllCaps="true"
         android:textColor="@android:color/white" />
 

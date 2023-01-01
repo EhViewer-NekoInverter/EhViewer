@@ -30,16 +30,14 @@
         android:divider="?attr/listDividerAlertDialog"
         android:fadingEdge="none"
         android:overScrollMode="ifContentScrolls"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
+        android:paddingVertical="8dp"
         android:scrollbars="vertical" />
 
     <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@+id/checkbox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="?attr/dialogPreferredPadding"
-        android:layout_marginRight="?attr/dialogPreferredPadding"
+        android:layout_marginHorizontal="?attr/dialogPreferredPadding"
         android:layout_marginBottom="@dimen/abc_dialog_padding_top_material" />
 
 </LinearLayout>

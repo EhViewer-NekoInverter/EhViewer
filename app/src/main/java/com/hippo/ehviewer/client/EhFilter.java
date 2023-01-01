@@ -49,30 +49,22 @@ public final class EhFilter {
         for (int i = 0, n = list.size(); i < n; i++) {
             Filter filter = list.get(i);
             switch (filter.mode) {
-                case MODE_TITLE:
+                case MODE_TITLE -> {
                     filter.text = filter.text.toLowerCase();
                     mTitleFilterList.add(filter);
-                    break;
-                case MODE_UPLOADER:
-                    mUploaderFilterList.add(filter);
-                    break;
-                case MODE_TAG:
+                }
+                case MODE_TAG -> {
                     filter.text = filter.text.toLowerCase();
                     mTagFilterList.add(filter);
-                    break;
-                case MODE_TAG_NAMESPACE:
+                }
+                case MODE_TAG_NAMESPACE -> {
                     filter.text = filter.text.toLowerCase();
                     mTagNamespaceFilterList.add(filter);
-                    break;
-                case MODE_COMMENTER:
-                    mCommenterFilterList.add(filter);
-                    break;
-                case MODE_COMMENT:
-                    mCommentFilterList.add(filter);
-                    break;
-                default:
-                    Log.d(TAG, "Unknown mode: " + filter.mode);
-                    break;
+                }
+                case MODE_UPLOADER -> mUploaderFilterList.add(filter);
+                case MODE_COMMENTER -> mCommenterFilterList.add(filter);
+                case MODE_COMMENT -> mCommentFilterList.add(filter);
+                default -> Log.d(TAG, "Unknown mode: " + filter.mode);
             }
         }
     }
@@ -114,30 +106,22 @@ public final class EhFilter {
         if (!EhDB.addFilter(filter)) return false;
 
         switch (filter.mode) {
-            case MODE_TITLE:
+            case MODE_TITLE -> {
                 filter.text = filter.text.toLowerCase();
                 mTitleFilterList.add(filter);
-                break;
-            case MODE_UPLOADER:
-                mUploaderFilterList.add(filter);
-                break;
-            case MODE_TAG:
+            }
+            case MODE_TAG -> {
                 filter.text = filter.text.toLowerCase();
                 mTagFilterList.add(filter);
-                break;
-            case MODE_TAG_NAMESPACE:
+            }
+            case MODE_TAG_NAMESPACE -> {
                 filter.text = filter.text.toLowerCase();
                 mTagNamespaceFilterList.add(filter);
-                break;
-            case MODE_COMMENTER:
-                mCommenterFilterList.add(filter);
-                break;
-            case MODE_COMMENT:
-                mCommentFilterList.add(filter);
-                break;
-            default:
-                Log.d(TAG, "Unknown mode: " + filter.mode);
-                break;
+            }
+            case MODE_UPLOADER -> mUploaderFilterList.add(filter);
+            case MODE_COMMENTER -> mCommenterFilterList.add(filter);
+            case MODE_COMMENT -> mCommentFilterList.add(filter);
+            default -> Log.d(TAG, "Unknown mode: " + filter.mode);
         }
         return true;
     }
@@ -150,27 +134,13 @@ public final class EhFilter {
         EhDB.deleteFilter(filter);
 
         switch (filter.mode) {
-            case MODE_TITLE:
-                mTitleFilterList.remove(filter);
-                break;
-            case MODE_UPLOADER:
-                mUploaderFilterList.remove(filter);
-                break;
-            case MODE_TAG:
-                mTagFilterList.remove(filter);
-                break;
-            case MODE_TAG_NAMESPACE:
-                mTagNamespaceFilterList.remove(filter);
-                break;
-            case MODE_COMMENTER:
-                mCommenterFilterList.remove(filter);
-                break;
-            case MODE_COMMENT:
-                mCommentFilterList.remove(filter);
-                break;
-            default:
-                Log.d(TAG, "Unknown mode: " + filter.mode);
-                break;
+            case MODE_TITLE -> mTitleFilterList.remove(filter);
+            case MODE_TAG -> mTagFilterList.remove(filter);
+            case MODE_TAG_NAMESPACE -> mTagNamespaceFilterList.remove(filter);
+            case MODE_UPLOADER -> mUploaderFilterList.remove(filter);
+            case MODE_COMMENTER -> mCommenterFilterList.remove(filter);
+            case MODE_COMMENT -> mCommentFilterList.remove(filter);
+            default -> Log.d(TAG, "Unknown mode: " + filter.mode);
         }
     }
 

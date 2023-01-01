@@ -95,9 +95,8 @@
         android:clipToPadding="false"
         android:gravity="bottom"
         android:orientation="horizontal"
-        android:paddingLeft="12dp"
+        android:paddingHorizontal="12dp"
         android:paddingTop="4dp"
-        android:paddingRight="12dp"
         android:paddingBottom="20dp">
 
         <Button

@@ -28,10 +28,8 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingLeft="@dimen/gallery_content_margin_v"
-            android:paddingTop="@dimen/gallery_content_margin_h"
-            android:paddingRight="@dimen/gallery_content_margin_v"
-            android:paddingBottom="@dimen/gallery_content_margin_h"
+            android:paddingHorizontal="@dimen/gallery_content_margin_h"
+            android:paddingVertical="@dimen/gallery_content_margin_v"
             app:fitsSystemWindowsInsets="bottom" />
 
         <com.hippo.easyrecyclerview.FastScroller
@@ -40,9 +38,8 @@
             android:layout_height="match_parent"
             android:layout_gravity="right"
             android:paddingLeft="20dp"
-            android:paddingTop="8dp"
             android:paddingRight="4dp"
-            android:paddingBottom="8dp"
+            android:paddingVertical="8dp"
             app:fitsSystemWindowsInsets="bottom" />
 
     </FrameLayout>

@@ -18,9 +18,8 @@
     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="?attr/dialogPreferredPadding"
-    android:paddingTop="@dimen/abc_dialog_padding_top_material"
-    android:paddingRight="?attr/dialogPreferredPadding">
+    android:paddingHorizontal="?attr/dialogPreferredPadding"
+    android:paddingTop="@dimen/abc_dialog_padding_top_material">
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/edit_text"

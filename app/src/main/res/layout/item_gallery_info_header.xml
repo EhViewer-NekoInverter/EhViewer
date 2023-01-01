@@ -18,8 +18,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingLeft="@dimen/keyline_margin"
-    android:paddingRight="@dimen/keyline_margin">
+    android:paddingHorizontal="@dimen/keyline_margin">
 
     <TextView
         android:id="@+id/key"

@@ -18,9 +18,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingLeft="?attr/dialogPreferredPadding"
-    android:paddingTop="@dimen/abc_dialog_padding_top_material"
-    android:paddingRight="?attr/dialogPreferredPadding">
+    android:paddingHorizontal="?attr/dialogPreferredPadding"
+    android:paddingTop="@dimen/abc_dialog_padding_top_material">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/host_input_layout"

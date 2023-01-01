@@ -68,8 +68,7 @@
         android:layout_gravity="bottom"
         android:background="?attr/gallerySliderBackgroundColor"
         android:orientation="horizontal"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
+        android:paddingHorizontal="16dp"
         android:visibility="invisible">
 
         <TextView

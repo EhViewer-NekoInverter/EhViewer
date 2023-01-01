@@ -121,10 +121,8 @@
         android:clipToPadding="false"
         android:gravity="bottom"
         android:orientation="horizontal"
-        android:paddingLeft="12dp"
-        android:paddingTop="4dp"
-        android:paddingRight="12dp"
-        android:paddingBottom="4dp">
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="4dp">
 
         <Button
             android:id="@+id/ok"
@@ -141,10 +139,8 @@
         android:clipToPadding="false"
         android:gravity="bottom|center_horizontal"
         android:orientation="horizontal"
-        android:paddingLeft="12dp"
-        android:paddingTop="4dp"
-        android:paddingRight="12dp"
-        android:paddingBottom="4dp">
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="4dp">
 
         <TextView
             android:id="@+id/from_clipboard"
