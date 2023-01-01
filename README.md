@@ -32,10 +32,6 @@
     链接
     </a>
     <span> | </span>
-    <a href="#问题">
-    问题
-    </a>
-    <span> | </span>
     <a href="#截图">
     截图
     </a>
@@ -54,7 +50,7 @@
 
 NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
-由于本人水平不足，本分支不接受功能请求，如果您有什么好想法或者发现什么问题欢迎直接提交 PR，软件常见的使用问题请参阅下面的 [常见问题](#问题)
+由于本人水平不足，本分支不接受功能请求，如果您有什么好想法或者发现什么问题欢迎直接提交 PR，软件常见使用问题请参阅 [Q&A](https://github.com/EhViewer-NekoInverter/EhViewer/issues/18)
 
 综上，如果您可以接受 MD3 风格，那使用 [彩E](https://github.com/Ehviewer-Overhauled/Ehviewer) 应该是更好的选择，我建立本仓库就是因为实在不能接受 MD3！不要大圆角！不要大色块！😡😡
 
@@ -85,71 +81,15 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 - Shinsi2 ``iOS``：[https://github.com/LonelyRun/Shinsi2](https://github.com/LonelyRun/Shinsi2)
 - E-Viewer ``UWP``：[https://github.com/OpportunityLiu/E-Viewer](https://github.com/OpportunityLiu/E-Viewer)
 - Ehentai-QT ``桌面端``：[https://github.com/tonquer/ehentai-qt](https://github.com/tonquer/ehentai-qt)
-- Violet ``移动端``：[https://github.com/project-violet/violet](https://github.com/project-violet/violet)
 
 **支持 E-Hentai 的聚合阅读器**
 
 - Tachiyomi ``Android``：[https://tachiyomi.org](https://tachiyomi.org)
-- Hentoid ``Android``：[https://github.com/avluis/Hentoid](https://github.com/avluis/Hentoid)
 - Yealico ``iOS``：[https://apps.apple.com/cn/app/yealico/id1359000639](https://apps.apple.com/cn/app/yealico/id1359000639)
 
 **E-Hentai 官方网站**
 
 - [https://e-hentai.org](https://e-hentai.org)
-
-# 问题
-
-**无法翻页/跳页**
-
-- 请阅读 [https://forums.e-hentai.org/index.php?showtopic=261743](https://forums.e-hentai.org/index.php?showtopic=261743)
-- 目前表站和里站均已应用此更改，请及时更新你的软件
-
-**挂梯子后打不开**
-
-- 尝试关闭 设置-高级 中的 “域名前置”
-
-**无法直连**
-
-- 本软件默认关闭此功能，如有需要请自行打开“域名前置”
-- 受网络情况影响，该功能可能无效，建议关闭后使用梯子访问
-
-**登录界面被跳过**
-
-- 检查是否使用了具有跳广告等功能的软件
-- 新版本已修正此问题
-
-**首次登录进不去里站**
-
-- 确保你的账号有里站权限，且**登录时必须使用干净的 IP，建议欧美**，登录成功后可换用其他 IP 不受影响
-- 你也可以尝试使用 Cookie 登录
-- 不要讲什么浏览器、别的 APP 打得开，退出重登一样会进不去
-
-**其它任何白屏、509、Sad Panda 问题**
-
-- 换 IP，换到能用为止
-
-**标签汉化没效果**
-
-- 汉化包为在线资源，需要花费时间从 GitHub 下载，请确保你的网络可以访问 GitHub，然后多开关几次试试
-
-**主页上传者和评分区域重叠**
-
-- 调节“详情模式下缩略图大小”设置
-
-**我订阅了标签，但是订阅页面提示我没有订阅**
-
-- 打开任意一个画廊后再返回访问订阅页面
-
-**这个软件怎么报毒啊**
-
-- 本软件完全开源，构建全部由 Github Action 完成，如有疑问可自行审查代码
-- 本软件中包含的 a.gray.sexpay.m (灰色.性支付) 是一种国产脑瘤病毒，需要反馈系统厂商去医院挂个脑科解决
-- 还有疑问？建议直接卸载
-
-**其他问题**
-
-- 建议阅读 [https://nicebowl.fun/11](https://nicebowl.fun/11) ([Web Archive](http://web.archive.org/web/20221125053020/https://nicebowl.fun/11))
-- 请善用搜索引擎
 
 # 截图
 
