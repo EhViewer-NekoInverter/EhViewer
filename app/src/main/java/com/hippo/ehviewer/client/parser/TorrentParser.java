@@ -72,8 +72,7 @@ public class TorrentParser {
         }
 
         public String format(IntFunction<String> getString) {
-            // return String.format("[%s] [↑%s ↓%s √%s] %s [%s]", posted, seeds, peers, downloads, name, size);
-            return String.format("[%s] %s [%s] [↑%s ↓%s √%s]", posted, name, size, seeds, peers, downloads);
+            return String.format("[%s] %s [%s] [↑%s ↓%s ✓%s]", posted, name, size, seeds, peers, downloads);
         }
 
         public String posted() {
