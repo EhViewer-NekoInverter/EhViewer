@@ -50,13 +50,15 @@ public final class SpiderDen {
     @Nullable
     private static SimpleDiskCache sCache;
     @Nullable
-    private final UniFile mDownloadDir;
+    private UniFile mDownloadDir;
+    private final GalleryInfo mGalleryInfo;
     private final long mGid;
     private volatile int mMode = SpiderQueen.MODE_READ;
 
     public SpiderDen(GalleryInfo galleryInfo) {
+        mGalleryInfo = galleryInfo;
         mGid = galleryInfo.gid;
-        mDownloadDir = getGalleryDownloadDir(galleryInfo);
+        mDownloadDir = getGalleryDownloadDir(galleryInfo.gid);
     }
 
     public static void initialize(Context context) {
@@ -64,45 +66,14 @@ public final class SpiderDen {
                 MathUtils.clamp(Settings.getReadCacheSize(), 40, 1280) * 1024 * 1024);
     }
 
-    public static UniFile getGalleryDownloadDir(GalleryInfo galleryInfo) {
+    public static UniFile getGalleryDownloadDir(long gid) {
         UniFile dir = Settings.getDownloadLocation();
-        if (dir != null) {
-            // Read from DB
-            String dirname = EhDB.getDownloadDirname(galleryInfo.gid);
-            if (null != dirname) {
-                // Some dirname may be invalid in some version
-                dirname = FileUtils.sanitizeFilename(dirname);
-                EhDB.putDownloadDirname(galleryInfo.gid, dirname);
-            }
-
-            // Find it
-            if (null == dirname) {
-                UniFile[] files = dir.listFiles(new StartWithFilenameFilter(galleryInfo.gid + "-"));
-                if (null != files) {
-                    // Get max-length-name dir
-                    int maxLength = -1;
-                    for (UniFile file : files) {
-                        if (file.isDirectory()) {
-                            String name = file.getName();
-                            int length = name.length();
-                            if (length > maxLength) {
-                                maxLength = length;
-                                dirname = name;
-                            }
-                        }
-                    }
-                    if (null != dirname) {
-                        EhDB.putDownloadDirname(galleryInfo.gid, dirname);
-                    }
-                }
-            }
-
-            // Create it
-            if (null == dirname) {
-                dirname = FileUtils.sanitizeFilename(galleryInfo.gid + "-" + EhUtils.getSuitableTitle(galleryInfo));
-                EhDB.putDownloadDirname(galleryInfo.gid, dirname);
-            }
-
+        // Read from DB
+        String dirname = EhDB.getDownloadDirname(gid);
+        if (dir != null && dirname != null) {
+            // Some dirname may be invalid in some version
+            dirname = FileUtils.sanitizeFilename(dirname);
+            EhDB.putDownloadDirname(gid, dirname);
             return dir.subFile(dirname);
         } else {
             return null;
@@ -137,6 +108,11 @@ public final class SpiderDen {
     }
 
     private boolean ensureDownloadDir() {
+        if (mDownloadDir == null) {
+            var dirname = FileUtils.sanitizeFilename(mGid + "-" + EhUtils.getSuitableTitle(mGalleryInfo));
+            EhDB.putDownloadDirname(mGid, dirname);
+            mDownloadDir = getGalleryDownloadDir(mGid);
+        }
         return mDownloadDir != null && mDownloadDir.ensureDir();
     }
 
@@ -153,6 +129,9 @@ public final class SpiderDen {
 
     @Nullable
     public UniFile getDownloadDir() {
+        if (mDownloadDir == null) {
+            mDownloadDir = getGalleryDownloadDir(mGid);
+        }
         return mDownloadDir != null && mDownloadDir.isDirectory() ? mDownloadDir : null;
     }
 
@@ -363,20 +342,6 @@ public final class SpiderDen {
             return openDownloadInputStreamPipe(index);
         } else {
             return null;
-        }
-    }
-
-    private static class StartWithFilenameFilter implements FilenameFilter {
-
-        private final String mPrefix;
-
-        public StartWithFilenameFilter(String prefix) {
-            mPrefix = prefix;
-        }
-
-        @Override
-        public boolean accept(UniFile dir, String filename) {
-            return filename.startsWith(mPrefix);
         }
     }
 }

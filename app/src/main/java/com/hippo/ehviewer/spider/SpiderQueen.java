@@ -367,6 +367,7 @@ public final class SpiderQueen implements Runnable {
         }
 
         updateMode();
+        writeSpiderInfoToLocal();
     }
 
     private void clearMode(@Mode int mode) {
@@ -831,6 +832,13 @@ public final class SpiderQueen implements Runnable {
         } catch (Throwable e) {
             ExceptionUtils.throwIfFatal(e);
             return null;
+        }
+    }
+
+    private void writeSpiderInfoToLocal() {
+        var spiderInfo = mSpiderInfo.get();
+        if (spiderInfo != null) {
+            writeSpiderInfoToLocal(spiderInfo);
         }
     }
 

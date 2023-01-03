@@ -2267,8 +2267,8 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
             boolean checked = mBuilder.isChecked();
             Settings.putRemoveImageFiles(checked);
             if (checked) {
+                UniFile file = SpiderDen.getGalleryDownloadDir(mGalleryInfo.gid);
                 EhDB.removeDownloadDirname(mGalleryInfo.gid);
-                UniFile file = SpiderDen.getGalleryDownloadDir(mGalleryInfo);
                 deleteFileAsync(file);
             }
         }

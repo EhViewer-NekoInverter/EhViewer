@@ -1228,10 +1228,10 @@ public class DownloadsScene extends ToolbarScene
                 UniFile[] files = new UniFile[mDownloadInfoList.size()];
                 int i = 0;
                 for (DownloadInfo info : mDownloadInfoList) {
+                    // Put file
+                    files[i] = SpiderDen.getGalleryDownloadDir(info.gid);
                     // Remove download path
                     EhDB.removeDownloadDirname(info.gid);
-                    // Put file
-                    files[i] = SpiderDen.getGalleryDownloadDir(info);
                     i++;
                 }
                 // Delete file
