@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 
 public class TorrentParser {
 
-    private static final Pattern PATTERN_TORRENT = Pattern.compile("Posted:</span> ([0-9-]+) [0-9:]+</td>[\\s\\S]+Size:</span> ([0-9\\.]+ [KMG]B)</td>[\\s\\S]+Seeds:</span> ([0-9]+)</td>[\\s\\S]+Peers:</span> ([0-9]+)</td>[\\s\\S]+Downloads:</span> ([0-9]+)</td>[\\s\\S]+onclick=\"document.location='([^\"]+)'[^<]+>([^<]+)</a></td>");
+    private static final Pattern PATTERN_TORRENT = Pattern.compile("</span> ([0-9-]+) [0-9:]+</td>[\\s\\S]+</span> ([0-9\\.]+ [KMGT]B)</td>[\\s\\S]+</span> ([0-9]+)</td>[\\s\\S]+</span> ([0-9]+)</td>[\\s\\S]+</span> ([0-9]+)</td>[\\s\\S]+</span>([^<]+)</td>[\\s\\S]+onclick=\"document.location='([^\"]+)'[^<]+>([^<]+)</a>");
 
     public static List<Result> parse(String body) {
         var torrentList = new ArrayList<Result>();
@@ -38,14 +38,15 @@ public class TorrentParser {
         for (var e : es) {
             Matcher m = PATTERN_TORRENT.matcher(e.html());
             if (m.find()) {
-                String posted = ParserUtils.trim(m.group(1));
-                String size = ParserUtils.trim(m.group(2));
-                int seeds = ParserUtils.parseInt(m.group(3), 0);
-                int peers = ParserUtils.parseInt(m.group(4), 0);
-                int downloads = ParserUtils.parseInt(m.group(5), 0);
-                String url = ParserUtils.trim(m.group(6));
-                String name = ParserUtils.trim(m.group(7));
-                var item = new Result(posted, size, seeds, peers, downloads, url, name);
+                String posted = m.group(1);
+                String size = m.group(2);
+                int seeds = Integer.parseInt(m.group(3));
+                int peers = Integer.parseInt(m.group(4));
+                int downloads = Integer.parseInt(m.group(5));
+                String uploader = ParserUtils.trim(m.group(6));
+                String url = ParserUtils.trim(m.group(7));
+                String name = ParserUtils.trim(m.group(8));
+                var item = new Result(posted, size, seeds, peers, downloads, uploader, url, name);
                 torrentList.add(item);
             }
         }
@@ -58,15 +59,17 @@ public class TorrentParser {
         private final int seeds;
         private final int peers;
         private final int downloads;
+        private final String uploader;
         private final String url;
         private final String name;
 
-        public Result(String posted, String size, int seeds, int peers, int downloads, String url, String name) {
+        public Result(String posted, String size, int seeds, int peers, int downloads, String uploader, String url, String name) {
             this.posted = posted;
             this.size = size;
             this.seeds = seeds;
             this.peers = peers;
             this.downloads = downloads;
+            this.uploader = uploader;
             this.url = url;
             this.name = name;
         }
@@ -95,6 +98,10 @@ public class TorrentParser {
             return downloads;
         }
 
+        public String uploader() {
+            return uploader;
+        }
+
         public String url() {
             return url;
         }
@@ -113,13 +120,14 @@ public class TorrentParser {
                     this.seeds == that.seeds &&
                     this.peers == that.peers &&
                     this.downloads == that.downloads &&
+                    Objects.equals(this.uploader, that.uploader) &&
                     Objects.equals(this.url, that.url) &&
                     Objects.equals(this.name, that.name);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(posted, size, seeds, peers, downloads, url, name);
+            return Objects.hash(posted, size, seeds, peers, downloads, uploader, url, name);
         }
 
         @NonNull
@@ -131,6 +139,7 @@ public class TorrentParser {
                     "seeds=" + seeds + ", " +
                     "peers=" + peers + ", " +
                     "downloads=" + downloads + ", " +
+                    "uploader=" + uploader + ", " +
                     "url=" + url + ", " +
                     "name=" + name + ']';
         }
