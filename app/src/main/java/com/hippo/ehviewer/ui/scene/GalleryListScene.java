@@ -317,7 +317,7 @@ public final class GalleryListScene extends BaseScene
         } else if (ACTION_TOP_LIST.equals(action)) {
             mUrlBuilder.reset();
             mUrlBuilder.setMode(ListUrlBuilder.MODE_TOPLIST);
-            mUrlBuilder.setKeyword("11");
+            mUrlBuilder.setKeyword("15");
         } else if (ACTION_LIST_URL_BUILDER.equals(action)) {
             ListUrlBuilder builder = args.getParcelable(KEY_LIST_URL_BUILDER);
             if (builder != null) {
@@ -1745,8 +1745,8 @@ public final class GalleryListScene extends BaseScene
                     return true;
                 });
             } else {
-                int[] keywords = {11, 12, 13, 15};
-                int[] toplists = {R.string.toplist_alltime, R.string.toplist_pastyear, R.string.toplist_pastmonth, R.string.toplist_yesterday};
+                int[] keywords = {15, 13, 12, 11};
+                int[] toplists = {R.string.toplist_yesterday, R.string.toplist_pastmonth, R.string.toplist_pastyear, R.string.toplist_alltime};
                 holder.key.setText(getString(toplists[position]));
                 holder.option.setVisibility(View.GONE);
                 holder.itemView.setOnClickListener(v -> {
