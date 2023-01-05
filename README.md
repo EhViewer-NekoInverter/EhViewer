@@ -58,7 +58,7 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 **注：需要 Android 9 及以上版本系统 (唯一一个支持 Android 6 的版本：[v1.7.27-final](https://github.com/EhViewer-NekoInverter/EhViewer/releases/tag/v1.7.27.final))**
 
-推荐前往 [Github Actions](https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml) 下载最新 CI 版本，需要登录 Github 账号
+推荐前往 [Github Actions](https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml) 下载最新 CI 版本，需要登录 Github 账号（可通过 [nightly.link](https://nightly.link/EhViewer-NekoInverter/EhViewer/workflows/ci/eh-1.7.28.x) 免登录下载）
 
 也可以前往 [Github Releases](https://github.com/EhViewer-NekoInverter/EhViewer/releases) 下载发行版，无需登录账号，但可能不是最新的
 
