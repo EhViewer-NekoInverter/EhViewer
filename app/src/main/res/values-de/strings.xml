@@ -444,9 +444,6 @@
     <string name="settings_advanced_dump_logcat_summary">Logcat-Protokolldatei auf externem Speicher speichern</string>
     <string name="settings_advanced_dump_logcat_failed">Speichern gescheitert</string>
     <string name="settings_advanced_dump_logcat_to">Protokolldatei wurde auf %s gespeichert.</string>
-    <string name="settings_advanced_clear_download_path_cache">Downloadpfadzwischenspeicher löschen</string>
-    <string name="settings_advanced_clear_download_path_cache_summary">Wenn etwas dem Downloadpfad schiefgelaufen ist, den Downloadpfad reinigen, könnte das Problem lösen.</string>
-    <string name="settings_advanced_clear_download_path_cache_message">Downloadpfadszwischenspeicher löschen?</string>
     <string name="settings_advanced_read_cache_size">Größe des Lesezwischenspeichers</string>
     <string name="settings_advanced_app_language_title">Sprache der App (Language)</string>
     <string name="settings_advanced_proxy">Proxy</string>
@@ -523,7 +520,6 @@
     <string name="just_now">Gerade</string>
     <string name="yesterday">Gestern</string>
     <string name="some_days_ago">Vor %d Tagen</string>
-    <string name="dialog_archive_title">H@H Downloader</string>
     <string name="no_archives">Keine Archivdatei</string>
     <string name="download_archive_started">Archivdatei wird heruntergeladen</string>
     <string name="download_archive_failure">Fehler beim Herunterladen der Archivdatei</string>

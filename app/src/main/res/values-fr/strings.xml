@@ -451,9 +451,6 @@
     <string name="settings_advanced_dump_logcat_summary">Sauvegarder le journal logcat au stockage externe</string>
     <string name="settings_advanced_dump_logcat_failed">Echec de sauvegarde</string>
     <string name="settings_advanced_dump_logcat_to">Fiche sauvegardé à %s</string>
-    <string name="settings_advanced_clear_download_path_cache">Vider le cache de la destination de téléchargement</string>
-    <string name="settings_advanced_clear_download_path_cache_summary">Quand il y a une erreur et vous devez télécharger quelque chose à nouveau, vider le cache là-dedans pouvait résoudre le problème.</string>
-    <string name="settings_advanced_clear_download_path_cache_message">Vider le cache ?</string>
     <string name="settings_advanced_read_cache_size">Taille du cache pour la lecture</string>
     <string name="settings_advanced_app_language_title">Langue de l\'app (Language)</string>
     <string name="settings_advanced_proxy">Serveur proxy</string>
@@ -558,7 +555,6 @@
         <item quantity="one">%d an</item>
         <item quantity="other">ans</item>
     </plurals>
-    <string name="dialog_archive_title">H@H Downloader</string>
     <string name="no_archives">Aucun fiche archives</string>
     <string name="download_archive_started">Téléchargement du fiche archives a commencé</string>
     <string name="download_archive_failure">Téléchargement du fiche archives a échoué</string>

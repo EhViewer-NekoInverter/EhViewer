@@ -543,9 +543,6 @@
     <string name="settings_advanced_dump_logcat_summary">Save logcat to external storage</string>
     <string name="settings_advanced_dump_logcat_failed">Dump logcat failed</string>
     <string name="settings_advanced_dump_logcat_to">Logcat dumped to %s</string>
-    <string name="settings_advanced_clear_download_path_cache">Clear download path cache</string>
-    <string name="settings_advanced_clear_download_path_cache_summary">Gallery download path might be wrong and it need to be redownloaded. Clearing download path cache might solve the problem.</string>
-    <string name="settings_advanced_clear_download_path_cache_message">Clear download path cache?</string>
     <string name="settings_advanced_read_cache_size">Read cache size</string>
     <string name="settings_advanced_app_language_title">App language</string>
     <string name="settings_advanced_proxy">Proxy</string>
@@ -671,7 +668,6 @@
         <item quantity="one">year</item>
         <item quantity="other">years</item>
     </plurals>
-    <string name="dialog_archive_title">H@H Downloader</string>
     <string name="no_archives">No Archives</string>
     <string name="download_archive_started">Archive download started</string>
     <string name="download_archive_failure">Failed to download archive</string>

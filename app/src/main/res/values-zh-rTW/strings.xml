@@ -497,9 +497,6 @@
     <string name="settings_advanced_dump_logcat_summary">儲存log紀錄至外接儲存裝置中</string>
     <string name="settings_advanced_dump_logcat_failed">無法傾印log紀錄</string>
     <string name="settings_advanced_dump_logcat_to">已儲存log紀錄至 %s</string>
-    <string name="settings_advanced_clear_download_path_cache">清除下載路徑的快取</string>
-    <string name="settings_advanced_clear_download_path_cache_summary">圖庫下載路徑可能錯了，所以需要重新下載。清除圖庫下載路徑的快取可能可以解決這個問題。</string>
-    <string name="settings_advanced_clear_download_path_cache_message">清除圖庫下載路徑的快取？</string>
     <string name="settings_advanced_read_cache_size">閱讀快取大小</string>
     <string name="settings_advanced_app_language_title">App 介面語言</string>
     <string name="settings_advanced_proxy">代理</string>
@@ -606,7 +603,6 @@
     <plurals name="year">
         <item quantity="other">年</item>
     </plurals>
-    <string name="dialog_archive_title">透過 H@H 下載</string>
     <string name="no_archives">沒有壓縮檔</string>
     <string name="download_archive_started">開始下載壓縮檔</string>
     <string name="download_archive_failure">下載失敗</string>

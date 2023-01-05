@@ -497,9 +497,6 @@
     <string name="settings_advanced_dump_logcat_summary">保存日誌至外置存儲器</string>
     <string name="settings_advanced_dump_logcat_failed">導出日誌失敗</string>
     <string name="settings_advanced_dump_logcat_to">已保存日誌至 %s</string>
-    <string name="settings_advanced_clear_download_path_cache">清除畫廊下載路徑緩存</string>
-    <string name="settings_advanced_clear_download_path_cache_summary">畫廊下載路徑可能出錯了，導致重新下載。清除畫廊下載路徑緩存可能解決這個問題。</string>
-    <string name="settings_advanced_clear_download_path_cache_message">清除畫廊下載路徑緩存？</string>
     <string name="settings_advanced_read_cache_size">閲讀緩存大小</string>
     <string name="settings_advanced_app_language_title">App 界面語言</string>
     <string name="settings_advanced_proxy">代理</string>
@@ -606,7 +603,6 @@
     <plurals name="year">
         <item quantity="other">年</item>
     </plurals>
-    <string name="dialog_archive_title">通過 H@H 下載</string>
     <string name="no_archives">沒有壓縮包</string>
     <string name="download_archive_started">開始下載壓縮包</string>
     <string name="download_archive_failure">無法下載壓縮包</string>
