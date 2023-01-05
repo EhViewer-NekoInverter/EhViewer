@@ -71,6 +71,7 @@ public class RestoreDownloadPreference extends TaskPreference {
 
         private final DownloadManager mManager;
         private final OkHttpClient mHttpClient;
+        private int restoreDirCount;
 
         public RestoreTask(@NonNull Context context) {
             super(context);
@@ -95,14 +96,21 @@ public class RestoreDownloadPreference extends TaskPreference {
                     return null;
                 }
                 long gid = spiderInfo.gid;
+                String dirname = file.getName();
                 if (mManager.containDownloadInfo(gid)) {
+                    // Avoid redownload
+                    String dbdirname = EhDB.getDownloadDirname(gid);
+                    if (null == dbdirname || !dirname.equals(dbdirname)) {
+                        EhDB.putDownloadDirname(gid, dirname);
+                        restoreDirCount++;
+                    }
                     return null;
                 }
                 String token = spiderInfo.token;
                 RestoreItem restoreItem = new RestoreItem();
                 restoreItem.gid = gid;
                 restoreItem.token = token;
-                restoreItem.dirname = file.getName();
+                restoreItem.dirname = dirname;
                 return restoreItem;
             } catch (IOException e) {
                 return null;
@@ -153,7 +161,10 @@ public class RestoreDownloadPreference extends TaskPreference {
             } else {
                 List<RestoreItem> list = (List<RestoreItem>) o;
                 if (list.isEmpty()) {
-                    mActivity.showTip(R.string.settings_download_restore_not_found, BaseScene.LENGTH_SHORT);
+                    mActivity.showTip(restoreDirCount == 0 ?
+                                      mActivity.getString(R.string.settings_download_restore_not_found) :
+                                      mActivity.getString(R.string.settings_download_restore_successfully, restoreDirCount),
+                                      BaseScene.LENGTH_SHORT);
                 } else {
                     int count = 0;
                     for (int i = 0, n = list.size(); i < n; i++) {
@@ -168,7 +179,7 @@ public class RestoreDownloadPreference extends TaskPreference {
                         }
                     }
                     showTip(
-                            mActivity.getString(R.string.settings_download_restore_successfully, count),
+                            mActivity.getString(R.string.settings_download_restore_successfully, count + restoreDirCount),
                             BaseScene.LENGTH_SHORT);
 
                     Preference preference = getPreference();
