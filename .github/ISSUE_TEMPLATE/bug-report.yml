@@ -17,8 +17,8 @@ body:
     attributes:
       label: 复现步骤 / Step to reproduce
       description: |
-        在此处写下复现的方式，请详细描述每一个步骤
-        Describe how to reproduce here, please describe each step in detail
+        在此处写下复现的方式，请详细描述每一个步骤，包括画廊链接、相关设置等
+        Describe how to reproduce here, please describe each step in detail, include gallery link or settings
       placeholder: |
         1.
         2.
@@ -49,7 +49,7 @@ body:
       placeholder: |
         实际上它 ...
         Actually it ...
-        [截图] / [Screenshots]
+        [截图或录屏] / [Screenshots or screen recordings]
     validations:
       required: true
 
@@ -70,7 +70,9 @@ body:
     id: version
     attributes:
       label: EhViewer 版本号 / EhViewer version code
-      description: 您可以在设置 - 关于处找到版本号 / You can get version code in Settings - About
+      description: |
+        您可以在设置 - 关于处找到版本号
+        You can get version code in Settings - About
       placeholder: 1.7.28
     validations:
       required: true
@@ -117,7 +119,9 @@ body:
     id: log
     attributes:
       label: 应用日志 / App logs
-      description: 您可以通过设置-高级-导出日志来获得日志文件，请以文件形式上传 / You can get logs file in Settings - Advanced - Dump logcat
+      description: |
+        您可以通过设置-高级-导出日志 来获得日志文件，过长的日志请以文件形式上传
+        You can get logs file in Settings - Advanced - Dump logcat
       placeholder: 06-15 17:44:53.704 23382 23382 E ...
     validations:
       required: true

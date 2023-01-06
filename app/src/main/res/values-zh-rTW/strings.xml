@@ -507,7 +507,7 @@
     <string name="settings_advanced_custom_hosts_title">自定義 hosts.txt</string>
     <string name="settings_advanced_custom_hosts_summary">將主機名稱對映到相應的IP位址\n可覆蓋內建 hosts.txt</string>
     <string name="settings_advanced_domain_fronting_title">域名前綴</string>
-    <string name="settings_advanced_domain_fronting_summary">繞過 SNI 封鎖</string>
+    <string name="settings_advanced_domain_fronting_summary">繞過 SNI 封鎖，啟用時會禁用代理\n修改後重新啟動程式生效</string>
     <string name="settings_privacy_pattern_protection_title">繪圖解鎖</string>
     <string name="settings_privacy_pattern_protection_not_set">尚未設定繪圖解鎖</string>
     <string name="settings_privacy_pattern_protection_set">已設定繪圖解鎖</string>
@@ -530,6 +530,7 @@
     <string name="settings_about_author">作者</string>
     <string name="settings_about_latest_release">最新版本</string>
     <string name="settings_about_source">原始碼</string>
+    <string name="settings_about_issues">常見問題</string>
     <string name="settings_about_version">版本號碼</string>
 
     <string name="proxy_direct">直接連線</string>

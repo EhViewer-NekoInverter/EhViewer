@@ -650,7 +650,7 @@ public class EhEngine {
     }
 
     public static List<TorrentParser.Result> getTorrentList(@Nullable EhClient.Task task, OkHttpClient okHttpClient,
-                                                      String url, long gid, String token) throws Throwable {
+                                                            String url, long gid, String token) throws Throwable {
         String referer = EhUrl.getGalleryDetailUrl(gid, token);
         Log.d(TAG, url);
         Request request = new EhRequestBuilder(url, referer).build();
