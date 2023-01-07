@@ -291,8 +291,7 @@ public class DownloadsScene extends ToolbarScene
         if (mType != -1) {
             mList = new ArrayList<>();
             for (DownloadInfo info : list) {
-                if (mKeyword != null && (info.title.toLowerCase().contains(mKeyword) ||
-                        info.titleJpn.toLowerCase().contains(mKeyword)) || info.state == mType) {
+                if (mKeyword != null && EhUtils.getSuitableTitle(info).toLowerCase().contains(mKeyword) || info.state == mType) {
                     mList.add(info);
                 }
             }
