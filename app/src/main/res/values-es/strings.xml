@@ -410,8 +410,6 @@
     <string name="settings_download_multi_thread_download_summary">Máximo de %s imágenes</string>
     <string name="settings_download_preload_image">Precargar imagen</string>
     <string name="settings_download_preload_image_summary">Precargar las siguientes %s imágenes</string>
-    <string name="settings_download_download_origin_image">Descargar imagen original</string>
-    <string name="settings_download_download_origin_image_summary">¡Cuidado! Podrías recibir error 509</string>
     <string name="settings_download_restore_download_items">Restaurar los elementos de descarga</string>
     <string name="settings_download_restore_download_items_summary">Restaurar todos los elementos de descarga en la ruta de descarga</string>
     <string name="settings_download_restore_not_found">No se han encontrado elementos para restaurar</string>

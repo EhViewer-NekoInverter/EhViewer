@@ -173,6 +173,7 @@ public final class SpiderDen {
         if (dir == null) {
             return false;
         }
+
         // Find image file in cache
         String key = EhCacheKeyFactory.getImageKey(mGid, index);
         InputStreamPipe pipe = sCache.getInputStreamPipe(key);
@@ -218,7 +219,7 @@ public final class SpiderDen {
         if (mMode == SpiderQueen.MODE_READ) {
             return containInCache(index) || containInDownloadDir(index);
         } else if (mMode == SpiderQueen.MODE_DOWNLOAD) {
-            return containInDownloadDir(index) || copyFromCacheToDownloadDir(index);
+            return containInDownloadDir(index) || (Settings.getCopyOriginImage() ? copyFromCacheToDownloadDir(index) : false);
         } else {
             return false;
         }

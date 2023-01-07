@@ -423,8 +423,6 @@
     <string name="settings_download_multi_thread_download_summary">Bis zu %s Bild(er)</string>
     <string name="settings_download_preload_image">Bilder vorabladen</string>
     <string name="settings_download_preload_image_summary">Die nächste %s Bilder vorabladen</string>
-    <string name="settings_download_download_origin_image">Originale Bilder herunterladen</string>
-    <string name="settings_download_download_origin_image_summary">Wenn es aktiviert wird, wird der 509-Fehler dir schneller widerfahren</string>
     <string name="settings_download_restore_download_items">Download-Elemente wiederherstellen</string>
     <string name="settings_download_restore_download_items_summary">Alle Download-Elemente im Downloadpfad wiederherstellen</string>
     <string name="settings_download_restore_not_found">Keine zu wiederhestellenden Elemente</string>

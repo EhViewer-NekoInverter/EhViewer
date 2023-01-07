@@ -57,11 +57,13 @@
         app:entryValues="@array/preload_image_entry_values"
         app:iconSpaceReserved="false" />
 
-    <SwitchPreferenceCompat
-        android:defaultValue="false"
-        android:key="download_origin_image"
+    <rikka.preference.SimpleMenuPreference
+        android:defaultValue="0"
+        android:key="download_origin_image_"
         android:summary="@string/settings_download_download_origin_image_summary"
         android:title="@string/settings_download_download_origin_image"
+        app:entries="@array/download_origin_image_entries"
+        app:entryValues="@array/download_origin_image_entry_values"
         app:iconSpaceReserved="false" />
 
     <com.hippo.ehviewer.preference.RestoreDownloadPreference

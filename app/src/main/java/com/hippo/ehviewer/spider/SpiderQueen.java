@@ -363,7 +363,7 @@ public final class SpiderQueen implements Runnable {
         }
 
         if (mDownloadReference > 1) {
-            throw new IllegalStateException("mDownloadReference can't more than 0");
+            throw new IllegalStateException("mDownloadReference can't more than 1");
         }
 
         updateMode();
@@ -1238,7 +1238,7 @@ public final class SpiderQueen implements Runnable {
 
                 String targetImageUrl;
                 String referer;
-                if (Settings.getDownloadOriginImage() && !TextUtils.isEmpty(originImageUrl)) {
+                if (Settings.getDownloadOriginImage(mDownloadReference > 0) && !TextUtils.isEmpty(originImageUrl)) {
                     targetImageUrl = originImageUrl;
                     referer = EhUrl.getPageUrl(gid, index, pToken);
                 } else {

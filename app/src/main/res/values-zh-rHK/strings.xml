@@ -476,8 +476,11 @@
     <string name="settings_download_download_delay_summary">每次下載延時 %s 毫秒</string>
     <string name="settings_download_preload_image">預載圖片</string>
     <string name="settings_download_preload_image_summary">向後預載 %s 張圖片</string>
-    <string name="settings_download_download_origin_image">下載原圖</string>
-    <string name="settings_download_download_origin_image_summary">這很危險！勾選此項會導致下載配額迅速流失</string>
+    <string name="settings_download_download_origin_image">閱讀或下載原圖</string>
+    <string name="settings_download_download_origin_image_summary">%s，這很危險！啟用會導致下載配額迅速流失</string>
+    <string name="settings_download_download_origin_image_never">從不啟用</string>
+    <string name="settings_download_download_origin_image_force">總是啟用</string>
+    <string name="settings_download_download_origin_image_only">僅下載時啟用</string>
     <string name="settings_download_restore_download_items">恢復下載項</string>
     <string name="settings_download_restore_download_items_summary">恢復下載目錄裏的所有下載項</string>
     <string name="settings_download_restore_not_found">未找到可恢復下載項</string>

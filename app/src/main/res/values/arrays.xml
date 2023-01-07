@@ -109,6 +109,18 @@
         <item>20000</item>
     </string-array>
 
+    <string-array name="download_origin_image_entries">
+        <item>@string/settings_download_download_origin_image_never</item>
+        <item>@string/settings_download_download_origin_image_force</item>
+        <item>@string/settings_download_download_origin_image_only</item>
+    </string-array>
+
+    <string-array name="download_origin_image_entry_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
     <string-array name="preload_image_entries" translatable="false">
         <item>3</item>
         <item>5</item>

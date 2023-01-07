@@ -136,8 +136,8 @@ public class Settings {
     private static final int DEFAULT_DOWNLOAD_DELAY = 0;
     private static final String KEY_PRELOAD_IMAGE = "preload_image";
     private static final int DEFAULT_PRELOAD_IMAGE = 5;
-    private static final String KEY_DOWNLOAD_ORIGIN_IMAGE = "download_origin_image";
-    private static final boolean DEFAULT_DOWNLOAD_ORIGIN_IMAGE = false;
+    private static final String KEY_DOWNLOAD_ORIGIN_IMAGE = "download_origin_image_";
+    private static final int DEFAULT_DOWNLOAD_ORIGIN_IMAGE = 0;
     /********************
      ****** Privacy and Security
      ********************/
@@ -406,17 +406,12 @@ public class Settings {
 
     public static String getLaunchPageGalleryListSceneAction() {
         int value = getIntFromStr(KEY_LAUNCH_PAGE, DEFAULT_LAUNCH_PAGE);
-        switch (value) {
-            default:
-            case 0:
-                return GalleryListScene.ACTION_HOMEPAGE;
-            case 1:
-                return GalleryListScene.ACTION_SUBSCRIPTION;
-            case 2:
-                return GalleryListScene.ACTION_WHATS_HOT;
-            case 3:
-                return GalleryListScene.ACTION_TOP_LIST;
-        }
+        return switch (value) {
+            case 3 -> GalleryListScene.ACTION_TOP_LIST;
+            case 2 -> GalleryListScene.ACTION_WHATS_HOT;
+            case 1 -> GalleryListScene.ACTION_SUBSCRIPTION;
+            default -> GalleryListScene.ACTION_HOMEPAGE;
+        };
     }
 
     public static int getListMode() {
@@ -666,8 +661,17 @@ public class Settings {
         return getIntFromStr(KEY_PRELOAD_IMAGE, DEFAULT_PRELOAD_IMAGE);
     }
 
-    public static boolean getDownloadOriginImage() {
-        return getBoolean(KEY_DOWNLOAD_ORIGIN_IMAGE, DEFAULT_DOWNLOAD_ORIGIN_IMAGE);
+    public static boolean getDownloadOriginImage(boolean mode) {
+        int value = getIntFromStr(KEY_DOWNLOAD_ORIGIN_IMAGE, DEFAULT_DOWNLOAD_ORIGIN_IMAGE);
+        return switch (value) {
+            case 2 -> mode;
+            case 1 -> true;
+            default -> false;
+        };
+    }
+
+    public static boolean getCopyOriginImage() {
+        return getIntFromStr(KEY_DOWNLOAD_ORIGIN_IMAGE, DEFAULT_DOWNLOAD_ORIGIN_IMAGE) != 2;
     }
 
     public static String getSecurity() {

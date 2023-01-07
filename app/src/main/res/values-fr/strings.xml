@@ -430,8 +430,6 @@
     <string name="settings_download_multi_thread_download_summary">Jusqu\'à %s image(s)</string>
     <string name="settings_download_preload_image">Charger les images d\'avance</string>
     <string name="settings_download_preload_image_summary">Charger les prochaine %s images</string>
-    <string name="settings_download_download_origin_image">Télécharger l\'images originales</string>
-    <string name="settings_download_download_origin_image_summary">Vous allez obtenir l\'erreur 509 plus facilement</string>
     <string name="settings_download_restore_download_items">Rétablir les galeries téléchargées</string>
     <string name="settings_download_restore_download_items_summary">Rétablir tous objets déjà téléchargés dans la destination de téléchargement</string>
     <string name="settings_download_restore_not_found">Aucun objet trouvé à rétablir</string>

@@ -404,8 +404,6 @@
     <string name="settings_download_multi_thread_download_summary">โหลดถึง %s ภาพ</string>
     <string name="settings_download_preload_image">โหลดภาพล่วงหน้า</string>
     <string name="settings_download_preload_image_summary">โหลดภาพล่วงหน้าไป %s ภาพ</string>
-    <string name="settings_download_download_origin_image">ดาวน์โหลดรูปภาพต้นฉบับ</string>
-    <string name="settings_download_download_origin_image_summary">อันตรายนะ! คุณอาจจะเจอรหัสข้อผิดพลาด 509 ได้</string>
     <string name="settings_download_restore_download_items">คืนรายการดาวน์โหลด</string>
     <string name="settings_download_restore_download_items_summary">คืนรายการดาวน์โหลดทั้งหมดในแหล่งดาวน์โหลด</string>
     <string name="settings_download_restore_not_found">ไม่พบรายการดาวน์โหลดที่จะคืนค่า</string>

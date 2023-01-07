@@ -386,8 +386,6 @@
     <string name="settings_download_multi_thread_download_summary">%s개 이미지까지</string>
     <string name="settings_download_preload_image">이미지 미리 불러오기</string>
     <string name="settings_download_preload_image_summary">다음 %s개 이미지를 미리 불러옴</string>
-    <string name="settings_download_download_origin_image">원본 이미지 다운로드</string>
-    <string name="settings_download_download_origin_image_summary">이 옵션은 위험합니다! 509 오류가 발생할 수 있습니다.</string>
     <string name="settings_download_restore_download_items">다운로드 항목 복구</string>
     <string name="settings_download_restore_download_items_summary">다운로드 위치에 존재하는 모든 다운로드 항목 복구</string>
     <string name="settings_download_restore_not_found">복구할 다운로드 항목을 찾을 수 없습니다.</string>
