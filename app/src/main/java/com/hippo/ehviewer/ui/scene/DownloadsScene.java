@@ -306,9 +306,9 @@ public class DownloadsScene extends ToolbarScene
                 @Override
                 public int compare(DownloadInfo o1, DownloadInfo o2) {
                     return switch (mSort) {
-                        case 0 -> (int) ((o2.time - o1.time) / 1000);
+                        case 0 -> Long.valueOf(o2.time).compareTo(Long.valueOf(o1.time));
                         case 2 -> EhUtils.getSuitableTitle(o1).compareTo(EhUtils.getSuitableTitle(o2));
-                        case 3 -> o1.category - o2.category;
+                        case 3 -> Integer.valueOf(o1.category).compareTo(Integer.valueOf(o2.category));
                         default -> 0;
                     };
                 }
