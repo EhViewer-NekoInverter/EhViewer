@@ -158,6 +158,8 @@ public class GalleryInfo implements Parcelable {
     public int favoriteSlot = -2;
     @Ignore
     public String favoriteName;
+    @Ignore
+    public String favoriteNote;
 
     public GalleryInfo() {
     }
@@ -182,6 +184,7 @@ public class GalleryInfo implements Parcelable {
         this.spanGroupIndex = in.readInt();
         this.favoriteSlot = in.readInt();
         this.favoriteName = in.readString();
+        this.favoriteNote = in.readString();
         this.disowned = in.readByte() != 0;
     }
 
@@ -242,6 +245,7 @@ public class GalleryInfo implements Parcelable {
         dest.writeInt(this.spanGroupIndex);
         dest.writeInt(this.favoriteSlot);
         dest.writeString(this.favoriteName);
+        dest.writeString(this.favoriteNote);
         dest.writeByte(this.disowned ? (byte) 1 : (byte) 0);
     }
 }

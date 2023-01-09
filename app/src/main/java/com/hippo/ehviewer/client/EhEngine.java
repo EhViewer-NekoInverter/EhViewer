@@ -560,7 +560,7 @@ public class EhEngine {
         builder.add("favcat", catStr);
         builder.add("favnote", note != null ? note : "");
         // submit=Add+to+Favorites is not necessary, just use submit=Apply+Changes all the time
-        builder.add("submit", "Apply Changes");
+        builder.add("apply", "Apply Changes");
         builder.add("update", "1");
         String url = EhUrl.getAddFavorites(gid, token);
         String origin = EhUrl.getOrigin();

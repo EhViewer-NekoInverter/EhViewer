@@ -112,7 +112,7 @@ public class GalleryListParser {
     private static GalleryInfo parseGalleryInfo(Element e) {
         GalleryInfo gi = new GalleryInfo();
 
-        // Title, gid, token (required), tags
+        // Title, gid, token (required)
         Element glname = JsoupUtils.getElementByClass(e, "glname");
         if (glname != null) {
             Element a = JsoupUtils.getElementByTag(glname, "a");
@@ -162,7 +162,7 @@ public class GalleryListParser {
             gi.category = EhUtils.getCategory(ce.text());
         }
 
-        // Thumb
+        // Thumb and pages
         Element glthumb = JsoupUtils.getElementByClass(e, "glthumb");
         if (glthumb != null) {
             Element img = glthumb.select("div:nth-child(1)>img").first();
@@ -187,7 +187,6 @@ public class GalleryListParser {
                 }
                 gi.thumb = EhUtils.handleThumbUrlResolution(url);
             }
-
             // Pages
             Element div = glthumb.select("div:nth-child(2)>div:nth-child(2)>div:nth-child(2)").first();
             if (div != null) {
@@ -276,6 +275,15 @@ public class GalleryListParser {
                 if (matcher.find()) {
                     gi.pages = NumberUtils.parseIntSafely(matcher.group(1), 0);
                 }
+            }
+        }
+
+        // Favorite note
+        Element glfnote = JsoupUtils.getElementByClass(e, "glfnote");
+        if (glfnote != null) {
+            String favoriteNote = glfnote.text().trim();
+            if (!TextUtils.isEmpty(favoriteNote)) {
+                gi.favoriteNote = favoriteNote;
             }
         }
 

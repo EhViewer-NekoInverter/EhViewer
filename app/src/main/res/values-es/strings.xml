@@ -276,6 +276,7 @@
     <string name="download_speed_text_2">%1$s, %2$s restantes</string>
     <string name="remember_download_label">Recordar etiqueta de descarga</string>
     <string name="default_download_label">Etiqueta predeterminada de descarga</string>
+    <string name="let_me_select">Déjame elegir</string>
     <string name="added_to_download_list">Añadido a la lista de descargas</string>
 
     <!-- Download label -->
@@ -466,7 +467,6 @@
     <string name="delete_favorites_dialog_message">¿Eliminar %d galerías de favoritos?</string>
     <string name="move_favorites_dialog_title">Mover favoritos</string>
     <string name="default_favorites_collection">Colección de favoritos por defecto</string>
-    <string name="let_me_select">Déjame elegir</string>
     <string name="collections">Colección</string>
     <string name="need_sign_in">Se necesita iniciar sesión</string>
 

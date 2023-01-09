@@ -288,6 +288,7 @@
     <string name="download_speed_text_2">%1$s、残り%2$s</string>
     <string name="remember_download_label">ダウンロードラベルを記憶</string>
     <string name="default_download_label">既定ダウンロードラベル</string>
+    <string name="let_me_select">手動で選択</string>
     <string name="added_to_download_list">ダウンロードリストに追加しました</string>
 
     <!-- Download label -->
@@ -498,7 +499,6 @@
     <string name="delete_favorites_dialog_message">%d件の項目をお気に入りリストから削除します？</string>
     <string name="move_favorites_dialog_title">お気に入りを移動</string>
     <string name="default_favorites_collection">既定のお気に入りリスト</string>
-    <string name="let_me_select">手動で選択</string>
     <string name="collections">お気に入りコレクション</string>
     <string name="need_sign_in">ログインが必要</string>
 

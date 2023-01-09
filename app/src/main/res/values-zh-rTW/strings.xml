@@ -192,6 +192,9 @@
     <string name="not_favorited">未收藏</string>
     <string name="add_favorites_dialog_title">新增到收藏裡</string>
     <string name="remember_favorite_collection">記住常用收藏</string>
+    <string name="add_favorite_note_dialog_title">添加收藏備註</string>
+    <string name="favorite_note">收藏備註</string>
+    <string name="favorite_note_never_show">不再顯示此窗口</string>
     <string name="add_to_favorite_success">已新增至收藏中</string>
     <string name="remove_from_favorite_success">從收藏中移除</string>
     <string name="add_to_favorite_failure">無法新增至收藏</string>
@@ -311,6 +314,7 @@
     <string name="download_speed_text_2">%1$s，剩餘 %2$s</string>
     <string name="remember_download_label">記住下載標籤</string>
     <string name="default_download_label">預設下載標籤</string>
+    <string name="let_me_select">讓我每次都選擇</string>
     <string name="added_to_download_list">已新增至下載列表</string>
 
     <!-- Download label -->
@@ -559,7 +563,7 @@
     <string name="delete_favorites_dialog_message">將 %d 項收藏移除？</string>
     <string name="move_favorites_dialog_title">移動收藏</string>
     <string name="default_favorites_collection">預設收藏夾</string>
-    <string name="let_me_select">讓我每次都選擇</string>
+    <string name="let_me_select_fav">重置設置</string>
     <string name="collections">收藏夾</string>
     <string name="need_sign_in">需要登入</string>
 

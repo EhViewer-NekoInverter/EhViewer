@@ -212,6 +212,8 @@ public class Settings {
     public static final int INVALID_DEFAULT_FAV_SLOT = -2;
     private static final String KEY_DEFAULT_FAV_SLOT = "default_favorite_2";
     private static final int DEFAULT_DEFAULT_FAV_SLOT = INVALID_DEFAULT_FAV_SLOT;
+    private static final String KEY_NEVER_ADD_FAV_NOTES = "never_add_favorite_notes";
+    private static final boolean DEFAULT_NEVER_ADD_FAV_NOTES = false;
     /********************
      ****** Guide
      ********************/
@@ -850,6 +852,14 @@ public class Settings {
 
     public static void putDefaultFavSlot(int value) {
         putInt(KEY_DEFAULT_FAV_SLOT, value);
+    }
+
+    public static boolean getNeverAddFavNotes() {
+        return getBoolean(KEY_NEVER_ADD_FAV_NOTES, DEFAULT_NEVER_ADD_FAV_NOTES);
+    }
+
+    public static void putNeverAddFavNotes(boolean value) {
+        putBoolean(KEY_NEVER_ADD_FAV_NOTES, value);
     }
 
     public static boolean getGuideQuickSearch() {

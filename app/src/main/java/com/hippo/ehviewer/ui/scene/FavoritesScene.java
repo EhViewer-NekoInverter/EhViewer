@@ -447,13 +447,16 @@ public class FavoritesScene extends BaseScene implements
             int id = item.getItemId();
             if (id == R.id.action_default_favorites_slot) {
                 String[] items = new String[12];
-                items[0] = getString(R.string.let_me_select);
+                items[0] = getString(R.string.let_me_select_fav);
                 items[1] = getString(R.string.local_favorites);
                 String[] favCat = Settings.getFavCat();
                 System.arraycopy(favCat, 0, items, 2, 10);
                 new AlertDialog.Builder(context)
                         .setTitle(R.string.default_favorites_collection)
-                        .setItems(items, (dialog, which) -> Settings.putDefaultFavSlot(which - 2)).show();
+                        .setItems(items, (dialog, which) -> {
+                            Settings.putDefaultFavSlot(which - 2);
+                            Settings.putNeverAddFavNotes(false);
+                        }).show();
                 return true;
             }
             return false;

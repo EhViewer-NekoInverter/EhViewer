@@ -237,6 +237,9 @@
     <string name="not_favorited">Not favorited</string>
     <string name="add_favorites_dialog_title">Add to favorites</string>
     <string name="remember_favorite_collection">Remember favorite collection</string>
+    <string name="add_favorite_note_dialog_title">Add favorite note</string>
+    <string name="favorite_note">Favorite Note</string>
+    <string name="favorite_note_never_show">Don\'t show this again</string>
     <string name="add_to_favorite_success">Added to favorites</string>
     <string name="remove_from_favorite_success">Removed from favorites</string>
     <string name="add_to_favorite_failure">Failed to add to favorites</string>
@@ -357,6 +360,7 @@
     <string name="download_speed_text_2">%1$s, %2$s left</string>
     <string name="remember_download_label">Remember download label</string>
     <string name="default_download_label">Default download label</string>
+    <string name="let_me_select">Let me select</string>
     <string name="added_to_download_list">Added to download list</string>
 
     <!-- Download label -->
@@ -617,7 +621,7 @@
     <string name="delete_favorites_dialog_message">Delete %d items from favorites?</string>
     <string name="move_favorites_dialog_title">Move favorites</string>
     <string name="default_favorites_collection">Default favorites collection</string>
-    <string name="let_me_select">Let me select</string>
+    <string name="let_me_select_fav">Reset settings</string>
     <string name="collections">Collections</string>
     <string name="need_sign_in">Signing in is required</string>
 

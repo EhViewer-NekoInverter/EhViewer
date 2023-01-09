@@ -282,6 +282,7 @@
     <string name="download_speed_text_2">%1$s, noch %2$s übrig</string>
     <string name="remember_download_label">Download-Etikette merken</string>
     <string name="default_download_label">Standard-Download-Etikette</string>
+    <string name="let_me_select">Manuell auswählen</string>
     <string name="added_to_download_list">Zu Download-Liste hinzugefügt</string>
 
     <!-- Download label -->
@@ -491,7 +492,6 @@
     <string name="delete_favorites_dialog_message">%d Elemente aus Favoriten löschen?</string>
     <string name="move_favorites_dialog_title">Favoriten verschieben</string>
     <string name="default_favorites_collection">Standard-Favoriten</string>
-    <string name="let_me_select">Manuell auswählen</string>
     <string name="collections">Kollektionen</string>
     <string name="need_sign_in">Du musst dich zuerst anmelden</string>
 

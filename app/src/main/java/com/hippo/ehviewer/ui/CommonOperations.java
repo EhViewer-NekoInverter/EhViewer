@@ -17,10 +17,13 @@
 package com.hippo.ehviewer.ui;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 
+import com.hippo.app.EditTextCheckBoxDialogBuilder;
 import com.hippo.app.ListCheckBoxDialogBuilder;
 import com.hippo.ehviewer.EhApplication;
 import com.hippo.ehviewer.EhDB;
@@ -46,17 +49,37 @@ import java.util.List;
 public final class CommonOperations {
 
     private static void doAddToFavorites(Activity activity, GalleryInfo galleryInfo,
+                                         int slot, String note, EhClient.Callback<Void> listener) {
+            EhClient client = EhApplication.getEhClient(activity);
+            EhRequest request = new EhRequest();
+            request.setMethod(EhClient.METHOD_ADD_FAVORITES);
+            request.setArgs(galleryInfo.gid, galleryInfo.token, slot, note);
+            request.setCallback(listener);
+            client.execute(request);
+    }
+
+    private static void doAddToFavorites(Activity activity, GalleryInfo galleryInfo,
                                          int slot, EhClient.Callback<Void> listener) {
         if (slot == -1) {
             EhDB.putLocalFavorites(galleryInfo);
             listener.onSuccess(null);
         } else if (slot >= 0 && slot <= 9) {
-            EhClient client = EhApplication.getEhClient(activity);
-            EhRequest request = new EhRequest();
-            request.setMethod(EhClient.METHOD_ADD_FAVORITES);
-            request.setArgs(galleryInfo.gid, galleryInfo.token, slot, "");
-            request.setCallback(listener);
-            client.execute(request);
+            if (Settings.getNeverAddFavNotes()) {
+                doAddToFavorites(activity, galleryInfo, slot, "", listener);
+            } else {
+                final EditTextCheckBoxDialogBuilder builder = new EditTextCheckBoxDialogBuilder(activity, null,
+                        activity.getString(R.string.favorite_note), activity.getString(R.string.favorite_note_never_show),
+                        Settings.getNeverAddFavNotes());
+                builder.setTitle(R.string.add_favorite_note_dialog_title);
+                builder.setPositiveButton(android.R.string.ok, null);
+                final AlertDialog dialog = builder.show();
+                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(v -> {
+                    String text = builder.getText().trim();
+                    Settings.putNeverAddFavNotes(builder.isChecked());
+                    dialog.dismiss();
+                    doAddToFavorites(activity, galleryInfo, slot, text, listener);
+                });
+            }
         } else {
             listener.onFailure(new Exception()); // TODO Add text
         }
