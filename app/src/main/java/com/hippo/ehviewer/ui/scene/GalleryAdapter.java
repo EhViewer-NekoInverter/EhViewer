@@ -209,12 +209,12 @@ abstract class GalleryAdapter extends RecyclerView.Adapter<GalleryHolder> {
                 holder.title.setText(EhUtils.getSuitableTitle(gi));
                 String uploader = gi.uploader;
                 String favoriteNote = gi.favoriteNote;
-                if (uploader != null) {
-                    holder.uploader.setText(uploader);
-                    holder.uploader.setAlpha(gi.disowned ? .5f : 1f);
-                } else if (favoriteNote != null) {
+                if (favoriteNote != null) {
                     holder.uploader.setText(favoriteNote);
                     holder.uploader.setTypeface(holder.uploader.getTypeface(), Typeface.ITALIC);
+                } else {
+                    holder.uploader.setText(uploader);
+                    holder.uploader.setAlpha(gi.disowned ? .5f : 1f);
                 }
                 holder.rating.setRating(gi.rating);
                 TextView category = holder.category;
