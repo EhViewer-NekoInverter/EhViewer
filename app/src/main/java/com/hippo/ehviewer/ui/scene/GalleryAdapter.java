@@ -19,7 +19,6 @@ package com.hippo.ehviewer.ui.scene;
 import android.annotation.SuppressLint;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
-import android.graphics.Typeface;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -207,15 +206,15 @@ abstract class GalleryAdapter extends RecyclerView.Adapter<GalleryHolder> {
             case TYPE_LIST -> {
                 holder.thumb.load(EhCacheKeyFactory.getThumbKey(gi.gid), gi.thumb);
                 holder.title.setText(EhUtils.getSuitableTitle(gi));
-                String uploader = gi.uploader;
-                String favoriteNote = gi.favoriteNote;
-                if (uploader != null) {
-                    holder.uploader.setText(uploader);
-                    holder.uploader.setAlpha(gi.disowned ? .5f : 1f);
-                } else if (favoriteNote != null) {
-                    holder.uploader.setText(favoriteNote);
-                    holder.uploader.setTypeface(holder.uploader.getTypeface(), Typeface.ITALIC);
+                holder.uploader.setAlpha(gi.disowned ? .5f : 1f);
+                if (TextUtils.isEmpty(gi.uploader)) {
+                    holder.uploader.setText(null);
+                    holder.uploader.setVisibility(View.GONE);
+                } else {
+                    holder.uploader.setText(gi.uploader);
+                    holder.uploader.setVisibility(View.VISIBLE);
                 }
+                holder.note.setText(gi.favoriteNote);
                 holder.rating.setRating(gi.rating);
                 TextView category = holder.category;
                 String newCategoryText = EhUtils.getCategory(gi.category);

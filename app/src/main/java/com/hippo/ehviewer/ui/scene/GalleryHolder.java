@@ -32,6 +32,7 @@ class GalleryHolder extends RecyclerView.ViewHolder {
     public final LoadImageView thumb;
     public final TextView title;
     public final TextView uploader;
+    public final TextView note;
     public final SimpleRatingView rating;
     public final TextView category;
     public final TextView posted;
@@ -47,6 +48,7 @@ class GalleryHolder extends RecyclerView.ViewHolder {
         thumb = itemView.findViewById(R.id.thumb);
         title = itemView.findViewById(R.id.title);
         uploader = itemView.findViewById(R.id.uploader);
+        note = itemView.findViewById(R.id.note);
         rating = itemView.findViewById(R.id.rating);
         category = itemView.findViewById(R.id.category);
         posted = itemView.findViewById(R.id.posted);

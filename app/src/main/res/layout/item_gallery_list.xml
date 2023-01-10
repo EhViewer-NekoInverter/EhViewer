@@ -57,6 +57,16 @@
             android:layout_marginTop="2dp" />
 
         <TextView
+            android:id="@+id/note"
+            style="@style/CardMessage"
+            android:textStyle="italic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/uploader"
+            android:layout_alignLeft="@id/title"
+            android:layout_marginTop="2dp" />
+
+        <TextView
             android:id="@+id/category"
             style="@style/CardMessage"
             android:layout_width="wrap_content"
