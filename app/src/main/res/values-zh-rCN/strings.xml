@@ -285,10 +285,12 @@
     <string name="download_state_finish">已完成</string>
     <string name="download_filter_title">筛选标题</string>
     <string name="download_sort_by">排序规则</string>
-    <string name="download_sort_default">默认</string>
-    <string name="download_sort_shuffle">随机</string>
-    <string name="download_sort_title">标题</string>
-    <string name="download_sort_category">分类</string>
+    <string name="download_sort_default">默认排序</string>
+    <string name="download_sort_shuffle">随机排序</string>
+    <string name="download_sort_title">画廊标题</string>
+    <string name="download_sort_author">画廊作者</string>
+    <string name="download_sort_name">画廊名称</string>
+    <string name="download_sort_category">画廊分类</string>
     <string name="stat_509_alert_title">509 警告</string>
     <string name="stat_509_alert_text">图片配额已用尽。请停止下载，休息一下。</string>
     <string name="stat_download_done_title">下载结束</string>

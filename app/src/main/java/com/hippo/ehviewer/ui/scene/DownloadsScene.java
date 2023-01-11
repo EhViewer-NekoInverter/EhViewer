@@ -110,6 +110,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import rikka.core.res.ResourcesKt;
 
@@ -123,6 +125,8 @@ public class DownloadsScene extends ToolbarScene
     public static final String ACTION_CLEAR_DOWNLOAD_SERVICE = "clear_download_service";
     private static final String TAG = DownloadsScene.class.getSimpleName();
     private static final String KEY_LABEL = "label";
+    private static final Pattern PATTERN_AUTHOR = Pattern.compile("^(?:\\([^\\[\\]\\(\\)]+\\))?\\s*\\[([^\\[\\]]+)\\]");
+    private static final Pattern PATTERN_NAME = Pattern.compile("^(?:\\([^\\[\\]\\(\\)]+\\))?\\s*(?:\\[[^\\[\\]]+\\])?\\s*(.+)");
     /*---------------
      Whole life cycle
      ---------------*/
@@ -176,6 +180,22 @@ public class DownloadsScene extends ToolbarScene
                 return null;
             }
         }.executeOnExecutor(IoThreadPoolExecutor.getInstance(), files);
+    }
+
+    private static String getAuthor(String title) {
+        Matcher matcher = PATTERN_AUTHOR.matcher(title);
+        if (matcher.find()) {
+            return matcher.group(1).trim();
+        }
+        return "";
+    }
+
+    private static String getName(String title) {
+        Matcher matcher = PATTERN_NAME.matcher(title);
+        if (matcher.find()) {
+            return matcher.group(1).trim();
+        }
+        return title;
     }
 
     @Override
@@ -307,8 +327,10 @@ public class DownloadsScene extends ToolbarScene
                 public int compare(DownloadInfo o1, DownloadInfo o2) {
                     return switch (mSort) {
                         case 0 -> Long.valueOf(o2.time).compareTo(Long.valueOf(o1.time));
-                        case 2 -> EhUtils.getSuitableTitle(o1).compareTo(EhUtils.getSuitableTitle(o2));
-                        case 3 -> Integer.valueOf(o1.category).compareTo(Integer.valueOf(o2.category));
+                        case 2 -> EhUtils.getSuitableTitle(o1).compareToIgnoreCase(EhUtils.getSuitableTitle(o2));
+                        case 3 -> getAuthor(EhUtils.getSuitableTitle(o1)).compareToIgnoreCase(getAuthor(EhUtils.getSuitableTitle(o2)));
+                        case 4 -> getName(EhUtils.getSuitableTitle(o1)).compareToIgnoreCase(getName(EhUtils.getSuitableTitle(o2)));
+                        case 5 -> Integer.valueOf(o1.category).compareTo(Integer.valueOf(o2.category));
                         default -> 0;
                     };
                 }
@@ -545,9 +567,7 @@ public class DownloadsScene extends ToolbarScene
             new AlertDialog.Builder(requireActivity())
                     .setSingleChoiceItems(R.array.download_state, mType + 1, (dialog, which) -> {
                         dialog.dismiss();
-                        if (which == 7) {
-                            showSortByDialog();
-                        } else if (which == 6) {
+                        if (which == 6) {
                             showFilterTitleDialog();
                         } else {
                             mType = which - 1;
@@ -567,9 +587,6 @@ public class DownloadsScene extends ToolbarScene
             if (null != mDownloadManager) {
                 mDownloadManager.stopAllDownload();
             }
-            return true;
-        } else if (id == R.id.action_open_download_labels) {
-            openDrawer(Gravity.RIGHT);
             return true;
         } else if (id == R.id.action_reset_reading_progress) {
             new AlertDialog.Builder(getContext())
@@ -597,6 +614,9 @@ public class DownloadsScene extends ToolbarScene
             intent.setAction(DownloadService.ACTION_START_RANGE);
             intent.putExtra(DownloadService.KEY_GID_LIST, gidList);
             ContextCompat.startForegroundService(activity, intent);
+            return true;
+        } else if (id == R.id.action_sort) {
+            showSortByDialog();
             return true;
         }
         return false;
@@ -812,8 +832,8 @@ public class DownloadsScene extends ToolbarScene
 
             LongList gidList = null;
             List<DownloadInfo> downloadInfoList = null;
-            boolean collectGid = position == 1 || position == 2 || position == 3; // Start, Stop, Delete
-            boolean collectDownloadInfo = position == 3 || position == 4; // Delete or Move
+            boolean collectGid = position == 2 || position == 3 || position == 4; // Start, Stop, Delete
+            boolean collectDownloadInfo = position == 1 || position == 4 || position == 5; // Pin, Delete, Move
             if (collectGid) {
                 gidList = new LongList();
             }
@@ -835,24 +855,35 @@ public class DownloadsScene extends ToolbarScene
             }
 
             switch (position) {
-                case 1: { // Start
+                // Pin to top
+                case 1 -> {
+                    Collections.reverse(downloadInfoList);
+                    for (DownloadInfo info : downloadInfoList) {
+                        info.time = System.currentTimeMillis();
+                        EhDB.putDownloadInfo(info);
+                    }
+                    recyclerView.outOfCustomChoiceMode();
+                    updateForLabel();
+                }
+                // Start
+                case 2 -> {
                     Intent intent = new Intent(activity, DownloadService.class);
                     intent.setAction(DownloadService.ACTION_START_RANGE);
                     intent.putExtra(DownloadService.KEY_GID_LIST, gidList);
                     ContextCompat.startForegroundService(activity, intent);
                     // Cancel check mode
                     recyclerView.outOfCustomChoiceMode();
-                    break;
                 }
-                case 2: { // Stop
+                // Stop
+                case 3 -> {
                     if (null != mDownloadManager) {
                         mDownloadManager.stopRangeDownload(gidList);
                     }
                     // Cancel check mode
                     recyclerView.outOfCustomChoiceMode();
-                    break;
                 }
-                case 3: { // Delete
+                // Delete
+                case 4 -> {
                     CheckBoxDialogBuilder builder = new CheckBoxDialogBuilder(context,
                             getString(R.string.download_remove_dialog_message_2, gidList.size()),
                             getString(R.string.download_remove_dialog_check_text),
@@ -862,9 +893,9 @@ public class DownloadsScene extends ToolbarScene
                     builder.setTitle(R.string.download_remove_dialog_title)
                             .setPositiveButton(android.R.string.ok, helper)
                             .show();
-                    break;
                 }
-                case 4: {// Move
+                // Move
+                case 5 -> {
                     List<DownloadLabel> labelRawList = EhApplication.getDownloadManager(context).getLabelList();
                     List<String> labelList = new ArrayList<>(labelRawList.size() + 1);
                     labelList.add(getString(R.string.default_download_label_name));
@@ -879,7 +910,6 @@ public class DownloadsScene extends ToolbarScene
                             .setTitle(R.string.download_move_dialog_title)
                             .setItems(labels, helper)
                             .show();
-                    break;
                 }
             }
         }
@@ -964,16 +994,11 @@ public class DownloadsScene extends ToolbarScene
         }
 
         switch (info.state) {
-            case DownloadInfo.STATE_NONE:
-                bindState(holder, info, context.getString(R.string.download_state_none));
-                break;
-            case DownloadInfo.STATE_WAIT:
-                bindState(holder, info, context.getString(R.string.download_state_wait));
-                break;
-            case DownloadInfo.STATE_DOWNLOAD:
-                bindProgress(holder, info);
-                break;
-            case DownloadInfo.STATE_FAILED:
+            case DownloadInfo.STATE_NONE -> bindState(holder, info, context.getString(R.string.download_state_none));
+            case DownloadInfo.STATE_WAIT -> bindState(holder, info, context.getString(R.string.download_state_wait));
+            case DownloadInfo.STATE_DOWNLOAD -> bindProgress(holder, info);
+            case DownloadInfo.STATE_FINISH -> bindState(holder, info, context.getString(R.string.download_state_finish));
+            case DownloadInfo.STATE_FAILED -> {
                 String text;
                 if (info.legacy <= 0) {
                     text = context.getString(R.string.download_state_failed);
@@ -981,10 +1006,7 @@ public class DownloadsScene extends ToolbarScene
                     text = context.getString(R.string.download_state_failed_2, info.legacy);
                 }
                 bindState(holder, info, text);
-                break;
-            case DownloadInfo.STATE_FINISH:
-                bindState(holder, info, context.getString(R.string.download_state_finish));
-                break;
+            }
         }
     }
 

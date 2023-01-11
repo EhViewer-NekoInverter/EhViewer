@@ -41,13 +41,13 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_reset_reading_progress"
-        android:title="@string/download_reset_reading_progress"
+        android:id="@+id/action_sort"
+        android:title="@string/download_sort_by"
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_open_download_labels"
-        android:title="@string/download_labels"
+        android:id="@+id/action_reset_reading_progress"
+        android:title="@string/download_reset_reading_progress"
         app:showAsAction="never" />
 
 </menu>

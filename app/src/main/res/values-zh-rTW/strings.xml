@@ -285,10 +285,12 @@
     <string name="download_state_finish">大功告成</string>
     <string name="download_filter_title">篩選標題</string>
     <string name="download_sort_by">排序規則</string>
-    <string name="download_sort_default">默認</string>
-    <string name="download_sort_shuffle">隨機</string>
-    <string name="download_sort_title">標題</string>
-    <string name="download_sort_category">分類</string>
+    <string name="download_sort_default">默認排序</string>
+    <string name="download_sort_shuffle">隨機排序</string>
+    <string name="download_sort_title">圖庫標題</string>
+    <string name="download_sort_author">圖庫作者</string>
+    <string name="download_sort_name">圖庫名稱</string>
+    <string name="download_sort_category">圖庫分類</string>
     <string name="stat_509_alert_title">509 警告</string>
     <string name="stat_509_alert_text">圖片流量已用盡。請停止下載，休息一下。</string>
     <string name="stat_download_done_title">下載結束</string>
