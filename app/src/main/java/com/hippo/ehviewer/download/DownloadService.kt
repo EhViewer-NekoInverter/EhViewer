@@ -96,8 +96,8 @@ class DownloadService : Service(), DownloadManager.DownloadListener {
 
     private fun handleIntent(intent: Intent?) {
         var action: String? = null
-        if (intent != null) {
-            action = intent.action
+        intent?.action?.let {
+            action = it
         }
         if (ACTION_START == action) {
             val gi = intent!!.getParcelableExtra<GalleryInfo>(KEY_GALLERY_INFO)
