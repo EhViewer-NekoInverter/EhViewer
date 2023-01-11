@@ -187,6 +187,8 @@
     <string name="rate_successfully">评分成功</string>
     <string name="rate_failed">评分失败</string>
     <string name="no_torrents">没有种子</string>
+    <string name="download_torrent_started">开始下载种子</string>
+    <string name="download_torrent_failure">无法下载种子</string>
     <string name="torrents">种子</string>
     <string name="favorited">已收藏</string>
     <string name="not_favorited">未收藏</string>
@@ -482,8 +484,8 @@
     <string name="settings_download_download_delay_summary">每次下载延时 %s 毫秒</string>
     <string name="settings_download_preload_image">预载图片</string>
     <string name="settings_download_preload_image_summary">向后预载 %s 张图片</string>
-    <string name="settings_download_download_origin_image">阅读或下载原图</string>
-    <string name="settings_download_download_origin_image_summary">%s，这很危险！启用会导致下载配额迅速流失</string>
+    <string name="settings_download_download_origin_image">加载原图</string>
+    <string name="settings_download_download_origin_image_summary">%s，危险！启用会导致下载配额迅速流失</string>
     <string name="settings_download_download_origin_image_never">从不启用</string>
     <string name="settings_download_download_origin_image_force">总是启用</string>
     <string name="settings_download_download_origin_image_only">仅下载时启用</string>

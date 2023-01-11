@@ -232,6 +232,8 @@
     <string name="rate_successfully">Rate successfully</string>
     <string name="rate_failed">Rate failed</string>
     <string name="no_torrents">No torrents</string>
+    <string name="download_torrent_started">Torrent download started</string>
+    <string name="download_torrent_failure">Failed to download torrent</string>
     <string name="torrents">Torrents</string>
     <string name="favorited">Favorited</string>
     <string name="not_favorited">Not favorited</string>
@@ -528,7 +530,7 @@
     <string name="settings_download_download_delay_summary">Delay %s ms per download</string>
     <string name="settings_download_preload_image">Preload image</string>
     <string name="settings_download_preload_image_summary">Preload next %s image</string>
-    <string name="settings_download_download_origin_image">Read or download original image</string>
+    <string name="settings_download_download_origin_image">Load original image</string>
     <string name="settings_download_download_origin_image_summary">%s, it\'s dangerous! You may get 509 error</string>
     <string name="settings_download_download_origin_image_never">Never</string>
     <string name="settings_download_download_origin_image_force">Always</string>
