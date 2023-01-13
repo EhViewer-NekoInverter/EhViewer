@@ -58,13 +58,13 @@ public final class CommonOperations {
             client.execute(request);
     }
 
-    private static void doAddToFavorites(Activity activity, GalleryInfo galleryInfo,
-                                         int slot, EhClient.Callback<Void> listener) {
+    public static void doAddToFavorites(final Activity activity, final GalleryInfo galleryInfo,
+                                        final int slot, final EhClient.Callback<Void> listener, final boolean edit) {
         if (slot == -1) {
             EhDB.putLocalFavorites(galleryInfo);
             listener.onSuccess(null);
         } else if (slot >= 0 && slot <= 9) {
-            if (Settings.getNeverAddFavNotes()) {
+            if (!edit && Settings.getNeverAddFavNotes()) {
                 doAddToFavorites(activity, galleryInfo, slot, "", listener);
             } else {
                 final EditTextCheckBoxDialogBuilder builder = new EditTextCheckBoxDialogBuilder(activity, null,
@@ -78,6 +78,9 @@ public final class CommonOperations {
                     Settings.putNeverAddFavNotes(builder.isChecked());
                     dialog.dismiss();
                     doAddToFavorites(activity, galleryInfo, slot, text, listener);
+                });
+                dialog.setOnCancelListener(v -> {
+                    listener.onCancel();
                 });
             }
         } else {
@@ -99,16 +102,16 @@ public final class CommonOperations {
         System.arraycopy(favCat, 0, items, 1, 10);
         if (!select && slot >= -1 && slot <= 9) {
             String newFavoriteName = slot >= 0 ? items[slot + 1] : null;
-            doAddToFavorites(activity, galleryInfo, slot, new DelegateFavoriteCallback(listener, galleryInfo, newFavoriteName, slot));
+            doAddToFavorites(activity, galleryInfo, slot, new DelegateFavoriteCallback(listener, galleryInfo, newFavoriteName, slot), false);
         } else {
             new ListCheckBoxDialogBuilder(activity, items,
                     (builder, dialog, position) -> {
                         int slot1 = position - 1;
                         String newFavoriteName = (slot1 >= 0 && slot1 <= 9) ? items[slot1 + 1] : null;
-                        doAddToFavorites(activity, galleryInfo, slot1, new DelegateFavoriteCallback(listener, galleryInfo, newFavoriteName, slot1));
+                        doAddToFavorites(activity, galleryInfo, slot1, new DelegateFavoriteCallback(listener, galleryInfo, newFavoriteName, slot1), false);
                         if (builder.isChecked()) {
                             Settings.putDefaultFavSlot(slot1);
-                        } else {
+                        } else if (!select) {
                             Settings.putDefaultFavSlot(Settings.INVALID_DEFAULT_FAV_SLOT);
                         }
                     }, activity.getString(R.string.remember_favorite_collection), false)

@@ -1525,15 +1525,21 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
             return true;
         } else if (mHeartGroup == v) {
             if (mGalleryDetail != null && !mModifyingFavorites) {
-                boolean remove = false;
-                if (EhDB.containLocalFavorites(mGalleryDetail.gid) || mGalleryDetail.isFavorited) {
+                boolean removeOrEdit = false;
+                if (EhDB.containLocalFavorites(mGalleryDetail.gid)) {
                     mModifyingFavorites = true;
                     CommonOperations.removeFromFavorites(activity, mGalleryDetail,
                             new ModifyFavoritesListener(activity,
                                     activity.getStageId(), getTag(), true));
-                    remove = true;
+                    removeOrEdit = true;
+                } else if (mGalleryDetail.isFavorited) {
+                    mModifyingFavorites = true;
+                    CommonOperations.doAddToFavorites(activity, mGalleryDetail, mGalleryDetail.favoriteSlot,
+                            new ModifyFavoritesListener(activity,
+                                    activity.getStageId(), getTag(), false), true);
+                    removeOrEdit = true;
                 }
-                if (!remove) {
+                if (!removeOrEdit) {
                     mModifyingFavorites = true;
                     CommonOperations.addToFavorites(activity, mGalleryDetail,
                             new ModifyFavoritesListener(activity,

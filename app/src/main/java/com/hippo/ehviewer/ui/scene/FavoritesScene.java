@@ -455,7 +455,9 @@ public class FavoritesScene extends BaseScene implements
                         .setTitle(R.string.default_favorites_collection)
                         .setItems(items, (dialog, which) -> {
                             Settings.putDefaultFavSlot(which - 2);
-                            Settings.putNeverAddFavNotes(false);
+                            if (which == 0) {
+                                Settings.putNeverAddFavNotes(false);
+                            }
                         }).show();
                 return true;
             }
