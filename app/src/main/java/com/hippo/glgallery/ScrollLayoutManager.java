@@ -546,7 +546,7 @@ class ScrollLayoutManager extends GalleryView.LayoutManager {
         } else if (startScale < MAX_SCALE - SCALE_ERROR) {
             endScale = MAX_SCALE;
         } else {
-            endScale = MIN_SCALE;
+            endScale = RESERVATION;
         }
 
         mSmoothScaler.startSmoothScaler(x, y, startScale, endScale, 300);
