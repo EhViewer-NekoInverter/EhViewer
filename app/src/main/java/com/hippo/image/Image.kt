@@ -40,7 +40,7 @@ import kotlin.math.min
 
 class Image private constructor(
     source: Source?, drawable: Drawable? = null,
-    val hardware: Boolean = false,
+    val hardware: Boolean = true,
     val release: () -> Unit? = {}
 ) {
     internal var mObtainedDrawable: Drawable?
@@ -62,7 +62,8 @@ class Image private constructor(
                             info.size.height / (2 * screenHeight)
                         ).coerceAtLeast(1)
                     )
-                }
+                    // Don't
+                } // Should we lazy decode it?
         }
         if (mObtainedDrawable == null) {
             mObtainedDrawable = drawable!!
@@ -78,7 +79,7 @@ class Image private constructor(
 
     @Synchronized
     fun recycle() {
-        mObtainedDrawable ?: return
+        if (mObtainedDrawable == null) return
         if (mObtainedDrawable is AnimatedImageDrawable) {
             (mObtainedDrawable as AnimatedImageDrawable?)?.stop()
         }
@@ -155,8 +156,7 @@ class Image private constructor(
     val delay: Int
         get() {
             if (animated)
-                // How to get frame delay?
-                return 100
+                return 10
             return 0
         }
 
