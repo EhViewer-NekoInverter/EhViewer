@@ -32,10 +32,15 @@ import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.drawable.toDrawable
+import coil.decode.FrameDelayRewritingSource
+import com.hippo.Native
+import okio.Buffer
+import okio.BufferedSource
+import okio.buffer
+import okio.source
 import java.io.FileInputStream
 import java.nio.ByteBuffer
 import java.nio.channels.FileChannel
-import kotlin.jvm.Throws
 import kotlin.math.min
 
 class Image private constructor(
@@ -178,27 +183,48 @@ class Image private constructor(
         @Throws(DecodeException::class)
         @JvmStatic
         fun decode(stream: FileInputStream, hardware: Boolean = false): Image {
-            val src = ImageDecoder.createSource(
-                stream.channel.map(
-                    FileChannel.MapMode.READ_ONLY, 0,
-                    stream.available().toLong()
-                )
+            val buffer = stream.channel.map(
+                FileChannel.MapMode.READ_ONLY, 0,
+                stream.available().toLong()
             )
+            val source = if (checkIsGif(buffer)) {
+                rewriteSource(stream.source().buffer())
+            } else {
+                buffer
+            }
+            val src = ImageDecoder.createSource(source)
             return Image(src, hardware = hardware)
         }
 
         @Throws(DecodeException::class)
         @JvmStatic
         fun decode(buffer: ByteBuffer, hardware: Boolean = false, release: () -> Unit? = {}): Image {
-            val src = ImageDecoder.createSource(buffer)
-            return Image(src, hardware = hardware) {
-                release()
+            return if (checkIsGif(buffer)) {
+                val rewritten = rewriteSource(Buffer().apply {
+                    write(buffer)
+                    release()
+                })
+                Image(ImageDecoder.createSource(rewritten), hardware = hardware)
+            } else {
+                Image(ImageDecoder.createSource(buffer), hardware = hardware) {
+                    release()
+                }
             }
         }
 
         @JvmStatic
         fun create(bitmap: Bitmap): Image {
             return Image(null, bitmap.toDrawable(Resources.getSystem()), false)
+        }
+
+        private fun rewriteSource(source: BufferedSource): ByteBuffer {
+            val bufferedSource = FrameDelayRewritingSource(source).buffer()
+            return ByteBuffer.wrap(bufferedSource.use { it.readByteArray() })
+        }
+
+        private fun checkIsGif(buffer: ByteBuffer): Boolean {
+            check(buffer.isDirect)
+            return Native.isGif(buffer)
         }
 
         @JvmStatic
