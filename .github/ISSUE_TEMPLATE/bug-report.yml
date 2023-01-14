@@ -82,8 +82,8 @@ body:
     attributes:
       label: EhViewer CI 版本 / EhViewer CI Version
       description: |
-        请确保您已经使用 [最新 CI 版本](https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml) 测试，请填入您使用的 CI 版本网址
-        Please make sure you have tested with the [latest CI version](https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml), simply drop GitHub Action CI download page url here
+        请确保您已经使用 [最新 CI 版本](https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml?query=branch%3Aeh-1.7.28.x) 测试，请填入您使用的 CI 版本网址
+        Please make sure you have tested with the [latest CI version](https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml?query=branch%3Aeh-1.7.28.x), simply drop GitHub Action CI download page url here
       placeholder: https://github.com/EhViewer-NekoInverter/EhViewer/actions/runs/XXXXXXXXXX
     validations:
       required: true
@@ -146,5 +146,5 @@ body:
       - label: 您确保这个 Issue 只提及一个问题。如果您有多个问题报告，烦请发起多个 Issue / Ensure there is only one bug report in this issue. Please make mutiply issue for mutiply bugs
         required: true
 
-      - label: 您确保已使用 [最新 CI 版本](https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml) 测试，并且该问题在最新 CI 版本中并未解决 / This bug have not solved in [latest CI version](https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml)
+      - label: 您确保已使用 [最新 CI 版本](https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml?query=branch%3Aeh-1.7.28.x) 测试，并且该问题在最新 CI 版本中并未解决 / This bug have not solved in [latest CI version](https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml?query=branch%3Aeh-1.7.28.x)
         required: true
