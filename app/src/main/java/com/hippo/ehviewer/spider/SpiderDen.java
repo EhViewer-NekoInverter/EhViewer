@@ -165,7 +165,7 @@ public final class SpiderDen {
         }
     }
 
-    private boolean copyFromCacheToDownloadDir(int index) {
+    private boolean copyFromCacheToDownloadDir(int index, boolean skip) {
         if (sCache == null) {
             return false;
         }
@@ -198,6 +198,10 @@ public final class SpiderDen {
             }
             // Fix extension
             extension = fixExtension(extension);
+            // Don't copy from cache if `download original image` enabled, ignore gif
+            if (skip && !extension.equals(GalleryProvider2.SUPPORT_IMAGE_EXTENSIONS[3])) {
+                return false;
+            }
             // Copy from cache to download dir
             UniFile file = dir.createFile(generateImageFilename(index, extension));
             if (file == null) {
@@ -219,7 +223,7 @@ public final class SpiderDen {
         if (mMode == SpiderQueen.MODE_READ) {
             return containInCache(index) || containInDownloadDir(index);
         } else if (mMode == SpiderQueen.MODE_DOWNLOAD) {
-            return containInDownloadDir(index) || (Settings.getCopyOriginImage() ? copyFromCacheToDownloadDir(index) : false);
+            return containInDownloadDir(index) || copyFromCacheToDownloadDir(index, Settings.getSkipCopyImage());
         } else {
             return false;
         }
@@ -323,7 +327,7 @@ public final class SpiderDen {
             UniFile file = findImageFile(dir, index);
             if (file != null) {
                 return new UniFileInputStreamPipe(file);
-            } else if (!copyFromCacheToDownloadDir(index)) {
+            } else if (!copyFromCacheToDownloadDir(index, false)) {
                 return null;
             }
         }

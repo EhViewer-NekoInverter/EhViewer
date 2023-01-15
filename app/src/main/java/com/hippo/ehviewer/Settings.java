@@ -672,8 +672,8 @@ public class Settings {
         };
     }
 
-    public static boolean getCopyOriginImage() {
-        return getIntFromStr(KEY_DOWNLOAD_ORIGIN_IMAGE, DEFAULT_DOWNLOAD_ORIGIN_IMAGE) != 2;
+    public static boolean getSkipCopyImage() {
+        return getIntFromStr(KEY_DOWNLOAD_ORIGIN_IMAGE, DEFAULT_DOWNLOAD_ORIGIN_IMAGE) == 2;
     }
 
     public static String getSecurity() {
