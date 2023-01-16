@@ -252,7 +252,7 @@ public abstract class GalleryProvider {
 
         @Override
         protected int sizeOf(Integer key, ImageWrapper value) {
-            return value.getWidth() * value.getHeight() * 4;
+            return value.getWidth() * value.getHeight() * (value.getAnimated() ? 15 : 4);
         }
 
         @Override
