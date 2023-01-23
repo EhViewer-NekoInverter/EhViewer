@@ -21,7 +21,7 @@
 
         android:id="@+id/action_add"
         android:icon="@drawable/v_plus_dark_x24"
-        android:title="@string/settings"
+        android:title="@string/add"
         app:showAsAction="always" />
 
     <item

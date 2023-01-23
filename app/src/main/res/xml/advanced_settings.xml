@@ -100,7 +100,7 @@
 
     <Preference
         android:key="open_by_default"
-        android:title="@string/open_by_default"
+        android:title="@string/settings_advanced_open_by_default"
         app:iconSpaceReserved="false" />
 
 </PreferenceScreen>

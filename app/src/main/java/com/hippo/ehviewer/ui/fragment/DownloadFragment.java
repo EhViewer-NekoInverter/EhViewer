@@ -100,8 +100,8 @@ public class DownloadFragment extends BasePreferenceFragment {
                 new AlertDialog.Builder(requireContext())
                         .setTitle(R.string.settings_download_download_location)
                         .setMessage(file.getUri().toString())
-                        .setPositiveButton(R.string.pick_new_download_location, (dialogInterface, i) -> openDirPickerL())
-                        .setNeutralButton(R.string.reset_download_location, (dialogInterface, i) -> {
+                        .setPositiveButton(R.string.settings_download_pick_new_location, (dialogInterface, i) -> openDirPickerL())
+                        .setNeutralButton(R.string.settings_download_reset_location, (dialogInterface, i) -> {
                             UniFile uniFile = UniFile.fromFile(AppConfig.getDefaultDownloadDir());
                             if (uniFile != null) {
                                 Settings.putDownloadLocation(uniFile);

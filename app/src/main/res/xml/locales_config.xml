@@ -18,12 +18,7 @@
 
 <locale-config xmlns:android="http://schemas.android.com/apk/res/android">
     <locale android:name="en" />
-    <locale android:name="de" />
-    <locale android:name="es" />
-    <locale android:name="fr" />
     <locale android:name="ja" />
-    <locale android:name="ko" />
-    <locale android:name="th" />
     <locale android:name="zh-CN" />
     <locale android:name="zh-HK" />
     <locale android:name="zh-TW" />

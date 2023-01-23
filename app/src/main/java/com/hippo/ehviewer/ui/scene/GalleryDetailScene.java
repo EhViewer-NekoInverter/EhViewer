@@ -1107,7 +1107,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
                     return false;
                 }
                 if (mGalleryDetail.apiUid < 0) {
-                    showTip(R.string.sign_in_first, LENGTH_LONG);
+                    showTip(R.string.error_please_login_first, LENGTH_LONG);
                     return false;
                 }
                 EditTextDialogBuilder builder = new EditTextDialogBuilder(context, "", getString(R.string.action_add_tag_tip));
@@ -1316,7 +1316,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
                 return;
             }
             if (mGalleryDetail.apiUid < 0) {
-                showTip(R.string.sign_in_first, LENGTH_LONG);
+                showTip(R.string.error_please_login_first, LENGTH_LONG);
                 return;
             }
             ArchiveListDialogHelper helper = new ArchiveListDialogHelper();
@@ -1331,7 +1331,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
                 return;
             }
             if (mGalleryDetail.apiUid < 0) {
-                showTip(R.string.sign_in_first, LENGTH_LONG);
+                showTip(R.string.error_please_login_first, LENGTH_LONG);
                 return;
             }
             RateDialogHelper helper = new RateDialogHelper();

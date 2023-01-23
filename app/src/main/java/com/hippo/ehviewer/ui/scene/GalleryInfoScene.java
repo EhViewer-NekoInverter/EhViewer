@@ -122,6 +122,8 @@ public final class GalleryInfoScene extends ToolbarScene {
         mValues.add(Integer.toString(gd.favoriteCount));
         mKeys.add(getString(R.string.key_favorited));
         mValues.add(Boolean.toString(gd.isFavorited));
+        mKeys.add(getString(R.string.key_favorite_name));
+        mValues.add(gd.favoriteName);
         mKeys.add(getString(R.string.key_rating_count));
         mValues.add(Integer.toString(gd.ratingCount));
         mKeys.add(getString(R.string.key_rating));
@@ -130,8 +132,6 @@ public final class GalleryInfoScene extends ToolbarScene {
         mValues.add(Integer.toString(gd.torrentCount));
         mKeys.add(getString(R.string.key_torrent_url));
         mValues.add(gd.torrentUrl);
-        mKeys.add(getString(R.string.favorite_name));
-        mValues.add(gd.favoriteName);
     }
 
     protected void onInit() {

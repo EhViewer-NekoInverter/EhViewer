@@ -30,6 +30,13 @@
         app:iconSpaceReserved="false" />
 
     <com.hippo.preference.UrlPreference
+        android:key="issues"
+        android:title="@string/settings_about_issues"
+        app:enableCopying="true"
+        app:iconSpaceReserved="false"
+        app:url="https://github.com/EhViewer-NekoInverter/EhViewer/issues/18" />
+
+    <com.hippo.preference.UrlPreference
         android:key="latest_release"
         android:title="@string/settings_about_latest_release"
         app:enableCopying="true"
@@ -42,13 +49,6 @@
         app:enableCopying="true"
         app:iconSpaceReserved="false"
         app:url="https://github.com/EhViewer-NekoInverter/EhViewer" />
-
-    <com.hippo.preference.UrlPreference
-        android:key="issues"
-        android:title="@string/settings_about_issues"
-        app:enableCopying="true"
-        app:iconSpaceReserved="false"
-        app:url="https://github.com/EhViewer-NekoInverter/EhViewer/issues/18" />
 
     <com.hippo.ehviewer.preference.VersionPreference
         android:key="version"

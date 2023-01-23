@@ -40,14 +40,14 @@
 
     <com.hippo.ehviewer.preference.SignInRequiredPreference
         android:key="com.hippo.ehviewer.ui.fragment.UConfigFragment"
-        android:summary="@string/settings_u_config_summary"
-        android:title="@string/settings_u_config"
+        android:summary="@string/settings_eh_u_config_summary"
+        android:title="@string/settings_eh_u_config"
         app:iconSpaceReserved="false" />
 
     <com.hippo.ehviewer.preference.SignInRequiredPreference
         android:key="com.hippo.ehviewer.ui.fragment.MyTagsFragment"
-        android:summary="@string/settings_my_tags_summary"
-        android:title="@string/settings_my_tags"
+        android:summary="@string/settings_eh_my_tags_summary"
+        android:title="@string/settings_eh_my_tags"
         app:iconSpaceReserved="false" />
 
     <rikka.preference.SimpleMenuPreference
@@ -61,7 +61,7 @@
 
     <SwitchPreferenceCompat
         android:key="black_dark_theme"
-        android:title="@string/black_dark_theme"
+        android:title="@string/settings_eh_black_dark_theme"
         app:iconSpaceReserved="false" />
 
     <rikka.preference.SimpleMenuPreference

@@ -104,7 +104,7 @@ public class EhEngine {
             throw new EhException("Sad Panda");
         }
 
-        // Check sad panda(without panda)
+        // Check sad panda (without panda)
         if (headers != null && "text/html; charset=UTF-8".equals(headers.get("Content-Type")) &&
                 "0".equals(headers.get("Content-Length"))) {
             throw new EhException("Sad Panda\n(without panda)");

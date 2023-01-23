@@ -460,7 +460,7 @@ public class EhDB {
                     outputStream.write(buff, 0, read);
                 }
             } else {
-                return context.getString(R.string.cant_read_the_file);
+                return context.getString(R.string.settings_advanced_import_data_cant_read);
             }
             inputStream.close();
             outputStream.close();
@@ -474,7 +474,7 @@ public class EhDB {
                 upgradeDB(oldDB, oldVersion);
                 oldDB.setVersion(newVersion);
             } else if (oldVersion > newVersion) {
-                return context.getString(R.string.db_version_too_high);
+                return context.getString(R.string.settings_advanced_import_data_version_too_high);
             }
 
             // Crete temp room database from cache file
@@ -568,7 +568,7 @@ public class EhDB {
         } catch (Throwable e) {
             ExceptionUtils.throwIfFatal(e);
             // Ignore
-            return context.getString(R.string.cant_read_the_file);
+            return context.getString(R.string.settings_advanced_import_data_cant_read);
         }
     }
 }
