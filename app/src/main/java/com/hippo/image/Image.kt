@@ -84,12 +84,8 @@ class Image private constructor(
     @Synchronized
     fun recycle() {
         mObtainedDrawable ?: return
-        if (mObtainedDrawable is AnimatedImageDrawable) {
-            (mObtainedDrawable as AnimatedImageDrawable?)?.stop()
-        }
-        if (mObtainedDrawable is BitmapDrawable) {
-            (mObtainedDrawable as BitmapDrawable?)?.bitmap?.recycle()
-        }
+        (mObtainedDrawable as? AnimatedImageDrawable)?.stop()
+        (mObtainedDrawable as? BitmapDrawable)?.bitmap?.recycle()
         mObtainedDrawable?.callback = null
         mObtainedDrawable = null
         mCanvas = null
@@ -191,8 +187,7 @@ class Image private constructor(
             } else {
                 buffer
             }
-            val src = ImageDecoder.createSource(source)
-            return Image(src, hardware = hardware)
+            return Image(ImageDecoder.createSource(source), hardware = hardware)
         }
 
         @Throws(DecodeException::class)
