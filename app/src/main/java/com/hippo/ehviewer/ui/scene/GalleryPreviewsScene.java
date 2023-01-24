@@ -89,6 +89,8 @@ public class GalleryPreviewsScene extends ToolbarScene {
 
     private boolean mHasFirstRefresh = false;
 
+    private int mScrollTo;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,6 +112,12 @@ public class GalleryPreviewsScene extends ToolbarScene {
         }
 
         mGalleryInfo = args.getParcelable(KEY_GALLERY_INFO);
+
+        GalleryDetail gd = (GalleryDetail) mGalleryInfo;
+        if (gd.previewSet != null && gd.previewPages > 1) {
+            int previewNum = Settings.getPreviewNum();
+            mScrollTo = previewNum < gd.previewSet.size() ? previewNum : -1;
+        }
     }
 
     private void onRestore(@NonNull Bundle savedInstanceState) {
@@ -160,7 +168,12 @@ public class GalleryPreviewsScene extends ToolbarScene {
         // Only refresh for the first time
         if (!mHasFirstRefresh) {
             mHasFirstRefresh = true;
-            mHelper.firstRefresh();
+            if (mScrollTo == -1) {
+                mHelper.goTo(1);
+                mScrollTo = 0;
+            } else {
+                mHelper.firstRefresh();
+            }
         }
 
         return mContentLayout;
@@ -252,6 +265,11 @@ public class GalleryPreviewsScene extends ToolbarScene {
             }
 
             mHelper.onGetPageData(taskId, result.second, 0, null, null, list);
+
+            if (mScrollTo != 0 && mScrollTo < size) {
+                mHelper.scrollTo(mScrollTo);
+                mScrollTo = 0;
+            }
         }
     }
 

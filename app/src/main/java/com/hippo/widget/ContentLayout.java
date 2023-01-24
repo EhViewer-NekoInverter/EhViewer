@@ -761,7 +761,7 @@ public class ContentLayout extends FrameLayout {
          * @throws IndexOutOfBoundsException
          */
         public void goTo(int page) throws IndexOutOfBoundsException {
-            if (page < 0 || page >= mPages) {
+            if (page < 0 || (page >= mPages && mPages != 0)) {
                 throw new IndexOutOfBoundsException("Page count is " + mPages + ", page is " + page);
             } else if (page >= mStartPage && page < mEndPage) {
                 cancelCurrentTask();
@@ -804,6 +804,13 @@ public class ContentLayout extends FrameLayout {
             mCurrentTaskType = TYPE_SOMEWHERE;
             mCurrentTaskPage = 0;
             getPageData(mCurrentTaskId, mCurrentTaskType, mCurrentTaskPage, index, isNext);
+        }
+
+        public void scrollTo(int position) {
+            cancelCurrentTask();
+            mRecyclerView.stopScroll();
+            LayoutManagerUtils.scrollToPositionWithOffset(mRecyclerView.getLayoutManager(), position, 0);
+            onScrollToPosition(position);
         }
 
         protected Parcelable saveInstanceState(Parcelable superState) {
