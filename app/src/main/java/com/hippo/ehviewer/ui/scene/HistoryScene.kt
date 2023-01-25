@@ -481,6 +481,10 @@ class HistoryScene : ToolbarScene() {
             return makeMovementFlags(0, ItemTouchHelper.LEFT)
         }
 
+        override fun getSwipeThreshold(viewHolder: RecyclerView.ViewHolder): Float {
+            return 0.3f
+        }
+
         override fun onMove(
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder,
