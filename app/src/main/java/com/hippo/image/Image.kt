@@ -45,7 +45,7 @@ import kotlin.math.min
 
 class Image private constructor(
     source: Source?, drawable: Drawable? = null,
-    val hardware: Boolean = false,
+    val hardware: Boolean = true,
     val release: () -> Unit? = {}
 ) {
     internal var mObtainedDrawable: Drawable?
@@ -177,7 +177,7 @@ class Image private constructor(
 
         @Throws(DecodeException::class)
         @JvmStatic
-        fun decode(stream: FileInputStream, hardware: Boolean = false): Image {
+        fun decode(stream: FileInputStream, hardware: Boolean): Image {
             val buffer = stream.channel.map(
                 FileChannel.MapMode.READ_ONLY, 0,
                 stream.available().toLong()
@@ -192,7 +192,7 @@ class Image private constructor(
 
         @Throws(DecodeException::class)
         @JvmStatic
-        fun decode(buffer: ByteBuffer, hardware: Boolean = false, release: () -> Unit? = {}): Image {
+        fun decode(buffer: ByteBuffer, hardware: Boolean, release: () -> Unit? = {}): Image {
             return if (checkIsGif(buffer)) {
                 val rewritten = rewriteSource(Buffer().apply {
                     write(buffer)

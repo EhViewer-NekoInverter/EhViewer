@@ -59,8 +59,8 @@ class ImageBitmap private constructor(image: Image) {
     companion object {
         @Throws(ImageDecoder.DecodeException::class)
         @JvmStatic
-        fun decode(stream: FileInputStream): ImageBitmap {
-            val image = Image.decode(stream)
+        fun decode(stream: FileInputStream, hardware: Boolean): ImageBitmap {
+            val image = Image.decode(stream, hardware)
             return ImageBitmap(image)
         }
     }

@@ -51,6 +51,7 @@ public final class ConacoTask<V> {
     private final boolean mUseMemoryCache;
     private final boolean mUseDiskCache;
     private final boolean mUseNetwork;
+    private final boolean mHardware;
     private final ValueHelper<V> mHelper;
     private final ValueCache<V> mCache;
     private final OkHttpClient mOkHttpClient;
@@ -72,6 +73,7 @@ public final class ConacoTask<V> {
         mUseMemoryCache = builder.mUseMemoryCache;
         mUseDiskCache = builder.mUseDiskCache;
         mUseNetwork = builder.mUseNetwork;
+        mHardware = builder.mHardware;
         mHelper = builder.mHelper;
         mCache = builder.mCache;
         mOkHttpClient = builder.mOkHttpClient;
@@ -180,6 +182,7 @@ public final class ConacoTask<V> {
         private boolean mUseMemoryCache = true;
         private boolean mUseDiskCache = true;
         private boolean mUseNetwork = true;
+        private boolean mHardware = false;
         private ValueHelper<T> mHelper;
         private ValueCache<T> mCache;
         private OkHttpClient mOkHttpClient;
@@ -246,6 +249,15 @@ public final class ConacoTask<V> {
             return this;
         }
 
+        boolean isHardware() {
+            return mHardware;
+        }
+
+        public Builder<T> setHardware(boolean hardware) {
+            mHardware = hardware;
+            return this;
+        }
+
         ValueHelper<T> getHelper() {
             return mHelper;
         }
@@ -307,7 +319,7 @@ public final class ConacoTask<V> {
                 // Then check disk cache
                 if (mKey != null) {
                     if (value == null && mUseDiskCache) {
-                        value = mCache.getFromDisk(mKey);
+                        value = mCache.getFromDisk(mKey, mHardware);
                     }
 
                     if (value != null && mUseMemoryCache && mHelper.useMemoryCache(mKey, value)) {
@@ -419,7 +431,7 @@ public final class ConacoTask<V> {
                 if (mKey != null) {
                     if (putToDiskCache(is, body.contentLength())) {
                         // Get object from disk cache
-                        value = mCache.getFromDisk(mKey);
+                        value = mCache.getFromDisk(mKey, mHardware);
                         if (value == null) {
                             // Maybe bad download, remove it from disk cache
                             mCache.removeFromDisk(mKey);

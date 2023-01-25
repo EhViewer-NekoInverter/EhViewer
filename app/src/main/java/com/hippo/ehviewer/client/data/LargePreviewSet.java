@@ -89,7 +89,7 @@ public class LargePreviewSet extends PreviewSet {
     public void load(LoadImageView view, long gid, int index) {
         view.resetClip();
         view.load(EhCacheKeyFactory.getLargePreviewKey(gid, mPositionList.get(index)),
-                mImageUrlList.get(index));
+                mImageUrlList.get(index), true, true);
     }
 
     @Override

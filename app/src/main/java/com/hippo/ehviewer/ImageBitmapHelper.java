@@ -32,11 +32,11 @@ public class ImageBitmapHelper implements ValueHelper<ImageBitmap> {
 
     @Nullable
     @Override
-    public ImageBitmap decode(@NonNull InputStreamPipe isPipe) {
+    public ImageBitmap decode(@NonNull InputStreamPipe isPipe, boolean hardware) {
         try {
             isPipe.obtain();
             FileInputStream is = (FileInputStream) isPipe.open();
-            return ImageBitmap.decode(is);
+            return ImageBitmap.decode(is, hardware);
         } catch (OutOfMemoryError | IOException e) {
             return null;
         } finally {

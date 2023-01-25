@@ -56,6 +56,7 @@ public class LoadImageView extends FixedAspectImageView implements Unikery<Image
     private String mKey;
     private String mUrl;
     private boolean mUseNetwork;
+    private boolean mHardware;
     private int mOffsetX = Integer.MIN_VALUE;
     private int mOffsetY = Integer.MIN_VALUE;
     private int mClipWidth = Integer.MIN_VALUE;
@@ -108,7 +109,7 @@ public class LoadImageView extends FixedAspectImageView implements Unikery<Image
             if (mFailed) {
                 onFailure();
             } else if (mConaco.isLoading(this)) {
-                load(mKey, mUrl, mUseNetwork);
+                load(mKey, mUrl, mUseNetwork, mHardware);
             }
         }
     }
@@ -202,10 +203,14 @@ public class LoadImageView extends FixedAspectImageView implements Unikery<Image
     }
 
     public void load(String key, String url) {
-        load(key, url, true);
+        load(key, url, true, false);
     }
 
     public void load(String key, String url, boolean useNetwork) {
+        load(key, url, useNetwork, false);
+    }
+
+    public void load(String key, String url, boolean useNetwork, boolean hardware) {
         if (url == null || (key == null)) {
             return;
         }
@@ -216,12 +221,14 @@ public class LoadImageView extends FixedAspectImageView implements Unikery<Image
         mKey = key;
         mUrl = url;
         mUseNetwork = useNetwork;
+        mHardware = hardware;
 
         ConacoTask.Builder<ImageBitmap> builder = new ConacoTask.Builder<ImageBitmap>()
                 .setUnikery(this)
                 .setKey(key)
                 .setUrl(url)
-                .setUseNetwork(useNetwork);
+                .setUseNetwork(useNetwork)
+                .setHardware(hardware);
         mConaco.load(builder);
     }
 
@@ -349,12 +356,12 @@ public class LoadImageView extends FixedAspectImageView implements Unikery<Image
 
     @Override
     public void onClick(@NonNull View v) {
-        load(mKey, mUrl, true);
+        load(mKey, mUrl, true, mHardware);
     }
 
     @Override
     public boolean onLongClick(@NonNull View v) {
-        load(mKey, mUrl, true);
+        load(mKey, mUrl, true, mHardware);
         return true;
     }
 

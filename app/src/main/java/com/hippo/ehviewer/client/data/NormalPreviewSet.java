@@ -113,7 +113,7 @@ public class NormalPreviewSet extends PreviewSet {
     public void load(LoadImageView view, long gid, int index) {
         view.setClip(mOffsetXList.get(index), mOffsetYList.get(index),
                 mClipWidthList.get(index), mClipHeightList.get(index));
-        view.load(mImageKeyList.get(index), mImageUrlList.get(index));
+        view.load(mImageKeyList.get(index), mImageUrlList.get(index), true, true);
     }
 
     @Override

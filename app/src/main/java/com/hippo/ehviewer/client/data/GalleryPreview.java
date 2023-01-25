@@ -62,7 +62,7 @@ public class GalleryPreview implements Parcelable {
 
     public void load(LoadImageView view) {
         view.setClip(offsetX, offsetY, clipWidth, clipHeight);
-        view.load(imageKey, imageUrl);
+        view.load(imageKey, imageUrl, true, true);
     }
 
     @Override
