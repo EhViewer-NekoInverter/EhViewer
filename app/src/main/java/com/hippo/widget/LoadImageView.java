@@ -108,7 +108,7 @@ public class LoadImageView extends FixedAspectImageView implements Unikery<Image
         if (!mLoadFromDrawable) {
             if (mFailed) {
                 onFailure();
-            } else if (mConaco.isLoading(this)) {
+            } else if (!mConaco.isLoading(this)) {
                 load(mKey, mUrl, mUseNetwork, mHardware);
             }
         }
