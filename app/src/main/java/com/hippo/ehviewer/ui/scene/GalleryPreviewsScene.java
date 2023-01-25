@@ -65,6 +65,7 @@ import java.util.Locale;
 public class GalleryPreviewsScene extends ToolbarScene {
 
     public static final String KEY_GALLERY_INFO = "gallery_info";
+    public static final String KEY_SCROLL_TO = "scroll_to";
     private final static String KEY_HAS_FIRST_REFRESH = "has_first_refresh";
 
     /*---------------
@@ -112,12 +113,7 @@ public class GalleryPreviewsScene extends ToolbarScene {
         }
 
         mGalleryInfo = args.getParcelable(KEY_GALLERY_INFO);
-
-        GalleryDetail gd = (GalleryDetail) mGalleryInfo;
-        if (gd.previewSet != null && gd.previewPages > 1) {
-            int previewNum = Settings.getPreviewNum();
-            mScrollTo = previewNum < gd.previewSet.size() ? previewNum : -1;
-        }
+        mScrollTo = args.getInt(KEY_SCROLL_TO);
     }
 
     private void onRestore(@NonNull Bundle savedInstanceState) {

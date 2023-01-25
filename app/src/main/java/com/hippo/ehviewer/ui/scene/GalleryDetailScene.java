@@ -1362,8 +1362,18 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
                     .setRequestCode(this, REQUEST_CODE_COMMENT_GALLERY));
         } else if (mPreviews == v) {
             if (null != mGalleryDetail) {
+                int scrollTo = 0;
+                if (mGalleryDetail.previewSet != null) {
+                    int previewNum = Settings.getPreviewNum();
+                    if (previewNum < mGalleryDetail.previewSet.size()) {
+                        scrollTo = previewNum;
+                    } else if (mGalleryDetail.previewPages > 1) {
+                        scrollTo = -1;
+                    }
+                }
                 Bundle args = new Bundle();
                 args.putParcelable(GalleryPreviewsScene.KEY_GALLERY_INFO, mGalleryDetail);
+                args.putInt(GalleryPreviewsScene.KEY_SCROLL_TO, scrollTo);
                 startScene(new Announcer(GalleryPreviewsScene.class).setArgs(args));
             }
         } else {
