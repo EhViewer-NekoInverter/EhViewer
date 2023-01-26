@@ -115,6 +115,12 @@ public class EhEngine {
             throw new EhException("今回はここまで\n\n" + GetText.getString(R.string.kokomade_tip));
         }
 
+        // Check 503
+        if (body != null && body.contains("Backend fetch failed")) {
+            throw new EhException("Error 503\nBackend fetch failed");
+        }
+
+        // Check gallery not available
         if (body != null && body.contains("Gallery Not Available - ")) {
             String error = GalleryNotAvailableParser.parse(body);
             if (!TextUtils.isEmpty(error)) {
