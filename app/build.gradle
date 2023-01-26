@@ -31,14 +31,14 @@ android {
         applicationId "org.moedog.ehviewer"
         minSdkVersion 28
         targetSdkVersion 33
-        versionCode 172806
-        versionName "1.7.28.4"
+        versionCode 172807
+        versionName "1.7.28.5"
         resConfigs 'zh', 'zh-rCN', 'zh-rHK', 'zh-rTW', 'ja'
     }
 
     externalNativeBuild {
         cmake {
-            version "3.25.1"
+            version "3.25.2"
             path 'src/main/cpp/CMakeLists.txt'
         }
     }

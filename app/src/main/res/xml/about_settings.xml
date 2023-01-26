@@ -26,8 +26,14 @@
     <Preference
         android:key="author"
         android:title="@string/settings_about_author"
-        app:enableCopying="false"
         app:iconSpaceReserved="false" />
+
+    <com.hippo.preference.UrlPreference
+        android:key="telegram"
+        android:title="@string/settings_about_telegram"
+        app:enableCopying="true"
+        app:iconSpaceReserved="false"
+        app:url="https://t.me/+AOIyOaC5iaFmYWVl" />
 
     <com.hippo.preference.UrlPreference
         android:key="issues"
