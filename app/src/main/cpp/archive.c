@@ -19,7 +19,6 @@
 
 #include <assert.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
@@ -90,7 +89,7 @@ static inline int compare_entries(const void *a, const void *b) {
     const char *fb = ((entry *) b)->filename;
     int i, na, nb;
     for (i = 0; fa[i] || fb[i]; i++) {
-        if (fa[i] >= '0' && fa[i] <= '9' && fb[i] >= '0' && fb[i] <= '9') {
+        if (fa[i] > '0' && fa[i] <= '9' && fb[i] > '0' && fb[i] <= '9') {
             sscanf(fa + i, "%d", &na);
             sscanf(fb + i, "%d", &nb);
             if (na > nb)
