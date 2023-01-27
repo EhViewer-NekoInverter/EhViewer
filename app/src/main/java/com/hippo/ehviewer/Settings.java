@@ -270,12 +270,8 @@ public class Settings {
     }
 
     private static void fixDefaultValue(Context context) {
-        if ("CN".equals(Locale.getDefault().getCountry())) {
-            // Enable built in hosts if the country is CN
-            if (!sSettingsPre.contains(KEY_BUILT_IN_HOSTS)) {
-                putBuiltInHosts(true);
-            }
-            // Enable show tag translations if the country is CN
+        if ("zh".equals(Locale.getDefault().getLanguage())) {
+            // Enable show tag translations if the language is zh
             if (!sSettingsPre.contains(KEY_SHOW_TAG_TRANSLATIONS)) {
                 putShowTagTranslations(true);
             }
