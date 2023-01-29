@@ -48,18 +48,17 @@ public class ArchiveParser {
         var d = Jsoup.parse(body);
         var es = d.select("#db>div>div");
         for (var e : es) {
-            try {
-                var btn = e.selectFirst("form>div>input");
-                if (!btn.hasAttr("disabled")) {
+            if (!e.attr("style").contains("color:#CCCCCC")) {
+                try {
                     var res = e.selectFirst("form>input").attr("value");
-                    var name = btn.attr("value");
+                    var name = e.selectFirst("form>div>input").attr("value");
                     var size = e.selectFirst("p>strong").text();
                     var cost = e.selectFirst("div>strong").text().replace(",", "");
                     var item = new Archive(res, name, size, cost, false);
                     archiveList.add(item);
+                } catch (NullPointerException ex) {
+                    ex.printStackTrace();
                 }
-            } catch (NullPointerException ex) {
-                ex.printStackTrace();
             }
         }
 
