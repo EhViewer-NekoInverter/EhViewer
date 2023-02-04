@@ -27,7 +27,6 @@ import android.graphics.ImageDecoder.ALLOCATOR_SOFTWARE
 import android.graphics.ImageDecoder.DecodeException
 import android.graphics.ImageDecoder.ImageInfo
 import android.graphics.ImageDecoder.Source
-import android.graphics.PixelFormat
 import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -162,7 +161,7 @@ class Image private constructor(
 
     val isOpaque: Boolean
         get() {
-            return mObtainedDrawable?.opacity == PixelFormat.OPAQUE
+            return mObtainedDrawable?.transparentRegion == null
         }
 
     companion object {

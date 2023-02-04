@@ -37,6 +37,7 @@ import com.hippo.ehviewer.dao.DownloadInfo
 import com.hippo.ehviewer.ui.MainActivity
 import com.hippo.ehviewer.ui.scene.DownloadsScene
 import com.hippo.scene.StageActivity
+import com.hippo.util.getParcelableExtraCompat
 import com.hippo.util.ReadableTime
 import com.hippo.yorozuya.FileUtils
 import com.hippo.yorozuya.SimpleHandler
@@ -100,13 +101,13 @@ class DownloadService : Service(), DownloadManager.DownloadListener {
             action = it
         }
         if (ACTION_START == action) {
-            val gi = intent!!.getParcelableExtra<GalleryInfo>(KEY_GALLERY_INFO)
+            val gi = intent!!.getParcelableExtraCompat<GalleryInfo>(KEY_GALLERY_INFO)
             val label = intent.getStringExtra(KEY_LABEL)
             if (gi != null && mDownloadManager != null) {
                 mDownloadManager!!.startDownload(gi, label)
             }
         } else if (ACTION_START_RANGE == action) {
-            val gidList = intent!!.getParcelableExtra<LongList>(KEY_GID_LIST)
+            val gidList = intent!!.getParcelableExtraCompat<LongList>(KEY_GID_LIST)
             if (gidList != null && mDownloadManager != null) {
                 mDownloadManager!!.startRangeDownload(gidList)
             }
@@ -124,7 +125,7 @@ class DownloadService : Service(), DownloadManager.DownloadListener {
                 mDownloadManager!!.stopCurrentDownload()
             }
         } else if (ACTION_STOP_RANGE == action) {
-            val gidList = intent!!.getParcelableExtra<LongList>(KEY_GID_LIST)
+            val gidList = intent!!.getParcelableExtraCompat<LongList>(KEY_GID_LIST)
             if (gidList != null && mDownloadManager != null) {
                 mDownloadManager!!.stopRangeDownload(gidList)
             }
@@ -138,7 +139,7 @@ class DownloadService : Service(), DownloadManager.DownloadListener {
                 mDownloadManager!!.deleteDownload(gid)
             }
         } else if (ACTION_DELETE_RANGE == action) {
-            val gidList = intent!!.getParcelableExtra<LongList>(KEY_GID_LIST)
+            val gidList = intent!!.getParcelableExtraCompat<LongList>(KEY_GID_LIST)
             if (gidList != null && mDownloadManager != null) {
                 mDownloadManager!!.deleteRangeDownload(gidList)
             }
@@ -408,7 +409,7 @@ class DownloadService : Service(), DownloadManager.DownloadListener {
 
     private fun checkStopSelf() {
         if (mDownloadManager == null || mDownloadManager!!.isIdle) {
-            stopForeground(true)
+            stopForeground(STOP_FOREGROUND_REMOVE);
             stopSelf()
         }
     }

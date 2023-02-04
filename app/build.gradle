@@ -89,8 +89,7 @@ dependencies {
     implementation 'androidx.activity:activity:1.6.1'
     implementation 'androidx.biometric:biometric:1.1.0'
     implementation 'androidx.browser:browser:1.4.0'
-    implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.core:core:1.9.0'
+    implementation 'androidx.core:core:1.10.0-alpha01'
     implementation 'androidx.fragment:fragment:1.5.5'
     implementation "androidx.paging:paging-runtime:3.2.0-alpha03"
     implementation 'androidx.preference:preference:1.2.0'
