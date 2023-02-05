@@ -107,7 +107,11 @@ public class EhEngine {
         // Check sad panda (without panda)
         if (headers != null && "text/html; charset=UTF-8".equals(headers.get("Content-Type")) &&
                 "0".equals(headers.get("Content-Length"))) {
-            throw new EhException("Sad Panda\n(without panda)");
+            throw new EhException(
+                EhUrl.SITE_EX == Settings.getGallerySite() ?
+                "Sad Panda\n(without panda)" :
+                "No data received\nMaybe your IP address has been banned"
+            );
         }
 
         // Check kokomade
@@ -128,6 +132,10 @@ public class EhEngine {
             }
         }
 
+        if (code >= 400) {
+            throw new StatusCodeException(code);
+        }
+
         if (e instanceof ParseException) {
             if (body != null && !body.contains("<")) {
                 throw new EhException(body);
@@ -139,10 +147,6 @@ public class EhEngine {
                 }
                 throw new EhException(GetText.getString(R.string.error_parse_error));
             }
-        }
-
-        if (code >= 400) {
-            throw new StatusCodeException(code);
         }
 
         if (e != null) {
