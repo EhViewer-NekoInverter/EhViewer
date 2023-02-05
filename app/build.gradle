@@ -24,6 +24,8 @@ android {
             storePassword signStorePassword
             keyAlias signkeyAlias
             keyPassword signkeyPassword
+            enableV3Signing = true
+            enableV4Signing = true
         }
     }
 
