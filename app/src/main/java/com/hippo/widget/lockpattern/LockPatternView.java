@@ -135,7 +135,6 @@ public class LockPatternView extends View {
 
         setClickable(true);
 
-
         mPathPaint.setAntiAlias(true);
         mPathPaint.setDither(true);
 
@@ -186,7 +185,6 @@ public class LockPatternView extends View {
      * @throws IllegalArgumentException if {@code a < 0} or {@code b < 0}
      */
     private static int gcd(int a, int b) {
-
         /*
          * The reason we require both arguments to be >= 0 is because otherwise, what do you return
          * on gcd(0, Integer.MIN_VALUE)? BigInteger.gcd would return positive 2^31, but positive
@@ -405,7 +403,6 @@ public class LockPatternView extends View {
     private Cell detectAndAddHit(float x, float y) {
         final Cell cell = checkForNewHit(x, y);
         if (cell != null) {
-
             // check for gaps in existing pattern
             final ArrayList<Cell> pattern = mPattern;
             if (!pattern.isEmpty()) {
@@ -500,7 +497,6 @@ public class LockPatternView extends View {
 
     // helper method to find which cell a point maps to
     private Cell checkForNewHit(float x, float y) {
-
         final int rowHit = getRowHit(y);
         if (rowHit < 0) {
             return null;
@@ -523,13 +519,11 @@ public class LockPatternView extends View {
      * @return The row that y falls in, or -1 if it falls in no row.
      */
     private int getRowHit(float y) {
-
         final float squareHeight = mSquareHeight;
         float hitSize = squareHeight * mHitFactor;
 
         float offset = getPaddingTop() + (squareHeight - hitSize) / 2f;
         for (int i = 0; i < 3; i++) {
-
             final float hitTop = offset + squareHeight * i;
             if (y >= hitTop && y <= hitTop + hitSize) {
                 return i;
@@ -550,7 +544,6 @@ public class LockPatternView extends View {
 
         float offset = getPaddingLeft() + (squareWidth - hitSize) / 2f;
         for (int i = 0; i < 3; i++) {
-
             final float hitLeft = offset + squareWidth * i;
             if (x >= hitLeft && x <= hitLeft + hitSize) {
                 return i;
@@ -760,7 +753,6 @@ public class LockPatternView extends View {
         final boolean[][] drawLookup = mPatternDrawLookup;
 
         if (mPatternDisplayMode == DisplayMode.Animate) {
-
             // figure out which circles to draw
 
             // + 1 so we pause on complete pattern
@@ -930,7 +922,6 @@ public class LockPatternView extends View {
      * How to display the current pattern.
      */
     public enum DisplayMode {
-
         /**
          * The pattern drawn is correct (i.e draw it in a friendly color)
          */
@@ -951,7 +942,6 @@ public class LockPatternView extends View {
      * The call back interface for detecting patterns entered by the user.
      */
     public interface OnPatternListener {
-
         /**
          * A new pattern has begun.
          */
@@ -1052,7 +1042,6 @@ public class LockPatternView extends View {
      * The parecelable for saving and restoring a lock pattern view.
      */
     private static class SavedState extends BaseSavedState {
-
         public static final Creator<SavedState> CREATOR =
                 new Creator<SavedState>() {
                     @Override

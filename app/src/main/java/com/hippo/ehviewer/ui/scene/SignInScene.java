@@ -51,7 +51,6 @@ import com.hippo.yorozuya.ViewUtils;
 
 public final class SignInScene extends SolidScene implements EditText.OnEditorActionListener,
         View.OnClickListener {
-
     private static final String KEY_REQUEST_ID = "request_id";
 
     private static final int REQUEST_CODE_WEBVIEW = 0;
@@ -360,7 +359,6 @@ public final class SignInScene extends SolidScene implements EditText.OnEditorAc
     }
 
     private static class SignInListener extends EhCallback<SignInScene, String> {
-
         public SignInListener(Context context, int stageId, String sceneTag) {
             super(context, stageId, sceneTag);
         }
@@ -399,7 +397,6 @@ public final class SignInScene extends SolidScene implements EditText.OnEditorAc
     }
 
     private static class GetProfileListener extends EhCallback<SignInScene, ProfileParser.Result> {
-
         public GetProfileListener(Context context, int stageId, String sceneTag) {
             super(context, stageId, sceneTag);
         }

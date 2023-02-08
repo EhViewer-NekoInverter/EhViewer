@@ -25,7 +25,6 @@ import java.io.OutputStream;
  * A pipe to open {@code OutputStream}
  */
 public interface OutputStreamPipe {
-
     /**
      * Obtain the {@code OutputStreamPipe}.
      * Call it before opening {@code OutputStream}.

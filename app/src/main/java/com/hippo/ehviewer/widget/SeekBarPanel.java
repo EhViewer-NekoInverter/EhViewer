@@ -30,7 +30,6 @@ import com.hippo.ehviewer.R;
 import com.hippo.yorozuya.ViewUtils;
 
 public class SeekBarPanel extends LinearLayout {
-
     private final int[] mLocation = new int[2];
     private SeekBar mSeekBar;
 

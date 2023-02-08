@@ -23,7 +23,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public final class Messenger {
-
     private static Messenger sInstance;
     private final IntIdGenerator mIdGenerator;
     private final SparseArray<List<Receiver>> mReceiverListMap;

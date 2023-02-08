@@ -30,7 +30,6 @@ import com.hippo.yorozuya.MathUtils;
 import java.util.Arrays;
 
 class ImageView extends GLView implements ImageTexture.Callback {
-
     public static final int SCALE_ORIGIN = 0;
     public static final int SCALE_FIT_WIDTH = 1;
     public static final int SCALE_FIT_HEIGHT = 2;

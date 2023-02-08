@@ -31,7 +31,6 @@ import com.hippo.yorozuya.SimpleHandler;
 import java.util.Locale;
 
 public class EhGalleryProvider extends GalleryProvider2 implements SpiderQueen.OnSpiderListener {
-
     private final Context mContext;
     private final GalleryInfo mGalleryInfo;
     @Nullable
@@ -210,7 +209,6 @@ public class EhGalleryProvider extends GalleryProvider2 implements SpiderQueen.O
     }
 
     private static class ReleaseTask implements Runnable {
-
         private SpiderQueen mSpiderQueen;
 
         public ReleaseTask(SpiderQueen spiderQueen) {

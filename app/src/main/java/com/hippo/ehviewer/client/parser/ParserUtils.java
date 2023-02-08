@@ -25,7 +25,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public class ParserUtils {
-
     public static final DateTimeFormatter formatter = DateTimeFormatter
             .ofPattern("yyyy-MM-dd HH:mm", Locale.US).withZone(ZoneOffset.UTC);
 
@@ -48,5 +47,4 @@ public class ParserUtils {
     public static long parseLong(String str, long defValue) {
         return NumberUtils.parseLongSafely(trim(str).replace(",", ""), defValue);
     }
-
 }

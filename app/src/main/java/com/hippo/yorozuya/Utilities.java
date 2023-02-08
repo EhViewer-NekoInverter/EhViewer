@@ -19,7 +19,6 @@ package com.hippo.yorozuya;
 import androidx.annotation.Nullable;
 
 public final class Utilities {
-
     /**
      * Whether the array contain the element
      *

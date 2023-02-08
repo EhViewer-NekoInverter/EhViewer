@@ -76,7 +76,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class EhEngine {
-
     public static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=utf-8");
     private static final String TAG = EhEngine.class.getSimpleName();
     private static final String SAD_PANDA_DISPOSITION = "inline; filename=\"sadpanda.jpg\"";
@@ -106,12 +105,8 @@ public class EhEngine {
 
         // Check sad panda (without panda)
         if (headers != null && "text/html; charset=UTF-8".equals(headers.get("Content-Type")) &&
-                "0".equals(headers.get("Content-Length"))) {
-            throw new EhException(
-                EhUrl.SITE_EX == Settings.getGallerySite() ?
-                "Sad Panda\n(without panda)" :
-                "No data received\nMaybe your IP address has been banned"
-            );
+                "0".equals(headers.get("Content-Length")) && EhUrl.SITE_EX == Settings.getGallerySite()) {
+            throw new EhException("Sad Panda\n(without panda)");
         }
 
         // Check kokomade
@@ -137,10 +132,10 @@ public class EhEngine {
         }
 
         if (e instanceof ParseException) {
-            if (body != null && !body.contains("<")) {
+            if (TextUtils.isEmpty(body)) {
+                throw new EhException("No data received\nMaybe your IP address has been banned");
+            } else if (body != null && !body.contains("<")) {
                 throw new EhException(body);
-            } else if (TextUtils.isEmpty(body)) {
-                throw new EhException(GetText.getString(R.string.error_empty_html));
             } else {
                 if (Settings.getSaveParseErrorBody()) {
                     AppConfig.saveParseErrorBody((ParseException) e);
@@ -371,7 +366,6 @@ public class EhEngine {
             throw e;
         }
     }
-
 
     public static Pair<PreviewSet, Integer> getPreviewSet(
             @Nullable EhClient.Task task, OkHttpClient okHttpClient, String url) throws Throwable {
@@ -1025,7 +1019,6 @@ public class EhEngine {
         GalleryListParser.Result result;
         int code = -1;
         try (Response response = call.execute()) {
-
             Log.d(TAG, "" + response.request().url());
 
             code = response.code();

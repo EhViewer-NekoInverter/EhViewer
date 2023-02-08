@@ -119,7 +119,6 @@ import rikka.core.res.ResourcesKt;
 public class DownloadsScene extends ToolbarScene
         implements DownloadManager.DownloadInfoListener,
         FabLayout.OnClickFabListener, FastScroller.OnDragHandlerListener {
-
     public static final String KEY_GID = "gid";
     public static final String KEY_ACTION = "action";
     public static final String ACTION_CLEAR_DOWNLOAD_SERVICE = "clear_download_service";
@@ -741,7 +740,6 @@ public class DownloadsScene extends ToolbarScene
         recyclerView.setAdapter(dragDropManager.createWrappedAdapter(mLabelAdapter));
         dragDropManager.attachRecyclerView(recyclerView);
 
-
         return view;
     }
 
@@ -1066,7 +1064,6 @@ public class DownloadsScene extends ToolbarScene
     }
 
     private static class DownloadLabelHolder extends AbstractDraggableItemViewHolder {
-
         private final TextView label;
         private final ImageView option;
 
@@ -1078,7 +1075,6 @@ public class DownloadsScene extends ToolbarScene
     }
 
     private class DownloadLabelAdapter extends RecyclerView.Adapter<DownloadLabelHolder> implements DraggableItemAdapter<DownloadLabelHolder> {
-
         private final LayoutInflater mInflater;
 
         private DownloadLabelAdapter(LayoutInflater inflater) {
@@ -1219,7 +1215,6 @@ public class DownloadsScene extends ToolbarScene
     }
 
     private class DeleteRangeDialogHelper implements DialogInterface.OnClickListener {
-
         private final List<DownloadInfo> mDownloadInfoList;
         private final LongList mGidList;
         private final CheckBoxDialogBuilder mBuilder;
@@ -1267,7 +1262,6 @@ public class DownloadsScene extends ToolbarScene
     }
 
     private class MoveDialogHelper implements DialogInterface.OnClickListener {
-
         private final String[] mLabels;
         private final List<DownloadInfo> mDownloadInfoList;
 
@@ -1301,7 +1295,6 @@ public class DownloadsScene extends ToolbarScene
     }
 
     private class DownloadHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
         public final LoadImageView thumb;
         public final TextView title;
         public final TextView uploader;
@@ -1374,7 +1367,6 @@ public class DownloadsScene extends ToolbarScene
     }
 
     private class DownloadAdapter extends RecyclerView.Adapter<DownloadHolder> {
-
         private final LayoutInflater mInflater;
         private final int mListThumbWidth;
         private final int mListThumbHeight;
@@ -1442,7 +1434,6 @@ public class DownloadsScene extends ToolbarScene
     }
 
     private class DownloadChoiceListener implements EasyRecyclerView.CustomChoiceListener {
-
         @Override
         public void onIntoCustomChoice(EasyRecyclerView view) {
             if (mFabLayout != null) {
@@ -1472,7 +1463,6 @@ public class DownloadsScene extends ToolbarScene
     }
 
     private class RenameLabelDialogHelper implements View.OnClickListener {
-
         private final EditTextDialogBuilder mBuilder;
         private final AlertDialog mDialog;
         private final String mOriginalLabel;
@@ -1515,7 +1505,6 @@ public class DownloadsScene extends ToolbarScene
     }
 
     private class NewLabelDialogHelper implements View.OnClickListener {
-
         private final EditTextDialogBuilder mBuilder;
         private final AlertDialog mDialog;
 

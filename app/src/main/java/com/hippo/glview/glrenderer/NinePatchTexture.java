@@ -181,7 +181,6 @@ public class NinePatchTexture extends ResourceTexture {
 // This keeps data for a specialization of NinePatchTexture with the size
 // (width, height). We pre-compute the coordinates for efficiency.
 class NinePatchInstance {
-
     @SuppressWarnings("unused")
     private static final String TAG = "NinePatchInstance";
 

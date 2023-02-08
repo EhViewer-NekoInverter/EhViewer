@@ -20,7 +20,6 @@ package com.hippo.ehviewer.client.exception;
  * It is an exception for get offensive tip for g.e-hentai.org
  */
 public class OffensiveException extends EhException {
-
     public OffensiveException() {
         super("OFFENSIVE");
     }

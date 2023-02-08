@@ -22,7 +22,6 @@ import androidx.annotation.Nullable;
 import com.hippo.streampipe.InputStreamPipe;
 
 public interface ValueHelper<V> {
-
     /**
      * Decode object for the {@code InputStreamPipe}
      *

@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SqlUtils {
-
     public static void exeSQLSafely(SQLiteDatabase db, String sql) {
         try {
             db.execSQL(sql);

@@ -22,7 +22,6 @@ import android.util.SparseArray;
 import com.hippo.yorozuya.IntIdGenerator;
 
 public abstract class SceneApplication extends Application {
-
     private final IntIdGenerator mIdGenerator = new IntIdGenerator();
     private final SparseArray<StageActivity> mStageMap = new SparseArray<>();
 

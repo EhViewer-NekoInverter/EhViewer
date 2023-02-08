@@ -26,7 +26,6 @@ import com.hippo.yorozuya.LayoutUtils;
 import com.hippo.yorozuya.SimpleHandler;
 
 public class TouchHelper {
-
     /**
      * Cache the touch slop from the context that created the view.
      */
@@ -199,7 +198,6 @@ public class TouchHelper {
     }
 
     private final class CheckForLongPress implements Runnable {
-
         @Override
         public void run() {
             if (mOwner.isPressed()) {
@@ -223,7 +221,6 @@ public class TouchHelper {
     }
 
     private final class PerformClick implements Runnable {
-
         @Override
         public void run() {
             mOwner.performClick();
@@ -231,7 +228,6 @@ public class TouchHelper {
     }
 
     private final class UnsetPressedState implements Runnable {
-
         @Override
         public void run() {
             mOwner.setPressed(false);

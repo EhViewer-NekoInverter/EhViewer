@@ -22,7 +22,6 @@ import android.util.AttributeSet;
 import android.view.View;
 
 public class ColorView extends View {
-
     private int mColor;
 
     public ColorView(Context context) {

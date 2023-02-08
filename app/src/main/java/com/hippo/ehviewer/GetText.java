@@ -23,7 +23,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 
 public class GetText {
-
     private static Resources sResources;
 
     public static void initialize(Context context) {

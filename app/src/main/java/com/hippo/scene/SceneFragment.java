@@ -37,7 +37,6 @@ import java.util.List;
 import rikka.core.res.ResourcesKt;
 
 public class SceneFragment extends Fragment {
-
     public static final int LAUNCH_MODE_STANDARD = 0;
     public static final int LAUNCH_MODE_SINGLE_TOP = 1;
     public static final int LAUNCH_MODE_SINGLE_TASK = 2;
@@ -106,7 +105,6 @@ public class SceneFragment extends Fragment {
     }
 
     public void onProvideAssistContent(AssistContent outContent) {
-
     }
 
     @Override

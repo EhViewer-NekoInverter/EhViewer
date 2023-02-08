@@ -21,7 +21,6 @@ import android.view.View;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class SimpleHolder extends RecyclerView.ViewHolder {
-
     public SimpleHolder(View itemView) {
         super(itemView);
     }

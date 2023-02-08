@@ -53,7 +53,6 @@ import java.util.List;
 import java.util.Map;
 
 public class DownloadManager implements SpiderQueen.OnSpiderListener {
-
     private static final String TAG = DownloadManager.class.getSimpleName();
     private static final Comparator<DownloadInfo> DATE_DESC_COMPARATOR = (lhs, rhs) -> lhs.time - rhs.time > 0 ? -1 : 1;
     private final Context mContext;
@@ -917,9 +916,7 @@ public class DownloadManager implements SpiderQueen.OnSpiderListener {
         // Ignore
     }
 
-
     public interface DownloadInfoListener {
-
         /**
          * Add the special info to the special position
          */
@@ -959,7 +956,6 @@ public class DownloadManager implements SpiderQueen.OnSpiderListener {
     }
 
     public interface DownloadListener {
-
         /**
          * Get 509 error
          */
@@ -992,7 +988,6 @@ public class DownloadManager implements SpiderQueen.OnSpiderListener {
     }
 
     private class NotifyTask implements Runnable {
-
         public static final int TYPE_ON_GET_PAGES = 0;
         public static final int TYPE_ON_GET_509 = 1;
         public static final int TYPE_ON_PAGE_DOWNLOAD = 2;
@@ -1173,7 +1168,6 @@ public class DownloadManager implements SpiderQueen.OnSpiderListener {
     }
 
     class SpeedReminder implements Runnable {
-
         private final SparseIJArray mContentLengthMap = new SparseIJArray();
         private final SparseIJArray mReceivedSizeMap = new SparseIJArray();
         private boolean mStop = true;

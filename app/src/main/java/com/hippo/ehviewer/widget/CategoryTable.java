@@ -31,7 +31,6 @@ import com.hippo.widget.CheckTextView;
 import com.hippo.yorozuya.NumberUtils;
 
 public class CategoryTable extends TableLayout implements View.OnLongClickListener {
-
     private static final String STATE_KEY_SUPER = "super";
     private static final String STATE_KEY_CATEGORY = "category";
 

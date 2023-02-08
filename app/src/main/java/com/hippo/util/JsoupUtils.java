@@ -23,7 +23,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public final class JsoupUtils {
-
     @Nullable
     public static Element getElementByClass(Document doc, String className) {
         Elements elements = doc.getElementsByClass(className);

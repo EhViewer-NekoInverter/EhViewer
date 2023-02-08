@@ -33,7 +33,6 @@ import androidx.appcompat.widget.AppCompatEditText;
 import com.hippo.util.ExceptionUtils;
 
 public class SearchEditText extends AppCompatEditText {
-
     private SearchEditTextListener mListener;
 
     public SearchEditText(Context context) {

@@ -29,7 +29,6 @@ import androidx.annotation.IdRes;
 import com.hippo.yorozuya.ViewUtils;
 
 public class RadioGridGroup extends SimpleGridLayout {
-
     private static final int[] RADIO_ATTRS = new int[]{
             android.R.attr.checkedButton
     };
@@ -65,7 +64,6 @@ public class RadioGridGroup extends SimpleGridLayout {
         mPassThroughListener = new PassThroughHierarchyChangeListener();
         super.setOnHierarchyChangeListener(mPassThroughListener);
     }
-
 
     /**
      * {@inheritDoc}

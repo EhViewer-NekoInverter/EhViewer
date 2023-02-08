@@ -32,7 +32,6 @@ import com.hippo.yorozuya.ViewUtils;
  * @author Hippo
  */
 public class SimpleGridLayout extends ViewGroup {
-
     private static final int DEFAULT_COLUMN_COUNT = 3;
 
     private int mColumnCount;

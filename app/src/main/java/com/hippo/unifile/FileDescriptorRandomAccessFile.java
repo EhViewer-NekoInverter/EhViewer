@@ -32,7 +32,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 class FileDescriptorRandomAccessFile implements UniRandomAccessFile {
-
     public static final int FLUSH_NONE = 0;
     public static final int FLUSH_FSYNC = 1;
     public static final int FLUSH_FDATASYNC = 2;

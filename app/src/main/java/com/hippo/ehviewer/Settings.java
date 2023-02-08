@@ -44,7 +44,6 @@ import java.util.Locale;
 import java.util.Set;
 
 public class Settings {
-
     /********************
      ****** Eh
      ********************/

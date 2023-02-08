@@ -17,7 +17,6 @@
 package com.hippo.widget;
 
 final class DateUtils {
-
     public static final char QUOTE = '\'';
     public static final char SECONDS = 's';
 

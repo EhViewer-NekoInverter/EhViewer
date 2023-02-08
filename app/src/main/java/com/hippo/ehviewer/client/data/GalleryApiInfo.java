@@ -22,7 +22,6 @@ import android.os.Parcelable;
 import androidx.annotation.Nullable;
 
 public class GalleryApiInfo implements Parcelable {
-
     public static final Parcelable.Creator<GalleryApiInfo> CREATOR = new Parcelable.Creator<GalleryApiInfo>() {
         @Override
         public GalleryApiInfo createFromParcel(Parcel source) {

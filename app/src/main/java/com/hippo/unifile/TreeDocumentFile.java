@@ -30,7 +30,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 class TreeDocumentFile extends UniFile {
-
     private static final String TAG = TreeDocumentFile.class.getSimpleName();
 
     private final Context mContext;

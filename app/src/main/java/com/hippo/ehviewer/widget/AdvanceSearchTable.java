@@ -32,7 +32,6 @@ import com.hippo.ehviewer.R;
 import com.hippo.yorozuya.NumberUtils;
 
 public class AdvanceSearchTable extends LinearLayout {
-
     public static final int SH = 0x1;
     public static final int STO = 0x2;
     public static final int SFL = 0x100;

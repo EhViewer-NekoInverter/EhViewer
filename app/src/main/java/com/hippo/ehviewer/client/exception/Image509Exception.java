@@ -17,7 +17,6 @@
 package com.hippo.ehviewer.client.exception;
 
 public class Image509Exception extends EhException {
-
     public Image509Exception() {
         super("509");
     }

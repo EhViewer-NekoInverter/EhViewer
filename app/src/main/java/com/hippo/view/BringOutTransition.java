@@ -24,7 +24,6 @@ import com.hippo.ehviewer.widget.SearchLayout;
 import com.hippo.widget.ContentLayout;
 
 public class BringOutTransition extends ViewTransition {
-
     public BringOutTransition(ContentLayout contentLayout, SearchLayout mSearchLayout) {
         super(contentLayout, mSearchLayout);
     }

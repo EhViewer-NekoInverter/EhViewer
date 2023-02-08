@@ -25,7 +25,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * A thread factory that creates threads with a given thread priority.
  */
 public class PriorityThreadFactory implements ThreadFactory {
-
     private final int mPriority;
     private final AtomicInteger mIdGenerator = new AtomicInteger();
     private final String mName;

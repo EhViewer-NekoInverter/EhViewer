@@ -112,7 +112,6 @@ import rikka.material.app.DayNightDelegate;
 
 public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChangeListener,
         GalleryView.Listener {
-
     public static final String ACTION_DIR = "dir";
     public static final String ACTION_EH = "eh";
 
@@ -160,8 +159,6 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
                         cachefile.delete();
                     });
                 }
-
-
             });
     @Nullable
     private GLRootView mGLRootView;
@@ -1089,7 +1086,6 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
     }
 
     private static class ShowPasswdDialogHandler extends Handler {
-
         //弱引用持有HandlerActivity , GC 回收时会被回收掉
         private final WeakReference<GalleryActivity> weakReference;
 
@@ -1118,7 +1114,6 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
     }
 
     private class GalleryMenuHelper implements DialogInterface.OnClickListener {
-
         private final View mView;
         private final Spinner mScreenRotation;
         private final Spinner mReadingDirection;
@@ -1271,7 +1266,6 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
     }
 
     private class NotifyTask implements Runnable {
-
         public static final int KEY_LAYOUT_MODE = 0;
         public static final int KEY_SIZE = 1;
         public static final int KEY_CURRENT_INDEX = 2;
@@ -1356,7 +1350,6 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
     }
 
     private class GalleryAdapter extends SimpleAdapter {
-
         public GalleryAdapter(@NonNull GLRootView glRootView, @NonNull GalleryProvider provider) {
             super(glRootView, provider);
         }
@@ -1376,8 +1369,4 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
             }
         }
     }
-
-
-
-
 }

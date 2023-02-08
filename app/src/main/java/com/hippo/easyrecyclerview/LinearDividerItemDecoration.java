@@ -25,10 +25,8 @@ import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-// Add overlap
-
 /**
- * Only work for {@link androidx.recyclerview.widget.LinearLayoutManager}.<br>
+ * Only work for {@link androidx.recyclerview.widget.LinearLayoutManager}.
  * Show divider between item, just like
  * {@link android.widget.ListView#setDivider(android.graphics.drawable.Drawable)}
  */

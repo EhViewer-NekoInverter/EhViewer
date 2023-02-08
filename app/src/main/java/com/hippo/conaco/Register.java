@@ -22,7 +22,6 @@ import com.hippo.yorozuya.collect.SparseILArray;
 import java.util.List;
 
 class Register<V> {
-
     private final SparseILArray<ConacoTask<V>> mIdMap = new SparseILArray<>();
     private final Multimap<String, ConacoTask<V>> mKeyMap = Multimap.create();
 

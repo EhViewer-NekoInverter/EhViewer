@@ -19,7 +19,6 @@
 package com.hippo.yorozuya.collect;
 
 public class CollectionUtils {
-
     /**
      * An empty immutable {@code boolean} array.
      */

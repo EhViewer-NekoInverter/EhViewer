@@ -33,7 +33,6 @@ import androidx.appcompat.widget.Toolbar;
 import com.hippo.ehviewer.R;
 
 public abstract class ToolbarScene extends BaseScene {
-
     @Nullable
     private Toolbar mToolbar;
 
@@ -91,7 +90,6 @@ public abstract class ToolbarScene extends BaseScene {
     public boolean needWhiteStatusBar() {
         return false;
     }
-
 
     public int getMenuResId() {
         return 0;

@@ -21,7 +21,6 @@ import android.os.Parcelable;
 import com.hippo.widget.LoadImageView;
 
 public abstract class PreviewSet implements Parcelable {
-
     public abstract int size();
 
     public abstract int getPosition(int index);

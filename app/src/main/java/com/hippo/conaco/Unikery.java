@@ -19,7 +19,6 @@ package com.hippo.conaco;
 import androidx.annotation.NonNull;
 
 public interface Unikery<V> {
-
     int INVALID_ID = -1;
 
     /**

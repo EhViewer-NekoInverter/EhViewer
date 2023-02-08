@@ -48,7 +48,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public final class GalleryView extends GLView implements GestureRecognizer.Listener {
-
     public static final int LAYOUT_LEFT_TO_RIGHT = 0;
     public static final int LAYOUT_RIGHT_TO_LEFT = 1;
     public static final int LAYOUT_TOP_TO_BOTTOM = 2;
@@ -962,7 +961,6 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
     }
 
     public interface Listener {
-
         @RenderThread
         void onUpdateCurrentIndex(int index);
 
@@ -980,7 +978,6 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
     }
 
     public static class Builder {
-
         private final Context mContext;
         private final Adapter mAdapter;
         private final int mEdgeColor = Color.WHITE;
@@ -1110,7 +1107,6 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
     }
 
     public static abstract class Adapter {
-
         protected GalleryView mGalleryView;
 
         private void setGalleryView(@NonNull GalleryView galleryView) {
@@ -1140,7 +1136,6 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
     }
 
     public static abstract class LayoutManager {
-
         protected GalleryView mGalleryView;
 
         public LayoutManager(@NonNull GalleryView galleryView) {

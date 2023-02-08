@@ -24,7 +24,6 @@ import com.hippo.glview.glrenderer.GLCanvas;
 import com.hippo.yorozuya.AssertUtils;
 
 public class ImageSpriteTexture extends ImageTexture {
-
     private final int mCount;
     private final int[] mRects;
 

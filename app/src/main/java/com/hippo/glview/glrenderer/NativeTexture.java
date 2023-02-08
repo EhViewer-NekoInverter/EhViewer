@@ -22,7 +22,6 @@ import android.util.Log;
 import javax.microedition.khronos.opengles.GL11;
 
 public abstract class NativeTexture extends BasicTexture {
-
     private static final String TAG = NativeTexture.class.getSimpleName();
 
     private boolean mContentValid = true;

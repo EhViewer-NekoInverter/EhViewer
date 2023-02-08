@@ -22,7 +22,6 @@ import com.hippo.yorozuya.ColorUtils;
 
 // ColorTexture is a texture which fills the rectangle with the specified color.
 public class ColorTexture implements Texture {
-
     private final int mColor;
     private int mWidth = 0;
     private int mHeight = 0;

@@ -37,7 +37,6 @@ import com.hippo.yorozuya.MathUtils;
  * A drawable that can draw a "Drawer hamburger" menu or an Arrow and animate between them.
  */
 public class DrawerArrowDrawable extends Drawable {
-
     // The angle in degrees that the arrow head is inclined at.
     private static final float ARROW_HEAD_ANGLE = (float) Math.toRadians(45);
     private final Paint mPaint = new Paint();

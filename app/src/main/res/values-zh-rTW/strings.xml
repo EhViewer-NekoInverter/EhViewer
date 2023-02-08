@@ -596,7 +596,6 @@
     <string name="error_cant_save_image">無法儲存圖片</string>
     <string name="error_invalid_number">無效的數字</string>
     <string name="error_please_login_first">請先登入</string>
-    <string name="error_empty_html">頁面內容為空</string>
     <string name="error_cannot_find_gallery">找不到圖庫</string>
     <string name="error_something_wrong_happened">被玩壞了</string>
     <string name="kokomade_tip">設定-&gt;Eh-&gt;圖庫站台-&gt;e-hentai</string>

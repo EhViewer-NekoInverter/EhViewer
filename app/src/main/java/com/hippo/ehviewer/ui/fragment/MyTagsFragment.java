@@ -43,7 +43,6 @@ import okhttp3.HttpUrl;
 import rikka.core.res.ResourcesKt;
 
 public class MyTagsFragment extends BaseFragment {
-
     private WebView webView;
     private CircularProgressIndicator progress;
     private String url;
@@ -80,7 +79,6 @@ public class MyTagsFragment extends BaseFragment {
         cookieManager.flush();
         cookieManager.removeAllCookies(null);
         cookieManager.removeSessionCookies(null);
-
 
         // Copy cookies from okhttp cookie store to CookieManager
         url = EhUrl.getMyTagsUrl();

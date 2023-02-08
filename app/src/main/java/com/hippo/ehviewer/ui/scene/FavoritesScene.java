@@ -102,7 +102,6 @@ public class FavoritesScene extends BaseScene implements
         FastScroller.OnDragHandlerListener, SearchBarMover.Helper, SearchBar.Helper,
         FabLayout.OnClickFabListener, FabLayout.OnExpandListener,
         EasyRecyclerView.CustomChoiceListener {
-
     private static final long ANIMATE_TIME = 300L;
 
     private static final String KEY_URL_BUILDER = "url_builder";
@@ -868,7 +867,6 @@ public class FavoritesScene extends BaseScene implements
     @Override
     @Implemented(EasyRecyclerView.CustomChoiceListener.class)
     public void onItemCheckedStateChanged(EasyRecyclerView view, int position, long id, boolean checked) {
-
         if (view.getCheckedItemCount() == 0) {
             view.outOfCustomChoiceMode();
         }
@@ -897,7 +895,6 @@ public class FavoritesScene extends BaseScene implements
     private void onGetFavoritesSuccess(FavoritesParser.Result result, int taskId) {
         if (mHelper != null && mSearchBarMover != null &&
                 mHelper.isCurrentTask(taskId)) {
-
             if (mFavCatArray != null) {
                 System.arraycopy(result.catArray, 0, mFavCatArray, 0, 10);
             }
@@ -956,7 +953,6 @@ public class FavoritesScene extends BaseScene implements
     }
 
     private static class AddFavoritesListener extends EhCallback<FavoritesScene, Void> {
-
         private final int mTaskId;
         private final String mKeyword;
         private final List<GalleryInfo> mBackup;
@@ -1000,7 +996,6 @@ public class FavoritesScene extends BaseScene implements
     }
 
     private static class GetFavoritesListener extends EhCallback<FavoritesScene, FavoritesParser.Result> {
-
         private final int mTaskId;
         // Local fav is shown now, but operation need be done for cloud fav
         private final boolean mLocal;
@@ -1053,7 +1048,6 @@ public class FavoritesScene extends BaseScene implements
     }
 
     private static class FavDrawerHolder extends RecyclerView.ViewHolder {
-
         private final TextView key;
         private final TextView value;
 
@@ -1065,7 +1059,6 @@ public class FavoritesScene extends BaseScene implements
     }
 
     private class FavDrawerAdapter extends RecyclerView.Adapter<FavDrawerHolder> {
-
         private final LayoutInflater mInflater;
 
         private FavDrawerAdapter(LayoutInflater inflater) {
@@ -1118,7 +1111,6 @@ public class FavoritesScene extends BaseScene implements
 
     private class DeleteDialogHelper implements DialogInterface.OnClickListener,
             DialogInterface.OnCancelListener {
-
         @Override
         public void onClick(DialogInterface dialog, int which) {
             if (which != DialogInterface.BUTTON_POSITIVE) {
@@ -1154,7 +1146,6 @@ public class FavoritesScene extends BaseScene implements
 
     private class MoveDialogHelper implements DialogInterface.OnClickListener,
             DialogInterface.OnCancelListener {
-
         @Override
         public void onClick(DialogInterface dialog, int which) {
             if (mRecyclerView == null || mHelper == null || mUrlBuilder == null) {
@@ -1204,7 +1195,6 @@ public class FavoritesScene extends BaseScene implements
     }
 
     private class FavoritesAdapter extends GalleryAdapter {
-
         public FavoritesAdapter(@NonNull LayoutInflater inflater, @NonNull Resources resources,
                                 @NonNull RecyclerView recyclerView, int type) {
             super(inflater, resources, recyclerView, type, false);
@@ -1233,7 +1223,6 @@ public class FavoritesScene extends BaseScene implements
     }
 
     private class FavoritesHelper extends GalleryInfoContentHelper {
-
         @Override
         protected void getPageData(final int taskId, int type, int page, String index, boolean isNext) {
             MainActivity activity = getMainActivity();

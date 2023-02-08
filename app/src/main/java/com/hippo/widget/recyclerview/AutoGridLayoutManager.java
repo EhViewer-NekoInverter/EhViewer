@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AutoGridLayoutManager extends GridLayoutManager {
-
     public static final int STRATEGY_MIN_SIZE = 0;
     public static final int STRATEGY_SUITABLE_SIZE = 1;
 

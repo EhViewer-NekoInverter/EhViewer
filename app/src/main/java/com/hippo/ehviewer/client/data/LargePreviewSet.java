@@ -26,7 +26,6 @@ import com.hippo.yorozuya.collect.IntList;
 import java.util.ArrayList;
 
 public class LargePreviewSet extends PreviewSet {
-
     public static final Parcelable.Creator<LargePreviewSet> CREATOR = new Parcelable.Creator<LargePreviewSet>() {
         @Override
         public LargePreviewSet createFromParcel(Parcel source) {

@@ -20,7 +20,6 @@ import com.hippo.glview.view.GLView;
 import com.hippo.glview.view.Gravity;
 
 public class GLFrameLayout extends GLView {
-
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
         int maxWidth = 0;

@@ -142,7 +142,6 @@ public final class GalleryListScene extends BaseScene
         implements SearchBar.Helper, SearchBar.OnStateChangeListener, FastScroller.OnDragHandlerListener,
         SearchLayout.Helper, SearchBarMover.Helper, View.OnClickListener, FabLayout.OnClickFabListener,
         FabLayout.OnExpandListener {
-
     public final static String KEY_ACTION = "action";
     public final static String ACTION_HOMEPAGE = "action_homepage";
     public final static String ACTION_SUBSCRIPTION = "action_subscription";
@@ -726,7 +725,6 @@ public final class GalleryListScene extends BaseScene
             showAddQuickSearchDialog(adapter, recyclerView, tip);
         }).show();
     }
-
 
     private void showAddQuickSearchDialog(final QsDrawerAdapter adapter,
                                           final EasyRecyclerView recyclerView, final TextView tip) {
@@ -1552,7 +1550,6 @@ public final class GalleryListScene extends BaseScene
     }
 
     private static class GetGalleryListListener extends EhCallback<GalleryListScene, GalleryListParser.Result> {
-
         private final int mTaskId;
 
         public GetGalleryListListener(Context context, int stageId, String sceneTag, int taskId) {
@@ -1587,7 +1584,6 @@ public final class GalleryListScene extends BaseScene
     }
 
     private static class AddToFavoriteListener extends EhCallback<GalleryListScene, Void> {
-
         public AddToFavoriteListener(Context context, int stageId, String sceneTag) {
             super(context, stageId, sceneTag);
         }
@@ -1613,7 +1609,6 @@ public final class GalleryListScene extends BaseScene
     }
 
     private static class RemoveFromFavoriteListener extends EhCallback<GalleryListScene, Void> {
-
         public RemoveFromFavoriteListener(Context context, int stageId, String sceneTag) {
             super(context, stageId, sceneTag);
         }
@@ -1639,7 +1634,6 @@ public final class GalleryListScene extends BaseScene
     }
 
     private static class QsDrawerHolder extends AbstractDraggableItemViewHolder {
-
         private final TextView key;
         private final ImageView option;
 
@@ -1651,7 +1645,6 @@ public final class GalleryListScene extends BaseScene
     }
 
     private class MoveDialogHelper implements DialogInterface.OnClickListener {
-
         private final String[] mLabels;
         private final GalleryInfo mGi;
 
@@ -1685,11 +1678,9 @@ public final class GalleryListScene extends BaseScene
 
     @SuppressLint("NotifyDataSetChanged")
     private class QsDrawerAdapter extends RecyclerView.Adapter<QsDrawerHolder> implements DraggableItemAdapter<QsDrawerHolder> {
-
         private final LayoutInflater mInflater;
 
         private QsDrawerAdapter(LayoutInflater inflater) {
-
             this.mInflater = inflater;
         }
 
@@ -1721,7 +1712,6 @@ public final class GalleryListScene extends BaseScene
                     popupMenu.inflate(R.menu.quicksearch_option);
                     popupMenu.show();
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-
                         final QuickSearch quickSearch = mQuickSearchList.get(holder.getBindingAdapterPosition());
 
                         @Override
@@ -1893,7 +1883,6 @@ public final class GalleryListScene extends BaseScene
     }
 
     private class GalleryListAdapter extends GalleryAdapter {
-
         public GalleryListAdapter(@NonNull LayoutInflater inflater,
                                   @NonNull Resources resources, @NonNull RecyclerView recyclerView, int type) {
             super(inflater, resources, recyclerView, type, true);
@@ -1922,7 +1911,6 @@ public final class GalleryListScene extends BaseScene
     }
 
     private class GalleryListHelper extends GalleryInfoContentHelper {
-
         @Override
         protected void getPageData(int taskId, int type, int page, String index, boolean isNext) {
             MainActivity activity = getMainActivity();

@@ -35,7 +35,6 @@ import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class SimpleDiskCache {
-
     private static final String TAG = SimpleDiskCache.class.getSimpleName();
 
     /**
@@ -339,7 +338,6 @@ public class SimpleDiskCache {
     }
 
     private class CacheInputStreamPipe implements InputStreamPipe {
-
         private final String mKey;
         private CounterLock mLock;
         private DiskLruCache.Snapshot mCurrentSnapshot;
@@ -399,7 +397,6 @@ public class SimpleDiskCache {
     }
 
     private class CacheOutputStreamPipe implements OutputStreamPipe {
-
         private final String mKey;
         private CounterLock mLock;
         private DiskLruCache.Editor mCurrentEditor;
@@ -477,7 +474,6 @@ public class SimpleDiskCache {
     }
 
     private class CounterLock extends ReentrantReadWriteLock {
-
         private int mCount;
 
         public boolean isFree() {
@@ -496,7 +492,6 @@ public class SimpleDiskCache {
     }
 
     private class LockPool {
-
         private static final int MAX_SIZE = 10;
 
         private final CounterLock[] mArray = new CounterLock[MAX_SIZE];

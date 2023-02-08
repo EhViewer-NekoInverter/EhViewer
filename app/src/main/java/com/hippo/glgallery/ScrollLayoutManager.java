@@ -35,7 +35,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 class ScrollLayoutManager extends GalleryView.LayoutManager {
-
     private static final String TAG = ScrollLayoutManager.class.getSimpleName();
 
     private static final float RESERVATION = 1f;
@@ -554,7 +553,6 @@ class ScrollLayoutManager extends GalleryView.LayoutManager {
 
     @Override
     public void onLongPress(float x, float y) {
-
     }
 
     private void getBottomState() {
@@ -1022,7 +1020,6 @@ class ScrollLayoutManager extends GalleryView.LayoutManager {
     }
 
     private class PageFling extends Fling {
-
         private int mVelocityX;
         private int mVelocityY;
         private int mDx;
@@ -1101,7 +1098,6 @@ class ScrollLayoutManager extends GalleryView.LayoutManager {
     }
 
     private class SmoothScaler extends Animation {
-
         private float mFocusX;
         private float mFocusY;
         private float mStartScale;

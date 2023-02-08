@@ -25,7 +25,6 @@ import androidx.annotation.DrawableRes;
 import androidx.core.content.ContextCompat;
 
 public class XmlResourceTexture extends UploadedTexture {
-
     private final Context mContext;
     private final int mResId;
     private int mWidth;

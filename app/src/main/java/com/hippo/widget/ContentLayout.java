@@ -58,7 +58,6 @@ import java.util.List;
 import rikka.core.res.ResourcesKt;
 
 public class ContentLayout extends FrameLayout {
-
     private CircularProgressIndicator mProgressView;
     private TextView mTipView;
     private ViewGroup mContentView;
@@ -186,7 +185,6 @@ public class ContentLayout extends FrameLayout {
     }
 
     public abstract static class ContentHelper<E extends Parcelable> implements ViewTransition.OnShowViewListener {
-
         public static final int TYPE_REFRESH = 0;
         public static final int TYPE_PRE_PAGE = 1;
         public static final int TYPE_PRE_PAGE_KEEP_POS = 2;

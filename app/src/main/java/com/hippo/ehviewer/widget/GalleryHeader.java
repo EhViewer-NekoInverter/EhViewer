@@ -31,7 +31,6 @@ import com.hippo.ehviewer.R;
 import com.hippo.yorozuya.ObjectUtils;
 
 public class GalleryHeader extends ViewGroup {
-
     private final Rect batteryRect = new Rect();
     private final Rect progressRect = new Rect();
     private final Rect clockRect = new Rect();

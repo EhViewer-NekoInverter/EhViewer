@@ -27,7 +27,6 @@ import java.util.WeakHashMap;
 // The state of a BasicTexture indicates whether its data is loaded to GL memory.
 // If a BasicTexture is loaded into GL memory, it has a GL texture id.
 public abstract class BasicTexture implements Texture {
-
     protected static final int UNSPECIFIED = -1;
     protected static final int STATE_UNLOADED = 0;
     protected static final int STATE_LOADED = 1;

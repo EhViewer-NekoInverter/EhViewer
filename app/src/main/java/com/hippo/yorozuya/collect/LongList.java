@@ -20,9 +20,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class LongList implements Parcelable {
-
     public static final Creator<LongList> CREATOR = new Creator<LongList>() {
-
         @Override
         public LongList createFromParcel(Parcel source) {
             return new LongList(source);

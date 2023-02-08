@@ -32,7 +32,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public abstract class BeerBelly<V> {
-
     private static final String TAG = BeerBelly.class.getSimpleName();
     private final boolean mHasMemoryCache;
     private final boolean mHasDiskCache;
@@ -334,7 +333,6 @@ public abstract class BeerBelly<V> {
      * A holder class that contains cache parameters.
      */
     public static class BeerBellyParams {
-
         /**
          * is memory cache available
          */
@@ -380,7 +378,6 @@ public abstract class BeerBelly<V> {
     }
 
     private static class DiskCache<E> {
-
         private static final int IO_BUFFER_SIZE = 8 * 1024;
 
         private final SimpleDiskCache mDiskCache;
@@ -472,7 +469,6 @@ public abstract class BeerBelly<V> {
     }
 
     private class MemoryCache<E> extends LruCache<String, E> {
-
         public BeerBelly<E> mParent;
 
         public MemoryCache(int maxSize, BeerBelly<E> parent) {

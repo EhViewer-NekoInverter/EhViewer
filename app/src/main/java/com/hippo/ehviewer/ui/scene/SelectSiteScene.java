@@ -34,7 +34,6 @@ import com.hippo.ehviewer.ui.MainActivity;
 import com.hippo.yorozuya.ViewUtils;
 
 public class SelectSiteScene extends SolidScene implements View.OnClickListener {
-
     private MaterialButtonToggleGroup mButtonGroup;
     private View mOk;
 

@@ -24,7 +24,6 @@ import android.widget.FrameLayout;
 import com.hippo.yorozuya.LayoutUtils;
 
 public class DrawerView extends FrameLayout {
-
     private static final int DEFAULT_MAX_WIDTH = 280;
 
     private static final int[] SIZE_ATTRS = new int[]{

@@ -31,7 +31,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public final class SearchDatabase {
-
     public static final String COLUMN_QUERY = "query";
     public static final String COLUMN_DATE = "date";
     private static final String TAG = SearchDatabase.class.getSimpleName();
@@ -139,7 +138,6 @@ public final class SearchDatabase {
      * (features) requested by the extending class.
      */
     private static class DatabaseHelper extends SQLiteOpenHelper {
-
         public DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, 1);
         }

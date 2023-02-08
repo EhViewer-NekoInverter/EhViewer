@@ -19,7 +19,6 @@ package com.hippo.yorozuya;
 import java.util.concurrent.atomic.AtomicLong;
 
 public final class LongIdGenerator {
-
     public static final long INVALID_ID = -1L;
 
     private final AtomicLong mId = new AtomicLong();

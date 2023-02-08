@@ -21,7 +21,6 @@ import com.hippo.yorozuya.MathUtils;
 
 // FadeTexture is a texture which fades the given texture along the time.
 public abstract class FadeTexture implements Texture {
-
     // The duration of the fading animation in milliseconds
     public static final int DURATION = 180;
 

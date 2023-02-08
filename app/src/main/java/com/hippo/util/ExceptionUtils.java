@@ -32,7 +32,6 @@ import java.net.UnknownHostException;
 import javax.net.ssl.SSLException;
 
 public final class ExceptionUtils {
-
     @NonNull
     public static String getReadableString(@NonNull Throwable e) {
         e.printStackTrace();

@@ -19,7 +19,6 @@ package com.hippo.yorozuya.thread;
 import android.os.Process;
 
 public class PriorityThread extends Thread {
-
     private final int mPriority;
 
     public PriorityThread(Runnable runnable, int priority) {

@@ -23,7 +23,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SignInParser {
-
     private static final Pattern NAME_PATTERN = Pattern.compile("<p>You are now logged in as: (.+?)<");
     private static final Pattern ERROR_PATTERN = Pattern.compile(
             "(?:<h4>The error returned was:</h4>\\s*<p>(.+?)</p>)"

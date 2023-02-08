@@ -27,7 +27,6 @@ import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
 
 public class HandlerDrawable extends Drawable {
-
     private final Paint mPaint;
     private final RectF mTemp = new RectF();
     private int mColor = Color.BLACK;

@@ -25,7 +25,6 @@ import androidx.annotation.NonNull;
 import java.io.Closeable;
 
 class Utils {
-
     static void closeQuietly(Cursor c) {
         if (c != null) {
             try {

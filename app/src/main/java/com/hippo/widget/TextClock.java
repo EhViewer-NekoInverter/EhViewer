@@ -36,7 +36,6 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 public class TextClock extends AppCompatTextView {
-
     public static final CharSequence DEFAULT_FORMAT_12_HOUR = "hh:mm a";
     public static final CharSequence DEFAULT_FORMAT_24_HOUR;
 
@@ -259,10 +258,4 @@ public class TextClock extends AppCompatTextView {
         mTime.setTimeInMillis(System.currentTimeMillis());
         setText(DateFormat.format(mFormat, mTime));
     }
-
-
-
-
-
-
 }

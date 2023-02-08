@@ -65,7 +65,6 @@ import rikka.core.res.ResourcesKt;
 public class SearchBar extends MaterialCardView implements View.OnClickListener,
         TextView.OnEditorActionListener, TextWatcher,
         SearchEditText.SearchEditTextListener {
-
     public static final int STATE_NORMAL = 0;
     public static final int STATE_SEARCH = 1;
     public static final int STATE_SEARCH_LIST = 2;
@@ -524,23 +523,19 @@ public class SearchBar extends MaterialCardView implements View.OnClickListener,
         void onSearchEditTextBackPressed();
 
         default void onReceiveContent(Uri uri) {
-
         }
 
     }
 
     public interface OnStateChangeListener {
-
         void onStateChange(SearchBar searchBar, int newState, int oldState, boolean animation);
     }
 
     public interface SuggestionProvider {
-
         List<Suggestion> providerSuggestions(String text);
     }
 
     public abstract static class Suggestion {
-
         public abstract CharSequence getText(TextView textView);
 
         public abstract void onClick();
@@ -563,7 +558,6 @@ public class SearchBar extends MaterialCardView implements View.OnClickListener,
     }
 
     private class SuggestionAdapter extends RecyclerView.Adapter<SuggestionHolder> {
-
         private final LayoutInflater mInflater;
 
         private SuggestionAdapter(LayoutInflater inflater) {
@@ -650,7 +644,6 @@ public class SearchBar extends MaterialCardView implements View.OnClickListener,
     }
 
     public class KeywordSuggestion extends Suggestion {
-
         private final String mKeyword;
 
         private KeywordSuggestion(String keyword) {

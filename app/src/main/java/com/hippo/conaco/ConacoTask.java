@@ -41,7 +41,6 @@ import okhttp3.ResponseBody;
 
 @SuppressWarnings({"rawtypes", "deprecation"})
 public final class ConacoTask<V> {
-
     private static final String TAG = ConacoTask.class.getSimpleName();
 
     private final int mId;
@@ -174,7 +173,6 @@ public final class ConacoTask<V> {
 
     @SuppressWarnings({"unused", "UnusedReturnValue", "RedundantSuppression"})
     public static class Builder<T> {
-
         private int mId;
         private Unikery<T> mUnikery;
         private String mKey;
@@ -308,7 +306,6 @@ public final class ConacoTask<V> {
 
     @SuppressLint("StaticFieldLeak")
     private class DiskLoadTask extends AsyncTask<Void, Void, V> {
-
         @Override
         protected V doInBackground(Void... params) {
             if (isNotNecessary(this)) {
@@ -364,7 +361,6 @@ public final class ConacoTask<V> {
 
     @SuppressLint("StaticFieldLeak")
     private class NetworkLoadTask extends AsyncTask<Void, Long, V> implements ProgressNotifier {
-
         @Override
         public void notifyProgress(long singleReceivedSize, long receivedSize, long totalSize) {
             if (!isNotNecessary(this)) {

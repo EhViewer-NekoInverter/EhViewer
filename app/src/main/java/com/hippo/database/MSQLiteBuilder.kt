@@ -62,9 +62,7 @@ class MSQLiteBuilder {
         statementsMap.put(version, statements)
         return this
     }
-    /**
-     * Creates a table.
-     */
+
     /**
      * Creates a table with int [.COLUMN_ID] primary key.
      */

@@ -26,7 +26,6 @@ import com.hippo.ehviewer.R;
 import com.hippo.yorozuya.AssertUtils;
 
 public class MaxSizeContainer extends ViewGroup {
-
     private int mMaxWidth;
     private int mMaxHeight;
 

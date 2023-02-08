@@ -30,7 +30,6 @@ import com.hippo.ehviewer.client.data.GalleryInfo;
 import java.util.regex.Pattern;
 
 public class EhUtils {
-
     public static final int NONE = -1; // Use it for homepage
     public static final int PRIVATE = 0x400;
     public static final int UNKNOWN = 0x800;

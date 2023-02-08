@@ -29,11 +29,9 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 public class FavListUrlBuilder implements Parcelable {
-
     public static final int FAV_CAT_ALL = -1;
     public static final int FAV_CAT_LOCAL = -2;
     public static final Parcelable.Creator<FavListUrlBuilder> CREATOR = new Parcelable.Creator<>() {
-
         @Override
         public FavListUrlBuilder createFromParcel(Parcel source) {
             return new FavListUrlBuilder(source);

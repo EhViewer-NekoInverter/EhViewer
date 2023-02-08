@@ -27,7 +27,6 @@ import android.view.MotionEvent;
 import androidx.annotation.NonNull;
 
 public class LinkifyTextView extends ObservedTextView {
-
     private ClickableSpan mCurrentSpan;
 
     public LinkifyTextView(Context context) {

@@ -24,7 +24,6 @@ import android.view.animation.Interpolator;
 import com.hippo.glview.anim.Animation;
 
 abstract class Fling extends Animation {
-
     private static final float DECELERATION_RATE = (float) (Math.log(0.78) / Math.log(0.9));
     private static final float INFLEXION = 0.35f; // Tension lines cross at (INFLEXION, 1)
     private static final float START_TENSION = 0.5f;

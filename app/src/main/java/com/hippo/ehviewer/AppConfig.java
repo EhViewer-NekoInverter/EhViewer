@@ -34,7 +34,6 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 public class AppConfig {
-
     public static final String APP_DIRNAME = "EhViewer";
 
     private static final String DOWNLOAD = "download";

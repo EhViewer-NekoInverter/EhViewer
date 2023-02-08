@@ -17,7 +17,6 @@
 package com.hippo.ehviewer.client;
 
 public class EhCacheKeyFactory {
-
     public static String getThumbKey(long gid) {
         return "preview:large:" + gid + ":" + 0; // "thumb:" + gid;
     }

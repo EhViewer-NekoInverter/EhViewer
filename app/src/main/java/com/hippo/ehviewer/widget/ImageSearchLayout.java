@@ -51,7 +51,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public final class ImageSearchLayout extends LinearLayout implements View.OnClickListener {
-
     private static final String TAG = ImageSearchLayout.class.getSimpleName();
 
     private ImageView mPreview;
@@ -202,7 +201,6 @@ public final class ImageSearchLayout extends LinearLayout implements View.OnClic
     }
 
     private static class SavedState extends AbsSavedState {
-
         public static final Parcelable.Creator<SavedState> CREATOR
                 = new Parcelable.Creator<SavedState>() {
             @Override

@@ -13,7 +13,6 @@ import okio.Source
  * below a threshold.
  */
 internal class FrameDelayRewritingSource(delegate: Source) : ForwardingSource(delegate) {
-
     // An intermediary buffer so we can read and alter the data before it's written to the destination.
     private val buffer = Buffer()
 

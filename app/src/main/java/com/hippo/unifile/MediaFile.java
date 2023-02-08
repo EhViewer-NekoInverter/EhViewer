@@ -26,7 +26,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 class MediaFile extends UniFile {
-
     private final Context mContext;
     private final Uri mUri;
 

@@ -17,7 +17,6 @@
 package com.hippo.ehviewer.client.exception;
 
 public class CancelledException extends Exception {
-
     public CancelledException() {
         super("CANCELED");
     }

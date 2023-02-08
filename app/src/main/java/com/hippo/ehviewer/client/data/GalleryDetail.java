@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GalleryDetail extends GalleryInfo {
-
     public static final Creator<GalleryDetail> CREATOR = new Creator<GalleryDetail>() {
         @Override
         public GalleryDetail createFromParcel(Parcel source) {

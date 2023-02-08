@@ -30,7 +30,6 @@ import com.hippo.image.Image;
 import java.util.Arrays;
 
 public class ImageMovableTextTexture extends ImageSpriteTexture {
-
     private final char[] mCharacters;
     private final float[] mWidths;
     private final float mHeight;

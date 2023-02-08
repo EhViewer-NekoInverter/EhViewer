@@ -20,7 +20,6 @@ package com.hippo.ehviewer.client;
  * Some configurable stuff about EH. It ends up cookie.
  */
 public class EhConfig implements Cloneable {
-
     /**
      * The Cookie key of uconfig
      */

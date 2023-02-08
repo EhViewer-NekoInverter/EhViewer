@@ -25,7 +25,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 public class EventPaneParser {
-
     public static String parse(String body) {
         String event = null;
         try {
@@ -40,6 +39,4 @@ public class EventPaneParser {
         }
         return event;
     }
-
-
 }

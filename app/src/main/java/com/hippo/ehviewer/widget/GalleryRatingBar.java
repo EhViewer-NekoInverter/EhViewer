@@ -25,7 +25,6 @@ import androidx.appcompat.widget.AppCompatRatingBar;
 
 public class GalleryRatingBar extends AppCompatRatingBar
         implements RatingBar.OnRatingBarChangeListener {
-
     private OnUserRateListener mListener;
 
     public GalleryRatingBar(Context context) {

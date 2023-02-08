@@ -26,7 +26,6 @@ import java.io.IOException;
  * The UniRandomAccessFile is designed to emulate RandomAccessFile interface for UniFile
  */
 public interface UniRandomAccessFile {
-
     /**
      * Closes this UniRandomAccessFile and releases any resources associated with it.
      * A closed UniRandomAccessFile cannot perform any operations.

@@ -33,7 +33,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 public class SpiderInfo {
-
     static final String TOKEN_FAILED = "failed";
     private static final String TAG = SpiderInfo.class.getSimpleName();
     private static final String VERSION_STR = "VERSION";

@@ -24,7 +24,6 @@ package com.hippo.unifile;
  * @see UniFile#listFiles(FilenameFilter)
  */
 public interface FilenameFilter {
-
     /**
      * Indicates if a specific filename matches this filter.
      *

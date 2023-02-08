@@ -17,7 +17,6 @@
 package com.hippo.ehviewer.client.exception;
 
 public class ParseException extends EhException {
-
     private final String mBody;
 
     public ParseException(String detailMessage, String body) {

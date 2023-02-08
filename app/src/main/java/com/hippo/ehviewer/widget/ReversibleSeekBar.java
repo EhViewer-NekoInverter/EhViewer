@@ -24,7 +24,6 @@ import android.view.MotionEvent;
 import androidx.appcompat.widget.AppCompatSeekBar;
 
 public class ReversibleSeekBar extends AppCompatSeekBar {
-
     private boolean mReverse;
 
     public ReversibleSeekBar(Context context) {

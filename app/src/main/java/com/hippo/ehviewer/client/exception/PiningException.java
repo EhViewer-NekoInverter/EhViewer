@@ -17,7 +17,6 @@
 package com.hippo.ehviewer.client.exception;
 
 public class PiningException extends EhException {
-
     public PiningException() {
         super("pining for the fjords");
     }

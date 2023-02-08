@@ -38,7 +38,6 @@ import okhttp3.OkHttpClient;
 
 @SuppressWarnings("rawtypes")
 public final class Conaco<V> {
-
     public static final int SOURCE_MEMORY = 0;
     public static final int SOURCE_DISK = 1;
     public static final int SOURCE_NETWORK = 2;

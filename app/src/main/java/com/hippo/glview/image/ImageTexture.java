@@ -43,7 +43,6 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ImageTexture implements Texture, Animatable {
-
     private static final int TILE_SMALL = 0;
     private static final int TILE_LARGE = 1;
     private static final int SMALL_CONTENT_SIZE = 254;
@@ -493,7 +492,6 @@ public class ImageTexture implements Texture, Animatable {
     }
 
     private static class Tile extends NativeTexture {
-
         public int offsetX;
         public int offsetY;
         public ImageWrapper image;
@@ -576,7 +574,6 @@ public class ImageTexture implements Texture, Animatable {
     }
 
     private class AnimateRunnable implements Runnable {
-
         public void doRun() {
             long lastTime = System.nanoTime();
             long lastDelay = -1L;

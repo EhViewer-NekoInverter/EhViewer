@@ -25,7 +25,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class SerialThreadExecutor implements Executor, Runnable {
-
     private final Lock mThreadLock = new ReentrantLock();
     private final Object mWaitLock = new Object();
     private final long mKeepAliveMillis;

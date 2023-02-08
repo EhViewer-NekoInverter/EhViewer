@@ -17,7 +17,6 @@
 package com.hippo.yorozuya;
 
 public class AssertError extends Error {
-
     public AssertError(String detailMessage) {
         super(detailMessage);
     }

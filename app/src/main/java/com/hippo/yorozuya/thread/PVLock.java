@@ -17,7 +17,6 @@
 package com.hippo.yorozuya.thread;
 
 public class PVLock {
-
     private int mCounter;
 
     public PVLock(int count) {

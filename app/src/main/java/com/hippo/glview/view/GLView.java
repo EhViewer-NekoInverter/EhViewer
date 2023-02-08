@@ -1267,7 +1267,6 @@ public class GLView implements TouchOwner {
      * and work like it.
      */
     public static class LayoutParams {
-
         /**
          * Special value for the height or width requested by a View.
          * MATCH_PARENT means that the view wants to be as big as its parent,
@@ -1323,7 +1322,6 @@ public class GLView implements TouchOwner {
      * LayoutParams with gravity inside
      */
     public static class GravityLayoutParams extends LayoutParams {
-
         public int gravity = Gravity.NO_GRAVITY;
 
         public GravityLayoutParams(GLView.LayoutParams source) {

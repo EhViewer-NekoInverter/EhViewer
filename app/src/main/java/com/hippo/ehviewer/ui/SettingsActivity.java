@@ -29,7 +29,6 @@ import com.hippo.ehviewer.ui.fragment.SettingsFragment;
 import com.hippo.ehviewer.ui.scene.BaseScene;
 
 public final class SettingsActivity extends EhActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

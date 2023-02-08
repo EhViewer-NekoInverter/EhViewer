@@ -17,7 +17,6 @@
 package com.hippo.yorozuya;
 
 public class Pool<T> {
-
     private final T[] mArray;
     private final int mMaxSize;
     private int mSize;

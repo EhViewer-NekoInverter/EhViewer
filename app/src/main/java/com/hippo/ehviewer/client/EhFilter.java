@@ -28,7 +28,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class EhFilter {
-
     public static final int MODE_TITLE = 0;
     public static final int MODE_UPLOADER = 1;
     public static final int MODE_TAG = 2;

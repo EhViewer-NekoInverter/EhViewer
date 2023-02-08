@@ -23,7 +23,6 @@ import com.hippo.glview.anim.CanvasAnimation;
 import com.hippo.glview.glrenderer.GLCanvas;
 
 public interface GLRoot {
-
     void addOnGLIdleListener(OnGLIdleListener listener);
 
     void registerLaunchedAnimation(CanvasAnimation animation);

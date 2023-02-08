@@ -25,7 +25,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
 public class TriangleDrawable extends Drawable {
-
     private final Paint mPaint;
     private final Path mPath;
 

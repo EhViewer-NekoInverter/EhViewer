@@ -30,7 +30,6 @@ import com.hippo.ehviewer.client.EhTagDatabase;
 import rikka.material.app.DayNightDelegate;
 
 public class EhFragment extends BasePreferenceFragment {
-
     @Override
     public void onCreatePreferences(@Nullable Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.eh_settings);

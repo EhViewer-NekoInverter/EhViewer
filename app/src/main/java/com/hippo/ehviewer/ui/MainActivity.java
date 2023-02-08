@@ -100,7 +100,6 @@ import rikka.material.app.DayNightDelegate;
 
 public final class MainActivity extends StageActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
     private static final String KEY_NAV_CHECKED_ITEM = "nav_checked_item";
 
     static {
@@ -347,7 +346,6 @@ public final class MainActivity extends StageActivity
                     try {
                         checkAppLinkVerify();
                     } catch (PackageManager.NameNotFoundException ignored) {
-
                     }
                 }
             }
@@ -357,7 +355,6 @@ public final class MainActivity extends StageActivity
 
         EhTagDatabase.update(this);
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.S)
     private void checkAppLinkVerify() throws PackageManager.NameNotFoundException {

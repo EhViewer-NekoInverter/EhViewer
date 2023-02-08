@@ -17,7 +17,6 @@
 package com.hippo.yorozuya;
 
 public class AssertException extends Exception {
-
     public AssertException(String detailMessage) {
         super(detailMessage);
     }

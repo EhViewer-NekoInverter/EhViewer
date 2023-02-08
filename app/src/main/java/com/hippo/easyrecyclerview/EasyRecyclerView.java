@@ -38,7 +38,6 @@ import com.hippo.yorozuya.NumberUtils;
  */
 // Get some code from twoway-view and AbsListView.
 public class EasyRecyclerView extends RecyclerView {
-
     /**
      * Normal list that does not indicate choices
      */
@@ -139,7 +138,6 @@ public class EasyRecyclerView extends RecyclerView {
      */
     @Override
     public void setAdapter(RecyclerView.Adapter adapter) {
-
         super.setAdapter(adapter);
 
         mAdapter = adapter;
@@ -170,7 +168,6 @@ public class EasyRecyclerView extends RecyclerView {
             }
         }
     }
-
 
     public int getCheckedItemCount() {
         return mCheckedItemCount;
@@ -513,7 +510,6 @@ public class EasyRecyclerView extends RecyclerView {
      * Custom checked
      */
     public interface CustomChoiceListener {
-
         void onIntoCustomChoice(EasyRecyclerView view);
 
         void onOutOfCustomChoice(EasyRecyclerView view);
@@ -535,7 +531,6 @@ public class EasyRecyclerView extends RecyclerView {
      * but it is required when restoring from RecyclerView's subclasses.
      */
     static class SavedState implements Parcelable {
-
         public static final SavedState EMPTY_STATE = new SavedState() {
         };
         public static final Parcelable.Creator<SavedState> CREATOR
@@ -621,7 +616,6 @@ public class EasyRecyclerView extends RecyclerView {
 
     class MultiChoiceModeWrapper implements MultiChoiceModeListener {
         private MultiChoiceModeListener mWrapped;
-
 
         @SuppressWarnings("BooleanMethodIsAlwaysInverted")
         public boolean hasWrappedCallback() {

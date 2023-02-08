@@ -20,7 +20,6 @@ import android.os.Handler;
 import android.os.Looper;
 
 public final class SimpleHandler extends Handler {
-
     private static Handler sInstance;
 
     private SimpleHandler(Looper mainLooper) {

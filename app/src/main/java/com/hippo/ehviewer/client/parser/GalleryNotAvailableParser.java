@@ -26,7 +26,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 public class GalleryNotAvailableParser {
-
     public static String parse(String body) {
         String error = null;
         try {

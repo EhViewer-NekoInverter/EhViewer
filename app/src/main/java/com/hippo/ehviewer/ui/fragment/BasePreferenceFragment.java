@@ -58,7 +58,6 @@ public class BasePreferenceFragment extends PreferenceFragmentCompat
 
     @Override
     public void onCreatePreferences(@Nullable Bundle savedInstanceState, String rootKey) {
-
     }
 
     @Override

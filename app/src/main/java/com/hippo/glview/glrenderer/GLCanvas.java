@@ -27,7 +27,6 @@ import android.graphics.RectF;
 // [x, x+width) * [y, y+height)
 //
 public interface GLCanvas {
-
     int SAVE_FLAG_ALL = 0xFFFFFFFF;
     int SAVE_FLAG_ALPHA = 0x01;
     int SAVE_FLAG_MATRIX = 0x02;

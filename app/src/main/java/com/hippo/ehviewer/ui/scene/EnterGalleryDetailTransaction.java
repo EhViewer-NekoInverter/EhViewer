@@ -28,7 +28,6 @@ import com.hippo.ehviewer.R;
 import com.hippo.scene.TransitionHelper;
 
 class EnterGalleryDetailTransaction implements TransitionHelper {
-
     private final View mThumb;
 
     public EnterGalleryDetailTransaction(View thumb) {

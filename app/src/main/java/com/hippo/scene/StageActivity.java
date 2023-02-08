@@ -43,7 +43,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class StageActivity extends EhActivity {
-
     public static final String ACTION_START_SCENE = "start_scene";
     public static final String KEY_SCENE_NAME = "stage_activity_scene_name";
     public static final String KEY_SCENE_ARGS = "stage_activity_scene_args";
@@ -633,7 +632,6 @@ public abstract class StageActivity extends EhActivity {
     }
 
     private final class SceneViewComparator implements Comparator<View> {
-
         private int getIndex(View view) {
             Object o = view.getTag(R.id.fragment_tag);
             if (o instanceof String) {

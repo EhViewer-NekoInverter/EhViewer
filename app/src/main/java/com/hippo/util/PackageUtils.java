@@ -27,7 +27,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public final class PackageUtils {
-
     private static final String TAG = PackageUtils.class.getSimpleName();
 
     public static String getSignature(Context context, String packageName) {

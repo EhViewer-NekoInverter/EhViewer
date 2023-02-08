@@ -31,7 +31,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ArchiveParser {
-
     private static final Pattern PATTERN_ARCHIVE_URL = Pattern.compile("<strong>(.*)</strong>.*<a href=\"([^\"]*)\">Click Here To Start Downloading</a>");
     private static final Pattern PATTERN_HATH_FORM = Pattern.compile("<form id=\"hathdl_form\" action=\"[^\"]*?or=([^=\"]*?)\" method=\"post\">");
     private static final Pattern PATTERN_HATH_ARCHIVE = Pattern.compile("<p><a href=\"[^\"]*\" onclick=\"return do_hathdl\\('([0-9]+|org)'\\)\">([^<]+)</a></p>\\s*<p>([\\w. ]+)</p>\\s*<p>([\\w. ]+)</p>");

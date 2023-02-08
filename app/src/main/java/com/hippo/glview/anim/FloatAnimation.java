@@ -19,7 +19,6 @@ package com.hippo.glview.anim;
 import com.hippo.yorozuya.MathUtils;
 
 public class FloatAnimation extends Animation {
-
     private float mFrom;
     private float mTo;
     private float mCurrent;

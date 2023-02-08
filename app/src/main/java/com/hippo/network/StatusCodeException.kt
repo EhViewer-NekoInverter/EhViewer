@@ -62,5 +62,4 @@ class StatusCodeException(val responseCode: Int) : Exception() {
             ERROR_MESSAGE_ARRAY.append(505, resources.getString(R.string.error_status_code_505))
         }
     }
-
 }

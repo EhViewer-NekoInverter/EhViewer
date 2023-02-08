@@ -50,7 +50,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 abstract class GalleryAdapter extends RecyclerView.Adapter<GalleryHolder> {
-
     public static final int TYPE_INVALID = -1;
     public static final int TYPE_LIST = 0;
     public static final int TYPE_GRID = 1;

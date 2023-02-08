@@ -23,7 +23,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
 public class WrapDrawable extends Drawable {
-
     private Drawable mDrawable;
 
     public Drawable getDrawable() {
@@ -98,7 +97,6 @@ public class WrapDrawable extends Drawable {
             mDrawable.setFilterBitmap(filter);
         }
     }
-
 
     @Override
     public void setAlpha(int alpha) {

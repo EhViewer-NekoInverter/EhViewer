@@ -500,7 +500,6 @@ public class GLRootView extends GLSurfaceView
     }
 
     private class GLRootRenderer implements GLSurfaceView.Renderer {
-
         /**
          * Called when the context is created, possibly after automatic destruction.
          */
@@ -604,7 +603,6 @@ public class GLRootView extends GLSurfaceView
 
     // Always chose a config
     private class ConfigChooser implements EGLConfigChooser {
-
         private final int[] mValue = new int[1];
 
         @Override
@@ -687,7 +685,6 @@ public class GLRootView extends GLSurfaceView
     }
 
     private class ContextFactory implements EGLContextFactory {
-
         private static final int EGL_CONTEXT_CLIENT_VERSION = 0x3098;
 
         @Override

@@ -35,7 +35,6 @@ import com.hippo.unifile.UniFile;
 import com.hippo.util.ExceptionUtils;
 
 public class DownloadFragment extends BasePreferenceFragment {
-
     public static final String KEY_DOWNLOAD_LOCATION = "download_location";
 
     @Nullable

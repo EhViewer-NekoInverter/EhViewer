@@ -227,7 +227,6 @@ public final class StringUtils {
             final String text, final String[] searchList,
             final String[] replacementList, final boolean repeat,
             final int timeToLive) {
-
         // mchyzer Performance note: This creates very few new objects (one major goal)
         // let me know if there are performance requests, we can create a harness to measure
 
@@ -308,7 +307,6 @@ public final class StringUtils {
         final StringBuilder buf = new StringBuilder(text.length() + increase);
 
         while (textIndex != -1) {
-
             for (int i = start; i < textIndex; i++) {
                 buf.append(text.charAt(i));
             }

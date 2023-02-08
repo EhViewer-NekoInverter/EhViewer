@@ -22,7 +22,6 @@ import com.hippo.ehviewer.Settings;
 import com.hippo.network.UrlBuilder;
 
 public class EhUrl {
-
     public static final int SITE_E = 0;
     public static final int SITE_EX = 1;
 

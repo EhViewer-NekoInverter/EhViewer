@@ -35,12 +35,10 @@ import java.util.List;
  * @author Hippo
  */
 public class AutoWrapLayout extends ViewGroup {
-
     private static final Alignment[] sBaseLineArray = {Alignment.TOP,
             Alignment.CENTER, Alignment.BOTTOM};
     private final List<Rect> rectList = new ArrayList<>();
     private Alignment mAlignment;
-
 
     public AutoWrapLayout(Context context) {
         super(context);
@@ -222,9 +220,7 @@ public class AutoWrapLayout extends ViewGroup {
         setMeasuredDimension(measuredWidth, measuredHeight);
     }
 
-
     // TODO Take vertical mode
-
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         final int count = rectList.size();

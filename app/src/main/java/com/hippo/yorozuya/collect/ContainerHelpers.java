@@ -19,7 +19,6 @@ package com.hippo.yorozuya.collect;
 import java.util.Comparator;
 
 public class ContainerHelpers {
-
     // This is Arrays.binarySearch(), but doesn't do any argument validation.
     public static int binarySearch(int[] array, int size, int value) {
         int lo = 0;

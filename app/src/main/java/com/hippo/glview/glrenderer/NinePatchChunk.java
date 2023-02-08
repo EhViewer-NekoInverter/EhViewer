@@ -24,7 +24,6 @@ import java.nio.ByteOrder;
 // See "frameworks/base/include/utils/ResourceTypes.h" for the format of
 // NinePatch chunk.
 class NinePatchChunk {
-
     public static final int NO_COLOR = 0x00000001;
     public static final int TRANSPARENT_COLOR = 0x00000000;
 

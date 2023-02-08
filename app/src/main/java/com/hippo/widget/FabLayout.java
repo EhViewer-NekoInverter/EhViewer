@@ -33,7 +33,6 @@ import com.hippo.yorozuya.AnimationUtils;
 import com.hippo.yorozuya.SimpleAnimatorListener;
 
 public class FabLayout extends ViewGroup implements View.OnClickListener {
-
     private static final long ANIMATE_TIME = 300L;
 
     private static final String STATE_KEY_SUPER = "super";
@@ -288,7 +287,6 @@ public class FabLayout extends ViewGroup implements View.OnClickListener {
         }
     }
 
-
     private void setPrimaryFabAnimation(final View child, final boolean expanded, boolean delay) {
         float startRotation;
         float endRotation;
@@ -425,7 +423,6 @@ public class FabLayout extends ViewGroup implements View.OnClickListener {
     }
 
     public interface OnClickFabListener {
-
         void onClickPrimaryFab(FabLayout view, FloatingActionButton fab);
 
         void onClickSecondaryFab(FabLayout view, FloatingActionButton fab, int position);

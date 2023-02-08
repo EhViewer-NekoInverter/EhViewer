@@ -22,7 +22,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class RateGalleryParser {
-
     public static Result parse(String body) throws Exception {
         try {
             JSONObject jsonObject = new JSONObject(body);

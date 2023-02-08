@@ -93,7 +93,6 @@ import rikka.material.app.DayNightDelegate;
 import rikka.material.app.LocaleDelegate;
 
 public class EhApplication extends SceneApplication {
-
     private static final String TAG = EhApplication.class.getSimpleName();
     private static final String KEY_GLOBAL_STUFF_NEXT_ID = "global_stuff_next_id";
     private static final boolean DEBUG_CONACO = false;
@@ -384,7 +383,7 @@ public class EhApplication extends SceneApplication {
         EhCookieStore store = getEhCookieStore(this);
         HttpUrl eh = HttpUrl.get(EhUrl.HOST_E);
 
-        if (store.contains(eh, EhCookieStore.KEY_IPD_MEMBER_ID) || store.contains(eh, EhCookieStore.KEY_IPD_PASS_HASH)) {
+        if (store.contains(eh, EhCookieStore.KEY_IPB_MEMBER_ID) || store.contains(eh, EhCookieStore.KEY_IPB_PASS_HASH)) {
             IoThreadPoolExecutor.getInstance().execute(() -> {
                 String referer = EhUrl.REFERER_E;
                 Request request = new EhRequestBuilder(EhUrl.HOST_E + "news.php", referer).build();

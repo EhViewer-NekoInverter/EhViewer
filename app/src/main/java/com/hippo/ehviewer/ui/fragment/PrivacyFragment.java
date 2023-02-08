@@ -30,10 +30,8 @@ import com.hippo.ehviewer.Settings;
 /**
  * Created by Mo10 on 2018/2/10.
  */
-
 public class PrivacyFragment extends BasePreferenceFragment {
     private static final String KEY_PATTERN_PROTECTION = "com.hippo.ehviewer.ui.fragment.SetSecurityFragment";
-
     @Override
     public void onCreatePreferences(@Nullable Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.privacy_settings);

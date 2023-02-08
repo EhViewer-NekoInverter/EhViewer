@@ -44,7 +44,6 @@ import com.hippo.yorozuya.ViewUtils;
  * Only show a progress with jobs in background
  */
 public final class ProgressScene extends BaseScene implements View.OnClickListener {
-
     public static final String KEY_ACTION = "action";
     public static final String ACTION_GALLERY_TOKEN = "gallery_token";
     public static final String KEY_GID = "gid";
@@ -228,7 +227,6 @@ public final class ProgressScene extends BaseScene implements View.OnClickListen
     }
 
     private static class GetGalleryTokenListener extends EhCallback<ProgressScene, String> {
-
         public GetGalleryTokenListener(Context context, int stageId, String sceneTag) {
             super(context, stageId, sceneTag);
         }

@@ -23,7 +23,6 @@ import com.hippo.widget.LoadImageView;
 import com.hippo.yorozuya.MathUtils;
 
 public class TileThumb extends LoadImageView {
-
     private static final float MIN_ASPECT = 0.33f;
     private static final float MAX_ASPECT = 1.5f;
     private static final float DEFAULT_ASPECT = 0.67f;

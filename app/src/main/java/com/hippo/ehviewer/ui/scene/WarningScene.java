@@ -31,7 +31,6 @@ import com.hippo.ehviewer.ui.annotation.ViewLifeCircle;
 import com.hippo.yorozuya.ViewUtils;
 
 public final class WarningScene extends SolidScene implements View.OnClickListener {
-
     @Nullable
     private View mReject;
     @Nullable

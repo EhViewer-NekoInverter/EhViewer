@@ -27,7 +27,6 @@ import com.hippo.yorozuya.MathUtils;
  * Show a part of the original drawable
  */
 public class PreciselyClipDrawable extends DrawableWrapper {
-
     private final boolean mClip;
     private RectF mScale;
     private Rect mTemp;

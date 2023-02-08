@@ -27,7 +27,6 @@ import androidx.room.PrimaryKey;
 import java.util.regex.Pattern;
 
 public class GalleryInfo implements Parcelable {
-
     /**
      * ISO 639-1
      */
@@ -100,7 +99,6 @@ public class GalleryInfo implements Parcelable {
             "language:dutch",
     };
     public static final Parcelable.Creator<GalleryInfo> CREATOR = new Parcelable.Creator<GalleryInfo>() {
-
         @Override
         public GalleryInfo createFromParcel(Parcel source) {
             return new GalleryInfo(source);

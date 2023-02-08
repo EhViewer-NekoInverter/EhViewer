@@ -32,7 +32,6 @@ import com.hippo.ehviewer.ui.scene.ProgressScene;
 import com.hippo.scene.Announcer;
 
 public class EhUrlOpener {
-
     private static final String TAG = EhUrlOpener.class.getSimpleName();
 
     @Nullable

@@ -24,7 +24,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 public class Gravity {
-
     public static final int NO_GRAVITY = 0x0000;
     public static final int LEFT = 0x0001;
     public static final int TOP = 0x0002;

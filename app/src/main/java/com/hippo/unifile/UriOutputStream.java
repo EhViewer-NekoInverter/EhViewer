@@ -37,7 +37,6 @@ import java.io.OutputStream;
 // But UriOutputStream can avoid it on my Nexus 5 cm13.
 // TODO need more test
 class UriOutputStream extends FileOutputStream {
-
     private final ParcelFileDescriptor mPfd;
 
     private UriOutputStream(ParcelFileDescriptor pfd, FileDescriptor fd) {

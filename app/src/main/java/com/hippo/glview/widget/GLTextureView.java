@@ -23,7 +23,6 @@ import com.hippo.glview.glrenderer.Texture;
 import com.hippo.glview.view.GLView;
 
 public class GLTextureView extends GLView {
-
     private final RectF mSrc = new RectF();
     private final RectF mDst = new RectF();
 

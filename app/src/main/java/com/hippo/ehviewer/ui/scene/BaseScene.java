@@ -43,7 +43,6 @@ import com.hippo.ehviewer.ui.MainActivity;
 import com.hippo.scene.SceneFragment;
 
 public abstract class BaseScene extends SceneFragment {
-
     public static final int LENGTH_SHORT = 0;
     public static final int LENGTH_LONG = 1;
 

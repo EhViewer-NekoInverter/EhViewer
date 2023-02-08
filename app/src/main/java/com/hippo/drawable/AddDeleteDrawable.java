@@ -33,7 +33,6 @@ import com.hippo.ehviewer.R;
 import com.hippo.yorozuya.MathUtils;
 
 public class AddDeleteDrawable extends Drawable {
-
     private final Paint mPaint = new Paint();
     private final Path mPath = new Path();
 

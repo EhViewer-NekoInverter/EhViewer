@@ -40,7 +40,6 @@ import com.hippo.yorozuya.SimpleAnimatorListener;
 import com.hippo.yorozuya.SimpleHandler;
 
 public class FastScroller extends View {
-
     private static final int INVALID = -1;
 
     private static final int SCROLL_BAR_FADE_DURATION = 500;
@@ -123,7 +122,6 @@ public class FastScroller extends View {
         mHideAnimator.setInterpolator(AnimationUtils.SLOW_FAST_INTERPOLATOR);
         mHideAnimator.setDuration(SCROLL_BAR_FADE_DURATION);
         mHideAnimator.addListener(new SimpleAnimatorListener() {
-
             private boolean mCancel;
 
             @Override
@@ -223,7 +221,6 @@ public class FastScroller extends View {
 
         mRecyclerView = recyclerView;
         mOnScrollChangeListener = new RecyclerView.OnScrollListener() {
-
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
             }

@@ -19,7 +19,6 @@ package com.hippo.glview.anim;
 import com.hippo.glview.glrenderer.GLCanvas;
 
 public abstract class CanvasAnimation extends Animation {
-
     public abstract int getCanvasSaveFlags();
 
     public abstract void apply(GLCanvas canvas);

@@ -92,7 +92,6 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 public final class SpiderQueen implements Runnable {
-
     public static final int MODE_READ = 0;
     public static final int MODE_DOWNLOAD = 1;
     public static final int STATE_NONE = 0;
@@ -620,7 +619,6 @@ public final class SpiderQueen implements Runnable {
         }
     }
 
-
     @Nullable
     public String getExtension(int index) {
         int state = getPageState(index);
@@ -1064,7 +1062,6 @@ public final class SpiderQueen implements Runnable {
     }
 
     public interface OnSpiderListener {
-
         void onGetPages(int pages);
 
         void onGet509(int index);
@@ -1089,7 +1086,6 @@ public final class SpiderQueen implements Runnable {
     }
 
     private class SpiderWorker implements Runnable {
-
         private final long mGid;
 
         public SpiderWorker() {
@@ -1592,7 +1588,6 @@ public final class SpiderQueen implements Runnable {
     }
 
     private class SpiderDecoder implements Runnable {
-
         private final int mThreadIndex;
 
         public SpiderDecoder(int index) {

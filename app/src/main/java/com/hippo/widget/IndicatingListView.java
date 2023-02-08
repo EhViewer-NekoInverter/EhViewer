@@ -30,7 +30,6 @@ import androidx.annotation.NonNull;
 import com.hippo.ehviewer.R;
 
 public class IndicatingListView extends ListView {
-
     private final Paint mPaint = new Paint();
     private final Rect mTemp = new Rect();
     private int mIndicatorHeight;

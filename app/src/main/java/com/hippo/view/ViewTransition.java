@@ -22,7 +22,6 @@ import android.view.View;
 import android.view.ViewPropertyAnimator;
 
 public class ViewTransition {
-
     protected static final long ANIMATE_TIME = 300L;
 
     private final View[] mViews;

@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EhStageLayout extends StageLayout implements CoordinatorLayout.AttachedBehavior {
-
     private List<View> mAboveSnackViewList;
 
     public EhStageLayout(Context context, AttributeSet attrs) {
@@ -81,7 +80,6 @@ public class EhStageLayout extends StageLayout implements CoordinatorLayout.Atta
     }
 
     public static class Behavior extends CoordinatorLayout.Behavior<EhStageLayout> {
-
         @Override
         public boolean layoutDependsOn(@NonNull CoordinatorLayout parent, @NonNull EhStageLayout child, @NonNull View dependency) {
             return dependency instanceof Snackbar.SnackbarLayout;

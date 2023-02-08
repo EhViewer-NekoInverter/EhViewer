@@ -27,7 +27,6 @@ import android.net.Uri;
  * A UriHandler is to get UniFile from custom uri for extensions
  */
 public interface UriHandler {
-
     /**
      * Create a {@link UniFile} representing the uri
      */

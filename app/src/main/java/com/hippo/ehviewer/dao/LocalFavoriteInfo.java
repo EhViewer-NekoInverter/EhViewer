@@ -27,7 +27,6 @@ import com.hippo.ehviewer.client.data.GalleryInfo;
 
 @Entity(tableName = "LOCAL_FAVORITES")
 public class LocalFavoriteInfo extends GalleryInfo {
-
     public static final Creator<LocalFavoriteInfo> CREATOR = new Creator<>() {
         @Override
         public LocalFavoriteInfo createFromParcel(Parcel source) {

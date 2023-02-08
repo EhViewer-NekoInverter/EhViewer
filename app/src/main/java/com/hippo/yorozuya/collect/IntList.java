@@ -20,9 +20,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class IntList implements Parcelable {
-
     public static final Parcelable.Creator<IntList> CREATOR = new Parcelable.Creator<IntList>() {
-
         @Override
         public IntList createFromParcel(Parcel source) {
             return new IntList(source);

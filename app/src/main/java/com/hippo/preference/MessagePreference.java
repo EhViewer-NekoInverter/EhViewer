@@ -29,7 +29,6 @@ import androidx.appcompat.app.AlertDialog;
 import com.hippo.ehviewer.R;
 
 public class MessagePreference extends DialogPreference {
-
     private CharSequence mDialogMessage;
     private boolean mDialogMessageLinkify;
 

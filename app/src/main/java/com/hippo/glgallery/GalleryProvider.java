@@ -33,7 +33,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 public abstract class GalleryProvider {
-
     public static final int STATE_WAIT = -1;
     public static final int STATE_ERROR = -2;
 
@@ -153,7 +152,6 @@ public abstract class GalleryProvider {
     }
 
     public interface Listener {
-
         void onDataChanged();
 
         void onPageWait(int index);
@@ -168,7 +166,6 @@ public abstract class GalleryProvider {
     }
 
     private static class NotifyTask implements GLRoot.OnGLIdleListener {
-
         public static final int TYPE_DATA_CHANGED = 0;
         public static final int TYPE_WAIT = 1;
         public static final int TYPE_PERCENT = 2;
@@ -236,7 +233,6 @@ public abstract class GalleryProvider {
     }
 
     private static class ImageCache extends LruCache<Integer, ImageWrapper> {
-
         private static final long MAX_CACHE_SIZE = 512 * 1024 * 1024;
         private static final long MIN_CACHE_SIZE = 256 * 1024 * 1024;
 

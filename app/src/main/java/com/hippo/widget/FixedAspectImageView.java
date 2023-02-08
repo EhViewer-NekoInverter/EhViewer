@@ -27,7 +27,6 @@ import com.hippo.ehviewer.R;
 import com.hippo.yorozuya.MathUtils;
 
 public class FixedAspectImageView extends ShapeableImageView {
-
     private static final int[] MIN_ATTRS = {
             android.R.attr.minWidth,
             android.R.attr.minHeight

@@ -28,7 +28,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TorrentParser {
-
     private static final Pattern PATTERN_TORRENT = Pattern.compile("</span> ([0-9-]+) [0-9:]+</td>[\\s\\S]+</span> ([0-9\\.]+ [KMGT]B)</td>[\\s\\S]+</span> ([0-9]+)</td>[\\s\\S]+</span> ([0-9]+)</td>[\\s\\S]+</span> ([0-9]+)</td>[\\s\\S]+</span>([^<]+)</td>[\\s\\S]+onclick=\"document.location='([^\"]+)'[^<]+>([^<]+)</a>");
 
     public static List<Result> parse(String body) {

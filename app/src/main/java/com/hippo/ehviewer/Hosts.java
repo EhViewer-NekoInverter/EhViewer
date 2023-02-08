@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Hosts {
-
     private static final int VERSION_1 = 1;
     private static final String TABLE_HOSTS = "HOSTS";
     private static final String COLUMN_HOST = "HOST";

@@ -61,7 +61,6 @@ import java.util.zip.ZipOutputStream;
 import rikka.material.app.LocaleDelegate;
 
 public class AdvancedFragment extends BasePreferenceFragment {
-
     private static final String KEY_DUMP_LOGCAT = "dump_logcat";
     private static final String KEY_APP_LANGUAGE = "app_language";
     private static final String KEY_IMPORT_DATA = "import_data";

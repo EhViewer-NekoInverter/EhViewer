@@ -31,7 +31,6 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
 public final class GalleryListUrlParser {
-
     private static final String[] VALID_HOSTS = {EhUrl.DOMAIN_EX, EhUrl.DOMAIN_E, EhUrl.DOMAIN_LOFI};
 
     private static final String PATH_NORMAL = "/";
@@ -120,7 +119,6 @@ public final class GalleryListUrlParser {
         int prefixLength = PATH_TAG.length();
         int index = path.indexOf('/', prefixLength);
 
-
         if (index < 0) {
             tag = path.substring(prefixLength);
         } else {
@@ -167,5 +165,4 @@ public final class GalleryListUrlParser {
         builder.setKeyword(String.valueOf(tl));
         return builder;
     }
-
 }

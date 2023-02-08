@@ -23,7 +23,6 @@ import java.util.ArrayList;
 
 // TODO Add url field?
 public class GalleryTagGroup implements Parcelable {
-
     public static final Parcelable.Creator<GalleryTagGroup> CREATOR = new Parcelable.Creator<GalleryTagGroup>() {
         @Override
         public GalleryTagGroup createFromParcel(Parcel source) {

@@ -46,7 +46,6 @@ import com.hippo.ehviewer.R;
  */
 public abstract class DialogPreference extends Preference implements
         DialogInterface.OnClickListener, DialogInterface.OnDismissListener {
-
     private AlertDialog.Builder mBuilder;
 
     private CharSequence mDialogTitle;

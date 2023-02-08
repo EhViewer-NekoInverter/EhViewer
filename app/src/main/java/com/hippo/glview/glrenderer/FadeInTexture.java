@@ -16,13 +16,11 @@
 
 package com.hippo.glview.glrenderer;
 
-
 import android.graphics.RectF;
 
 // FadeInTexture is a texture which begins with a color, then gradually animates
 // into a given texture.
 public class FadeInTexture extends FadeTexture implements Texture {
-
     private final int mColor;
     private final TiledTexture mTexture;
 

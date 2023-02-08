@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GLProgressView extends GLView {
-
     private static final Interpolator TRIM_START_INTERPOLATOR;
     private static final Interpolator TRIM_END_INTERPOLATOR;
     private static final Interpolator LINEAR_INTERPOLATOR = new LinearInterpolator();

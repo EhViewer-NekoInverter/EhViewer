@@ -165,7 +165,6 @@ public class GLES11Canvas implements GLCanvas {
     // bound of the texture.
     private static void convertCoordinate(RectF source, RectF target,
                                           BasicTexture texture) {
-
         int width = texture.getWidth();
         int height = texture.getHeight();
         int texWidth = texture.getTextureWidth();
@@ -956,7 +955,6 @@ public class GLES11Canvas implements GLCanvas {
     }
 
     private static class GLState {
-
         private final GL11 mGL;
         private final boolean mLineSmooth = false;
         private int mTexEnvMode = GL11.GL_REPLACE;

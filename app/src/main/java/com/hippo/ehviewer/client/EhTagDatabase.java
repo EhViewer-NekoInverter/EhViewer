@@ -55,7 +55,6 @@ import okio.BufferedSource;
 import okio.Okio;
 
 public class EhTagDatabase {
-
     private static final Map<String, String> NAMESPACE_TO_PREFIX = new HashMap<>();
     // TODO more lock for different language
     private static final Lock lock = new ReentrantLock();

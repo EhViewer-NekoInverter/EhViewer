@@ -39,7 +39,6 @@ import com.hippo.scene.StageActivity;
 import rikka.core.res.ResourcesKt;
 
 public final class UrlOpener {
-
     private UrlOpener() {
     }
 

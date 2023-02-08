@@ -30,7 +30,6 @@ import androidx.appcompat.app.AlertDialog;
 import com.hippo.ehviewer.R;
 
 public class DialogWebChromeClient extends WebChromeClient {
-
     private final Context context;
 
     public DialogWebChromeClient(Context context) {

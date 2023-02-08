@@ -46,7 +46,6 @@ import java.util.ArrayList;
 import rikka.core.res.ResourcesKt;
 
 public final class GalleryInfoScene extends ToolbarScene {
-
     public static final String KEY_GALLERY_DETAIL = "gallery_detail";
     public static final String KEY_KEYS = "keys";
     public static final String KEY_VALUES = "values";
@@ -220,7 +219,6 @@ public final class GalleryInfoScene extends ToolbarScene {
     }
 
     private static class InfoHolder extends RecyclerView.ViewHolder {
-
         private final TextView key;
         private final TextView value;
 
@@ -233,7 +231,6 @@ public final class GalleryInfoScene extends ToolbarScene {
     }
 
     private class InfoAdapter extends RecyclerView.Adapter<InfoHolder> {
-
         private static final int TYPE_HEADER = 0;
         private static final int TYPE_DATA = 1;
 

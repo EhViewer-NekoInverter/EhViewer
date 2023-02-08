@@ -25,7 +25,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 public class ForumsParser {
-
     public static String parse(String body) throws ParseException {
         try {
             Document d = Jsoup.parse(body, EhUrl.URL_FORUMS);

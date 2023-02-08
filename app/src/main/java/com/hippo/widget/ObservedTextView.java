@@ -22,7 +22,6 @@ import android.util.AttributeSet;
 import androidx.appcompat.widget.AppCompatTextView;
 
 public class ObservedTextView extends AppCompatTextView {
-
     private OnWindowAttachListener mOnWindowAttachListener;
 
     public ObservedTextView(Context context) {

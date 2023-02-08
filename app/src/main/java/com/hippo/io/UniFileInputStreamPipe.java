@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class UniFileInputStreamPipe implements InputStreamPipe {
-
     private final UniFile mFile;
     private InputStream mIs;
 

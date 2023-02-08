@@ -24,7 +24,6 @@ import javax.microedition.khronos.opengles.GL11ExtensionPack;
  * buffer IDs
  */
 public class GLES11IdImpl implements GLId {
-
     // Mutex for sNextId
     private final static Object sLock = new Object();
     private static int sNextId = 1;

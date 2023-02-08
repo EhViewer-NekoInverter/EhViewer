@@ -26,7 +26,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.hippo.util.ExceptionUtils;
 
 public class SafeCoordinatorLayout extends CoordinatorLayout {
-
     public SafeCoordinatorLayout(Context context) {
         super(context);
     }

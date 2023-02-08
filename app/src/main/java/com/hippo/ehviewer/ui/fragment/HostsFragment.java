@@ -51,7 +51,6 @@ import rikka.core.res.ResourcesKt;
 
 public class HostsFragment extends BaseFragment
         implements View.OnClickListener {
-
     private static final String DIALOG_TAG_ADD_HOST = AddHostDialogFragment.class.getName();
     private static final String DIALOG_TAG_EDIT_HOST = EditHostDialogFragment.class.getName();
 
@@ -141,7 +140,6 @@ public class HostsFragment extends BaseFragment
     }
 
     public abstract static class HostDialogFragment extends DialogFragment {
-
         private HostsFragment hostsFragment;
 
         @NonNull
@@ -218,7 +216,6 @@ public class HostsFragment extends BaseFragment
     }
 
     public static class AddHostDialogFragment extends HostDialogFragment {
-
         @Override
         protected void onCreateDialogBuilder(AlertDialog.Builder builder) {
             builder.setTitle(R.string.add_host);
@@ -233,7 +230,6 @@ public class HostsFragment extends BaseFragment
     }
 
     public static class EditHostDialogFragment extends HostDialogFragment {
-
         @Override
         protected void onCreateDialogBuilder(AlertDialog.Builder builder) {
             builder.setTitle(R.string.edit_host);
@@ -254,7 +250,6 @@ public class HostsFragment extends BaseFragment
     }
 
     private static class HostsHolder extends RecyclerView.ViewHolder {
-
         public final TextView host;
         public final TextView ip;
 
@@ -266,7 +261,6 @@ public class HostsFragment extends BaseFragment
     }
 
     private class HostsAdapter extends RecyclerView.Adapter<HostsHolder> {
-
         private final LayoutInflater inflater = getLayoutInflater();
 
         @NonNull

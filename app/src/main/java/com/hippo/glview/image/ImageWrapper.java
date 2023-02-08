@@ -29,7 +29,6 @@ import com.hippo.image.Image;
  * It handles image recycle automatically.
  */
 public class ImageWrapper {
-
     private static final String LOG_TAG = "ImageWrapper";
 
     private final Image mImage;

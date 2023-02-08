@@ -41,7 +41,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class GalleryListParser {
-
     private static final String TAG = GalleryListParser.class.getSimpleName();
 
     private static final String NO_UNFILTERED_TEXT = "No unfiltered results in this page range. You either requested an invalid page or used too aggressive filters.";
@@ -293,7 +292,6 @@ public class GalleryListParser {
     }
 
     public static Result parse(@NonNull String body) throws Exception {
-
         Result result = new Result();
         Document d = Jsoup.parse(body);
         try {

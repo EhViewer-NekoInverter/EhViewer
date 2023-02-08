@@ -39,7 +39,6 @@ import com.hippo.yorozuya.MathUtils;
 import com.hippo.yorozuya.ViewUtils;
 
 public class ProxyPreference extends DialogPreference implements View.OnClickListener {
-
     private Spinner mType;
     private TextInputLayout mIpInputLayout;
     private EditText mIp;

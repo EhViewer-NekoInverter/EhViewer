@@ -25,10 +25,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Like http://exhentai.org/g/1234567/a1b2c3d4e5<br>
+ * Like http://exhentai.org/g/1234567/a1b2c3d4e5
  */
 public final class GalleryDetailUrlParser {
-
     private static final Pattern URL_STRICT_PATTERN = Pattern.compile(
             "https?://(?:" + EhUrl.DOMAIN_EX + "|" + EhUrl.DOMAIN_E + "|" + EhUrl.DOMAIN_LOFI + ")/(?:g|mpv)/(\\d+)/([0-9a-f]{10})");
 

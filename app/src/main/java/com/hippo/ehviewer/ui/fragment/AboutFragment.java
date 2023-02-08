@@ -25,7 +25,6 @@ import androidx.preference.Preference;
 import com.hippo.ehviewer.R;
 
 public class AboutFragment extends BasePreferenceFragment {
-
     private static final String KEY_AUTHOR = "author";
 
     @Override

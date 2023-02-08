@@ -17,7 +17,6 @@
 package com.hippo.ehviewer.client.exception;
 
 public class EhException extends Exception {
-
     public EhException(String detailMessage) {
         super(detailMessage);
     }

@@ -20,7 +20,6 @@ package com.hippo.util;
  */
 
 public class HashCodeUtils {
-
     private static final int X = 31;
 
     /**

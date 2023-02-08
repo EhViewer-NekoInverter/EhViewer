@@ -21,7 +21,6 @@ import android.content.Context;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 
 public abstract class SimpleSmoothScroller extends LinearSmoothScroller {
-
     private final float mMillisecondsPerPx;
 
     public SimpleSmoothScroller(Context context, float millisecondsPerInch) {

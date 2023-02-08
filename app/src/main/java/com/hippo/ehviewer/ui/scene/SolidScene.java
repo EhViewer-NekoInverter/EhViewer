@@ -27,7 +27,6 @@ import com.hippo.scene.Announcer;
  * Scene for safety, can't be covered
  */
 public class SolidScene extends BaseScene {
-
     public static final int CHECK_STEP_SECURITY = 0;
     public static final int CHECK_STEP_WARNING = 1;
     public static final int CHECK_STEP_SIGN_IN = 2;

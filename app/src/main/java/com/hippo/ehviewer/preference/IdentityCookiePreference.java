@@ -39,7 +39,6 @@ import okhttp3.Cookie;
 import okhttp3.HttpUrl;
 
 public class IdentityCookiePreference extends MessagePreference {
-
     @SuppressLint("StaticFieldLeak")
     private final SettingsActivity mActivity;
     private String message;
@@ -76,15 +75,15 @@ public class IdentityCookiePreference extends MessagePreference {
         for (int i = 0, n = cookies.size(); i < n; i++) {
             Cookie cookie = cookies.get(i);
             switch (cookie.name()) {
-                case EhCookieStore.KEY_IPD_MEMBER_ID -> ipbMemberId = cookie.value();
-                case EhCookieStore.KEY_IPD_PASS_HASH -> ipbPassHash = cookie.value();
+                case EhCookieStore.KEY_IPB_MEMBER_ID -> ipbMemberId = cookie.value();
+                case EhCookieStore.KEY_IPB_PASS_HASH -> ipbPassHash = cookie.value();
                 case EhCookieStore.KEY_IGNEOUS -> igneous = cookie.value();
             }
         }
 
         if (ipbMemberId != null || ipbPassHash != null || igneous != null) {
-            message = EhCookieStore.KEY_IPD_MEMBER_ID + ": " + ipbMemberId + "<br>"
-                    + EhCookieStore.KEY_IPD_PASS_HASH + ": " + ipbPassHash + "<br>"
+            message = EhCookieStore.KEY_IPB_MEMBER_ID + ": " + ipbMemberId + "<br>"
+                    + EhCookieStore.KEY_IPB_PASS_HASH + ": " + ipbPassHash + "<br>"
                     + EhCookieStore.KEY_IGNEOUS + ": " + igneous;
             setDialogMessage(Html.fromHtml(getContext().getString(R.string.settings_eh_identity_cookies_signed, message), Html.FROM_HTML_MODE_LEGACY));
             message = message.replace("<br>", "\n");

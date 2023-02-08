@@ -24,7 +24,6 @@ import com.hippo.yorozuya.collect.IntList;
 import java.util.ArrayList;
 
 public class NormalPreviewSet extends PreviewSet {
-
     public static final Creator<NormalPreviewSet> CREATOR = new Creator<NormalPreviewSet>() {
         @Override
         public NormalPreviewSet createFromParcel(Parcel source) {

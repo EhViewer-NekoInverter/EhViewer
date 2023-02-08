@@ -30,9 +30,8 @@ import okhttp3.Cookie;
 import okhttp3.HttpUrl;
 
 public class EhCookieStore extends CookieRepository {
-
-    public static final String KEY_IPD_MEMBER_ID = "ipb_member_id";
-    public static final String KEY_IPD_PASS_HASH = "ipb_pass_hash";
+    public static final String KEY_IPB_MEMBER_ID = "ipb_member_id";
+    public static final String KEY_IPB_PASS_HASH = "ipb_pass_hash";
     public static final String KEY_IGNEOUS = "igneous";
 
     public static final Cookie sTipsCookie =
@@ -82,8 +81,8 @@ public class EhCookieStore extends CookieRepository {
 
     public boolean hasSignedIn() {
         HttpUrl url = HttpUrl.parse(EhUrl.HOST_E);
-        return contains(url, KEY_IPD_MEMBER_ID) &&
-                contains(url, KEY_IPD_PASS_HASH);
+        return contains(url, KEY_IPB_MEMBER_ID) &&
+                contains(url, KEY_IPB_PASS_HASH);
     }
 
     @NonNull

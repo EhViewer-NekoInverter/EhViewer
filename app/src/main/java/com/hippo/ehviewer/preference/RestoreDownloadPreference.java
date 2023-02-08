@@ -48,7 +48,6 @@ import java.util.List;
 import okhttp3.OkHttpClient;
 
 public class RestoreDownloadPreference extends TaskPreference {
-
     public RestoreDownloadPreference(Context context) {
         super(context);
     }
@@ -68,7 +67,6 @@ public class RestoreDownloadPreference extends TaskPreference {
     }
 
     private static class RestoreTask extends Task {
-
         private final DownloadManager mManager;
         private final OkHttpClient mHttpClient;
         private int restoreDirCount;
@@ -196,7 +194,6 @@ public class RestoreDownloadPreference extends TaskPreference {
     }
 
     private static class RestoreItem extends GalleryInfo {
-
         public static final Creator<RestoreItem> CREATOR = new Creator<RestoreItem>() {
             @Override
             public RestoreItem createFromParcel(Parcel source) {

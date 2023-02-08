@@ -29,7 +29,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 public class StageLayout extends FrameLayout {
-
     private Field mDisappearingChildrenField;
     private ArrayList<View> mSuperDisappearingChildren;
     private ArrayList<View> mSortedScenes;

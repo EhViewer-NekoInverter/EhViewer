@@ -27,7 +27,6 @@ import android.graphics.drawable.Drawable;
 import com.hippo.yorozuya.MathUtils;
 
 public class BatteryDrawable extends Drawable {
-
     public static final int WARN_LIMIT = 15;
     @SuppressWarnings("unused")
     private static final String TAG = BatteryDrawable.class.getSimpleName();

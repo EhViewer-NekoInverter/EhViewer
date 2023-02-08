@@ -29,7 +29,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class IoThreadPoolExecutor extends ThreadPoolExecutor {
-
     private final static ThreadPoolExecutor INSTANCE =
             IoThreadPoolExecutor.newInstance(3, 32, 1L, TimeUnit.SECONDS,
                     new PriorityThreadFactory("IO", android.os.Process.THREAD_PRIORITY_BACKGROUND));
@@ -66,7 +65,6 @@ public class IoThreadPoolExecutor extends ThreadPoolExecutor {
     }
 
     private static class ThreadQueue extends LinkedBlockingQueue<Runnable> {
-
         private ThreadPoolExecutor executor;
 
         void setThreadPoolExecutor(ThreadPoolExecutor executor) {

@@ -40,7 +40,6 @@ import com.hippo.util.IoThreadPoolExecutor;
 import com.hippo.yorozuya.IntIdGenerator;
 
 public abstract class TaskPreference extends DialogPreference {
-
     private Task mTask;
     private int mTaskId = IntIdGenerator.INVALID_ID;
 
@@ -155,7 +154,6 @@ public abstract class TaskPreference extends DialogPreference {
     }
 
     public abstract static class Task extends AsyncTask<Void, Void, Object> {
-
         protected final EhApplication mApplication;
         @SuppressLint("StaticFieldLeak")
         protected final SettingsActivity mActivity;

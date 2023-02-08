@@ -22,16 +22,15 @@ import com.hippo.util.ExceptionUtils;
 import org.json.JSONObject;
 
 public class GalleryTokenApiParser {
-
     /**
-     * {
-     * "tokenlist": [
-     * {
-     * "gid":618395,
-     * "token":"0439fa3666"
-     * }
-     * ]
-     * }
+     *  {
+     *    "tokenlist": [
+     *      {
+     *        "gid":618395,
+     *        "token":"0439fa3666"
+     *      }
+     *    ]
+     *  }
      */
     public static String parse(String body) throws Exception {
         JSONObject jo = new JSONObject(body).getJSONArray("tokenlist").getJSONObject(0);

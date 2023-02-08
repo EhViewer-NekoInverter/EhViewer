@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public class UniFileOutputStreamPipe implements OutputStreamPipe {
-
     private final UniFile mUniFile;
     private OutputStream mOs;
 

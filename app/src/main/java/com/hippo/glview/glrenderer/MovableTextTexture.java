@@ -33,7 +33,6 @@ import java.util.Arrays;
  * Only support single line now
  */
 public final class MovableTextTexture extends SpriteTexture {
-
     private final char[] mCharacters;
     private final float[] mWidths;
     private final float mHeight;

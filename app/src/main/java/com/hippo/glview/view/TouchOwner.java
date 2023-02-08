@@ -17,7 +17,6 @@
 package com.hippo.glview.view;
 
 public interface TouchOwner {
-
     void setHotspot(float x, float y);
 
     boolean isEnabled();

@@ -19,7 +19,6 @@ package com.hippo.ehviewer.client;
 import com.hippo.okhttp.ChromeRequestBuilder;
 
 public class EhRequestBuilder extends ChromeRequestBuilder {
-
     public EhRequestBuilder(String url, String referer) {
         this(url, referer, null);
     }

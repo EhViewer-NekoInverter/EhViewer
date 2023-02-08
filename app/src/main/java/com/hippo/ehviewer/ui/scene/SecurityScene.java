@@ -42,7 +42,6 @@ import java.util.concurrent.Executors;
 
 public class SecurityScene extends SolidScene implements
         LockPatternView.OnPatternListener {
-
     private static final int MAX_RETRY_TIMES = 5;
     private static final String KEY_RETRY_TIMES = "retry_times";
 

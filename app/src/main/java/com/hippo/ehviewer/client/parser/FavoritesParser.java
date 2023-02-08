@@ -33,7 +33,6 @@ import org.jsoup.select.Elements;
 import java.util.List;
 
 public class FavoritesParser {
-
     public static Result parse(String body) throws Exception {
         if (body.contains("This page requires you to log on.</p>")) {
             throw new EhException(GetText.getString(R.string.need_sign_in));

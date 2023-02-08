@@ -24,7 +24,6 @@ import androidx.fragment.app.Fragment;
 import com.hippo.ehviewer.ui.SettingsActivity;
 
 public class BaseFragment extends Fragment {
-
     @Override
     public void onStart() {
         super.onStart();

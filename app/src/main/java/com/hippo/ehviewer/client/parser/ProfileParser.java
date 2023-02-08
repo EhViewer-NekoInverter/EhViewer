@@ -28,7 +28,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 public class ProfileParser {
-
     private static final String TAG = ProfileParser.class.getSimpleName();
 
     public static Result parse(String body) throws ParseException {

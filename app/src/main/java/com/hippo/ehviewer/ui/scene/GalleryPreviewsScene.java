@@ -63,7 +63,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class GalleryPreviewsScene extends ToolbarScene {
-
     public static final String KEY_GALLERY_INFO = "gallery_info";
     public static final String KEY_SCROLL_TO = "scroll_to";
     private final static String KEY_HAS_FIRST_REFRESH = "has_first_refresh";
@@ -276,7 +275,6 @@ public class GalleryPreviewsScene extends ToolbarScene {
     }
 
     private static class GetPreviewSetListener extends EhCallback<GalleryPreviewsScene, Pair<PreviewSet, Integer>> {
-
         private final int mTaskId;
 
         public GetPreviewSetListener(Context context, int stageId, String sceneTag, int taskId) {
@@ -302,7 +300,6 @@ public class GalleryPreviewsScene extends ToolbarScene {
 
         @Override
         public void onCancel() {
-
         }
 
         @Override
@@ -312,7 +309,6 @@ public class GalleryPreviewsScene extends ToolbarScene {
     }
 
     private static class GalleryPreviewHolder extends RecyclerView.ViewHolder {
-
         public LoadImageView image;
         public TextView text;
 
@@ -325,7 +321,6 @@ public class GalleryPreviewsScene extends ToolbarScene {
     }
 
     private class GalleryPreviewAdapter extends RecyclerView.Adapter<GalleryPreviewHolder> {
-
         private final LayoutInflater mInflater;
 
         public GalleryPreviewAdapter() {
@@ -359,7 +354,6 @@ public class GalleryPreviewsScene extends ToolbarScene {
     }
 
     private class GalleryPreviewHelper extends ContentLayout.ContentHelper<GalleryPreview> {
-
         @Override
         protected void getPageData(final int taskId, int type, int page, String index, boolean isNext) {
             MainActivity activity = getMainActivity();
@@ -404,7 +398,6 @@ public class GalleryPreviewsScene extends ToolbarScene {
 
     private class GoToDialogHelper implements View.OnClickListener,
             DialogInterface.OnDismissListener {
-
         private final int mPages;
         private final int mCurrentPage;
 

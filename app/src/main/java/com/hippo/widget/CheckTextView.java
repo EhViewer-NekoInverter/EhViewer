@@ -31,7 +31,6 @@ import androidx.appcompat.widget.AppCompatCheckedTextView;
 import com.hippo.ehviewer.R;
 
 public class CheckTextView extends AppCompatCheckedTextView implements View.OnClickListener {
-
     private final Rect mSelfBounds = new Rect();
     private final Rect mOverlayBounds = new Rect();
     protected boolean mForegroundInPadding = true;

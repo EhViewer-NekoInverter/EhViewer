@@ -19,7 +19,6 @@ package com.hippo.glview.glrenderer;
 // ExtTexture is a texture whose content comes from a external texture.
 // Before drawing, setSize() should be called.
 public class ExtTexture extends BasicTexture {
-
     private final int mTarget;
 
     public ExtTexture(GLCanvas canvas, int target) {

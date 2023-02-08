@@ -22,7 +22,6 @@ import java.util.Comparator;
  * Implements natural sort order.
  */
 public class NaturalComparator implements Comparator<String> {
-
     private static boolean isDigit(String str) {
         // Just check the first char
         char ch = str.charAt(0);

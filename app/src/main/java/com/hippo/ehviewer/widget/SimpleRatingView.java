@@ -32,7 +32,6 @@ import com.hippo.yorozuya.MathUtils;
  * 5 stars, from 0 to 10
  */
 public class SimpleRatingView extends View {
-
     private Drawable mStarDrawable;
     private Drawable mStarHalfDrawable;
     private Drawable mStarOutlineDrawable;

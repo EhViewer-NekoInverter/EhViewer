@@ -58,7 +58,6 @@ import java.util.List;
 import rikka.core.res.ResourcesKt;
 
 public class FilterFragment extends BaseFragment {
-
     @Nullable
     private ViewTransition mViewTransition;
     @Nullable
@@ -197,7 +196,6 @@ public class FilterFragment extends BaseFragment {
     }
 
     private static class FilterHolder extends RecyclerView.ViewHolder {
-
         private final MaterialCheckBox checkbox;
         private final TextView text;
         private final ImageView delete;
@@ -211,7 +209,6 @@ public class FilterFragment extends BaseFragment {
     }
 
     private class AddFilterDialogHelper implements View.OnClickListener {
-
         @Nullable
         private AlertDialog mDialog;
         @Nullable
@@ -272,7 +269,6 @@ public class FilterFragment extends BaseFragment {
     }
 
     private class FilterAdapter extends RecyclerView.Adapter<FilterHolder> {
-
         private static final int TYPE_ITEM = 0;
         private static final int TYPE_HEADER = 1;
 
@@ -350,7 +346,6 @@ public class FilterFragment extends BaseFragment {
     }
 
     private class FilterList {
-
         public static final int MODE_HEADER = -1;
 
         private final EhFilter mEhFilter;

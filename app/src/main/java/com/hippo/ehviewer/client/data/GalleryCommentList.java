@@ -22,7 +22,6 @@ import android.os.Parcelable;
 import java.util.Arrays;
 
 public class GalleryCommentList implements Parcelable {
-
     public static final Creator<GalleryCommentList> CREATOR = new Creator<GalleryCommentList>() {
         @Override
         public GalleryCommentList createFromParcel(Parcel in) {

@@ -27,7 +27,6 @@ import org.json.JSONObject;
 import java.util.List;
 
 public class GalleryApiParser {
-
     public static void parse(String body, List<GalleryInfo> galleryInfoList) throws JSONException {
         JSONObject jo = new JSONObject(body);
         JSONArray ja = jo.getJSONArray("gmetadata");

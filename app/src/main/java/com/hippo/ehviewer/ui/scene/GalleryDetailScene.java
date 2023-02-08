@@ -146,7 +146,6 @@ import rikka.core.res.ResourcesKt;
 public class GalleryDetailScene extends BaseScene implements View.OnClickListener,
         com.hippo.ehviewer.download.DownloadManager.DownloadInfoListener,
         View.OnLongClickListener {
-
     public final static String KEY_ACTION = "action";
     public static final String ACTION_GALLERY_INFO = "action_gallery_info";
     public static final String ACTION_GID_TOKEN = "action_gid_token";
@@ -450,7 +449,6 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
                 }
                 galleryProvider.stop();
             } catch (Exception ignore) {
-
             }
         }
     }
@@ -1731,7 +1729,6 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
     }
 
     private static class ExitTransaction implements TransitionHelper {
-
         private final View mThumb;
 
         public ExitTransaction(View thumb) {
@@ -1763,7 +1760,6 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
     }
 
     private static class GetGalleryDetailListener extends EhCallback<GalleryDetailScene, GalleryDetail> {
-
         public GetGalleryDetailListener(Context context, int stageId, String sceneTag) {
             super(context, stageId, sceneTag);
         }
@@ -1806,7 +1802,6 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
     }
 
     private static class VoteTagListener extends EhCallback<GalleryDetailScene, VoteTagParser.Result> {
-
         public VoteTagListener(Context context, int stageId, String sceneTag) {
             super(context, stageId, sceneTag);
         }
@@ -1836,7 +1831,6 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
     }
 
     private static class RateGalleryListener extends EhCallback<GalleryDetailScene, RateGalleryParser.Result> {
-
         private final long mGid;
 
         public RateGalleryListener(Context context, int stageId, String sceneTag, long gid) {
@@ -1878,7 +1872,6 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
     }
 
     private static class ModifyFavoritesListener extends EhCallback<GalleryDetailScene, Void> {
-
         private final boolean mAddOrRemove;
 
         /**
@@ -1924,7 +1917,6 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
     }
 
     private static class DownloadArchiveListener extends EhCallback<GalleryDetailScene, String> {
-
         private final GalleryInfo mGalleryInfo;
 
         public DownloadArchiveListener(Context context, int stageId, String sceneTag, GalleryInfo galleryInfo) {
@@ -1975,7 +1967,6 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
 
     private class ArchiveListDialogHelper implements AdapterView.OnItemClickListener,
             DialogInterface.OnDismissListener, EhClient.Callback<ArchiveParser.Result> {
-
         @Nullable
         private CircularProgressIndicator mProgressView;
         @Nullable
@@ -2090,7 +2081,6 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
 
     private class TorrentListDialogHelper implements AdapterView.OnItemClickListener,
             DialogInterface.OnDismissListener, EhClient.Callback<List<TorrentParser.Result>> {
-
         @Nullable
         private CircularProgressIndicator mProgressView;
         @Nullable
@@ -2216,7 +2206,6 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
 
     private class RateDialogHelper implements GalleryRatingBar.OnUserRateListener,
             DialogInterface.OnClickListener {
-
         @Nullable
         private GalleryRatingBar mRatingBar;
         @Nullable

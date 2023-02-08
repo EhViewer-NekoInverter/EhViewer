@@ -19,7 +19,6 @@ package com.hippo.yorozuya;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public final class IntIdGenerator {
-
     public static final int INVALID_ID = -1;
 
     private final AtomicInteger mId = new AtomicInteger();

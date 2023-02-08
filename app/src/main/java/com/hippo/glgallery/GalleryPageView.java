@@ -28,7 +28,6 @@ import com.hippo.glview.widget.GLProgressView;
 import com.hippo.glview.widget.GLTextureView;
 
 public class GalleryPageView extends GLFrameLayout {
-
     public static final int INVALID_INDEX = -1;
 
     public static final float PROGRESS_GONE = -1.0f;

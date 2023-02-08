@@ -56,7 +56,6 @@ import java.lang.annotation.RetentionPolicy;
 
 public class SearchLayout extends EasyRecyclerView implements CompoundButton.OnCheckedChangeListener,
         View.OnClickListener, ImageSearchLayout.Helper, TabLayout.OnTabSelectedListener {
-
     public static final int SEARCH_MODE_NORMAL = 0;
     public static final int SEARCH_MODE_IMAGE = 1;
     private static final String STATE_KEY_SUPER = "super";
@@ -303,12 +302,10 @@ public class SearchLayout extends EasyRecyclerView implements CompoundButton.OnC
 
     @Override
     public void onTabUnselected(TabLayout.Tab tab) {
-
     }
 
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
-
     }
 
     @IntDef({SEARCH_MODE_NORMAL, SEARCH_MODE_IMAGE})
@@ -323,7 +320,6 @@ public class SearchLayout extends EasyRecyclerView implements CompoundButton.OnC
     }
 
     static class SearchLayoutManager extends LinearLayoutManager {
-
         public SearchLayoutManager(Context context) {
             super(context);
         }
@@ -339,7 +335,6 @@ public class SearchLayout extends EasyRecyclerView implements CompoundButton.OnC
     }
 
     private class SearchAdapter extends EasyRecyclerView.Adapter<SimpleHolder> {
-
         @Override
         public int getItemCount() {
             int count = SEARCH_ITEM_COUNT_ARRAY[mSearchMode];

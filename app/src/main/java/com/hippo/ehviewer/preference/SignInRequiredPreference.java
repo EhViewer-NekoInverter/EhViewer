@@ -32,7 +32,6 @@ import com.hippo.ehviewer.ui.scene.BaseScene;
 import okhttp3.HttpUrl;
 
 public class SignInRequiredPreference extends Preference implements Preference.OnPreferenceClickListener {
-
     @SuppressLint("StaticFieldLeak")
     private SettingsActivity mActivity;
 
@@ -62,10 +61,10 @@ public class SignInRequiredPreference extends Preference implements Preference.O
         HttpUrl e = HttpUrl.get(EhUrl.HOST_E);
         HttpUrl ex = HttpUrl.get(EhUrl.HOST_EX);
 
-        if (store.contains(e, EhCookieStore.KEY_IPD_MEMBER_ID) ||
-                store.contains(e, EhCookieStore.KEY_IPD_PASS_HASH) ||
-                store.contains(ex, EhCookieStore.KEY_IPD_MEMBER_ID) ||
-                store.contains(ex, EhCookieStore.KEY_IPD_PASS_HASH)) {
+        if (store.contains(e, EhCookieStore.KEY_IPB_MEMBER_ID) ||
+                store.contains(e, EhCookieStore.KEY_IPB_PASS_HASH) ||
+                store.contains(ex, EhCookieStore.KEY_IPB_MEMBER_ID) ||
+                store.contains(ex, EhCookieStore.KEY_IPB_PASS_HASH)) {
             return false;
         } else {
             mActivity.showTip(R.string.error_please_login_first, BaseScene.LENGTH_SHORT);

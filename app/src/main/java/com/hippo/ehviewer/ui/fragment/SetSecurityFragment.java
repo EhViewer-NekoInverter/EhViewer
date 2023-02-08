@@ -36,7 +36,6 @@ import com.hippo.widget.lockpattern.LockPatternView;
 import com.hippo.yorozuya.ViewUtils;
 
 public class SetSecurityFragment extends BaseFragment implements View.OnClickListener {
-
     @Nullable
     private LockPatternView mPatternView;
     @Nullable

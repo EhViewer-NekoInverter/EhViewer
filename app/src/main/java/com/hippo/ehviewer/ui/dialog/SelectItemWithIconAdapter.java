@@ -29,7 +29,6 @@ import androidx.appcompat.content.res.AppCompatResources;
 import com.hippo.ehviewer.R;
 
 public class SelectItemWithIconAdapter extends BaseAdapter {
-
     private final Context context;
     private final LayoutInflater inflater;
 

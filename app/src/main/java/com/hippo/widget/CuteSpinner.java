@@ -27,7 +27,6 @@ import androidx.appcompat.widget.AppCompatSpinner;
 import com.hippo.ehviewer.R;
 
 public class CuteSpinner extends AppCompatSpinner {
-
     public CuteSpinner(Context context) {
         super(context);
         init(context, null, androidx.appcompat.R.attr.spinnerStyle);

@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 
 class RawRandomAccessFile implements UniRandomAccessFile {
-
     private final RandomAccessFile mFile;
 
     RawRandomAccessFile(RandomAccessFile file) {

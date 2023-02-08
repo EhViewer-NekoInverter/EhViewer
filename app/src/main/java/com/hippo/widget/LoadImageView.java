@@ -46,7 +46,6 @@ import java.lang.annotation.RetentionPolicy;
 
 public class LoadImageView extends FixedAspectImageView implements Unikery<ImageBitmap>,
         View.OnClickListener, View.OnLongClickListener, Animatable {
-
     public static final int RETRY_TYPE_NONE = 0;
     public static final int RETRY_TYPE_CLICK = 1;
     public static final int RETRY_TYPE_LONG_CLICK = 2;

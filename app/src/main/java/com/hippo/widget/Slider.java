@@ -46,7 +46,6 @@ import com.hippo.yorozuya.MathUtils;
 import com.hippo.yorozuya.SimpleHandler;
 
 public class Slider extends View {
-
     private static final char[] CHARACTERS = {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
     };
@@ -448,7 +447,6 @@ public class Slider extends View {
     }
 
     public interface OnSetProgressListener {
-
         void onSetProgress(Slider slider, int newProgress, int oldProgress, boolean byUser, boolean confirm);
 
         void onFingerDown();
@@ -458,7 +456,6 @@ public class Slider extends View {
 
     @SuppressLint("ViewConstructor")
     private static class BubbleView extends AppCompatImageView {
-
         private static final float TEXT_CENTER = (float) BUBBLE_WIDTH / 2.0f / BUBBLE_HEIGHT;
 
         private final Drawable mDrawable;
@@ -508,7 +505,6 @@ public class Slider extends View {
     }
 
     private final class CheckForShowBubble implements Runnable {
-
         @Override
         public void run() {
             setShowBubble(true);

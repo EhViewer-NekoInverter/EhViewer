@@ -45,7 +45,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class DirGalleryProvider extends GalleryProvider2 implements Runnable {
-
     private static final String TAG = DirGalleryProvider.class.getSimpleName();
     private static final AtomicInteger sIdGenerator = new AtomicInteger();
     private static final FilenameFilter imageFilter =

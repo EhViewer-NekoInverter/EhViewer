@@ -32,7 +32,6 @@ import androidx.annotation.Nullable;
 import com.hippo.ehviewer.R;
 
 public class AppHelper {
-
     public static boolean sendEmail(@NonNull Activity from, @NonNull String address,
                                     @Nullable String subject, @Nullable String text) {
         Intent i = new Intent(Intent.ACTION_SENDTO);

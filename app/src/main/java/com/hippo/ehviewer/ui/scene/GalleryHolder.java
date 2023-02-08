@@ -28,7 +28,6 @@ import com.hippo.ehviewer.widget.SimpleRatingView;
 import com.hippo.widget.LoadImageView;
 
 class GalleryHolder extends RecyclerView.ViewHolder {
-
     public final LoadImageView thumb;
     public final TextView title;
     public final TextView uploader;

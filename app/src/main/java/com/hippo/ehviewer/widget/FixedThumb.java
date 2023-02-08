@@ -25,7 +25,6 @@ import com.hippo.ehviewer.R;
 import com.hippo.widget.LoadImageView;
 
 public class FixedThumb extends LoadImageView {
-
     private float minAspect;
     private float maxAspect;
     private boolean alwaysCutAndScale;

@@ -36,7 +36,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 class PagerLayoutManager extends GalleryView.LayoutManager {
-
     public static final int MODE_LEFT_TO_RIGHT = 0;
     public static final int MODE_RIGHT_TO_LEFT = 1;
     private static final String TAG = PagerLayoutManager.class.getSimpleName();
@@ -819,7 +818,6 @@ class PagerLayoutManager extends GalleryView.LayoutManager {
     }
 
     private class SmoothScroller extends Animation {
-
         private int mDx;
         private int mDy;
         private int mLastX;
@@ -860,7 +858,6 @@ class PagerLayoutManager extends GalleryView.LayoutManager {
     }
 
     private class PageFling extends Fling {
-
         private final int[] mTemp = new int[2];
         private int mVelocityX;
         private int mVelocityY;
@@ -925,7 +922,6 @@ class PagerLayoutManager extends GalleryView.LayoutManager {
     }
 
     private class SmoothScaler extends Animation {
-
         private float mFocusX;
         private float mFocusY;
         private float mStartScale;

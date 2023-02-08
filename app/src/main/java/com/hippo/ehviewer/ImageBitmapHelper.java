@@ -27,7 +27,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public class ImageBitmapHelper implements ValueHelper<ImageBitmap> {
-
     private static final int MAX_CACHE_SIZE = 512 * 512;
 
     @Nullable

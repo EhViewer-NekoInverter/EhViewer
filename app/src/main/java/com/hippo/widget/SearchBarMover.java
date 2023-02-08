@@ -29,7 +29,6 @@ import com.hippo.yorozuya.SimpleAnimatorListener;
 import com.hippo.yorozuya.ViewUtils;
 
 public class SearchBarMover extends RecyclerView.OnScrollListener {
-
     private static final long ANIMATE_TIME = 300L;
     private final Helper mHelper;
     private final View mSearchBar;
@@ -210,7 +209,6 @@ public class SearchBarMover extends RecyclerView.OnScrollListener {
     }
 
     public interface Helper {
-
         boolean isValidView(RecyclerView recyclerView);
 
         @Nullable

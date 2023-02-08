@@ -23,7 +23,6 @@ import java.util.List;
  * Utilities for the lock pattern and its settings.
  */
 public class LockPatternUtils {
-
     /**
      * Deserialize a pattern.
      *
@@ -59,5 +58,4 @@ public class LockPatternUtils {
         }
         return new String(res);
     }
-
 }

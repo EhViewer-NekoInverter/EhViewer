@@ -27,7 +27,6 @@ import com.hippo.ehviewer.download.DownloadService;
 /**
  * Created by onlymash on 3/25/18.
  */
-
 public class ShortcutsActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

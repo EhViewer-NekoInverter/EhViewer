@@ -24,7 +24,6 @@ import com.hippo.streampipe.InputStreamPipe;
 import java.io.OutputStream;
 
 class ValueCache<V> extends BeerBelly<V> {
-
     private final ValueHelper<V> mHelper;
 
     public ValueCache(BeerBelly.BeerBellyParams params, ValueHelper<V> helper) {

@@ -30,7 +30,6 @@ import com.hippo.unifile.UniFile;
 import com.hippo.yorozuya.NumberUtils;
 
 public class CleanRedundancyPreference extends TaskPreference {
-
     public CleanRedundancyPreference(Context context) {
         super(context);
     }
@@ -50,7 +49,6 @@ public class CleanRedundancyPreference extends TaskPreference {
     }
 
     private static class ClearTask extends Task {
-
         private final DownloadManager mManager;
 
         public ClearTask(@NonNull Context context) {

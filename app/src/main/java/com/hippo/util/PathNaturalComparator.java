@@ -28,7 +28,6 @@ import java.util.Comparator;
  * {@code /./} and {@code /../} are treated as normal path.
  */
 public class PathNaturalComparator implements Comparator<String> {
-
     private static final boolean TYPE_SEPARATOR = false;
     private static final boolean TYPE_NORMAL = true;
 

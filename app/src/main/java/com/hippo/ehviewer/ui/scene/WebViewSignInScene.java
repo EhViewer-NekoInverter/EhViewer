@@ -45,7 +45,6 @@ import okhttp3.HttpUrl;
 import rikka.core.res.ResourcesKt;
 
 public class WebViewSignInScene extends SolidScene {
-
     /*---------------
      View life cycle
      ---------------*/
@@ -95,7 +94,6 @@ public class WebViewSignInScene extends SolidScene {
     }
 
     private class LoginWebViewClient extends WebViewClient {
-
         public List<Cookie> parseCookies(HttpUrl url, String cookieStrings) {
             if (cookieStrings == null) {
                 return Collections.emptyList();
@@ -137,9 +135,9 @@ public class WebViewSignInScene extends SolidScene {
             boolean getId = false;
             boolean getHash = false;
             for (Cookie cookie : cookies) {
-                if (EhCookieStore.KEY_IPD_MEMBER_ID.equals(cookie.name())) {
+                if (EhCookieStore.KEY_IPB_MEMBER_ID.equals(cookie.name())) {
                     getId = true;
-                } else if (EhCookieStore.KEY_IPD_PASS_HASH.equals(cookie.name())) {
+                } else if (EhCookieStore.KEY_IPB_PASS_HASH.equals(cookie.name())) {
                     getHash = true;
                 }
                 addCookie(context, EhUrl.DOMAIN_EX, cookie);

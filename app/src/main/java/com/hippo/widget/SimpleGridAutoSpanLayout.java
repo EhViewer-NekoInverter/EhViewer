@@ -20,7 +20,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 public class SimpleGridAutoSpanLayout extends SimpleGridLayout {
-
     public static final int STRATEGY_MIN_SIZE = 0;
     public static final int STRATEGY_SUITABLE_SIZE = 1;
 

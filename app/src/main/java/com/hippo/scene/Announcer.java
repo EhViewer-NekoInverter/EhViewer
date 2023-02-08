@@ -19,7 +19,6 @@ package com.hippo.scene;
 import android.os.Bundle;
 
 public final class Announcer {
-
     Class<?> clazz;
     Bundle args;
     TransitionHelper tranHelper;

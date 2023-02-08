@@ -26,7 +26,6 @@ import com.hippo.ehviewer.R;
 import com.hippo.ehviewer.UrlOpener;
 
 public class UrlPreference extends Preference {
-
     private String mUrl;
 
     public UrlPreference(Context context) {

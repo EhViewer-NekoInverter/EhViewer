@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 public class FavouriteStatusRouter {
-
     private static final String KEY_DATA_MAP_NEXT_ID = "data_map_next_id";
 
     private final IntIdGenerator idGenerator = new IntIdGenerator(Settings.getInt(KEY_DATA_MAP_NEXT_ID, 0));

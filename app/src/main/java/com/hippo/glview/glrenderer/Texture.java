@@ -16,7 +16,6 @@
 
 package com.hippo.glview.glrenderer;
 
-
 import android.graphics.RectF;
 
 // Texture is a rectangular image which can be drawn on GLCanvas.

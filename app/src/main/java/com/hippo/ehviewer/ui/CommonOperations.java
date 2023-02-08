@@ -47,7 +47,6 @@ import java.util.Collections;
 import java.util.List;
 
 public final class CommonOperations {
-
     private static void doAddToFavorites(Activity activity, GalleryInfo galleryInfo,
                                          int slot, String note, EhClient.Callback<Void> listener) {
             EhClient client = EhApplication.getEhClient(activity);
@@ -261,7 +260,6 @@ public final class CommonOperations {
     }
 
     private static class DelegateFavoriteCallback implements EhClient.Callback<Void> {
-
         private final EhClient.Callback<Void> delegate;
         private final GalleryInfo info;
         private final String newFavoriteName;

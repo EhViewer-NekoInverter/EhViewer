@@ -46,7 +46,6 @@ import java.io.OutputStream;
 import java.util.Locale;
 
 public final class SpiderDen {
-
     @Nullable
     private static SimpleDiskCache sCache;
     @Nullable

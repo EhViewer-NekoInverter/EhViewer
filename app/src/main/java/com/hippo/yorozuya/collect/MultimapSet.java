@@ -30,7 +30,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 // Top level class to get rid of 3rd generic collection parameter for more convenient usage.
 public class MultimapSet<K, V> extends AbstractMultimap<K, V, Set<V>> {
-
     protected MultimapSet(Map<K, Set<V>> map, boolean threadSafeSets) {
         super(map, threadSafeSets);
     }

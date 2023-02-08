@@ -20,7 +20,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class VoteCommentParser {
-
     // {"comment_id":1253922,"comment_score":-19,"comment_vote":0}
     public static Result parse(String body, int vote) throws JSONException {
         Result result = new Result();

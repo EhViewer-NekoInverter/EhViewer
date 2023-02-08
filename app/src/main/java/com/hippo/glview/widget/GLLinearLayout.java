@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GLLinearLayout extends GLView {
-
     public static final int HORIZONTAL = 0;
     public static final int VERTICAL = 1;
     private final List<GLView> mTempList = new ArrayList<>();
@@ -225,7 +224,6 @@ public class GLLinearLayout extends GLView {
     }
 
     public static class LayoutParams extends GravityLayoutParams {
-
         public float weight = 0.0f;
 
         public LayoutParams(GLView.LayoutParams source) {

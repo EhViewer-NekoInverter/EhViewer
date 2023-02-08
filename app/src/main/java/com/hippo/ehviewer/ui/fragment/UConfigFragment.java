@@ -47,7 +47,6 @@ import okhttp3.HttpUrl;
 import rikka.core.res.ResourcesKt;
 
 public class UConfigFragment extends BaseFragment {
-
     private WebView webView;
     private CircularProgressIndicator progress;
     private String url;
@@ -87,7 +86,6 @@ public class UConfigFragment extends BaseFragment {
         cookieManager.flush();
         cookieManager.removeAllCookies(null);
         cookieManager.removeSessionCookies(null);
-
 
         // Copy cookies from okhttp cookie store to CookieManager
         url = EhUrl.getUConfigUrl();
@@ -175,7 +173,6 @@ public class UConfigFragment extends BaseFragment {
     }
 
     private class UConfigWebViewClient extends WebViewClient {
-
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             // Never load other urls

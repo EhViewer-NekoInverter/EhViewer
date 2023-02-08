@@ -17,7 +17,6 @@
 package com.hippo.ehviewer.ui.scene;
 
 public final class TransitionNameFactory {
-
     public static String getThumbTransitionName(long gid) {
         return "thumb:" + gid;
     }

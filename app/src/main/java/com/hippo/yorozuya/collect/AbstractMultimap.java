@@ -26,7 +26,6 @@ import java.util.Set;
  * Threading note: All methods are synchronized
  */
 public abstract class AbstractMultimap<K, V, C extends Collection<V>> implements Map<K, C> {
-
     protected final boolean threadSafeCollections;
     protected Map<K, C> map;
 

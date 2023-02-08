@@ -22,7 +22,6 @@ import android.os.Parcelable;
 import com.hippo.widget.LoadImageView;
 
 public class GalleryPreview implements Parcelable {
-
     public static final Parcelable.Creator<GalleryPreview> CREATOR = new Parcelable.Creator<GalleryPreview>() {
         @Override
         public GalleryPreview createFromParcel(Parcel source) {

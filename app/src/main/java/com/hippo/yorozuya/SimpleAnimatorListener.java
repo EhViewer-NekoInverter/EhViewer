@@ -19,7 +19,6 @@ package com.hippo.yorozuya;
 import android.animation.Animator;
 
 public abstract class SimpleAnimatorListener implements Animator.AnimatorListener {
-
     @Override
     public void onAnimationStart(Animator animation) {
     }

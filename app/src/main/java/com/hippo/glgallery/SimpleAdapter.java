@@ -23,7 +23,6 @@ import com.hippo.glview.image.ImageWrapper;
 import com.hippo.glview.view.GLRootView;
 
 public class SimpleAdapter extends GalleryView.Adapter implements GalleryProvider.Listener {
-
     private final GalleryProvider mProvider;
     private final ImageTexture.Uploader mUploader;
     private boolean mShowIndex = true;

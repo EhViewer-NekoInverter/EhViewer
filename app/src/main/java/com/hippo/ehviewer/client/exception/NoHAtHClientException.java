@@ -17,9 +17,7 @@
 package com.hippo.ehviewer.client.exception;
 
 public class NoHAtHClientException extends EhException {
-
     public NoHAtHClientException(String detailMessage) {
         super(detailMessage);
     }
-
 }

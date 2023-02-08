@@ -34,7 +34,6 @@ import okhttp3.Call;
 import okhttp3.OkHttpClient;
 
 public class EhClient {
-
     public static final String TAG = EhClient.class.getSimpleName();
 
     public static final int METHOD_SIGN_IN = 0;
@@ -77,7 +76,6 @@ public class EhClient {
     }
 
     public interface Callback<E> {
-
         void onSuccess(E result);
 
         void onFailure(Exception e);
@@ -87,7 +85,6 @@ public class EhClient {
 
     @SuppressWarnings("deprecation")
     public class Task extends AsyncTask<Object, Void, Object> {
-
         private final int mMethod;
         private final AtomicReference<Call> mCall = new AtomicReference<>();
         private final AtomicBoolean mStop = new AtomicBoolean();

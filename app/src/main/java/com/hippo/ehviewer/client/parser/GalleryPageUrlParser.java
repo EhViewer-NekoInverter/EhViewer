@@ -28,7 +28,6 @@ import java.util.regex.Pattern;
  * Like http://exhentai.org/s/91ea4b6d89/901103-12
  */
 public final class GalleryPageUrlParser {
-
     private static final Pattern URL_STRICT_PATTERN = Pattern.compile(
             "https?://(?:" + EhUrl.DOMAIN_EX + "|" + EhUrl.DOMAIN_E + "|" + EhUrl.DOMAIN_LOFI + ")/s/([0-9a-f]{10})/(\\d+)-(\\d+)");
 

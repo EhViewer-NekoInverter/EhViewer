@@ -30,7 +30,6 @@ import com.hippo.widget.ObservedTextView;
 
 public class UnikeryDrawable extends WrapDrawable implements Unikery<ImageBitmap>,
         ObservedTextView.OnWindowAttachListener {
-
     private static final String TAG = UnikeryDrawable.class.getSimpleName();
     private final ObservedTextView mTextView;
     private final Conaco<ImageBitmap> mConaco;

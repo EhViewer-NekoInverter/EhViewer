@@ -49,7 +49,6 @@ import okhttp3.Cookie;
 
 public class CookieSignInScene extends SolidScene implements EditText.OnEditorActionListener,
         View.OnClickListener {
-
     /*---------------
      View life cycle
      ---------------*/
@@ -232,10 +231,10 @@ public class CookieSignInScene extends SolidScene implements EditText.OnEditorAc
         EhUtils.signOut(context);
 
         EhCookieStore store = EhApplication.getEhCookieStore(context);
-        store.addCookie(newCookie(EhCookieStore.KEY_IPD_MEMBER_ID, id, EhUrl.DOMAIN_E));
-        store.addCookie(newCookie(EhCookieStore.KEY_IPD_MEMBER_ID, id, EhUrl.DOMAIN_EX));
-        store.addCookie(newCookie(EhCookieStore.KEY_IPD_PASS_HASH, hash, EhUrl.DOMAIN_E));
-        store.addCookie(newCookie(EhCookieStore.KEY_IPD_PASS_HASH, hash, EhUrl.DOMAIN_EX));
+        store.addCookie(newCookie(EhCookieStore.KEY_IPB_MEMBER_ID, id, EhUrl.DOMAIN_E));
+        store.addCookie(newCookie(EhCookieStore.KEY_IPB_MEMBER_ID, id, EhUrl.DOMAIN_EX));
+        store.addCookie(newCookie(EhCookieStore.KEY_IPB_PASS_HASH, hash, EhUrl.DOMAIN_E));
+        store.addCookie(newCookie(EhCookieStore.KEY_IPB_PASS_HASH, hash, EhUrl.DOMAIN_EX));
         if (!igneous.isEmpty()) {
             store.addCookie(newCookie(EhCookieStore.KEY_IGNEOUS, igneous, EhUrl.DOMAIN_E));
             store.addCookie(newCookie(EhCookieStore.KEY_IGNEOUS, igneous, EhUrl.DOMAIN_EX));

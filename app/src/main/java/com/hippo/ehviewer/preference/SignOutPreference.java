@@ -29,7 +29,6 @@ import com.hippo.ehviewer.ui.scene.BaseScene;
 import com.hippo.preference.MessagePreference;
 
 public class SignOutPreference extends MessagePreference {
-
     @SuppressLint("StaticFieldLeak")
     private final SettingsActivity mActivity;
 

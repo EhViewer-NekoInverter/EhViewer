@@ -32,7 +32,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class EhProxySelector extends ProxySelector {
-
     public static final int TYPE_DIRECT = 0;
     public static final int TYPE_SYSTEM = 1;
     public static final int TYPE_HTTP = 2;

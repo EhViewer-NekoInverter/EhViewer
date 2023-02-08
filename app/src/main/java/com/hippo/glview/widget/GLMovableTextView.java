@@ -26,7 +26,6 @@ import com.hippo.glview.view.Gravity;
 import com.hippo.yorozuya.collect.CollectionUtils;
 
 public class GLMovableTextView extends GLView {
-
     MovableTextTexture mTextTexture;
 
     private String mText = "";

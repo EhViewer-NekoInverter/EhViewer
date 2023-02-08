@@ -99,7 +99,6 @@ import rikka.core.res.ResourcesKt;
 
 public final class GalleryCommentsScene extends ToolbarScene
         implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
-
     public static final String TAG = GalleryCommentsScene.class.getSimpleName();
 
     public static final String KEY_API_UID = "api_uid";
@@ -758,7 +757,6 @@ public final class GalleryCommentsScene extends ToolbarScene
     }
 
     private static class RefreshCommentListener extends EhCallback<GalleryCommentsScene, GalleryDetail> {
-
         public RefreshCommentListener(Context context, int stageId, String sceneTag) {
             super(context, stageId, sceneTag);
         }
@@ -790,7 +788,6 @@ public final class GalleryCommentsScene extends ToolbarScene
     }
 
     private static class CommentGalleryListener extends EhCallback<GalleryCommentsScene, GalleryCommentList> {
-
         private final long mCommentId;
 
         public CommentGalleryListener(Context context, int stageId, String sceneTag, long commentId) {
@@ -824,7 +821,6 @@ public final class GalleryCommentsScene extends ToolbarScene
     }
 
     private static class VoteCommentListener extends EhCallback<GalleryCommentsScene, VoteCommentParser.Result> {
-
         public VoteCommentListener(Context context, int stageId, String sceneTag) {
             super(context, stageId, sceneTag);
         }
@@ -858,7 +854,6 @@ public final class GalleryCommentsScene extends ToolbarScene
     }
 
     private static class InfoHolder extends RecyclerView.ViewHolder {
-
         private final TextView key;
         private final TextView value;
 
@@ -888,7 +883,6 @@ public final class GalleryCommentsScene extends ToolbarScene
     }
 
     private class ActualCommentHolder extends CommentHolder {
-
         private final TextView user;
         private final TextView time;
         private final LinkifyTextView comment;
@@ -944,7 +938,6 @@ public final class GalleryCommentsScene extends ToolbarScene
     }
 
     private class CommentAdapter extends RecyclerView.Adapter<CommentHolder> {
-
         private final LayoutInflater mInflater;
 
         public CommentAdapter() {
@@ -973,7 +966,6 @@ public final class GalleryCommentsScene extends ToolbarScene
             holder.itemView.setOnClickListener(v -> onItemClick(mRecyclerView, holder.itemView, position));
             holder.itemView.setClickable(true);
             holder.itemView.setFocusable(true);
-
 
             if (holder instanceof ActualCommentHolder) {
                 ((ActualCommentHolder) holder).bind(mGalleryDetail.comments.comments[position]);

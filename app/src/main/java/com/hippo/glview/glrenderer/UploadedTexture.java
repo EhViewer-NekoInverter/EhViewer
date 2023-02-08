@@ -39,7 +39,6 @@ import javax.microedition.khronos.opengles.GL11;
 // By default an UploadedTexture is opaque (so it can be drawn faster without
 // blending). The user or subclass can override it using setOpaque().
 public abstract class UploadedTexture extends BasicTexture {
-
     // To prevent keeping allocation the borders, we store those used borders here.
     // Since the length will be power of two, it won't use too much memory.
     private static final HashMap<BorderKey, Bitmap> sBorderLines =
@@ -178,7 +177,6 @@ public abstract class UploadedTexture extends BasicTexture {
     }
 
     private void uploadToCanvas(GLCanvas canvas) {
-
         Bitmap bitmap = getBitmap();
         if (bitmap != null) {
             try {

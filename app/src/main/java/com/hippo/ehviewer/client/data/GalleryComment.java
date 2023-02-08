@@ -20,7 +20,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class GalleryComment implements Parcelable {
-
     public static final Creator<GalleryComment> CREATOR = new Creator<GalleryComment>() {
         @Override
         public GalleryComment createFromParcel(Parcel source) {

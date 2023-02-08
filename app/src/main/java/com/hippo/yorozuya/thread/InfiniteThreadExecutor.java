@@ -24,7 +24,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class InfiniteThreadExecutor implements Executor {
-
     private final long mKeepAliveMillis;
     private final Queue<Runnable> mWorkQueue;
     private final ThreadFactory mThreadFactory;
@@ -58,7 +57,6 @@ public class InfiniteThreadExecutor implements Executor {
     }
 
     private class Task implements Runnable {
-
         @Override
         public void run() {
             mThreadCount.incrementAndGet();

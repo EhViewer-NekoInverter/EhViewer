@@ -24,7 +24,6 @@ import android.graphics.RectF;
 import com.hippo.yorozuya.AssertUtils;
 
 public class SpriteTexture extends TiledTexture {
-
     private final int mCount;
     private final int[] mRects;
 

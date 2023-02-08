@@ -38,7 +38,6 @@ import rikka.core.res.ResourcesKt;
 import rikka.material.app.MaterialActivity;
 
 public abstract class EhActivity extends MaterialActivity {
-
     private static final String THEME_DEFAULT = "DEFAULT";
     private static final String THEME_BLACK = "BLACK";
 

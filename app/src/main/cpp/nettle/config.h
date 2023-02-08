@@ -272,4 +272,3 @@ char *alloca ();
 /* Needs include of <limits.h> before use. */
 # define HAVE_NATIVE_64_BIT (SIZEOF_LONG * CHAR_BIT >= 64)
 #endif
-

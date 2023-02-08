@@ -16,13 +16,11 @@
 
 package com.hippo.glview.glrenderer;
 
-
 import android.graphics.RectF;
 
 // FadeOutTexture is a texture which begins with a given texture, then gradually animates
 // into fading out totally.
 public class FadeOutTexture extends FadeTexture {
-
     private final BasicTexture mTexture;
 
     public FadeOutTexture(BasicTexture texture) {

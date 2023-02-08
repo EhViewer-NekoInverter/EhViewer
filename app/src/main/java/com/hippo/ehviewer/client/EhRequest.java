@@ -19,7 +19,6 @@ package com.hippo.ehviewer.client;
 import com.hippo.ehviewer.Settings;
 
 public class EhRequest {
-
     EhClient.Task task;
     private int mMethod;
     private Object[] mArgs;
