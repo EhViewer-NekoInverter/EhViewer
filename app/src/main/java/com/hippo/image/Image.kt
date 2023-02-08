@@ -21,6 +21,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.ImageDecoder
 import android.graphics.ImageDecoder.ALLOCATOR_DEFAULT
 import android.graphics.ImageDecoder.ALLOCATOR_SOFTWARE
@@ -28,6 +29,7 @@ import android.graphics.ImageDecoder.DecodeException
 import android.graphics.ImageDecoder.ImageInfo
 import android.graphics.ImageDecoder.Source
 import android.graphics.PixelFormat
+import android.graphics.PorterDuff
 import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -102,6 +104,7 @@ class Image private constructor(
 
     private fun updateBitmap() {
         prepareBitmap()
+        mCanvas!!.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
         mObtainedDrawable!!.draw(mCanvas!!)
     }
 
@@ -149,6 +152,7 @@ class Image private constructor(
 
     fun start() {
         if (!started) {
+            started = true
             (mObtainedDrawable as AnimatedImageDrawable?)?.start()
         }
     }
