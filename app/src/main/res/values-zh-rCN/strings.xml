@@ -217,6 +217,8 @@
     <string name="filter_the_tag">屏蔽标签“%s”？</string>
     <string name="tag_vote_up">是的，这很正确</string>
     <string name="tag_vote_down">不，这不是</string>
+    <string name="tag_vote_up_cancel">取消赞成</string>
+    <string name="tag_vote_down_cancel">取消反对</string>
     <string name="tag_vote_successfully">投票成功</string>
     <string name="vote_failed">投票失败</string>
     <!-- Gallery Info -->

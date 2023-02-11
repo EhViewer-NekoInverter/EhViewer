@@ -239,6 +239,8 @@
     <string name="filter_the_tag">Block the tag \"%s\"?</string>
     <string name="tag_vote_up">Vote up</string>
     <string name="tag_vote_down">Vote down</string>
+    <string name="tag_vote_up_cancel">Cancel up-vote</string>
+    <string name="tag_vote_down_cancel">Cancel down-vote</string>
     <string name="tag_vote_successfully">Vote successfully</string>
     <string name="vote_failed">Vote failed</string>
     <!-- Gallery Info -->

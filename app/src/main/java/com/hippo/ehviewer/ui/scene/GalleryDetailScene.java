@@ -159,6 +159,8 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
     private static final int STATE_REFRESH = 1;
     private static final int STATE_REFRESH_HEADER = 2;
     private static final int STATE_FAILED = 3;
+    private static final int TAG_COLOR_UP = 0xffffffa0;
+    private static final int TAG_COLOR_DN = 0xffdddddd;
     private static final String KEY_GALLERY_DETAIL = "gallery_detail";
     private static final String KEY_REQUEST_ID = "request_id";
     private static final boolean TRANSITION_ANIMATION_DISABLED = true;
@@ -298,7 +300,11 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
         }
         for (GalleryTagGroup tagGroup : tagGroups) {
             if ("artist".equals(tagGroup.groupName) && tagGroup.size() > 0) {
-                return tagGroup.getTagAt(0);
+                String tagStr = tagGroup.getTagAt(0);
+                while (tagStr.startsWith("_")) {
+                    tagStr = tagStr.substring(2);
+                }
+                return tagStr;
             }
         }
         return null;
@@ -971,7 +977,17 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
             for (int j = 0, z = tg.size(); j < z; j++) {
                 TextView tag = (TextView) inflater.inflate(R.layout.item_gallery_tag, awl, false);
                 awl.addView(tag);
+
                 String tagStr = tg.getTagAt(j);
+
+                while (tagStr.startsWith("_")) {
+                    switch (tagStr.substring(1, 2)) {
+                        case "W" -> tag.setAlpha(.5f);
+                        case "U" -> tag.setTextColor(TAG_COLOR_UP);
+                        case "D" -> tag.setTextColor(TAG_COLOR_DN);
+                    }
+                    tagStr = tagStr.substring(2);
+                }
 
                 String readableTag = null;
                 if (ehTags != null) {
@@ -979,8 +995,8 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
                 }
 
                 tag.setText(readableTag != null ? readableTag : tagStr);
-                tag.setBackgroundTintList(ColorStateList.valueOf(colorTag));
                 tag.setTag(R.id.tag, tg.groupName + ":" + tagStr);
+                tag.setBackgroundTintList(ColorStateList.valueOf(colorTag));
                 tag.setOnClickListener(this);
                 tag.setOnLongClickListener(this);
             }
@@ -1467,10 +1483,16 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
         menu.add(resources.getString(R.string.add_filter));
         menuId.add(R.id.add_filter);
         if (mGalleryDetail != null && mGalleryDetail.apiUid >= 0) {
-            menu.add(resources.getString(R.string.tag_vote_up));
-            menuId.add(R.id.vote_up);
-            menu.add(resources.getString(R.string.tag_vote_down));
-            menuId.add(R.id.vote_down);
+            int textColor = tv.getTextColors().getDefaultColor();
+            boolean isVoted = textColor != Color.WHITE;
+            if (textColor != TAG_COLOR_UP) {
+                menu.add(resources.getString(isVoted ? R.string.tag_vote_down_cancel : R.string.tag_vote_up));
+                menuId.add(R.id.vote_up);
+            }
+            if (textColor != TAG_COLOR_DN) {
+                menu.add(resources.getString(isVoted ? R.string.tag_vote_up_cancel : R.string.tag_vote_down));
+                menuId.add(R.id.vote_down);
+            }
         }
 
         new AlertDialog.Builder(context)

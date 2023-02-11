@@ -369,12 +369,22 @@ public class GalleryDetailParser {
             group.groupName = nameSpace;
 
             Elements tags = element.child(1).children();
-            for (int i = 0, n = tags.size(); i < n; i++) {
-                String tag = tags.get(i).text();
+            for (Element tagi : tags) {
+                String tag = tagi.text();
                 // Sometimes parody tag is followed with '|' and english translate, just remove them
                 int index = tag.indexOf('|');
                 if (index >= 0) {
                     tag = tag.substring(0, index).trim();
+                }
+                // Vote status
+                if (tagi.child(0).hasClass("tup")) {
+                    tag = "_U" + tag;
+                } else if (tagi.child(0).hasClass("tdn")) {
+                    tag = "_D" + tag;
+                }
+                // Weak tag
+                if (tagi.hasClass("gtw")) {
+                    tag = "_W" + tag;
                 }
                 group.addTag(tag);
             }
