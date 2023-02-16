@@ -540,13 +540,13 @@
     <!-- Filter Activity -->
     <string name="filter">隱藏列表</string>
     <string name="tip">提示</string>
-    <string name="filter_tip">該隱藏系統會在 EHentai 網站隱藏系統的基礎上繼續隱藏圖庫。\n\n標題隱藏項：排除標題含有該關鍵字的圖庫。\n\n上傳者隱藏項：排除該上傳者上傳的圖庫。\n\n標籤隱藏項：排除包含該標籤的圖庫，這會使獲取圖庫列表花費更多時間。\n\n標籤組隱藏項：排除包含該標籤組的圖庫，這會使獲取圖庫列表花費更多時間。\n\n評論者隱藏項：排除該評論者釋出的評論。\n\n評論隱藏項：排除匹配該正則表示式的評論。</string>
+    <string name="filter_tip">該隱藏系統會在 EHentai 網站隱藏系統的基礎上繼續隱藏圖庫。\n\n標題隱藏項：排除標題含有該關鍵字的圖庫。\n\n上傳者隱藏項：排除該上傳者上傳的圖庫。\n\n標籤隱藏項：排除包含該標籤的圖庫，這會使獲取圖庫列表花費更多時間。\n\n命名空間隱藏項：排除包含該命名空間的圖庫，這會使獲取圖庫列表花費更多時間。\n\n評論者隱藏項：排除該評論者釋出的評論。\n\n評論隱藏項：排除匹配該正則表示式的評論。</string>
     <string name="no_filter">這裡是隱藏列表</string>
     <string name="add_filter">新增隱藏項</string>
     <string name="filter_title">標題</string>
     <string name="filter_uploader">上傳者</string>
     <string name="filter_tag">標籤</string>
-    <string name="filter_tag_namespace">標籤組</string>
+    <string name="filter_tag_namespace">命名空間</string>
     <string name="filter_commenter">評論者</string>
     <string name="filter_comment">評論</string>
     <string name="filter_text">隱藏項文字</string>

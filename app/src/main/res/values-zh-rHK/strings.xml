@@ -540,13 +540,13 @@
     <!-- Filter Activity -->
     <string name="filter">屏蔽列表</string>
     <string name="tip">提示</string>
-    <string name="filter_tip">該屏蔽系統會在 EHentai 網站屏蔽系統的基礎上繼續屏蔽畫廊。\n\n標題屏蔽項：排除標題含有該關鍵字的畫廊。\n\n上傳者屏蔽項：排除該上傳者上傳的畫廊。\n\n標籤屏蔽項：排除包含該標籤的畫廊，這會使獲取畫廊列表花費更多時間。\n\n標籤組屏蔽項：排除包含該標籤組的畫廊，這會使獲取畫廊列表花費更多時間。\n\n評論者屏蔽項：排除該評論者發佈的評論。\n\n評論屏蔽項：排除匹配該正則表達式的評論。</string>
+    <string name="filter_tip">該屏蔽系統會在 EHentai 網站屏蔽系統的基礎上繼續屏蔽畫廊。\n\n標題屏蔽項：排除標題含有該關鍵字的畫廊。\n\n上傳者屏蔽項：排除該上傳者上傳的畫廊。\n\n標籤屏蔽項：排除包含該標籤的畫廊，這會使獲取畫廊列表花費更多時間。\n\n命名空間屏蔽項：排除包含該命名空間的畫廊，這會使獲取畫廊列表花費更多時間。\n\n評論者屏蔽項：排除該評論者發佈的評論。\n\n評論屏蔽項：排除匹配該正則表達式的評論。</string>
     <string name="no_filter">這裏是屏蔽列表</string>
     <string name="add_filter">添加屏蔽項</string>
     <string name="filter_title">標題</string>
     <string name="filter_uploader">上傳者</string>
     <string name="filter_tag">標籤</string>
-    <string name="filter_tag_namespace">標籤組</string>
+    <string name="filter_tag_namespace">命名空間</string>
     <string name="filter_commenter">評論者</string>
     <string name="filter_comment">評論</string>
     <string name="filter_text">屏蔽項文本</string>
