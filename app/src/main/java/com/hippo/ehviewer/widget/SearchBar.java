@@ -503,7 +503,7 @@ public class SearchBar extends MaterialCardView implements View.OnClickListener,
         int index2 = keyword.indexOf(' ');
         if (index2 <= index1) {
             // Can't find space, or space is before :
-            return keyword;
+            return keyword + "$";
         }
 
         return keyword.substring(0, index1 + 1) + "\"" + keyword.substring(index1 + 1) + "$\"";
