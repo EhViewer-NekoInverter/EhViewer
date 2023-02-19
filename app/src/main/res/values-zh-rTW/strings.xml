@@ -217,6 +217,8 @@
     <string name="filter_the_tag">隱藏標籤“%s”？</string>
     <string name="tag_vote_up">是的，這很正確</string>
     <string name="tag_vote_down">不，這不是</string>
+    <string name="tag_vote_up_cancel">取消贊成</string>
+    <string name="tag_vote_down_cancel">取消反對</string>
     <string name="tag_vote_successfully">投票成功</string>
     <string name="vote_failed">推噓失敗</string>
     <!-- Gallery Info -->
@@ -294,6 +296,12 @@
     <string name="vote_down_successfully">發出噓了</string>
     <string name="cancel_vote_down_successfully">已經收回噓了</string>
     <string name="check_vote_status">檢視推噓狀態</string>
+    <string name="format_bold"><b>加粗</b></string>
+    <string name="format_italic"><i>傾斜</i></string>
+    <string name="format_strikethrough"><s>刪除線</s></string>
+    <string name="format_underline"><u>下劃線</u></string>
+    <string name="format_url">連結</string>
+    <string name="format_plain">純文字</string>
     <!-- Gallery Previews -->
     <string name="gallery_previews">圖庫預覽</string>
 

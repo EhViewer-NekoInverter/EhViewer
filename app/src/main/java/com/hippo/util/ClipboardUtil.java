@@ -46,7 +46,7 @@ public class ClipboardUtil {
         }
     }
 
-    public static void addTextToClipboard(String text) {
+    public static void addTextToClipboard(CharSequence text) {
         if (clipboardManager != null) {
             try {
                 clipboardManager.setPrimaryClip(ClipData.newPlainText(null, text));

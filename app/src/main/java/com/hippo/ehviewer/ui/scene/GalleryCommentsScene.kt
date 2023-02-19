@@ -25,15 +25,20 @@ import android.os.Bundle
 import android.os.Looper
 import android.text.Html
 import android.text.Spannable
-import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.TextUtils
+import android.text.style.CharacterStyle
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
+import android.text.style.StrikethroughSpan
 import android.text.style.StyleSpan
 import android.text.style.URLSpan
+import android.text.style.UnderlineSpan
 import android.util.Log
+import android.view.ActionMode
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewAnimationUtils
 import android.view.ViewGroup
@@ -42,6 +47,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.text.getSpans
+import androidx.core.text.inSpans
+import androidx.core.text.set
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsAnimationCompat
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -50,6 +58,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.hippo.app.EditTextDialogBuilder
 import com.hippo.easyrecyclerview.EasyRecyclerView
 import com.hippo.easyrecyclerview.LinearDividerItemDecoration
 import com.hippo.ehviewer.EhApplication
@@ -69,6 +78,7 @@ import com.hippo.ehviewer.dao.Filter
 import com.hippo.ehviewer.ui.MainActivity
 import com.hippo.scene.SceneFragment
 import com.hippo.text.URLImageGetter
+import com.hippo.util.BBCode.toBBCode
 import com.hippo.util.ClipboardUtil
 import com.hippo.util.ExceptionUtils
 import com.hippo.util.ReadableTime
@@ -195,12 +205,94 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
             itemAnimator.supportsChangeAnimations = false
         }
         mSendImage!!.setOnClickListener(this)
+        mEditText!!.customSelectionActionModeCallback = object : ActionMode.Callback {
+            override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+                requireActivity().menuInflater.inflate(R.menu.context_comment, menu)
+                return true
+            }
+
+            override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+                return true
+            }
+
+            override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+                item?.let {
+                    val text = mEditText!!.editableText
+                    val start = mEditText!!.selectionStart
+                    val end = mEditText!!.selectionEnd
+                    when (item.itemId) {
+                        R.id.action_bold -> text[start, end] = StyleSpan(Typeface.BOLD)
+
+                        R.id.action_italic -> text[start, end] = StyleSpan(Typeface.ITALIC)
+
+                        R.id.action_underline -> text[start, end] = UnderlineSpan()
+
+                        R.id.action_strikethrough -> text[start, end] = StrikethroughSpan()
+
+                        R.id.action_url -> {
+                            val oldSpans = text.getSpans<URLSpan>(start, end)
+                            var oldUrl = "https://"
+                            oldSpans.forEach {
+                                if (!TextUtils.isEmpty(it.url)) {
+                                    oldUrl = it.url
+                                }
+                            }
+                            val builder = EditTextDialogBuilder(
+                                context, oldUrl, getString(R.string.format_url)
+                            )
+                            builder.setTitle(getString(R.string.format_url))
+                            builder.setPositiveButton(android.R.string.ok, null)
+                            val dialog = builder.show()
+                            val button: View? = dialog.getButton(DialogInterface.BUTTON_POSITIVE)
+                            button?.setOnClickListener(View.OnClickListener {
+                                val url = builder.text.trim()
+                                if (TextUtils.isEmpty(url)) {
+                                    builder.setError(getString(R.string.text_is_empty))
+                                    return@OnClickListener
+                                } else {
+                                    builder.setError(null)
+                                }
+                                text.clearSpan(start, end, true)
+                                text[start, end] = URLSpan(url)
+                                dialog.dismiss()
+                            })
+                        }
+
+                        R.id.action_clear -> {
+                            text.clearSpan(start, end, false)
+                        }
+
+                        else -> return false
+                    }
+                    mode?.finish()
+                }
+                return true
+            }
+
+            override fun onDestroyActionMode(mode: ActionMode?) {
+            }
+        }
         mFab!!.setOnClickListener(this)
         addAboveSnackView(mEditPanel)
         addAboveSnackView(mFabLayout)
         mViewTransition = ViewTransition(mRecyclerView, tip)
         updateView(false)
         return view
+    }
+
+    fun Spannable.clearSpan(start: Int, end: Int, url: Boolean) {
+        val spans = if (url) getSpans<URLSpan>(start, end) else getSpans<CharacterStyle>(start, end)
+        spans.forEach {
+            val spanStart = getSpanStart(it)
+            val spanEnd = getSpanEnd(it)
+            removeSpan(it)
+            if (spanStart < start) {
+                this[spanStart, start] = it
+            }
+            if (spanEnd > end) {
+                this[end, spanEnd] = it
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -344,7 +436,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
         builder.setView(rv).show()
     }
 
-    private fun showCommentDialog(position: Int) {
+    private fun showCommentDialog(position: Int, text: CharSequence) {
         val context = context
         if (context == null || mGalleryDetail == null || mGalleryDetail!!.comments == null || mGalleryDetail!!.comments!!.comments == null || position >= mGalleryDetail!!.comments!!.comments!!.size || position < 0) {
             return
@@ -382,7 +474,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
                 }
                 val id = menuId[which]
                 if (id == R.id.copy) {
-                    ClipboardUtil.addTextToClipboard(comment.comment)
+                    ClipboardUtil.addTextToClipboard(text)
                     showTip(R.string.copied_to_clipboard, LENGTH_SHORT)
                 } else if (id == R.id.block_commenter) {
                     showFilterCommenterDialog(comment.user, position)
@@ -393,7 +485,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
                 } else if (id == R.id.check_vote_status) {
                     showVoteStatusDialog(context, comment.voteState)
                 } else if (id == R.id.edit_comment) {
-                    prepareEditComment(comment.id)
+                    prepareEditComment(comment.id, text)
                     if (!mInAnimation && mEditPanel != null && mEditPanel!!.visibility != View.VISIBLE) {
                         showEditPanel()
                     }
@@ -410,7 +502,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
             if (span is URLSpan) {
                 UrlOpener.openUrl(activity, span.url, true, mGalleryDetail)
             } else {
-                showCommentDialog(position)
+                showCommentDialog(position, holder.sp)
             }
         } else if (holder is MoreCommentHolder && !mRefreshingComments && mAdapter != null) {
             mRefreshingComments = true
@@ -447,8 +539,9 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
         }
     }
 
-    private fun prepareEditComment(commentId: Long) {
+    private fun prepareEditComment(commentId: Long, text: CharSequence) {
         mCommentId = commentId
+        mEditText?.setText(text)
         if (mSendImage != null) {
             mSendImage!!.setImageDrawable(mPencilDrawable)
         }
@@ -574,7 +667,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
             }
         } else if (mSendImage === v) {
             if (!mInAnimation) {
-                val comment = mEditText!!.text.toString()
+                val comment = mEditText!!.text.toBBCode()
                 if (TextUtils.isEmpty(comment)) {
                     // Comment is empty
                     return
@@ -801,13 +894,14 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
         private val user: TextView = itemView.findViewById(R.id.user)
         private val time: TextView = itemView.findViewById(R.id.time)
         val comment: LinkifyTextView = itemView.findViewById(R.id.comment)
+        lateinit var sp: CharSequence
 
         private fun generateComment(
             context: Context,
             textView: ObservedTextView,
             comment: GalleryComment
         ): CharSequence {
-            val sp = Html.fromHtml(
+            sp = Html.fromHtml(
                 comment.comment,
                 Html.FROM_HTML_MODE_LEGACY,
                 URLImageGetter(textView, EhApplication.getConaco(context)),
@@ -817,50 +911,26 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
             if (0L != comment.id && 0 != comment.score) {
                 val score = comment.score
                 val scoreString = if (score > 0) "+$score" else score.toString()
-                val ss = SpannableString(scoreString)
-                ss.setSpan(
+                ssb.append("  ").inSpans(
                     RelativeSizeSpan(0.8f),
-                    0,
-                    scoreString.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                ss.setSpan(
                     StyleSpan(Typeface.BOLD),
-                    0,
-                    scoreString.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                ss.setSpan(
-                    ForegroundColorSpan(theme.resolveColor(android.R.attr.textColorSecondary)),
-                    0,
-                    scoreString.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                ssb.append("  ").append(ss)
+                    ForegroundColorSpan(theme.resolveColor(android.R.attr.textColorSecondary))
+                ) {
+                    append(scoreString)
+                }
             }
             if (comment.lastEdited != 0L) {
                 val str = context.getString(
                     R.string.last_edited,
                     ReadableTime.getTimeAgo(comment.lastEdited)
                 )
-                val ss = SpannableString(str)
-                ss.setSpan(
+                ssb.append("\n\n").inSpans(
                     RelativeSizeSpan(0.8f),
-                    0,
-                    str.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                ss.setSpan(
                     StyleSpan(Typeface.BOLD),
-                    0,
-                    str.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                ss.setSpan(
-                    ForegroundColorSpan(theme.resolveColor(android.R.attr.textColorSecondary)),
-                    0, str.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                ssb.append("\n\n").append(ss)
+                    ForegroundColorSpan(theme.resolveColor(android.R.attr.textColorSecondary))
+                ) {
+                    append(str)
+                }
             }
             return TextUrl.handleTextUrl(ssb)
         }
