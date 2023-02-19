@@ -927,10 +927,12 @@ public final class GalleryCommentsScene extends ToolbarScene
         public void bind(GalleryComment value) {
             user.setText(value.uploader ? getString(R.string.comment_user_uploader, value.user) : value.user);
             user.setOnClickListener(v -> {
-                ListUrlBuilder lub = new ListUrlBuilder();
-                lub.setMode(ListUrlBuilder.MODE_UPLOADER);
-                lub.setKeyword(value.user);
-                GalleryListScene.startScene(GalleryCommentsScene.this, lub);
+                if (!"Anonymous".equals(value.user)) {
+                    ListUrlBuilder lub = new ListUrlBuilder();
+                    lub.setMode(ListUrlBuilder.MODE_UPLOADER);
+                    lub.setKeyword(value.user);
+                    GalleryListScene.startScene(GalleryCommentsScene.this, lub);
+                }
             });
             time.setText(ReadableTime.getTimeAgo(value.time));
             comment.setText(generateComment(comment.getContext(), comment, value));

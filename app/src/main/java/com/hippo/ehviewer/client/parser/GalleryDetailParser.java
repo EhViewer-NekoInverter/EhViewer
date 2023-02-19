@@ -477,12 +477,19 @@ public class GalleryDetailParser {
             // time
             Element c3 = JsoupUtils.getElementByClass(element, "c3");
             String temp = c3.ownText();
-            temp = temp.substring("Posted on ".length(), temp.length() - " by:".length());
-            comment.time = Instant.from(WEB_COMMENT_DATE_FORMAT.parse(temp)).toEpochMilli();
+            boolean hasUserName = temp.endsWith(":");
+            String time = hasUserName ? temp.substring("Posted on ".length(), temp.length() - " by:".length()) : temp.substring("Posted on ".length());
+            comment.time = Instant.from(WEB_COMMENT_DATE_FORMAT.parse(time)).toEpochMilli();
             // user
-            comment.user = c3.child(0).text();
+            comment.user = hasUserName ? c3.child(0).text() : "Anonymous";
             // comment
-            comment.comment = JsoupUtils.getElementByClass(element, "c6").html();
+            Element c6 = JsoupUtils.getElementByClass(element, "c6");
+            for (Element e : c6.children()) {
+                if ("span".equals(e.tagName()) && "text-decoration:underline;".equals(e.attr("style"))) {
+                    e.tagName("u");
+                }
+            }
+            comment.comment = c6.html();
             // filter comment
             if (!comment.uploader) {
                 EhFilter sEhFilter = EhFilter.getInstance();
@@ -495,7 +502,7 @@ public class GalleryDetailParser {
             if (c8 != null) {
                 Element e = c8.children().first();
                 if (e != null) {
-                    comment.lastEdited = Instant.from(WEB_COMMENT_DATE_FORMAT.parse(temp)).toEpochMilli();
+                    comment.lastEdited = Instant.from(WEB_COMMENT_DATE_FORMAT.parse(e.text())).toEpochMilli();
                 }
             }
             return comment;
