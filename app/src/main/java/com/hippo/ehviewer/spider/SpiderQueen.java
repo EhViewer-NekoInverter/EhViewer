@@ -105,8 +105,10 @@ public final class SpiderQueen implements Runnable {
     private static final boolean DEBUG_LOG = false;
     private static final boolean DEBUG_PTOKEN = true;
     private static final String[] URL_509_SUFFIX_ARRAY = {
-            "/509.gif",
-            "/509s.gif"
+            "ehgt.org/g/509.gif",
+            "ehgt.org/g/509s.gif",
+            "exhentai.org/img/509.gif",
+            "exhentai.org/img/509s.gif"
     };
     private static final SparseJLArray<SpiderQueen> sQueenMap = new SparseJLArray<>();
     @NonNull
