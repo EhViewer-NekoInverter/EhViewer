@@ -298,7 +298,7 @@
     <string name="check_vote_status">查看投票情况</string>
     <string name="format_bold"><b>加粗</b></string>
     <string name="format_italic"><i>倾斜</i></string>
-    <string name="format_strikethrough"><s>删除线</s></string>
+    <string name="format_strikethrough"><strike>删除线</strike></string>
     <string name="format_underline"><u>下划线</u></string>
     <string name="format_url">链接</string>
     <string name="format_plain">纯文本</string>

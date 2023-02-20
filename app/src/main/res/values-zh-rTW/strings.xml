@@ -298,7 +298,7 @@
     <string name="check_vote_status">檢視推噓狀態</string>
     <string name="format_bold"><b>加粗</b></string>
     <string name="format_italic"><i>傾斜</i></string>
-    <string name="format_strikethrough"><s>刪除線</s></string>
+    <string name="format_strikethrough"><strike>刪除線</strike></string>
     <string name="format_underline"><u>下劃線</u></string>
     <string name="format_url">連結</string>
     <string name="format_plain">純文字</string>

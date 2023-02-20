@@ -485,8 +485,11 @@ public class GalleryDetailParser {
             // comment
             Element c6 = JsoupUtils.getElementByClass(element, "c6");
             for (Element e : c6.children()) {
-                if ("span".equals(e.tagName()) && "text-decoration:underline;".equals(e.attr("style"))) {
+                String tagName = e.tagName();
+                if ("span".equals(tagName) && "text-decoration:underline;".equals(e.attr("style"))) {
                     e.tagName("u");
+                } else if ("del".equals(tagName)) {
+                    e.tagName("s");
                 }
             }
             comment.comment = c6.html();
