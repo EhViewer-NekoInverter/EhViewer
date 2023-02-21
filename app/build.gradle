@@ -6,8 +6,8 @@ plugins {
 
 android {
     compileSdkVersion 33
-    buildToolsVersion "33.0.1"
-    ndkVersion "25.1.8937393"
+    buildToolsVersion "33.0.2"
+    ndkVersion "25.2.9519653"
 
     splits {
         abi {
@@ -20,10 +20,10 @@ android {
 
     signingConfigs {
         sign {
-            storeFile file(signStoreFile)
-            storePassword signStorePassword
-            keyAlias signkeyAlias
-            keyPassword signkeyPassword
+            storeFile file(projectDir.path + "/keystore/androidkey.jks")
+            storePassword "000000"
+            keyAlias "key0"
+            keyPassword "000000"
             enableV3Signing = true
             enableV4Signing = true
         }
@@ -40,18 +40,17 @@ android {
 
     externalNativeBuild {
         cmake {
-            version "3.25.2"
             path 'src/main/cpp/CMakeLists.txt'
         }
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_19
+        targetCompatibility JavaVersion.VERSION_19
     }
 
     kotlinOptions {
-        jvmTarget = '17'
+        jvmTarget = '19'
     }
 
     lint {
@@ -82,6 +81,10 @@ android {
             applicationIdSuffix ".debug"
             signingConfig signingConfigs.debug
         }
+    }
+
+    buildFeatures {
+        buildConfig true
     }
 
     namespace 'com.hippo.ehviewer'
