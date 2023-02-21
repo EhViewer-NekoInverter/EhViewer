@@ -34,6 +34,7 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -50,6 +51,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
@@ -58,12 +60,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.h6ah4i.android.widget.advrecyclerview.animator.DraggableItemAnimator;
-import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
-import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter;
-import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange;
-import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
-import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableItemViewHolder;
 import com.hippo.app.CheckBoxDialogBuilder;
 import com.hippo.app.EditTextDialogBuilder;
 import com.hippo.easyrecyclerview.EasyRecyclerView;
@@ -124,6 +120,7 @@ public class DownloadsScene extends ToolbarScene
     public static final String ACTION_CLEAR_DOWNLOAD_SERVICE = "clear_download_service";
     private static final String TAG = DownloadsScene.class.getSimpleName();
     private static final String KEY_LABEL = "label";
+    private static final int LABEL_OFFSET = 2;
     private static final Pattern PATTERN_AUTHOR = Pattern.compile("^(?:\\([^\\[\\]\\(\\)]+\\))?\\s*\\[([^\\[\\]]+)\\]");
     private static final Pattern PATTERN_NAME = Pattern.compile("^(?:\\([^\\[\\]\\(\\)]+\\))?\\s*(?:\\[[^\\[\\]]+\\])?\\s*(.+)");
     /*---------------
@@ -157,6 +154,8 @@ public class DownloadsScene extends ToolbarScene
     private int mInitPosition = -1;
 
     private DownloadLabelAdapter mLabelAdapter;
+
+    private ItemTouchHelper mItemTouchHelper;
 
     private List<String> mLabels;
 
@@ -208,7 +207,7 @@ public class DownloadsScene extends ToolbarScene
             return;
         }
         List<DownloadLabel> listLabel = EhApplication.getDownloadManager(context).getLabelList();
-        mLabels = new ArrayList<>(listLabel.size() + 2);
+        mLabels = new ArrayList<>(listLabel.size() + LABEL_OFFSET);
         // Add all and default label name
         mLabels.add(getString(R.string.download_all));
         mLabels.add(getString(R.string.default_download_label_name));
@@ -720,11 +719,6 @@ public class DownloadsScene extends ToolbarScene
 
         initLabels();
 
-        RecyclerViewDragDropManager dragDropManager = new RecyclerViewDragDropManager();
-        dragDropManager.setInitiateOnLongPress(true);
-        dragDropManager.setInitiateOnTouch(false);
-        dragDropManager.setDraggingItemAlpha(0.8f);
-
         mLabelAdapter = new DownloadLabelAdapter(inflater);
         final EasyRecyclerView recyclerView = view.findViewById(R.id.recycler_view_drawer);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -735,10 +729,9 @@ public class DownloadsScene extends ToolbarScene
         decoration.setShowLastDivider(true);
         recyclerView.addItemDecoration(decoration);
         mLabelAdapter.setHasStableIds(true);
-        final GeneralItemAnimator animator = new DraggableItemAnimator();
-        recyclerView.setItemAnimator(animator);
-        recyclerView.setAdapter(dragDropManager.createWrappedAdapter(mLabelAdapter));
-        dragDropManager.attachRecyclerView(recyclerView);
+        mItemTouchHelper = new ItemTouchHelper(new DownloadLabelItemTouchHelperCallback());
+        mItemTouchHelper.attachToRecyclerView(recyclerView);
+        recyclerView.setAdapter(mLabelAdapter);
 
         return view;
     }
@@ -929,7 +922,7 @@ public class DownloadsScene extends ToolbarScene
 
     @Override
     public void onUpdate(@NonNull DownloadInfo info, @NonNull List<DownloadInfo> list) {
-        if (mList != list && mLabel != null) {
+        if (mLabel != null && mList != list) {
             return;
         }
 
@@ -1063,7 +1056,7 @@ public class DownloadsScene extends ToolbarScene
         holder.speed.setText(FileUtils.humanReadableByteCount(speed, false) + "/S");
     }
 
-    private static class DownloadLabelHolder extends AbstractDraggableItemViewHolder {
+    private class DownloadLabelHolder extends RecyclerView.ViewHolder implements View.OnTouchListener {
         private final TextView label;
         private final ImageView option;
 
@@ -1071,10 +1064,19 @@ public class DownloadsScene extends ToolbarScene
             super(itemView);
             label = (TextView) ViewUtils.$$(itemView, R.id.tv_key);
             option = (ImageView) ViewUtils.$$(itemView, R.id.iv_option);
+            option.setOnTouchListener(this);
+        }
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            if (mItemTouchHelper != null && event.getAction() == MotionEvent.ACTION_DOWN) {
+                mItemTouchHelper.startDrag(this);
+            }
+            return false;
         }
     }
 
-    private class DownloadLabelAdapter extends RecyclerView.Adapter<DownloadLabelHolder> implements DraggableItemAdapter<DownloadLabelHolder> {
+    private class DownloadLabelAdapter extends RecyclerView.Adapter<DownloadLabelHolder> {
         private final LayoutInflater mInflater;
 
         private DownloadLabelAdapter(LayoutInflater inflater) {
@@ -1127,7 +1129,9 @@ public class DownloadsScene extends ToolbarScene
                         closeDrawer(Gravity.RIGHT);
                     }
                 });
-                if (position > 1) {
+                if (position < LABEL_OFFSET) {
+                    holder.option.setVisibility(View.GONE);
+                } else {
                     holder.option.setVisibility(View.VISIBLE);
                     holder.itemView.setOnLongClickListener(v -> {
                         if (context != null) {
@@ -1160,57 +1164,18 @@ public class DownloadsScene extends ToolbarScene
                         }
                         return true;
                     });
-                } else {
-                    holder.option.setVisibility(View.GONE);
                 }
             }
         }
 
         @Override
         public long getItemId(int position) {
-            return mLabels != null ? mLabels.get(position).hashCode() : 0;
+            return position < LABEL_OFFSET ? position : mLabels.get(position).hashCode();
         }
 
         @Override
         public int getItemCount() {
-            return mLabels != null ? mLabels.size() : 0;
-        }
-
-        @Override
-        public boolean onCheckCanStartDrag(@NonNull DownloadLabelHolder holder, int position, int x, int y) {
-            return position > 1 && x > holder.option.getX() && y > holder.option.getY();
-        }
-
-        @Override
-        public ItemDraggableRange onGetItemDraggableRange(@NonNull DownloadLabelHolder holder, int position) {
-            return new ItemDraggableRange(2, getItemCount() - 1);
-        }
-
-        @Override
-        public void onMoveItem(int fromPosition, int toPosition) {
-            Context context = getContext();
-            if (null == context || fromPosition == toPosition || toPosition <= 1) {
-                return;
-            }
-
-            EhApplication.getDownloadManager(context).moveLabel(fromPosition - 2, toPosition - 2);
-            final String item = mLabels.remove(fromPosition);
-            mLabels.add(toPosition, item);
-        }
-
-        @Override
-        public boolean onCheckCanDrop(int draggingPosition, int dropPosition) {
-            return dropPosition > 1;
-        }
-
-        @Override
-        public void onItemDragStarted(int position) {
-            notifyDataSetChanged();
-        }
-
-        @Override
-        public void onItemDragFinished(int fromPosition, int toPosition, boolean result) {
-            notifyDataSetChanged();
+            return mLabels.size();
         }
     }
 
@@ -1541,5 +1506,37 @@ public class DownloadsScene extends ToolbarScene
                 }
             }
         }
+    }
+
+    private class DownloadLabelItemTouchHelperCallback extends ItemTouchHelper.Callback {
+        @Override
+        public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+            int position = viewHolder.getBindingAdapterPosition();
+            return makeMovementFlags(position < LABEL_OFFSET ? 0 : (ItemTouchHelper.UP | ItemTouchHelper.DOWN), 0);
+        }
+
+        @Override
+        public boolean isLongPressDragEnabled() {
+            return false;
+        }
+
+        @SuppressLint("NotifyDataSetChanged")
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            int fromPosition = viewHolder.getBindingAdapterPosition();
+            int toPosition = target.getBindingAdapterPosition();
+            Context context = getContext();
+            if (null == context || fromPosition == toPosition || toPosition < LABEL_OFFSET) {
+                return false;
+            }
+            EhApplication.getDownloadManager(context).moveLabel(fromPosition - LABEL_OFFSET, toPosition - LABEL_OFFSET);
+            final String item = mLabels.remove(fromPosition);
+            mLabels.add(toPosition, item);
+            mLabelAdapter.notifyDataSetChanged();
+            return true;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {}
     }
 }

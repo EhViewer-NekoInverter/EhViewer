@@ -37,6 +37,7 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
@@ -57,6 +58,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsAnimationCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -68,12 +70,6 @@ import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.h6ah4i.android.widget.advrecyclerview.animator.DraggableItemAnimator;
-import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
-import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter;
-import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange;
-import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
-import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableItemViewHolder;
 import com.hippo.app.CheckBoxDialogBuilder;
 import com.hippo.app.EditTextCheckBoxDialogBuilder;
 import com.hippo.app.EditTextDialogBuilder;
@@ -232,6 +228,7 @@ public final class GalleryListScene extends BaseScene
             }
         }
     };
+    private ItemTouchHelper mItemTouchHelper;
     // Double click back exit
     private long mPressBackTime = 0;
     private boolean mHasFirstRefresh = false;
@@ -813,11 +810,6 @@ public final class GalleryListScene extends BaseScene
         Context context = getContext();
         AssertUtils.assertNotNull(context);
 
-        RecyclerViewDragDropManager dragDropManager = new RecyclerViewDragDropManager();
-        dragDropManager.setInitiateOnLongPress(true);
-        dragDropManager.setInitiateOnTouch(false);
-        dragDropManager.setDraggingItemAlpha(0.8f);
-
         final EasyRecyclerView recyclerView = view.findViewById(R.id.recycler_view_drawer);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         LinearDividerItemDecoration decoration = new LinearDividerItemDecoration(
@@ -828,10 +820,9 @@ public final class GalleryListScene extends BaseScene
         recyclerView.addItemDecoration(decoration);
         final QsDrawerAdapter qsDrawerAdapter = new QsDrawerAdapter(inflater);
         qsDrawerAdapter.setHasStableIds(true);
-        final GeneralItemAnimator animator = new DraggableItemAnimator();
-        recyclerView.setItemAnimator(animator);
-        recyclerView.setAdapter(dragDropManager.createWrappedAdapter(qsDrawerAdapter));
-        dragDropManager.attachRecyclerView(recyclerView);
+        mItemTouchHelper = new ItemTouchHelper(new GalleryListQSItemTouchHelperCallback(qsDrawerAdapter));
+        mItemTouchHelper.attachToRecyclerView(recyclerView);
+        recyclerView.setAdapter(qsDrawerAdapter);
         mQuickSearchList = EhDB.getAllQuickSearch();
         tip.setText(R.string.quick_search_tip);
         if (mIsTopList) {
@@ -1633,7 +1624,7 @@ public final class GalleryListScene extends BaseScene
         }
     }
 
-    private static class QsDrawerHolder extends AbstractDraggableItemViewHolder {
+    private class QsDrawerHolder extends RecyclerView.ViewHolder implements View.OnTouchListener {
         private final TextView key;
         private final ImageView option;
 
@@ -1641,6 +1632,15 @@ public final class GalleryListScene extends BaseScene
             super(itemView);
             key = (TextView) ViewUtils.$$(itemView, R.id.tv_key);
             option = (ImageView) ViewUtils.$$(itemView, R.id.iv_option);
+            option.setOnTouchListener(this);
+        }
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            if (mItemTouchHelper != null && event.getAction() == MotionEvent.ACTION_DOWN) {
+                mItemTouchHelper.startDrag(this);
+            }
+            return false;
         }
     }
 
@@ -1677,7 +1677,7 @@ public final class GalleryListScene extends BaseScene
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private class QsDrawerAdapter extends RecyclerView.Adapter<QsDrawerHolder> implements DraggableItemAdapter<QsDrawerHolder> {
+    private class QsDrawerAdapter extends RecyclerView.Adapter<QsDrawerHolder> {
         private final LayoutInflater mInflater;
 
         private QsDrawerAdapter(LayoutInflater inflater) {
@@ -1767,44 +1767,6 @@ public final class GalleryListScene extends BaseScene
         @Override
         public int getItemCount() {
             return !mIsTopList ? mQuickSearchList != null ? mQuickSearchList.size() : 0 : 4;
-        }
-
-        @Override
-        public boolean onCheckCanStartDrag(@NonNull QsDrawerHolder holder, int position, int x, int y) {
-            return !mIsTopList && x > holder.option.getX() && y > holder.option.getY();
-        }
-
-        @Override
-        public ItemDraggableRange onGetItemDraggableRange(@NonNull QsDrawerHolder holder, int position) {
-            return null;
-        }
-
-        @Override
-        public void onMoveItem(int fromPosition, int toPosition) {
-            if (fromPosition == toPosition) {
-                return;
-            }
-            if (null == mQuickSearchList) {
-                return;
-            }
-            EhDB.moveQuickSearch(fromPosition, toPosition);
-            final QuickSearch item = mQuickSearchList.remove(fromPosition);
-            mQuickSearchList.add(toPosition, item);
-        }
-
-        @Override
-        public boolean onCheckCanDrop(int draggingPosition, int dropPosition) {
-            return true;
-        }
-
-        @Override
-        public void onItemDragStarted(int position) {
-            notifyDataSetChanged();
-        }
-
-        @Override
-        public void onItemDragFinished(int fromPosition, int toPosition, boolean result) {
-            notifyDataSetChanged();
         }
     }
 
@@ -1987,5 +1949,41 @@ public final class GalleryListScene extends BaseScene
                 showActionFab();
             }
         }
+    }
+
+    private class GalleryListQSItemTouchHelperCallback extends ItemTouchHelper.Callback {
+        private final QsDrawerAdapter mAdapter;
+
+        public GalleryListQSItemTouchHelperCallback(QsDrawerAdapter adapter) {
+            mAdapter = adapter;
+        }
+
+        @Override
+        public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+            return makeMovementFlags(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0);
+        }
+
+        @Override
+        public boolean isLongPressDragEnabled() {
+            return false;
+        }
+
+        @SuppressLint("NotifyDataSetChanged")
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            int fromPosition = viewHolder.getBindingAdapterPosition();
+            int toPosition = target.getBindingAdapterPosition();
+            if (null == mQuickSearchList || fromPosition == toPosition) {
+                return false;
+            }
+            EhDB.moveQuickSearch(fromPosition, toPosition);
+            final QuickSearch item = mQuickSearchList.remove(fromPosition);
+            mQuickSearchList.add(toPosition, item);
+            mAdapter.notifyDataSetChanged();
+            return true;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {}
     }
 }
