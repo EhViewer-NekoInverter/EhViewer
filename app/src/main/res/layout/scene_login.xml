@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:padding="@dimen/keyline_margin"
+                android:padding="32dp"
                 app:srcCompat="@mipmap/ic_launcher" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -80,6 +80,17 @@
                     android:singleLine="true" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:maxWidth="@dimen/single_max_width"
+                android:paddingTop="24dp"
+                android:text="@string/app_waring"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="@dimen/text_small"
+                android:textStyle="bold" />
 
             <Space
                 android:layout_width="wrap_content"

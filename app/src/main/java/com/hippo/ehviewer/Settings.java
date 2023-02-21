@@ -232,8 +232,6 @@ public class Settings {
     private static final String TAG = Settings.class.getSimpleName();
     private static final String KEY_VERSION_CODE = "version_code";
     private static final int DEFAULT_VERSION_CODE = 0;
-    private static final String KEY_SHOW_WARNING = "show_warning";
-    private static final boolean DEFAULT_SHOW_WARNING = true;
     private static final String KEY_SELECT_SITE = "select_site";
     private static final boolean DEFAULT_SELECT_SITE = true;
     private static final String KEY_NEED_SIGN_IN = "need_sign_in";
@@ -903,14 +901,6 @@ public class Settings {
 
     public static void putVersionCode(int value) {
         putInt(KEY_VERSION_CODE, value);
-    }
-
-    public static boolean getShowWarning() {
-        return getBoolean(KEY_SHOW_WARNING, DEFAULT_SHOW_WARNING);
-    }
-
-    public static void putShowWarning(boolean value) {
-        putBoolean(KEY_SHOW_WARNING, value);
     }
 
     public static boolean getSelectSite() {

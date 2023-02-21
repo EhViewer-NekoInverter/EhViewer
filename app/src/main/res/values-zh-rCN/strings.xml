@@ -15,12 +15,8 @@
   -->
 
 <resources>
-    <!-- Warning Scene -->
-    <string name="app_waring">本应用中的内容均来自互联网，部分内容可能对您的生理及心理造成难以恢复的伤害。本应用作者不会对因使用本应用所造成的任何后果负责。\n\n未成年人应在监护人指导下使用本应用。\n\n继续使用即代表您同意上述条款。</string>
-    <string name="accept">接受</string>
-    <string name="reject">拒绝</string>
-
     <!-- Login Scene -->
+    <string name="app_waring">本应用中的内容均来自互联网，部分内容可能对您的生理及心理造成难以恢复的伤害。本应用作者不会对因使用本应用所造成的任何后果负责。\n未成年人应在监护人指导下使用本应用。\n继续使用即代表您同意上述条款。</string>
     <string name="username">用户名</string>
     <string name="password">密码</string>
     <string name="sign_in">登录</string>
