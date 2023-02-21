@@ -196,7 +196,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
             theme.resolveColor(R.attr.dividerColor),
             LayoutUtils.dp2pix(context, 1.0f)
         )
-        decoration!!.setShowLastDivider(true)
+        decoration.setShowLastDivider(true)
         mRecyclerView!!.addItemDecoration(decoration)
         mRecyclerView!!.setHasFixedSize(true)
         // Cancel change animator
@@ -389,7 +389,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
 
     @SuppressLint("InflateParams")
     fun showVoteStatusDialog(context: Context?, voteStatus: String?) {
-        var context = context
+        var mContext = context
         val temp = StringUtils.split(voteStatus, ',')
         val length = temp.size
         val userArray = arrayOfNulls<String>(length)
@@ -406,9 +406,9 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
                 voteArray[i] = StringUtils.trim(str.substring(index + 1))
             }
         }
-        val builder = AlertDialog.Builder(context!!)
-        context = builder.context
-        val inflater = LayoutInflater.from(context)
+        val builder = AlertDialog.Builder(mContext!!)
+        mContext = builder.context
+        val inflater = LayoutInflater.from(mContext)
         val rv = inflater.inflate(R.layout.dialog_recycler_view, null) as EasyRecyclerView
         rv.adapter = object : RecyclerView.Adapter<InfoHolder>() {
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InfoHolder {
@@ -424,13 +424,13 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
                 return length
             }
         }
-        rv.layoutManager = LinearLayoutManager(context)
+        rv.layoutManager = LinearLayoutManager(mContext)
         val decoration = LinearDividerItemDecoration(
             LinearDividerItemDecoration.VERTICAL,
             theme.resolveColor(R.attr.dividerColor),
-            LayoutUtils.dp2pix(context, 1.0f)
+            LayoutUtils.dp2pix(mContext, 1.0f)
         )
-        decoration.setPadding(ResourcesUtils.getAttrDimensionPixelOffset(context, androidx.appcompat.R.attr.dialogPreferredPadding))
+        decoration.setPadding(ResourcesUtils.getAttrDimensionPixelOffset(mContext, androidx.appcompat.R.attr.dialogPreferredPadding))
         rv.addItemDecoration(decoration)
         rv.clipToPadding = false
         builder.setView(rv).show()
