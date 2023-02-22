@@ -75,7 +75,6 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 - [libarchive](http://www.libarchive.org/)
 - [okhttp](https://github.com/square/okhttp)
 - [RikkaX](https://github.com/RikkaApps/RikkaX)
-- [TapTargetView](https://github.com/KeepSafe/TapTargetView)
 - [XZ Utils](https://tukaani.org/xz/)
 
 标签翻译数据

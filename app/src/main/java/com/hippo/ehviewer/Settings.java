@@ -216,14 +216,6 @@ public class Settings {
     /********************
      ****** Guide
      ********************/
-    private static final String KEY_GUIDE_QUICK_SEARCH = "guide_quick_search";
-    private static final boolean DEFAULT_GUIDE_QUICK_SEARCH = true;
-    private static final String KEY_GUIDE_COLLECTIONS = "guide_collections";
-    private static final boolean DEFAULT_GUIDE_COLLECTIONS = true;
-    private static final String KEY_GUIDE_DOWNLOAD_THUMB = "guide_download_thumb";
-    private static final boolean DEFAULT_GUIDE_DOWNLOAD_THUMB = true;
-    private static final String KEY_GUIDE_DOWNLOAD_LABELS = "guide_download_labels";
-    private static final boolean DEFAULT_GUIDE_DOWNLOAD_LABELS = true;
     private static final String KEY_GUIDE_GALLERY = "guide_gallery";
     private static final boolean DEFAULT_GUIDE_GALLERY = true;
     /********************
@@ -240,8 +232,6 @@ public class Settings {
     private static final String DEFAULT_DISPLAY_NAME = null;
     private static final String KEY_AVATAR = "avatar";
     private static final String DEFAULT_AVATAR = null;
-    private static final String KEY_QUICK_SEARCH_TIP = "quick_search_tip";
-    private static final boolean DEFAULT_QUICK_SEARCH_TIP = true;
     private static final String KEY_QS_SAVE_PROGRESS = "qs_save_progress";
     private static final boolean DEFAULT_QS_SAVE_PROGRESS = false;
     private static final String KEY_HAS_DEFAULT_DOWNLOAD_LABEL = "has_default_download_label";
@@ -855,38 +845,6 @@ public class Settings {
         putBoolean(KEY_NEVER_ADD_FAV_NOTES, value);
     }
 
-    public static boolean getGuideQuickSearch() {
-        return getBoolean(KEY_GUIDE_QUICK_SEARCH, DEFAULT_GUIDE_QUICK_SEARCH);
-    }
-
-    public static void putGuideQuickSearch(boolean value) {
-        putBoolean(KEY_GUIDE_QUICK_SEARCH, value);
-    }
-
-    public static boolean getGuideCollections() {
-        return getBoolean(KEY_GUIDE_COLLECTIONS, DEFAULT_GUIDE_COLLECTIONS);
-    }
-
-    public static void putGuideCollections(boolean value) {
-        putBoolean(KEY_GUIDE_COLLECTIONS, value);
-    }
-
-    public static boolean getGuideDownloadThumb() {
-        return getBoolean(KEY_GUIDE_DOWNLOAD_THUMB, DEFAULT_GUIDE_DOWNLOAD_THUMB);
-    }
-
-    public static void putGuideDownloadThumb(boolean value) {
-        putBoolean(KEY_GUIDE_DOWNLOAD_THUMB, value);
-    }
-
-    public static boolean getGuideDownloadLabels() {
-        return getBoolean(KEY_GUIDE_DOWNLOAD_LABELS, DEFAULT_GUIDE_DOWNLOAD_LABELS);
-    }
-
-    public static void puttGuideDownloadLabels(boolean value) {
-        putBoolean(KEY_GUIDE_DOWNLOAD_LABELS, value);
-    }
-
     public static boolean getGuideGallery() {
         return getBoolean(KEY_GUIDE_GALLERY, DEFAULT_GUIDE_GALLERY);
     }
@@ -932,14 +890,6 @@ public class Settings {
 
     public static void putAvatar(String value) {
         putString(KEY_AVATAR, value);
-    }
-
-    public static boolean getQuickSearchTip() {
-        return getBoolean(KEY_QUICK_SEARCH_TIP, DEFAULT_QUICK_SEARCH_TIP);
-    }
-
-    public static void putQuickSearchTip(boolean value) {
-        putBoolean(KEY_QUICK_SEARCH_TIP, value);
     }
 
     public static boolean getQSSaveProgress() {

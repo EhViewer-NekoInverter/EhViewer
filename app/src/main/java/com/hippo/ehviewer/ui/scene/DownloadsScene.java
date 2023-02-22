@@ -22,22 +22,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Point;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseBooleanArray;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -57,8 +53,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.getkeepsafe.taptargetview.TapTarget;
-import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.hippo.app.CheckBoxDialogBuilder;
 import com.hippo.app.EditTextDialogBuilder;
@@ -434,89 +428,7 @@ public class DownloadsScene extends ToolbarScene
 
         updateView();
 
-        guide();
-
         return view;
-    }
-
-    private void guide() {
-        if (Settings.getGuideDownloadThumb() && null != mRecyclerView) {
-            mRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    if (Settings.getGuideDownloadThumb()) {
-                        guideDownloadThumb();
-                    }
-                    if (null != mRecyclerView) {
-                        ViewUtils.removeOnGlobalLayoutListener(mRecyclerView.getViewTreeObserver(), this);
-                    }
-                }
-            });
-        } else {
-            guideDownloadLabels();
-        }
-    }
-
-    private void guideDownloadThumb() {
-        MainActivity activity = getMainActivity();
-        if (null == activity || !Settings.getGuideDownloadThumb() || null == mLayoutManager || null == mRecyclerView) {
-            guideDownloadLabels();
-            return;
-        }
-        int position = mLayoutManager.findFirstCompletelyVisibleItemPositions(null)[0];
-        if (position < 0) {
-            guideDownloadLabels();
-            return;
-        }
-        RecyclerView.ViewHolder holder = mRecyclerView.findViewHolderForAdapterPosition(position);
-        if (null == holder) {
-            guideDownloadLabels();
-            return;
-        }
-
-        TapTargetView.showFor(requireActivity(),
-                TapTarget.forView(((DownloadHolder) holder).thumb,
-                                getString(R.string.guide_download_thumb_title),
-                                getString(R.string.guide_download_thumb_text))
-                        .transparentTarget(true),
-                new TapTargetView.Listener() {
-                    @Override
-                    public void onTargetDismissed(TapTargetView view, boolean userInitiated) {
-                        super.onTargetDismissed(view, userInitiated);
-                        Settings.putGuideDownloadThumb(false);
-                        guideDownloadLabels();
-                    }
-                });
-    }
-
-    private void guideDownloadLabels() {
-        MainActivity activity = getMainActivity();
-        if (null == activity || !Settings.getGuideDownloadLabels()) {
-            return;
-        }
-
-        Display display = activity.getWindowManager().getDefaultDisplay();
-        Point point = new Point();
-        display.getSize(point);
-        Rect bounds = new Rect(point.x + LayoutUtils.dp2pix(requireContext(), 20),
-                point.y / 3 + LayoutUtils.dp2pix(requireContext(), 20),
-                point.x - LayoutUtils.dp2pix(requireContext(), 20),
-                point.y / 3 - LayoutUtils.dp2pix(requireContext(), 20));
-
-        TapTargetView.showFor(requireActivity(),
-                TapTarget.forBounds(bounds,
-                                getString(R.string.guide_download_labels_title),
-                                getString(R.string.guide_download_labels_text))
-                        .outerCircleColor(R.color.colorPrimary)
-                        .transparentTarget(true),
-                new TapTargetView.Listener() {
-                    @Override
-                    public void onTargetDismissed(TapTargetView view, boolean userInitiated) {
-                        super.onTargetClick(view);
-                        Settings.puttGuideDownloadLabels(false);
-                        openDrawer(Gravity.RIGHT);
-                    }
-                });
     }
 
     @Override

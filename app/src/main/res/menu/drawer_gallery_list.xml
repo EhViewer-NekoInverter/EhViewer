@@ -18,9 +18,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_help"
+        android:icon="@drawable/v_help_circle_x24"
+        android:title="@string/readme"
+        android:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/action_add"
         android:icon="@drawable/v_plus_dark_x24"
         android:title="@string/add"
-        app:showAsAction="always" />
+        android:showAsAction="always" />
 
 </menu>

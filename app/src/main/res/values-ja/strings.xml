@@ -39,14 +39,6 @@
     <string name="select_scene_explain">e-hentai：誰にも公開です\nexhentai：ログインしないとアクセスできません</string>
 
     <!-- Guide -->
-    <string name="guide_quick_search_title">クイック検索</string>
-    <string name="guide_quick_search_text">右からスワイプすると、クイック検索パネルが開きます</string>
-    <string name="guide_collections_title">お気に入りリスト</string>
-    <string name="guide_collections_text">右からスワイプすると、お気に入りリストを選べます</string>
-    <string name="guide_download_labels_title">ダウンロードラベル</string>
-    <string name="guide_download_labels_text">右からスワイプすると、ダウンロードラベルパネルが開きます</string>
-    <string name="guide_download_thumb_title">ギャラリーの詳細</string>
-    <string name="guide_download_thumb_text">サムネイルをタップすると、ギャラリー詳細を表示します</string>
     <string name="guide_gallery_left">ページをめくる</string>
     <string name="guide_gallery_right">ページをめくる</string>
     <string name="guide_gallery_menu">メニュー</string>

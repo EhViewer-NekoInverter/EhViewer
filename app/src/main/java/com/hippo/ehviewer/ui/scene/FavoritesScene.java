@@ -21,12 +21,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
-import android.graphics.Point;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.SparseBooleanArray;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,8 +41,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.getkeepsafe.taptargetview.TapTarget;
-import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.CompositeDateValidator;
 import com.google.android.material.datepicker.DateValidatorPointBackward;
@@ -317,39 +312,7 @@ public class FavoritesScene extends BaseScene implements
             mHelper.firstRefresh();
         }
 
-        guideCollections();
-
         return view;
-    }
-
-    private void guideCollections() {
-        Activity activity = getMainActivity();
-        if (null == activity || !Settings.getGuideCollections()) {
-            return;
-        }
-
-        Display display = activity.getWindowManager().getDefaultDisplay();
-        Point point = new Point();
-        display.getSize(point);
-        Rect bounds = new Rect(point.x + LayoutUtils.dp2pix(requireContext(), 20),
-                point.y / 3 + LayoutUtils.dp2pix(requireContext(), 20),
-                point.x - LayoutUtils.dp2pix(requireContext(), 20),
-                point.y / 3 - LayoutUtils.dp2pix(requireContext(), 20));
-
-        TapTargetView.showFor(requireActivity(),
-                TapTarget.forBounds(bounds,
-                                getString(R.string.guide_collections_title),
-                                getString(R.string.guide_collections_text))
-                        .outerCircleColor(R.color.colorPrimary)
-                        .transparentTarget(true),
-                new TapTargetView.Listener() {
-                    @Override
-                    public void onTargetDismissed(TapTargetView view, boolean userInitiated) {
-                        super.onTargetClick(view);
-                        Settings.putGuideCollections(false);
-                        openDrawer(Gravity.RIGHT);
-                    }
-                });
     }
 
     // keyword of mUrlBuilder, fav cat of mUrlBuilder, mFavCatArray.

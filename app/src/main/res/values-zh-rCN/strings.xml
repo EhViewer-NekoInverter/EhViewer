@@ -42,14 +42,6 @@
     <string name="select_scene_explain">e-hentai：对任何人开放\nexhentai：仅对登录用户开放</string>
 
     <!-- Guide -->
-    <string name="guide_quick_search_title">快速搜索</string>
-    <string name="guide_quick_search_text">从右侧滑动打开快速搜索面板</string>
-    <string name="guide_collections_title">收藏夹</string>
-    <string name="guide_collections_text">从右侧滑动来选择收藏夹</string>
-    <string name="guide_download_labels_title">下载标签</string>
-    <string name="guide_download_labels_text">从右侧滑动打开下载标签面板</string>
-    <string name="guide_download_thumb_title">画廊详情</string>
-    <string name="guide_download_thumb_text">点击缩略图查看画廊详情</string>
     <string name="guide_gallery_left">翻页</string>
     <string name="guide_gallery_right">翻页</string>
     <string name="guide_gallery_menu">菜单</string>

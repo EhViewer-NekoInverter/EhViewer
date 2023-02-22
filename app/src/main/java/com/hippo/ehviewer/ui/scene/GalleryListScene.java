@@ -23,8 +23,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Point;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -33,7 +31,6 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ImageSpan;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -62,15 +59,12 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.getkeepsafe.taptargetview.TapTarget;
-import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.CompositeDateValidator;
 import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.hippo.app.CheckBoxDialogBuilder;
 import com.hippo.app.EditTextCheckBoxDialogBuilder;
 import com.hippo.app.EditTextDialogBuilder;
 import com.hippo.drawable.AddDeleteDrawable;
@@ -638,39 +632,7 @@ public final class GalleryListScene extends BaseScene
             mHelper.firstRefresh();
         }
 
-        guideQuickSearch();
-
         return view;
-    }
-
-    private void guideQuickSearch() {
-        Activity activity = getMainActivity();
-        if (null == activity || !Settings.getGuideQuickSearch()) {
-            return;
-        }
-
-        Display display = activity.getWindowManager().getDefaultDisplay();
-        Point point = new Point();
-        display.getSize(point);
-        Rect bounds = new Rect(point.x + LayoutUtils.dp2pix(requireContext(), 20),
-                point.y / 3 + LayoutUtils.dp2pix(requireContext(), 20),
-                point.x - LayoutUtils.dp2pix(requireContext(), 20),
-                point.y / 3 - LayoutUtils.dp2pix(requireContext(), 20));
-
-        TapTargetView.showFor(requireActivity(),
-                TapTarget.forBounds(bounds,
-                                getString(R.string.guide_quick_search_title),
-                                getString(R.string.guide_quick_search_text))
-                        .outerCircleColor(R.color.colorPrimary)
-                        .transparentTarget(true),
-                new TapTargetView.Listener() {
-                    @Override
-                    public void onTargetDismissed(TapTargetView view, boolean userInitiated) {
-                        super.onTargetClick(view);
-                        Settings.putGuideQuickSearch(false);
-                        openDrawer(Gravity.RIGHT);
-                    }
-                });
     }
 
     @Override
@@ -706,21 +668,16 @@ public final class GalleryListScene extends BaseScene
         mActionFabDrawable = null;
     }
 
-    private void showQuickSearchTipDialog(final QsDrawerAdapter adapter,
-                                          final EasyRecyclerView recyclerView, final TextView tip) {
+    private void showQuickSearchTipDialog() {
         Context context = getContext();
         if (null == context) {
             return;
         }
-        final CheckBoxDialogBuilder builder = new CheckBoxDialogBuilder(
-                context, getString(R.string.add_quick_search_tip), getString(R.string.get_it), false);
-        builder.setTitle(R.string.readme);
-        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
-            if (builder.isChecked()) {
-                Settings.putQuickSearchTip(false);
-            }
-            showAddQuickSearchDialog(adapter, recyclerView, tip);
-        }).show();
+        new AlertDialog.Builder(context)
+                .setTitle(R.string.readme)
+                .setMessage(R.string.add_quick_search_tip)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
     }
 
     private void showAddQuickSearchDialog(final QsDrawerAdapter adapter,
@@ -834,11 +791,9 @@ public final class GalleryListScene extends BaseScene
         toolbar.setOnMenuItemClickListener(item -> {
             int id = item.getItemId();
             if (id == R.id.action_add) {
-                if (Settings.getQuickSearchTip()) {
-                    showQuickSearchTipDialog(qsDrawerAdapter, recyclerView, tip);
-                } else {
-                    showAddQuickSearchDialog(qsDrawerAdapter, recyclerView, tip);
-                }
+                showAddQuickSearchDialog(qsDrawerAdapter, recyclerView, tip);
+            } else if (id == R.id.action_help) {
+                showQuickSearchTipDialog();
             }
             return true;
         });

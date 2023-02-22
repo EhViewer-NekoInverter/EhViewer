@@ -106,7 +106,6 @@ dependencies {
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01'
     implementation 'com.drakeet.drawer:drawer:1.0.3'
     implementation 'com.google.android.material:material:1.7.0'
-    implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.3'
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.11'
     implementation 'dev.rikka.rikkax.appcompat:appcompat:1.5.0.1'
     implementation 'dev.rikka.rikkax.core:core:1.4.1'
