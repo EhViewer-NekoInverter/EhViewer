@@ -114,7 +114,7 @@ import com.hippo.scene.TransitionHelper;
 import com.hippo.text.URLImageGetter;
 import com.hippo.unifile.UniFile;
 import com.hippo.util.AppHelper;
-import com.hippo.util.ClipboardUtil;
+import com.hippo.util.ClipboardUtilKt;
 import com.hippo.util.ExceptionUtils;
 import com.hippo.util.IoThreadPoolExecutor;
 import com.hippo.util.ReadableTime;
@@ -1511,11 +1511,9 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
                     } else if (id == R.id.add_filter) {
                         showFilterTagDialog(tag);
                     } else if (id == R.id.copy) {
-                        ClipboardUtil.addTextToClipboard(tag);
-                        showTip(R.string.copied_to_clipboard, LENGTH_SHORT);
+                        ClipboardUtilKt.addTextToClipboard(requireActivity(), tag, false);
                     } else if (id == R.id.copy_trans) {
-                        ClipboardUtil.addTextToClipboard(tv.getText().toString());
-                        showTip(R.string.copied_to_clipboard, LENGTH_SHORT);
+                        ClipboardUtilKt.addTextToClipboard(requireActivity(), tv.getText().toString(), false);
                     }
                 }).show();
     }

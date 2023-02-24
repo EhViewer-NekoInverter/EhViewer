@@ -61,7 +61,6 @@ import com.hippo.network.StatusCodeException;
 import com.hippo.scene.SceneApplication;
 import com.hippo.unifile.UniFile;
 import com.hippo.util.BitmapUtils;
-import com.hippo.util.ClipboardUtil;
 import com.hippo.util.ExceptionUtils;
 import com.hippo.util.IoThreadPoolExecutor;
 import com.hippo.util.ReadableTime;
@@ -311,7 +310,6 @@ public class EhApplication extends SceneApplication {
 
         Image.initialize(this);
         Native.initialize();
-        ClipboardUtil.initialize(this);
         GetText.initialize(this);
         StatusCodeException.initialize(this);
         Settings.initialize(this);

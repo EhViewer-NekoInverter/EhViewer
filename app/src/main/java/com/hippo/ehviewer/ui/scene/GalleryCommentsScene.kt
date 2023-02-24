@@ -78,8 +78,8 @@ import com.hippo.ehviewer.dao.Filter
 import com.hippo.ehviewer.ui.MainActivity
 import com.hippo.scene.SceneFragment
 import com.hippo.text.URLImageGetter
+import com.hippo.util.addTextToClipboard
 import com.hippo.util.BBCode.toBBCode
-import com.hippo.util.ClipboardUtil
 import com.hippo.util.ExceptionUtils
 import com.hippo.util.ReadableTime
 import com.hippo.util.TextUrl
@@ -474,8 +474,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
                 }
                 val id = menuId[which]
                 if (id == R.id.copy) {
-                    ClipboardUtil.addTextToClipboard(text)
-                    showTip(R.string.copied_to_clipboard, LENGTH_SHORT)
+                    requireActivity().addTextToClipboard(text, false)
                 } else if (id == R.id.block_commenter) {
                     showFilterCommenterDialog(comment.user, position)
                 } else if (id == R.id.vote_up) {

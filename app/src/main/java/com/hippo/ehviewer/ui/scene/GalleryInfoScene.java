@@ -36,7 +36,7 @@ import com.hippo.ehviewer.UrlOpener;
 import com.hippo.ehviewer.client.EhUrl;
 import com.hippo.ehviewer.client.EhUtils;
 import com.hippo.ehviewer.client.data.GalleryDetail;
-import com.hippo.util.ClipboardUtil;
+import com.hippo.util.ClipboardUtilKt;
 import com.hippo.yorozuya.AssertUtils;
 import com.hippo.yorozuya.LayoutUtils;
 import com.hippo.yorozuya.ViewUtils;
@@ -198,14 +198,12 @@ public final class GalleryInfoScene extends ToolbarScene {
             if (position == INDEX_PARENT) {
                 UrlOpener.openUrl(context, mValues.get(position), true);
             } else {
-                ClipboardUtil.addTextToClipboard(mValues.get(position));
+                ClipboardUtilKt.addTextToClipboard(requireActivity(), mValues.get(position), false);
 
                 if (position == INDEX_URL) {
                     // Save it to avoid detect the gallery
                     Settings.putClipboardTextHashCode(mValues.get(position).hashCode());
                 }
-
-                showTip(R.string.copied_to_clipboard, LENGTH_SHORT);
             }
             return true;
         } else {
