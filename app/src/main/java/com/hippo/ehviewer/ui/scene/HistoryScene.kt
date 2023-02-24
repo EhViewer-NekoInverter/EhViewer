@@ -21,7 +21,11 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -39,7 +43,11 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.hippo.easyrecyclerview.EasyRecyclerView
 import com.hippo.easyrecyclerview.FastScroller
 import com.hippo.easyrecyclerview.HandlerDrawable
-import com.hippo.ehviewer.*
+import com.hippo.ehviewer.EhApplication
+import com.hippo.ehviewer.EhDB
+import com.hippo.ehviewer.FavouriteStatusRouter
+import com.hippo.ehviewer.R
+import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.client.EhCacheKeyFactory
 import com.hippo.ehviewer.client.EhUtils
 import com.hippo.ehviewer.client.data.GalleryInfo

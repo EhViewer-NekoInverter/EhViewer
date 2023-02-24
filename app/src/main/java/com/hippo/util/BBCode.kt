@@ -19,7 +19,14 @@ package com.hippo.util
 
 import android.graphics.Typeface
 import android.text.Spanned
-import android.text.style.*
+import android.text.style.CharacterStyle
+import android.text.style.ForegroundColorSpan
+import android.text.style.ImageSpan
+import android.text.style.RelativeSizeSpan
+import android.text.style.StrikethroughSpan
+import android.text.style.StyleSpan
+import android.text.style.URLSpan
+import android.text.style.UnderlineSpan
 
 object BBCode {
     fun Spanned.toBBCode(): String {
