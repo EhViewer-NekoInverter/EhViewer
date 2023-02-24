@@ -19,6 +19,7 @@ package com.hippo.ehviewer.ui;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
@@ -45,6 +46,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public final class CommonOperations {
     private static void doAddToFavorites(Activity activity, GalleryInfo galleryInfo,
@@ -135,8 +137,14 @@ public final class CommonOperations {
         startDownload(activity, Collections.singletonList(galleryInfo), forceDefault);
     }
 
-    // TODO Add context if activity and context are different style
     public static void startDownload(final MainActivity activity, final List<GalleryInfo> galleryInfos, boolean forceDefault) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Objects.requireNonNull(EhApplication.getInstance().getTopActivity()).checkAndRequestNotificationPermission();
+        }
+        doStartDownload(activity, galleryInfos, forceDefault);
+    }
+
+    private static void doStartDownload(final MainActivity activity, final List<GalleryInfo> galleryInfos, boolean forceDefault) {
         final DownloadManager dm = EhApplication.getDownloadManager(activity);
 
         LongList toStart = new LongList();

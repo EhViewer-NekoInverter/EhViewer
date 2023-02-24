@@ -54,6 +54,7 @@ import com.hippo.ehviewer.client.parser.EventPaneParser;
 import com.hippo.ehviewer.download.DownloadManager;
 import com.hippo.ehviewer.spider.SpiderDen;
 import com.hippo.ehviewer.ui.CommonOperations;
+import com.hippo.ehviewer.ui.EhActivity;
 import com.hippo.image.Image;
 import com.hippo.image.ImageBitmap;
 import com.hippo.network.StatusCodeException;
@@ -509,9 +510,9 @@ public class EhApplication extends SceneApplication {
     }
 
     @Nullable
-    public Activity getTopActivity() {
+    public EhActivity getTopActivity() {
         if (!mActivityList.isEmpty()) {
-            return mActivityList.get(mActivityList.size() - 1);
+            return (EhActivity) mActivityList.get(mActivityList.size() - 1);
         } else {
             return null;
         }

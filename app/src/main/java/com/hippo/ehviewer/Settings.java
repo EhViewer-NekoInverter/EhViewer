@@ -245,6 +245,7 @@ public class Settings {
     private static final String KEY_CLIPBOARD_TEXT_HASH_CODE = "clipboard_text_hash_code";
     private static final int DEFAULT_CLIPBOARD_TEXT_HASH_CODE = 0;
     private static final String KEY_ARCHIVE_PASSWDS = "archive_passwds";
+    private static final String KEY_NOTIFICATION_REQUIRED = "notification_required";
     private static Context sContext;
     private static SharedPreferences sSettingsPre;
     private static EhConfig sEhConfig;
@@ -950,5 +951,13 @@ public class Settings {
 
     public static void putPasswdToArchivePasswds(String value) {
         putStringToStringSet(KEY_ARCHIVE_PASSWDS, value);
+    }
+
+    public static boolean getNotificationRequired() {
+        return getBoolean(KEY_NOTIFICATION_REQUIRED, false);
+    }
+
+    public static void putNotificationRequired() {
+        putBoolean(KEY_NOTIFICATION_REQUIRED, true);
     }
 }
