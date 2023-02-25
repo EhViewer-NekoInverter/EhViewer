@@ -13,60 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.ehviewer.preference
 
-package com.hippo.ehviewer.preference;
+import android.content.Context
+import android.util.AttributeSet
+import androidx.appcompat.app.AlertDialog
+import com.hippo.ehviewer.R
+import com.hippo.ehviewer.client.EhUtils
+import com.hippo.ehviewer.ui.SettingsActivity
+import com.hippo.ehviewer.ui.scene.BaseScene
+import com.hippo.preference.MessagePreference
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.util.AttributeSet;
+class SignOutPreference @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null
+) : MessagePreference(context, attrs) {
+    private val mActivity = context as SettingsActivity
 
-import androidx.appcompat.app.AlertDialog;
-
-import com.hippo.ehviewer.R;
-import com.hippo.ehviewer.client.EhUtils;
-import com.hippo.ehviewer.ui.SettingsActivity;
-import com.hippo.ehviewer.ui.scene.BaseScene;
-import com.hippo.preference.MessagePreference;
-
-public class SignOutPreference extends MessagePreference {
-    @SuppressLint("StaticFieldLeak")
-    private final SettingsActivity mActivity;
-
-    public SignOutPreference(Context context) {
-        super(context);
-        init();
-        mActivity = (SettingsActivity) context;
+    init {
+        setDialogMessage(context.getString(R.string.settings_eh_sign_out_warning))
     }
 
-    public SignOutPreference(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-        mActivity = (SettingsActivity) context;
+    override fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
+        super.onPrepareDialogBuilder(builder)
+        builder.setPositiveButton(R.string.settings_eh_sign_out_yes, this)
+        builder.setNegativeButton(android.R.string.cancel, null)
     }
 
-    public SignOutPreference(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
-        mActivity = (SettingsActivity) context;
-    }
-
-    private void init() {
-        setDialogMessage(getContext().getString(R.string.settings_eh_sign_out_warning));
-    }
-
-    @Override
-    protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
-        super.onPrepareDialogBuilder(builder);
-        builder.setPositiveButton(R.string.settings_eh_sign_out_yes, this);
-        builder.setNegativeButton(android.R.string.cancel, null);
-    }
-
-    @Override
-    protected void onDialogClosed(boolean positiveResult) {
-        super.onDialogClosed(positiveResult);
+    override fun onDialogClosed(positiveResult: Boolean) {
+        super.onDialogClosed(positiveResult)
         if (positiveResult) {
-            EhUtils.signOut(getContext());
-            mActivity.showTip(R.string.settings_eh_sign_out_tip, BaseScene.LENGTH_SHORT);
+            EhUtils.signOut(context)
+            mActivity.showTip(R.string.settings_eh_sign_out_tip, BaseScene.LENGTH_SHORT)
         }
     }
 }

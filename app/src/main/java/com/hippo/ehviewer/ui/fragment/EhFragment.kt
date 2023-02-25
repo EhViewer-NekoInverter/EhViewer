@@ -18,6 +18,7 @@ package com.hippo.ehviewer.ui.fragment
 import android.app.Activity
 import android.content.res.Configuration
 import android.os.Bundle
+import androidx.annotation.StringRes
 import androidx.preference.Preference
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
@@ -88,9 +89,9 @@ class EhFragment : BasePreferenceFragment() {
         return true
     }
 
-    override fun getFragmentTitle(): Int {
-        return R.string.settings_eh
-    }
+    @get:StringRes
+    override val fragmentTitle: Int
+        get() = R.string.settings_eh
 
     fun updateListPreference(newValue: Int) {
         val isDetailMode = newValue == 0

@@ -15,35 +15,32 @@
  * You should have received a copy of the GNU General Public License along with EhViewer.
  * If not, see <https://www.gnu.org/licenses/>.
  */
+package com.hippo.ehviewer.ui.fragment
 
-package com.hippo.ehviewer.ui.fragment;
+import android.view.View
+import android.widget.TextView
+import androidx.annotation.StringRes
+import androidx.fragment.app.Fragment
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.hippo.ehviewer.ui.SettingsActivity
 
-import androidx.annotation.StringRes;
-import androidx.fragment.app.Fragment;
-
-import com.hippo.ehviewer.ui.SettingsActivity;
-
-public class BaseFragment extends Fragment {
-    @Override
-    public void onStart() {
-        super.onStart();
-        setTitle(getFragmentTitle());
+abstract class BaseFragment : Fragment() {
+    override fun onStart() {
+        super.onStart()
+        setTitle(getFragmentTitle())
     }
 
-    @StringRes
-    public int getFragmentTitle() {
-        return -1;
+    abstract fun getFragmentTitle(): Int
+
+    private fun setTitle(@StringRes string: Int) {
+        requireActivity().setTitle(string)
     }
 
-    private void setTitle(@StringRes int string) {
-        requireActivity().setTitle(string);
+    fun showTip(@StringRes id: Int, length: Int) {
+        (requireActivity() as SettingsActivity).showTip(getString(id), length)
     }
 
-    public void showTip(@StringRes int id, int length) {
-        ((SettingsActivity) requireActivity()).showTip(getString(id), length);
-    }
-
-    public void showTip(CharSequence message, int length) {
-        ((SettingsActivity) requireActivity()).showTip(message, length);
+    fun showTip(message: CharSequence?, length: Int) {
+        (requireActivity() as SettingsActivity).showTip(message, length)
     }
 }

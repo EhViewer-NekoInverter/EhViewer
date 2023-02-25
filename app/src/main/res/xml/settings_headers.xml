@@ -17,32 +17,32 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <Preference
-        android:key="com.hippo.ehviewer.ui.fragment.EhFragment"
+        android:key="eh"
         android:icon="@drawable/v_sad_panda_primary_x24"
         android:title="@string/settings_eh" />
 
     <Preference
-        android:key="com.hippo.ehviewer.ui.fragment.ReadFragment"
+        android:key="read"
         android:icon="@drawable/v_book_open_primary_x24"
         android:title="@string/settings_read" />
 
     <Preference
-        android:key="com.hippo.ehviewer.ui.fragment.DownloadFragment"
+        android:key="download"
         android:icon="@drawable/v_download_primary_x24"
         android:title="@string/settings_download" />
 
     <Preference
-        android:key="com.hippo.ehviewer.ui.fragment.PrivacyFragment"
+        android:key="privacy"
         android:icon="@drawable/v_sec_primary_x24"
         android:title="@string/settings_privacy" />
 
     <Preference
-        android:key="com.hippo.ehviewer.ui.fragment.AdvancedFragment"
+        android:key="advanced"
         android:icon="@drawable/v_adb_primary_x24"
         android:title="@string/settings_advanced" />
 
     <Preference
-        android:key="com.hippo.ehviewer.ui.fragment.AboutFragment"
+        android:key="about"
         android:icon="@drawable/v_info_primary_x24"
         android:title="@string/settings_about" />
 </PreferenceScreen>

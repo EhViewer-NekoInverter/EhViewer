@@ -13,62 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.hippo.ehviewer.preference;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.util.AttributeSet;
+import android.content.Context
+import android.util.AttributeSet
+import androidx.preference.Preference
+import com.hippo.ehviewer.EhApplication
+import com.hippo.ehviewer.R
+import com.hippo.ehviewer.client.EhCookieStore
+import com.hippo.ehviewer.client.EhUrl
+import com.hippo.ehviewer.ui.SettingsActivity
+import com.hippo.ehviewer.ui.scene.BaseScene
+import okhttp3.HttpUrl.Companion.toHttpUrl
 
-import androidx.preference.Preference;
+class SignInRequiredPreference @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null
+) : Preference(context, attrs), Preference.OnPreferenceClickListener {
+    private val mActivity = context as SettingsActivity
 
-import com.hippo.ehviewer.EhApplication;
-import com.hippo.ehviewer.R;
-import com.hippo.ehviewer.client.EhCookieStore;
-import com.hippo.ehviewer.client.EhUrl;
-import com.hippo.ehviewer.ui.SettingsActivity;
-import com.hippo.ehviewer.ui.scene.BaseScene;
-
-import okhttp3.HttpUrl;
-
-public class SignInRequiredPreference extends Preference implements Preference.OnPreferenceClickListener {
-    @SuppressLint("StaticFieldLeak")
-    private SettingsActivity mActivity;
-
-    public SignInRequiredPreference(Context context) {
-        super(context);
-        init(context);
+    init {
+        setOnPreferenceClickListener(this)
     }
 
-    public SignInRequiredPreference(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
-    }
-
-    public SignInRequiredPreference(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context);
-    }
-
-    private void init(Context context) {
-        mActivity = (SettingsActivity) context;
-        setOnPreferenceClickListener(this);
-    }
-
-    @Override
-    public boolean onPreferenceClick(Preference preference) {
-        EhCookieStore store = EhApplication.getEhCookieStore(getContext());
-        HttpUrl e = HttpUrl.get(EhUrl.HOST_E);
-        HttpUrl ex = HttpUrl.get(EhUrl.HOST_EX);
-
+    override fun onPreferenceClick(preference: Preference): Boolean {
+        val store = EhApplication.getEhCookieStore(context)
+        val e = EhUrl.HOST_E.toHttpUrl()
+        val ex = EhUrl.HOST_EX.toHttpUrl()
         if (store.contains(e, EhCookieStore.KEY_IPB_MEMBER_ID) ||
                 store.contains(e, EhCookieStore.KEY_IPB_PASS_HASH) ||
                 store.contains(ex, EhCookieStore.KEY_IPB_MEMBER_ID) ||
                 store.contains(ex, EhCookieStore.KEY_IPB_PASS_HASH)) {
-            return false;
+            return false
         } else {
-            mActivity.showTip(R.string.error_please_login_first, BaseScene.LENGTH_SHORT);
-            return true;
+            mActivity.showTip(R.string.error_please_login_first, BaseScene.LENGTH_SHORT)
+            return true
         }
     }
 }
