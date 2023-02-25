@@ -1077,7 +1077,7 @@ public final class GalleryListScene extends BaseScene
                             if (favourited) {
                                 CommonOperations.removeFromFavorites(activity, gi, new RemoveFromFavoriteListener(context, activity.getStageId(), getTag()));
                             } else {
-                                CommonOperations.addToFavorites(activity, gi, new AddToFavoriteListener(context, activity.getStageId(), getTag()));
+                                CommonOperations.addToFavorites(activity, gi, new AddToFavoriteListener(context, activity.getStageId(), getTag()), false);
                             }
                             break;
                         case 3: // Move

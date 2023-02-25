@@ -1299,8 +1299,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
                 if (!remove) {
                     mModifyingFavorites = true;
                     CommonOperations.addToFavorites(activity, mGalleryDetail,
-                            new ModifyFavoritesListener(context,
-                                    activity.getStageId(), getTag(), false));
+                            new ModifyFavoritesListener(context, activity.getStageId(), getTag(), false), false);
                 }
                 // Update UI
                 updateFavoriteDrawable();
@@ -1570,8 +1569,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
                 if (!removeOrEdit) {
                     mModifyingFavorites = true;
                     CommonOperations.addToFavorites(activity, mGalleryDetail,
-                            new ModifyFavoritesListener(activity,
-                                    activity.getStageId(), getTag(), false), true);
+                            new ModifyFavoritesListener(activity, activity.getStageId(), getTag(), false), true);
                 }
                 // Update UI
                 updateFavoriteDrawable();

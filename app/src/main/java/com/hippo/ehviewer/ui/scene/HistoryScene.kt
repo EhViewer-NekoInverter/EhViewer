@@ -332,7 +332,8 @@ class HistoryScene : ToolbarScene() {
                         CommonOperations.addToFavorites(
                             activity,
                             gi,
-                            AddToFavoriteListener(context, activity.stageId, tag)
+                            AddToFavoriteListener(context, activity.stageId, tag),
+                            false
                         )
                     }
 

@@ -90,11 +90,6 @@ public final class CommonOperations {
     }
 
     public static void addToFavorites(final Activity activity, final GalleryInfo galleryInfo,
-                                      final EhClient.Callback<Void> listener) {
-        addToFavorites(activity, galleryInfo, listener, false);
-    }
-
-    public static void addToFavorites(final Activity activity, final GalleryInfo galleryInfo,
                                       final EhClient.Callback<Void> listener, boolean select) {
         int slot = Settings.getDefaultFavSlot();
         String[] items = new String[11];
@@ -112,10 +107,10 @@ public final class CommonOperations {
                         doAddToFavorites(activity, galleryInfo, slot1, new DelegateFavoriteCallback(listener, galleryInfo, newFavoriteName, slot1), false);
                         if (builder.isChecked()) {
                             Settings.putDefaultFavSlot(slot1);
-                        } else if (!select) {
+                        } else {
                             Settings.putDefaultFavSlot(Settings.INVALID_DEFAULT_FAV_SLOT);
                         }
-                    }, activity.getString(R.string.remember_favorite_collection), false)
+                    }, activity.getString(R.string.remember_favorite_collection), slot != Settings.INVALID_DEFAULT_FAV_SLOT)
                     .setTitle(R.string.add_favorites_dialog_title)
                     .setOnCancelListener(dialog -> listener.onCancel())
                     .show();
