@@ -339,7 +339,8 @@ public class ArchiveGalleryProvider extends GalleryProvider2 {
                             archiveAccessor.releaseByteBuffer(buffer);
                             return null;
                         });
-                    } catch (ImageDecoder.DecodeException e) {
+                        Thread.sleep(100);
+                    } catch (ImageDecoder.DecodeException | InterruptedException e) {
                         archiveAccessor.releaseByteBuffer(buffer);
                         e.printStackTrace();
                     }
