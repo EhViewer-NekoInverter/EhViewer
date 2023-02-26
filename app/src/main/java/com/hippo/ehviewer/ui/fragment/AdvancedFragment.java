@@ -302,7 +302,7 @@ public class AdvancedFragment extends BasePreferenceFragment {
     private int favTotal;
     private int favIndex;
     private void backupFavorite() {
-        EhClient mClient = EhApplication.getEhClient(requireContext());
+        EhClient mClient = EhApplication.getEhClient();
         FavListUrlBuilder favListUrlBuilder = new FavListUrlBuilder();
         favTotal = 0;
         favIndex = 1;

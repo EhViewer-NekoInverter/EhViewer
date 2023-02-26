@@ -83,9 +83,7 @@ class HistoryScene : ToolbarScene() {
             }
         })
     }
-    private val mDownloadManager: DownloadManager by lazy {
-        EhApplication.getDownloadManager(requireContext())
-    }
+    private val mDownloadManager = EhApplication.downloadManager
     private val mDownloadInfoListener: DownloadInfoListener by lazy {
         object : DownloadInfoListener {
             override fun onAdd(info: DownloadInfo, list: List<DownloadInfo>, position: Int) {
@@ -110,9 +108,7 @@ class HistoryScene : ToolbarScene() {
             override fun onUpdateLabels() {}
         }
     }
-    private val mFavouriteStatusRouter: FavouriteStatusRouter by lazy {
-        EhApplication.getFavouriteStatusRouter(requireContext())
-    }
+    private val mFavouriteStatusRouter = EhApplication.favouriteStatusRouter
     private val mFavouriteStatusRouterListener: FavouriteStatusRouter.Listener by lazy {
         FavouriteStatusRouter.Listener { _: Long, _: Int ->
             mAdapter.notifyDataSetChanged()
@@ -237,7 +233,7 @@ class HistoryScene : ToolbarScene() {
     fun isFavorited(gi: GalleryInfo): Boolean {
         var favourited = gi.favoriteSlot != -2 || EhDB.containLocalFavorites(gi.gid)
         if (!favourited) {
-            EhApplication.getGalleryDetailCache(requireContext()).get(gi.gid)?.isFavorited?.let {
+            EhApplication.galleryDetailCache.get(gi.gid)?.isFavorited?.let {
                 favourited = it
             } ?: let {
                 favourited = false
@@ -346,7 +342,7 @@ class HistoryScene : ToolbarScene() {
                     }
 
                     4 -> {
-                        val labelRawList = EhApplication.getDownloadManager(context).labelList
+                        val labelRawList = EhApplication.downloadManager.labelList
                         val labelList: MutableList<String> = ArrayList(labelRawList.size + 1)
                         labelList.add(getString(R.string.default_download_label_name))
                         var i = 0
@@ -417,7 +413,7 @@ class HistoryScene : ToolbarScene() {
         private val mGi: GalleryInfo
     ) : DialogInterface.OnClickListener {
         override fun onClick(dialog: DialogInterface, which: Int) {
-            val downloadManager = EhApplication.getDownloadManager(requireContext())
+            val downloadManager = EhApplication.downloadManager
             val downloadInfo = downloadManager.getDownloadInfo(mGi.gid) ?: return
             val label = if (which == 0) null else mLabels[which]
             downloadManager.changeLabel(listOf(downloadInfo), label)

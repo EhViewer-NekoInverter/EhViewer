@@ -384,7 +384,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
                 vote
             )
             .setCallback(VoteCommentListener(context, activity.stageId, tag))
-        EhApplication.getEhClient(context).execute(request)
+        EhApplication.ehClient.execute(request)
     }
 
     @SuppressLint("InflateParams")
@@ -514,7 +514,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
                     .setMethod(EhClient.METHOD_GET_GALLERY_DETAIL)
                     .setArgs(url)
                     .setCallback(RefreshCommentListener(activity, activity.stageId, tag))
-                EhApplication.getEhClient(activity).execute(request)
+                EhApplication.ehClient.execute(request)
             }
         }
         return true
@@ -681,7 +681,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
                         if (mCommentId != 0L) mCommentId.toString() else null
                     )
                     .setCallback(CommentGalleryListener(context, activity.stageId, tag, mCommentId))
-                EhApplication.getEhClient(context).execute(request)
+                EhApplication.ehClient.execute(request)
                 hideSoftInput()
                 hideEditPanel()
             }
@@ -794,7 +794,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
                     .setMethod(EhClient.METHOD_GET_GALLERY_DETAIL)
                     .setArgs(url)
                     .setCallback(RefreshCommentListener(activity, activity.stageId, tag))
-                EhApplication.getEhClient(activity).execute(request)
+                EhApplication.ehClient.execute(request)
             }
         }
     }
@@ -903,7 +903,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
             sp = Html.fromHtml(
                 comment.comment,
                 Html.FROM_HTML_MODE_LEGACY,
-                URLImageGetter(textView, EhApplication.getConaco(context)),
+                URLImageGetter(textView, EhApplication.conaco),
                 null
             )
             val ssb = SpannableStringBuilder(sp)

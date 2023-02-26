@@ -36,7 +36,7 @@ class SignInRequiredPreference @JvmOverloads constructor(
     }
 
     override fun onPreferenceClick(preference: Preference): Boolean {
-        val store = EhApplication.getEhCookieStore(context)
+        val store = EhApplication.ehCookieStore
         val e = EhUrl.HOST_E.toHttpUrl()
         val ex = EhUrl.HOST_EX.toHttpUrl()
         if (store.contains(e, EhCookieStore.KEY_IPB_MEMBER_ID) ||

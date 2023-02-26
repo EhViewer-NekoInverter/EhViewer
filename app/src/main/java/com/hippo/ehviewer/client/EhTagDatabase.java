@@ -254,7 +254,7 @@ public class EhTagDatabase {
                     }
                 }
 
-                OkHttpClient client = EhApplication.getOkHttpClient(context);
+                OkHttpClient client = EhApplication.getOkHttpClient();
 
                 // Save new sha1
                 File tempSha1File = new File(dir, sha1Name + ".tmp");

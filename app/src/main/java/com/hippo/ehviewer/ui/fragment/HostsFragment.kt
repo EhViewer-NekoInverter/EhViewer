@@ -49,7 +49,7 @@ class HostsFragment : BaseFragment(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        EhApplication.getHosts(requireContext()).apply {
+        EhApplication.hosts.apply {
             hosts = this
             data = all
         }

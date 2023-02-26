@@ -13,116 +13,94 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.ehviewer.ui.scene
 
-package com.hippo.ehviewer.ui.scene;
+import android.graphics.drawable.Drawable
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.appcompat.widget.Toolbar
+import com.hippo.ehviewer.R
 
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
+abstract class ToolbarScene : BaseScene() {
+    private var mToolbar: Toolbar? = null
+    private var mTempTitle: CharSequence? = null
 
-import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.appcompat.widget.Toolbar;
-
-import com.hippo.ehviewer.R;
-
-public abstract class ToolbarScene extends BaseScene {
-    @Nullable
-    private Toolbar mToolbar;
-
-    private CharSequence mTempTitle;
-
-    @Nullable
-    public View onCreateViewWithToolbar(LayoutInflater inflater,
-                                        @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return null;
+    open fun onCreateViewWithToolbar(
+        inflater: LayoutInflater,
+        container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
+        return null
     }
 
-    @Nullable
-    @Override
-    public final View onCreateView(@NonNull LayoutInflater inflater,
-                                   @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.scene_toolbar, container, false);
-        Toolbar toolbar = view.findViewById(R.id.toolbar);
-        FrameLayout contentPanel = view.findViewById(R.id.content_panel);
-
-        View contentView = onCreateViewWithToolbar(inflater, contentPanel, savedInstanceState);
-        if (contentView == null) {
-            return null;
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.scene_toolbar, container, false)
+        val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
+        val contentPanel = view.findViewById<FrameLayout>(R.id.content_panel)
+        val contentView = onCreateViewWithToolbar(inflater, contentPanel, savedInstanceState)
+        return if (contentView == null) {
+            null
         } else {
-            mToolbar = toolbar;
-            contentPanel.addView(contentView, 0);
-            return view;
+            mToolbar = toolbar
+            contentPanel.addView(contentView, 0)
+            view
         }
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mToolbar = null;
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mToolbar = null
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (mToolbar != null) {
-            if (mTempTitle != null) {
-                mToolbar.setTitle(mTempTitle);
-                mTempTitle = null;
-            }
-
-            int menuResId = getMenuResId();
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mToolbar?.apply {
+            mTempTitle?.let { title = it }
+            val menuResId = getMenuResId()
             if (menuResId != 0) {
-                mToolbar.inflateMenu(menuResId);
-                mToolbar.setOnMenuItemClickListener(ToolbarScene.this::onMenuItemClick);
+                inflateMenu(menuResId)
+                setOnMenuItemClickListener { item: MenuItem -> onMenuItemClick(item) }
             }
-            mToolbar.setNavigationOnClickListener(v -> onNavigationClick());
+            setNavigationOnClickListener { onNavigationClick() }
         }
     }
 
-    @Override
-    public boolean needWhiteStatusBar() {
-        return false;
+    override fun needWhiteStatusBar(): Boolean {
+        return false
     }
 
-    public int getMenuResId() {
-        return 0;
+    open fun getMenuResId(): Int {
+        return 0
     }
 
-    public boolean onMenuItemClick(MenuItem item) {
-        return false;
+    open fun onMenuItemClick(item: MenuItem): Boolean {
+        return false
     }
 
-    public void onNavigationClick() {
+    open fun onNavigationClick() {}
+
+    fun setNavigationIcon(@DrawableRes resId: Int) {
+        mToolbar?.setNavigationIcon(resId)
     }
 
-    public void setNavigationIcon(@DrawableRes int resId) {
-        if (mToolbar != null) {
-            mToolbar.setNavigationIcon(resId);
-        }
+    fun setNavigationIcon(icon: Drawable?) {
+        mToolbar?.setNavigationIcon(icon)
     }
 
-    public void setNavigationIcon(@Nullable Drawable icon) {
-        if (mToolbar != null) {
-            mToolbar.setNavigationIcon(icon);
-        }
+    fun setTitle(@StringRes resId: Int) {
+        setTitle(getString(resId))
     }
 
-    public void setTitle(@StringRes int resId) {
-        setTitle(getString(resId));
-    }
-
-    public void setTitle(CharSequence title) {
-        if (mToolbar != null) {
-            mToolbar.setTitle(title);
-        } else {
-            mTempTitle = title;
-        }
+    fun setTitle(title: CharSequence) {
+        mToolbar?.title = title
+        mTempTitle = title
     }
 }

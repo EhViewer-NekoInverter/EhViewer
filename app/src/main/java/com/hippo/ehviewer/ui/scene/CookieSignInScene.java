@@ -197,7 +197,7 @@ public class CookieSignInScene extends SolidScene implements EditText.OnEditorAc
         EhRequest request = new EhRequest()
                 .setMethod(EhClient.METHOD_GET_PROFILE)
                 .setCallback(new CookieSignInListener());
-        EhApplication.getEhClient(context).execute(request);
+        EhApplication.getEhClient().execute(request);
     }
 
     private class CookieSignInListener implements EhClient.Callback<Object> {
@@ -210,7 +210,7 @@ public class CookieSignInScene extends SolidScene implements EditText.OnEditorAc
         @Override
         public void onFailure(Exception e) {
             Context context = requireContext();
-            EhApplication.getEhCookieStore(context).signOut();
+            EhApplication.getEhCookieStore().signOut();
             new AlertDialog.Builder(context).setTitle(R.string.sign_in_failed)
                     .setMessage(ExceptionUtils.getReadableString(e) + "\n\n" + getString(R.string.wrong_cookie_warning))
                     .setPositiveButton(R.string.get_it, null).show();
@@ -218,7 +218,7 @@ public class CookieSignInScene extends SolidScene implements EditText.OnEditorAc
 
         @Override
         public void onCancel() {
-            EhApplication.getEhCookieStore(requireContext()).signOut();
+            EhApplication.getEhCookieStore().signOut();
         }
     }
 
@@ -230,7 +230,7 @@ public class CookieSignInScene extends SolidScene implements EditText.OnEditorAc
 
         EhUtils.signOut(context);
 
-        EhCookieStore store = EhApplication.getEhCookieStore(context);
+        EhCookieStore store = EhApplication.getEhCookieStore();
         store.addCookie(newCookie(EhCookieStore.KEY_IPB_MEMBER_ID, id, EhUrl.DOMAIN_E));
         store.addCookie(newCookie(EhCookieStore.KEY_IPB_MEMBER_ID, id, EhUrl.DOMAIN_EX));
         store.addCookie(newCookie(EhCookieStore.KEY_IPB_PASS_HASH, hash, EhUrl.DOMAIN_E));

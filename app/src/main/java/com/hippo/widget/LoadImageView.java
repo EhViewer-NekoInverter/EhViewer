@@ -87,7 +87,7 @@ public class LoadImageView extends FixedAspectImageView implements Unikery<Image
         a.recycle();
 
         if (!isInEditMode()) {
-            mConaco = EhApplication.getConaco(context);
+            mConaco = EhApplication.getConaco();
         }
     }
 

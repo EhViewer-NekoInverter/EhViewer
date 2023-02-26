@@ -13,261 +13,216 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.ehviewer.ui.scene
 
-package com.hippo.ehviewer.ui.scene;
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.hippo.easyrecyclerview.EasyRecyclerView
+import com.hippo.easyrecyclerview.LinearDividerItemDecoration
+import com.hippo.ehviewer.R
+import com.hippo.ehviewer.Settings
+import com.hippo.ehviewer.UrlOpener
+import com.hippo.ehviewer.client.EhUrl
+import com.hippo.ehviewer.client.EhUtils
+import com.hippo.ehviewer.client.data.GalleryDetail
+import com.hippo.util.addTextToClipboard
+import com.hippo.util.getParcelableCompat
+import com.hippo.yorozuya.LayoutUtils
+import com.hippo.yorozuya.ViewUtils
+import rikka.core.res.resolveColor
 
-import android.content.Context;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+class GalleryInfoScene : ToolbarScene() {
+    private var mKeys: ArrayList<String> = arrayListOf()
+    private var mValues: ArrayList<String?> = arrayListOf()
+    private var mRecyclerView: RecyclerView? = null
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.hippo.easyrecyclerview.EasyRecyclerView;
-import com.hippo.easyrecyclerview.LinearDividerItemDecoration;
-import com.hippo.ehviewer.R;
-import com.hippo.ehviewer.Settings;
-import com.hippo.ehviewer.UrlOpener;
-import com.hippo.ehviewer.client.EhUrl;
-import com.hippo.ehviewer.client.EhUtils;
-import com.hippo.ehviewer.client.data.GalleryDetail;
-import com.hippo.util.ClipboardUtilKt;
-import com.hippo.yorozuya.AssertUtils;
-import com.hippo.yorozuya.LayoutUtils;
-import com.hippo.yorozuya.ViewUtils;
-
-import java.util.ArrayList;
-
-import rikka.core.res.ResourcesKt;
-
-public final class GalleryInfoScene extends ToolbarScene {
-    public static final String KEY_GALLERY_DETAIL = "gallery_detail";
-    public static final String KEY_KEYS = "keys";
-    public static final String KEY_VALUES = "values";
-
-    private static final int INDEX_URL = 3;
-    private static final int INDEX_PARENT = 10;
-
-    /*---------------
-     Whole life cycle
-     ---------------*/
-    @Nullable
-    private ArrayList<String> mKeys;
-    @Nullable
-    private ArrayList<String> mValues;
-
-    @Nullable
-    private EasyRecyclerView mRecyclerView;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
-            onInit();
+            onInit()
         } else {
-            onRestore(savedInstanceState);
+            onRestore(savedInstanceState)
         }
     }
 
-    private void handlerArgs(Bundle args) {
-        if (args == null) {
-            return;
+    private fun handlerArgs(args: Bundle?) {
+        args?.getParcelableCompat<GalleryDetail>(KEY_GALLERY_DETAIL)?.let {
+            mKeys.add(getString(R.string.header_key))
+            mValues.add(getString(R.string.header_value))
+            mKeys.add(getString(R.string.key_gid))
+            mValues.add(it.gid.toString())
+            mKeys.add(getString(R.string.key_token))
+            mValues.add(it.token)
+            mKeys.add(getString(R.string.key_url))
+            mValues.add(EhUrl.getGalleryDetailUrl(it.gid, it.token))
+            mKeys.add(getString(R.string.key_title))
+            mValues.add(it.title)
+            mKeys.add(getString(R.string.key_title_jpn))
+            mValues.add(it.titleJpn)
+            mKeys.add(getString(R.string.key_thumb))
+            mValues.add(it.thumb)
+            mKeys.add(getString(R.string.key_category))
+            mValues.add(EhUtils.getCategory(it.category))
+            mKeys.add(getString(R.string.key_uploader))
+            mValues.add(it.uploader)
+            mKeys.add(getString(R.string.key_posted))
+            mValues.add(it.posted)
+            mKeys.add(getString(R.string.key_parent))
+            mValues.add(it.parent)
+            mKeys.add(getString(R.string.key_visible))
+            mValues.add(it.visible)
+            mKeys.add(getString(R.string.key_language))
+            mValues.add(it.language)
+            mKeys.add(getString(R.string.key_pages))
+            mValues.add(it.pages.toString())
+            mKeys.add(getString(R.string.key_size))
+            mValues.add(it.size)
+            mKeys.add(getString(R.string.key_favorite_count))
+            mValues.add(it.favoriteCount.toString())
+            mKeys.add(getString(R.string.key_favorited))
+            mValues.add(java.lang.Boolean.toString(it.isFavorited))
+            mKeys.add(getString(R.string.key_favorite_name))
+            mValues.add(it.favoriteName)
+            mKeys.add(getString(R.string.key_rating_count))
+            mValues.add(it.ratingCount.toString())
+            mKeys.add(getString(R.string.key_rating))
+            mValues.add(it.rating.toString());
+            mKeys.add(getString(R.string.key_torrents))
+            mValues.add(it.torrentCount.toString())
+            mKeys.add(getString(R.string.key_torrent_url))
+            mValues.add(it.torrentUrl)
         }
-        GalleryDetail gd = args.getParcelable(KEY_GALLERY_DETAIL);
-        if (gd == null) {
-            return;
-        }
-        if (mKeys == null || mValues == null) {
-            return;
-        }
-
-        mKeys.add(getString(R.string.header_key));
-        mValues.add(getString(R.string.header_value));
-        mKeys.add(getString(R.string.key_gid));
-        mValues.add(Long.toString(gd.gid));
-        mKeys.add(getString(R.string.key_token));
-        mValues.add(gd.token);
-        mKeys.add(getString(R.string.key_url));
-        mValues.add(EhUrl.getGalleryDetailUrl(gd.gid, gd.token));
-        mKeys.add(getString(R.string.key_title));
-        mValues.add(gd.title);
-        mKeys.add(getString(R.string.key_title_jpn));
-        mValues.add(gd.titleJpn);
-        mKeys.add(getString(R.string.key_thumb));
-        mValues.add(gd.thumb);
-        mKeys.add(getString(R.string.key_category));
-        mValues.add(EhUtils.getCategory(gd.category));
-        mKeys.add(getString(R.string.key_uploader));
-        mValues.add(gd.uploader);
-        mKeys.add(getString(R.string.key_posted));
-        mValues.add(gd.posted);
-        mKeys.add(getString(R.string.key_parent));
-        mValues.add(gd.parent);
-        mKeys.add(getString(R.string.key_visible));
-        mValues.add(gd.visible);
-        mKeys.add(getString(R.string.key_language));
-        mValues.add(gd.language);
-        mKeys.add(getString(R.string.key_pages));
-        mValues.add(Integer.toString(gd.pages));
-        mKeys.add(getString(R.string.key_size));
-        mValues.add(gd.size);
-        mKeys.add(getString(R.string.key_favorite_count));
-        mValues.add(Integer.toString(gd.favoriteCount));
-        mKeys.add(getString(R.string.key_favorited));
-        mValues.add(Boolean.toString(gd.isFavorited));
-        mKeys.add(getString(R.string.key_favorite_name));
-        mValues.add(gd.favoriteName);
-        mKeys.add(getString(R.string.key_rating_count));
-        mValues.add(Integer.toString(gd.ratingCount));
-        mKeys.add(getString(R.string.key_rating));
-        mValues.add(Float.toString(gd.rating));
-        mKeys.add(getString(R.string.key_torrents));
-        mValues.add(Integer.toString(gd.torrentCount));
-        mKeys.add(getString(R.string.key_torrent_url));
-        mValues.add(gd.torrentUrl);
     }
 
-    protected void onInit() {
-        mKeys = new ArrayList<>();
-        mValues = new ArrayList<>();
-        handlerArgs(getArguments());
+    private fun onInit() {
+        handlerArgs(arguments)
     }
 
-    protected void onRestore(@NonNull Bundle savedInstanceState) {
-        mKeys = savedInstanceState.getStringArrayList(KEY_KEYS);
-        mValues = savedInstanceState.getStringArrayList(KEY_VALUES);
+    private fun onRestore(savedInstanceState: Bundle) {
+        mKeys = savedInstanceState.getStringArrayList(KEY_KEYS) as ArrayList<String>
+        mValues = savedInstanceState.getStringArrayList(KEY_VALUES) as ArrayList<String?>
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putStringArrayList(KEY_KEYS, mKeys);
-        outState.putStringArrayList(KEY_VALUES, mValues);
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putStringArrayList(KEY_KEYS, mKeys)
+        outState.putStringArrayList(KEY_VALUES, mValues)
     }
 
-    @Override
-    public View onCreateViewWithToolbar(LayoutInflater inflater,
-                                        @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.scene_gallery_info, container, false);
-
-        Context context = getContext();
-        AssertUtils.assertNotNull(context);
-
-        mRecyclerView = (EasyRecyclerView) ViewUtils.$$(view, R.id.recycler_view);
-        InfoAdapter adapter = new InfoAdapter();
-        mRecyclerView.setAdapter(adapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
-        LinearDividerItemDecoration decoration = new LinearDividerItemDecoration(
-                LinearDividerItemDecoration.VERTICAL,
-                ResourcesKt.resolveColor(getTheme(), R.attr.dividerColor),
-                LayoutUtils.dp2pix(context, 1));
-        int keylineMargin = context.getResources().getDimensionPixelOffset(R.dimen.keyline_margin);
-        decoration.setPadding(keylineMargin);
-        mRecyclerView.addItemDecoration(decoration);
-        mRecyclerView.setClipToPadding(false);
-        mRecyclerView.setHasFixedSize(true);
-        return view;
+    override fun onCreateViewWithToolbar(
+        inflater: LayoutInflater,
+        container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        val view = inflater.inflate(R.layout.scene_gallery_info, container, false)
+        val context = context!!
+        mRecyclerView = ViewUtils.`$$`(view, R.id.recycler_view) as EasyRecyclerView
+        val adapter = InfoAdapter()
+        mRecyclerView!!.adapter = adapter
+        mRecyclerView!!.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        val decoration = LinearDividerItemDecoration(
+            LinearDividerItemDecoration.VERTICAL,
+            theme.resolveColor(R.attr.dividerColor),
+            LayoutUtils.dp2pix(context, 1f)
+        )
+        val keylineMargin = context.resources.getDimensionPixelOffset(R.dimen.keyline_margin)
+        decoration.setPadding(keylineMargin)
+        mRecyclerView!!.addItemDecoration(decoration)
+        mRecyclerView!!.clipToPadding = false
+        mRecyclerView!!.setHasFixedSize(true)
+        return view
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        setTitle(R.string.gallery_info);
-        setNavigationIcon(R.drawable.v_arrow_left_dark_x24);
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setTitle(R.string.gallery_info)
+        setNavigationIcon(R.drawable.v_arrow_left_dark_x24)
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
+    override fun onDestroyView() {
+        super.onDestroyView()
         if (null != mRecyclerView) {
-            mRecyclerView.stopScroll();
-            mRecyclerView = null;
+            mRecyclerView!!.stopScroll()
+            mRecyclerView = null
         }
     }
 
-    public boolean onItemClick(int position) {
-        Context context = getContext();
-        if (null != context && 0 != position && null != mValues) {
+    fun onItemClick(position: Int): Boolean {
+        val context = context
+        return if (null != context && 0 != position) {
             if (position == INDEX_PARENT) {
-                UrlOpener.openUrl(context, mValues.get(position), true);
+                UrlOpener.openUrl(context, mValues[position], true)
             } else {
-                ClipboardUtilKt.addTextToClipboard(requireActivity(), mValues.get(position), false);
-
+                requireActivity().addTextToClipboard(mValues[position], false)
                 if (position == INDEX_URL) {
                     // Save it to avoid detect the gallery
-                    Settings.putClipboardTextHashCode(mValues.get(position).hashCode());
+                    Settings.putClipboardTextHashCode(mValues[position].hashCode())
                 }
             }
-            return true;
+            true
         } else {
-            return false;
+            false
         }
     }
 
-    @Override
-    public void onNavigationClick() {
-        onBackPressed();
+    override fun onNavigationClick() {
+        onBackPressed()
     }
 
-    private static class InfoHolder extends RecyclerView.ViewHolder {
-        private final TextView key;
-        private final TextView value;
+    private class InfoHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val key: TextView
+        val value: TextView
 
-        public InfoHolder(View itemView) {
-            super(itemView);
-
-            key = itemView.findViewById(R.id.key);
-            value = itemView.findViewById(R.id.value);
+        init {
+            key = itemView.findViewById(R.id.key)
+            value = itemView.findViewById(R.id.value)
         }
     }
 
-    private class InfoAdapter extends RecyclerView.Adapter<InfoHolder> {
-        private static final int TYPE_HEADER = 0;
-        private static final int TYPE_DATA = 1;
+    private inner class InfoAdapter : RecyclerView.Adapter<InfoHolder>() {
+        private val mInflater: LayoutInflater = layoutInflater
 
-        private final LayoutInflater mInflater;
-
-        public InfoAdapter() {
-            mInflater = getLayoutInflater();
-            AssertUtils.assertNotNull(mInflater);
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            if (position == 0) {
-                return TYPE_HEADER;
+        override fun getItemViewType(position: Int): Int {
+            return if (position == 0) {
+                TYPE_HEADER
             } else {
-                return TYPE_DATA;
+                TYPE_DATA
             }
         }
 
-        @NonNull
-        @Override
-        public InfoHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new InfoHolder(mInflater.inflate(viewType == TYPE_HEADER ?
-                    R.layout.item_gallery_info_header : R.layout.item_gallery_info_data, parent, false));
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InfoHolder {
+            return InfoHolder(
+                mInflater.inflate(
+                    if (viewType == TYPE_HEADER) R.layout.item_gallery_info_header else R.layout.item_gallery_info_data,
+                    parent,
+                    false
+                )
+            )
         }
 
-        @Override
-        public void onBindViewHolder(@NonNull InfoHolder holder, int position) {
-            if (mKeys != null && mValues != null) {
-                holder.key.setText(mKeys.get(position));
-                holder.value.setText(mValues.get(position));
-                holder.itemView.setEnabled(position != 0);
-                holder.itemView.setOnClickListener(v -> onItemClick(position));
-            }
+        override fun onBindViewHolder(holder: InfoHolder, position: Int) {
+            holder.key.text = mKeys[position]
+            holder.value.text = mValues[position]
+            holder.itemView.isEnabled = position != 0
+            holder.itemView.setOnClickListener { onItemClick(position) }
         }
 
-        @Override
-        public int getItemCount() {
-            return mKeys == null || mValues == null ? 0 : Math.min(mKeys.size(), mValues.size());
+        override fun getItemCount(): Int {
+            return mKeys.size.coerceAtMost(mValues.size)
         }
+    }
+
+    companion object {
+        const val KEY_GALLERY_DETAIL = "gallery_detail"
+        const val KEY_KEYS = "keys"
+        const val KEY_VALUES = "values"
+        private const val INDEX_URL = 3
+        private const val INDEX_PARENT = 10
+        private const val TYPE_HEADER = 0
+        private const val TYPE_DATA = 1
     }
 }

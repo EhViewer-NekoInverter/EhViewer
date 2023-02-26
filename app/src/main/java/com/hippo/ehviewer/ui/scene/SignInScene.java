@@ -288,7 +288,7 @@ public final class SignInScene extends SolidScene implements EditText.OnEditorAc
                 .setMethod(EhClient.METHOD_SIGN_IN)
                 .setArgs(username, password)
                 .setCallback(callback);
-        EhApplication.getEhClient(context).execute(request);
+        EhApplication.getEhClient().execute(request);
 
         mSigningIn = true;
     }
@@ -309,9 +309,9 @@ public final class SignInScene extends SolidScene implements EditText.OnEditorAc
         EhRequest request = new EhRequest()
                 .setMethod(EhClient.METHOD_GET_PROFILE)
                 .setCallback(callback);
-        EhApplication.getEhClient(context).execute(request);
+        EhApplication.getEhClient().execute(request);
 
-        EhApplication.getEhClient(context).execute(new EhRequest()
+        EhApplication.getEhClient().execute(new EhRequest()
                 .setMethod(EhClient.METHOD_GET_UCONFIG));
     }
 
@@ -343,7 +343,7 @@ public final class SignInScene extends SolidScene implements EditText.OnEditorAc
             return;
         }
 
-        if (EhApplication.getEhCookieStore(context).hasSignedIn()) {
+        if (EhApplication.getEhCookieStore().hasSignedIn()) {
             getProfile();
         } else {
             mSigningIn = false;

@@ -21,7 +21,6 @@ import java.io.FileDescriptor
 import java.nio.ByteBuffer
 
 object Native {
-    @JvmStatic
     fun initialize() {
         System.loadLibrary("ehviewer")
     }

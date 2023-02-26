@@ -39,7 +39,7 @@ class IdentityCookiePreference @JvmOverloads constructor(
     private var message: String? = null
 
     init {
-        val store = EhApplication.getEhCookieStore(context)
+        val store = EhApplication.ehCookieStore
         val eCookies = store.getCookies(EhUrl.HOST_E.toHttpUrl())
         val exCookies = store.getCookies(EhUrl.HOST_EX.toHttpUrl())
         val cookies: MutableList<Cookie> = LinkedList(eCookies)
