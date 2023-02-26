@@ -1082,12 +1082,12 @@ public class DownloadsScene extends ToolbarScene
 
         @Override
         public long getItemId(int position) {
-            return position < LABEL_OFFSET ? position : mLabels.get(position).hashCode();
+            return position < LABEL_OFFSET ? position : (mLabels != null ? mLabels.get(position).hashCode() : 0);
         }
 
         @Override
         public int getItemCount() {
-            return mLabels.size();
+            return mLabels != null ? mLabels.size() : 0;
         }
     }
 

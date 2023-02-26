@@ -16,7 +16,6 @@
 
 package com.hippo.ehviewer.client;
 
-import android.content.Context;
 import android.os.AsyncTask;
 
 import com.hippo.ehviewer.EhApplication;
@@ -55,13 +54,11 @@ public class EhClient {
     public static final int METHOD_DOWNLOAD_ARCHIVE = 18;
     public static final int METHOD_VOTE_TAG = 19;
     public static final int METHOD_GET_UCONFIG = 20;
-
+    private static final OkHttpClient mOkHttpClient = EhApplication.getOkHttpClient();
     private final ThreadPoolExecutor mRequestThreadPool;
-    private final OkHttpClient mOkHttpClient;
 
-    public EhClient(Context context) {
+    public EhClient() {
         mRequestThreadPool = IoThreadPoolExecutor.getInstance();
-        mOkHttpClient = EhApplication.getOkHttpClient();
     }
 
     @SuppressWarnings("unchecked")
@@ -84,7 +81,7 @@ public class EhClient {
     }
 
     @SuppressWarnings("deprecation")
-    public class Task extends AsyncTask<Object, Void, Object> {
+    public static class Task extends AsyncTask<Object, Void, Object> {
         private final int mMethod;
         private final AtomicReference<Call> mCall = new AtomicReference<>();
         private final AtomicBoolean mStop = new AtomicBoolean();

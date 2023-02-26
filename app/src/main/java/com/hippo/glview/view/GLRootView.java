@@ -562,7 +562,7 @@ public class GLRootView extends GLSurfaceView
             long t = System.nanoTime();
             long duration = (t - t0) / 1000000;
 
-            if (duration > 50) {
+            if (duration > 100) {
                 Log.v(TAG, "--- " + duration + " ---");
             }
         }

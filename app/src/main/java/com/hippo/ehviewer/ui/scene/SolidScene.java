@@ -37,7 +37,7 @@ public class SolidScene extends BaseScene {
     public void startSceneForCheckStep(int checkStep, Bundle args) {
         switch (checkStep) {
             case CHECK_STEP_SECURITY:
-                if (EhUtils.needSignedIn(getContext())) {
+                if (EhUtils.needSignedIn()) {
                     startScene(new Announcer(SignInScene.class).setArgs(args), true);
                     break;
                 }

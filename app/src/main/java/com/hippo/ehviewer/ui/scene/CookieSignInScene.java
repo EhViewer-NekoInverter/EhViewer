@@ -228,7 +228,7 @@ public class CookieSignInScene extends SolidScene implements EditText.OnEditorAc
             return;
         }
 
-        EhUtils.signOut(context);
+        EhUtils.signOut();
 
         EhCookieStore store = EhApplication.getEhCookieStore();
         store.addCookie(newCookie(EhCookieStore.KEY_IPB_MEMBER_ID, id, EhUrl.DOMAIN_E));
@@ -242,8 +242,11 @@ public class CookieSignInScene extends SolidScene implements EditText.OnEditorAc
     }
 
     private void fillCookiesFromClipboard() {
+        Context context = requireContext();
+
         hideSoftInput();
-        String text = ClipboardUtilKt.getTextFromClipboard(ClipboardUtilKt.getClipboardManager(getContext()), getContext());
+        String text = ClipboardUtilKt.getTextFromClipboard(
+                ClipboardUtilKt.getClipboardManager(context), context);
         if (text == null) {
             showTip(R.string.from_clipboard_error, LENGTH_SHORT);
             return;

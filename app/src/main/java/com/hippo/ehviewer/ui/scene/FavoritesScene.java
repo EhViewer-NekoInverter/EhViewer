@@ -47,7 +47,6 @@ import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.hippo.annotation.Implemented;
 import com.hippo.drawable.AddDeleteDrawable;
 import com.hippo.drawable.DrawerArrowDrawable;
 import com.hippo.easyrecyclerview.EasyRecyclerView;
@@ -92,7 +91,7 @@ import java.util.List;
 import rikka.core.res.ResourcesKt;
 
 // TODO Get favorite, modify favorite, add favorite, what a mess!
-@SuppressLint("RtlHardcoded")
+@SuppressLint({"NotifyDataSetChanged", "RtlHardcoded"})
 public class FavoritesScene extends BaseScene implements
         FastScroller.OnDragHandlerListener, SearchBarMover.Helper, SearchBar.Helper,
         FabLayout.OnClickFabListener, FabLayout.OnExpandListener,
@@ -107,8 +106,6 @@ public class FavoritesScene extends BaseScene implements
     private final List<GalleryInfo> mModifyGiList = new ArrayList<>();
     public int current; // -1 for error
     public int limit; // -1 for error
-    @Nullable
-    private ContentLayout mContentLayout;
     @Nullable
     @ViewLifeCircle
     private EasyRecyclerView mRecyclerView;
@@ -249,7 +246,7 @@ public class FavoritesScene extends BaseScene implements
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.scene_favorites, container, false);
-        mContentLayout = view.findViewById(R.id.content_layout);
+        ContentLayout mContentLayout = view.findViewById(R.id.content_layout);
         MainActivity activity = getMainActivity();
         AssertUtils.assertNotNull(activity);
         mDrawerLayout = (DrawerLayout) ViewUtils.$$(activity, R.id.draw_view);
@@ -384,12 +381,9 @@ public class FavoritesScene extends BaseScene implements
         }
 
         mAdapter = null;
-
         mSearchBar = null;
-
         mSearchBarMover = null;
         mLeftDrawable = null;
-
         mOldFavCat = null;
         mOldKeyword = null;
     }
@@ -409,7 +403,7 @@ public class FavoritesScene extends BaseScene implements
             int id = item.getItemId();
             if (id == R.id.action_default_favorites_slot) {
                 String[] items = new String[12];
-                items[0] = getString(R.string.let_me_select_fav);
+                items[0] = getString(R.string.let_me_select);
                 items[1] = getString(R.string.local_favorites);
                 String[] favCat = Settings.getFavCat();
                 System.arraycopy(favCat, 0, items, 2, 10);
@@ -462,14 +456,12 @@ public class FavoritesScene extends BaseScene implements
     }
 
     @Override
-    @Implemented(FastScroller.OnDragHandlerListener.class)
     public void onStartDragHandler() {
         // Lock right drawer
         setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.RIGHT);
     }
 
     @Override
-    @Implemented(FastScroller.OnDragHandlerListener.class)
     public void onEndDragHandler() {
         // Restore right drawer
         if (null != mRecyclerView && !mRecyclerView.isInCustomChoice()) {
@@ -499,11 +491,6 @@ public class FavoritesScene extends BaseScene implements
             if (mUrlBuilder.getFavCat() == newFavCat) {
                 return true;
             }
-
-            // Ensure outOfCustomChoiceMode to avoid error
-            //if (mRecyclerView != null) {
-            //    mRecyclerView.isInCustomChoice();
-            //}
 
             exitSearchMode(true);
 
@@ -549,25 +536,21 @@ public class FavoritesScene extends BaseScene implements
     }
 
     @Override
-    @Implemented(SearchBarMover.Helper.class)
     public boolean isValidView(RecyclerView recyclerView) {
         return recyclerView == mRecyclerView;
     }
 
     @Override
-    @Implemented(SearchBarMover.Helper.class)
     public RecyclerView getValidRecyclerView() {
         return mRecyclerView;
     }
 
     @Override
-    @Implemented(SearchBarMover.Helper.class)
     public boolean forceShowSearchBar() {
         return false;
     }
 
     @Override
-    @Implemented(SearchBar.Helper.class)
     public void onClickTitle() {
         // Skip if in search mode
         if (mRecyclerView != null && mRecyclerView.isInCustomChoice()) {
@@ -580,7 +563,6 @@ public class FavoritesScene extends BaseScene implements
     }
 
     @Override
-    @Implemented(SearchBar.Helper.class)
     public void onClickLeftIcon() {
         // Skip if in search mode
         if (mRecyclerView != null && mRecyclerView.isInCustomChoice()) {
@@ -595,7 +577,6 @@ public class FavoritesScene extends BaseScene implements
     }
 
     @Override
-    @Implemented(SearchBar.Helper.class)
     public void onClickRightIcon() {
         // Skip if in search mode
         if (mRecyclerView != null && mRecyclerView.isInCustomChoice()) {
@@ -614,12 +595,10 @@ public class FavoritesScene extends BaseScene implements
     }
 
     @Override
-    @Implemented(SearchBar.Helper.class)
     public void onSearchEditTextClick() {
     }
 
     @Override
-    @Implemented(SearchBar.Helper.class)
     public void onApplySearch(String query) {
         // Skip if in search mode
         if (mRecyclerView != null && mRecyclerView.isInCustomChoice()) {
@@ -630,11 +609,6 @@ public class FavoritesScene extends BaseScene implements
             return;
         }
 
-        // Ensure outOfCustomChoiceMode to avoid error
-        //if (mRecyclerView != null) {
-        //    mRecyclerView.isInCustomChoice();
-        //}
-
         exitSearchMode(true);
 
         mUrlBuilder.setKeyword(query);
@@ -643,7 +617,6 @@ public class FavoritesScene extends BaseScene implements
     }
 
     @Override
-    @Implemented(SearchBar.Helper.class)
     public void onSearchEditTextBackPressed() {
         onBackPressed();
     }
@@ -658,7 +631,6 @@ public class FavoritesScene extends BaseScene implements
     }
 
     @Override
-    @Implemented(FabLayout.OnClickFabListener.class)
     public void onClickPrimaryFab(FabLayout view, FloatingActionButton fab) {
         if (mRecyclerView != null && mFabLayout != null) {
             if (mRecyclerView.isInCustomChoice()) {
@@ -679,7 +651,7 @@ public class FavoritesScene extends BaseScene implements
         long fromDate = local.atZone(ZoneId.ofOffset("UTC", ZoneOffset.UTC)).toInstant().toEpochMilli();
         long toDate = MaterialDatePicker.todayInUtcMilliseconds();
 
-        ArrayList listValidators = new ArrayList<>();
+        ArrayList<CalendarConstraints.DateValidator> listValidators = new ArrayList<>();
         listValidators.add(DateValidatorPointForward.from(fromDate));
         listValidators.add(DateValidatorPointBackward.before(toDate));
 
@@ -698,7 +670,6 @@ public class FavoritesScene extends BaseScene implements
     }
 
     @Override
-    @Implemented(FabLayout.OnClickFabListener.class)
     public void onClickSecondaryFab(FabLayout view, FloatingActionButton fab, int position) {
         Context context = getContext();
         if (null == context || null == mRecyclerView || null == mHelper) {
@@ -795,7 +766,6 @@ public class FavoritesScene extends BaseScene implements
     }
 
     @Override
-    @Implemented(EasyRecyclerView.CustomChoiceListener.class)
     public void onIntoCustomChoice(EasyRecyclerView view) {
         if (mFabLayout != null) {
             showSelectionFabs();
@@ -812,7 +782,6 @@ public class FavoritesScene extends BaseScene implements
     }
 
     @Override
-    @Implemented(EasyRecyclerView.CustomChoiceListener.class)
     public void onOutOfCustomChoice(EasyRecyclerView view) {
         if (mFabLayout != null) {
             showNormalFabs();
@@ -828,7 +797,6 @@ public class FavoritesScene extends BaseScene implements
     }
 
     @Override
-    @Implemented(EasyRecyclerView.CustomChoiceListener.class)
     public void onItemCheckedStateChanged(EasyRecyclerView view, int position, long id, boolean checked) {
         if (view.getCheckedItemCount() == 0) {
             view.outOfCustomChoiceMode();
@@ -1198,8 +1166,8 @@ public class FavoritesScene extends BaseScene implements
 
                 boolean local = mUrlBuilder.getFavCat() == FavListUrlBuilder.FAV_CAT_LOCAL;
 
+                long[] gidArray = new long[mModifyGiList.size()];
                 if (mModifyAdd) {
-                    long[] gidArray = new long[mModifyGiList.size()];
                     String[] tokenArray = new String[mModifyGiList.size()];
                     for (int i = 0, n = mModifyGiList.size(); i < n; i++) {
                         GalleryInfo gi = mModifyGiList.get(i);
@@ -1217,7 +1185,6 @@ public class FavoritesScene extends BaseScene implements
                     request.setArgs(gidArray, tokenArray, mModifyFavCat);
                     mClient.execute(request);
                 } else {
-                    long[] gidArray = new long[mModifyGiList.size()];
                     for (int i = 0, n = mModifyGiList.size(); i < n; i++) {
                         gidArray[i] = mModifyGiList.get(i).gid;
                     }
@@ -1237,7 +1204,7 @@ public class FavoritesScene extends BaseScene implements
                     request.setCallback(new GetFavoritesListener(getContext(),
                             activity.getStageId(), getTag(),
                             taskId, local, mUrlBuilder.getKeyword()));
-                    request.setArgs(url, gidArray, mModifyFavCat, Settings.getShowJpnTitle());
+                    request.setArgs(url, gidArray, mModifyFavCat);
                     mClient.execute(request);
                 }
             } else if (mUrlBuilder.getFavCat() == FavListUrlBuilder.FAV_CAT_LOCAL) {
@@ -1253,7 +1220,7 @@ public class FavoritesScene extends BaseScene implements
                 request.setCallback(new GetFavoritesListener(getContext(),
                         activity.getStageId(), getTag(),
                         taskId, false, mUrlBuilder.getKeyword()));
-                request.setArgs(url, Settings.getShowJpnTitle());
+                request.setArgs(url);
                 mClient.execute(request);
             }
         }

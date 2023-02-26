@@ -2263,7 +2263,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
         }
     }
 
-    private class DeleteDialogHelper implements DialogInterface.OnClickListener{
+    private class DeleteDialogHelper implements DialogInterface.OnClickListener {
         private final com.hippo.ehviewer.download.DownloadManager mDownloadManager;
         private final GalleryInfo mGalleryInfo;
         private final CheckBoxDialogBuilder mBuilder;

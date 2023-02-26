@@ -157,7 +157,7 @@ public final class SpiderQueen implements Runnable {
     // For download, when it go to mPageStateArray.size(), done
     private volatile int mDownloadPage = -1;
 
-    private SpiderQueen(EhApplication application, @NonNull GalleryInfo galleryInfo) {
+    private SpiderQueen(@NonNull GalleryInfo galleryInfo) {
         mHttpClient = EhApplication.getOkHttpClient();
         mSpiderInfoCache = EhApplication.getSpiderInfoCache();
         mGalleryInfo = galleryInfo;
@@ -183,8 +183,8 @@ public final class SpiderQueen implements Runnable {
 
         SpiderQueen queen = sQueenMap.get(galleryInfo.gid);
         if (queen == null) {
-            EhApplication application = (EhApplication) context.getApplicationContext();
-            queen = new SpiderQueen(application, galleryInfo);
+            context.getApplicationContext();
+            queen = new SpiderQueen(galleryInfo);
             sQueenMap.put(galleryInfo.gid, queen);
             // Set mode
             queen.setMode(mode);

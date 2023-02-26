@@ -302,7 +302,7 @@
     <!-- Favorites Collection -->
     <string name="default_favorites_collection">預設收藏夾</string>
     <string name="cloud_favorites">雲端收藏</string>
-    <string name="let_me_select_fav">重置設定</string>
+    <string name="let_me_select">讓我每次都選擇</string>
     <!-- Favorites Fab Action -->
     <string name="delete_favorites_dialog_title">移除收藏</string>
     <string name="delete_favorites_dialog_message">將 %d 項收藏移除？</string>
@@ -353,7 +353,6 @@
     <string name="delete_label_title">刪除標籤</string>
     <string name="delete_label_message">刪除“%s”？</string>
     <string name="default_download_label">預設下載標籤</string>
-    <string name="let_me_select">讓我每次都選擇</string>
     <!-- Download Service -->
     <string name="download_service">下載服務</string>
     <string name="download_service_label">EhViewer 下載服務</string>
@@ -404,7 +403,6 @@
     <string name="settings_eh_show_gallery_comments">顯示畫廊評論</string>
     <string name="settings_eh_show_gallery_comments_summary">在畫廊詳情頁中顯示評論</string>
     <string name="settings_eh_preview_num">畫廊詳情頁預覽圖最大數量</string>
-    <string name="settings_eh_preview_num_summary">由於歷史因素，此值過大會導致卡頓</string>
     <string name="settings_eh_preview_size">畫廊詳情頁預覽圖大小</string>
     <string name="settings_eh_show_tag_translations">顯示標籤翻譯</string>
     <string name="settings_eh_show_tag_translations_summary">顯示翻譯後的標籤而非原始文字（需花費時間來下載資料檔案）</string>

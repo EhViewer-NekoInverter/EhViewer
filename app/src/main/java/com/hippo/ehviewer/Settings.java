@@ -21,13 +21,11 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 
-import androidx.annotation.DimenRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
 import com.hippo.ehviewer.client.EhConfig;
-import com.hippo.ehviewer.client.EhUtils;
 import com.hippo.ehviewer.client.data.FavListUrlBuilder;
 import com.hippo.ehviewer.ui.CommonOperations;
 import com.hippo.ehviewer.ui.scene.GalleryListScene;
@@ -35,11 +33,8 @@ import com.hippo.glgallery.GalleryView;
 import com.hippo.unifile.UniFile;
 import com.hippo.util.ExceptionUtils;
 import com.hippo.yorozuya.AssertUtils;
-import com.hippo.yorozuya.FileUtils;
-import com.hippo.yorozuya.MathUtils;
 import com.hippo.yorozuya.NumberUtils;
 
-import java.io.File;
 import java.util.Locale;
 import java.util.Set;
 
@@ -222,8 +217,6 @@ public class Settings {
      ****** Others
      ********************/
     private static final String TAG = Settings.class.getSimpleName();
-    private static final String KEY_VERSION_CODE = "version_code";
-    private static final int DEFAULT_VERSION_CODE = 0;
     private static final String KEY_SELECT_SITE = "select_site";
     private static final boolean DEFAULT_SELECT_SITE = true;
     private static final String KEY_NEED_SIGN_IN = "need_sign_in";
@@ -852,14 +845,6 @@ public class Settings {
 
     public static void putGuideGallery(boolean value) {
         putBoolean(KEY_GUIDE_GALLERY, value);
-    }
-
-    public static int getVersionCode() {
-        return getInt(KEY_VERSION_CODE, DEFAULT_VERSION_CODE);
-    }
-
-    public static void putVersionCode(int value) {
-        putInt(KEY_VERSION_CODE, value);
     }
 
     public static boolean getSelectSite() {

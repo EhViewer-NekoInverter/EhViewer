@@ -152,7 +152,6 @@
         android:defaultValue="60"
         android:key="preview_num"
         android:max="200"
-        android:summary="@string/settings_eh_preview_num_summary"
         android:title="@string/settings_eh_preview_num"
         app:iconSpaceReserved="false"
         app:min="0"

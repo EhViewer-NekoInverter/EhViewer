@@ -45,14 +45,10 @@ import com.hippo.image.ImageBitmap
 import com.hippo.scene.SceneApplication
 import com.hippo.util.BitmapUtils
 import com.hippo.util.ExceptionUtils
-import com.hippo.util.IoThreadPoolExecutor
 import com.hippo.util.ReadableTime
 import com.hippo.yorozuya.FileUtils
 import com.hippo.yorozuya.IntIdGenerator
 import com.hippo.yorozuya.OSUtils
-import okhttp3.Cache
-import okhttp3.HttpUrl.Companion.toHttpUrl
-import okhttp3.OkHttpClient
 import java.io.File
 import java.net.Proxy
 import java.security.KeyStore
@@ -60,6 +56,14 @@ import java.util.Arrays
 import javax.net.ssl.TrustManagerFactory
 import javax.net.ssl.X509TrustManager
 import kotlin.math.min
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.Cache
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.OkHttpClient
 import rikka.material.app.DayNightDelegate
 import rikka.material.app.LocaleDelegate
 
@@ -75,6 +79,11 @@ class EhApplication : SceneApplication() {
             null
         }
 
+    fun recreateAllActivity() {
+        mActivityList.forEach { it.recreate() }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
     @SuppressLint("StaticFieldLeak")
     override fun onCreate() {
         application = this
@@ -101,33 +110,38 @@ class EhApplication : SceneApplication() {
         LocaleDelegate.defaultLocale = Settings.getLocale()
         DayNightDelegate.setApplicationContext(this)
         DayNightDelegate.setDefaultNightMode(Settings.getTheme())
-        IoThreadPoolExecutor.getInstance().execute {
-            // Check no media file
-            try {
-                val downloadLocation = Settings.getDownloadLocation()
-                if (Settings.getMediaScan()) {
-                    CommonOperations.removeNoMediaFile(downloadLocation)
-                } else {
-                    CommonOperations.ensureNoMediaFile(downloadLocation)
+
+        GlobalScope.launch {
+            withContext(Dispatchers.IO) {
+                // Check no media file
+                try {
+                    val downloadLocation = Settings.getDownloadLocation()
+                    if (Settings.getMediaScan()) {
+                        CommonOperations.removeNoMediaFile(downloadLocation)
+                    } else {
+                        CommonOperations.ensureNoMediaFile(downloadLocation)
+                    }
+                } catch (t: Throwable) {
+                    t.printStackTrace()
+                    ExceptionUtils.throwIfFatal(t)
                 }
-            } catch (t: Throwable) {
-                t.printStackTrace()
-                ExceptionUtils.throwIfFatal(t)
+                // Clear temp files
+                try {
+                    clearTempDir()
+                } catch (t: Throwable) {
+                    t.printStackTrace()
+                    ExceptionUtils.throwIfFatal(t)
+                }
             }
-            // Clear temp files
-            try {
-                clearTempDir()
-            } catch (t: Throwable) {
-                t.printStackTrace()
-                ExceptionUtils.throwIfFatal(t)
-            }
+        }
+        GlobalScope.launch {
+            theDawnOfNewDay()
         }
         mIdGenerator.setNextId(Settings.getInt(KEY_GLOBAL_STUFF_NEXT_ID, 0))
         initialized = true
-        theDawnOfNewDay()
     }
 
-    private fun theDawnOfNewDay() {
+    private suspend fun theDawnOfNewDay() {
         if (!Settings.getRequestNews()) {
             return
         }
@@ -136,7 +150,7 @@ class EhApplication : SceneApplication() {
         if (store.contains(eh, EhCookieStore.KEY_IPB_MEMBER_ID) ||
             store.contains(eh, EhCookieStore.KEY_IPB_PASS_HASH)
         ) {
-            IoThreadPoolExecutor.getInstance().execute {
+            withContext(Dispatchers.IO) {
                 val referer = EhUrl.REFERER_E
                 val request = EhRequestBuilder(EhUrl.HOST_E + "news.php", referer).build()
                 val call = okHttpClient.newCall(request)
@@ -242,7 +256,7 @@ class EhApplication : SceneApplication() {
         val ehCookieStore by lazy { EhCookieStore(application) }
 
         @JvmStatic
-        val ehClient by lazy { EhClient(application) }
+        val ehClient by lazy { EhClient() }
 
         @JvmStatic
         val ehProxySelector by lazy { EhProxySelector() }

@@ -20,6 +20,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.annotation.StringRes
 import androidx.preference.Preference
+import com.hippo.ehviewer.EhApplication
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.client.EhTagDatabase
@@ -65,7 +66,7 @@ class EhFragment : BasePreferenceFragment() {
             requireActivity().recreate()
         } else if (Settings.KEY_BLACK_DARK_THEME == key) {
             if (requireActivity().resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES > 0) {
-                requireActivity().recreate()
+                EhApplication.application.recreateAllActivity()
             }
         } else if (Settings.KEY_GALLERY_SITE == key) {
             requireActivity().setResult(Activity.RESULT_OK)

@@ -108,29 +108,6 @@ class Image private constructor(
         mObtainedDrawable!!.draw(mCanvas!!)
     }
 
-    fun render(
-        srcX: Int, srcY: Int, dst: Bitmap, dstX: Int, dstY: Int,
-        width: Int, height: Int
-    ) {
-        check(!hardware) { "Hardware buffer cannot be used in glgallery" }
-        val bitmap: Bitmap = if (animated) {
-            updateBitmap()
-            mBitmap!!
-        } else {
-            (mObtainedDrawable as BitmapDrawable).bitmap
-        }
-        nativeRender(
-            bitmap,
-            srcX,
-            srcY,
-            dst,
-            dstX,
-            dstY,
-            width,
-            height
-        )
-    }
-
     fun texImage(init: Boolean, offsetX: Int, offsetY: Int, width: Int, height: Int) {
         check(!hardware) { "Hardware buffer cannot be used in glgallery" }
         val bitmap: Bitmap? = if (animated) {
@@ -170,14 +147,8 @@ class Image private constructor(
         }
 
     companion object {
-        var screenWidth: Int = 0
-        var screenHeight: Int = 0
-
-        init {
-            val context = EhApplication.application
-            screenWidth = context.resources.displayMetrics.widthPixels
-            screenHeight = context.resources.displayMetrics.heightPixels
-        }
+        val screenWidth = EhApplication.application.resources.displayMetrics.widthPixels
+        val screenHeight = EhApplication.application.resources.displayMetrics.heightPixels
 
         @Throws(DecodeException::class)
         @JvmStatic
@@ -224,13 +195,6 @@ class Image private constructor(
             check(buffer.isDirect)
             return Native.isGif(buffer)
         }
-
-        @JvmStatic
-        private external fun nativeRender(
-            bitmap: Bitmap,
-            srcX: Int, srcY: Int, dst: Bitmap, dstX: Int, dstY: Int,
-            width: Int, height: Int
-        )
 
         @JvmStatic
         private external fun nativeTexImage(

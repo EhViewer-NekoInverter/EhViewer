@@ -42,7 +42,7 @@ class SignOutPreference @JvmOverloads constructor(
     override fun onDialogClosed(positiveResult: Boolean) {
         super.onDialogClosed(positiveResult)
         if (positiveResult) {
-            EhUtils.signOut(context)
+            EhUtils.signOut()
             mActivity.showTip(R.string.settings_eh_sign_out_tip, BaseScene.LENGTH_SHORT)
         }
     }

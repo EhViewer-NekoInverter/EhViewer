@@ -152,7 +152,7 @@ public final class MainActivity extends StageActivity
     protected Announcer getLaunchAnnouncer() {
         if (!TextUtils.isEmpty(Settings.getSecurity())) {
             return new Announcer(SecurityScene.class);
-        } else if (EhUtils.needSignedIn(this)) {
+        } else if (EhUtils.needSignedIn()) {
             return new Announcer(SignInScene.class);
         } else if (Settings.getSelectSite()) {
             return new Announcer(SelectSiteScene.class);
@@ -171,7 +171,7 @@ public final class MainActivity extends StageActivity
                 newArgs.putString(SecurityScene.KEY_TARGET_SCENE, announcer.getClazz().getName());
                 newArgs.putBundle(SecurityScene.KEY_TARGET_ARGS, announcer.getArgs());
                 return new Announcer(SecurityScene.class).setArgs(newArgs);
-            } else if (EhUtils.needSignedIn(this)) {
+            } else if (EhUtils.needSignedIn()) {
                 Bundle newArgs = new Bundle();
                 newArgs.putString(SignInScene.KEY_TARGET_SCENE, announcer.getClazz().getName());
                 newArgs.putBundle(SignInScene.KEY_TARGET_ARGS, announcer.getArgs());

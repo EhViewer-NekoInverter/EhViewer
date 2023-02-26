@@ -16,6 +16,7 @@
 
 package com.hippo.ehviewer.ui.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -286,7 +287,7 @@ public class AdvancedFragment extends BasePreferenceFragment {
             return true;
         } else if (KEY_OPEN_BY_DEFAULT.equals(key)) {
             try {
-                Intent intent = new Intent(android.provider.Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS,
+                @SuppressLint("InlinedApi") Intent intent = new Intent(android.provider.Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS,
                         Uri.parse("package:" + requireContext().getPackageName()));
                 startActivity(intent);
             } catch (Throwable t) {
@@ -337,7 +338,7 @@ public class AdvancedFragment extends BasePreferenceFragment {
                             }
                             favIndex++;
                             favListUrlBuilder.setIndex(result.next, true);
-                            request.setArgs(favListUrlBuilder.build(), Settings.getShowJpnTitle());
+                            request.setArgs(favListUrlBuilder.build());
                             mClient.execute(request);
                         } else {
                             showTip(R.string.settings_advanced_backup_favorite_success, BaseScene.LENGTH_SHORT);
@@ -359,7 +360,7 @@ public class AdvancedFragment extends BasePreferenceFragment {
             }
         });
 
-        request.setArgs(favListUrlBuilder.build(), Settings.getShowJpnTitle());
+        request.setArgs(favListUrlBuilder.build());
         mClient.execute(request);
     }
 

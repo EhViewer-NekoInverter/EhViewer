@@ -327,7 +327,7 @@
     <!-- Favorites Collection -->
     <string name="default_favorites_collection">Default favorites collection</string>
     <string name="cloud_favorites">Cloud Favorites</string>
-    <string name="let_me_select_fav">Reset settings</string>
+    <string name="let_me_select">Let me select</string>
     <!-- Favorites Fab Action -->
     <string name="delete_favorites_dialog_title">Delete from favorites</string>
     <string name="delete_favorites_dialog_message">Delete %d items from favorites?</string>
@@ -378,7 +378,6 @@
     <string name="delete_label_title">Delete label</string>
     <string name="delete_label_message">Delete \"%s\"?</string>
     <string name="default_download_label">Default download label</string>
-    <string name="let_me_select">Let me select</string>
     <!-- Download Service -->
     <string name="download_service">Download Service</string>
     <string name="download_service_label">EhViewer Download Service</string>
@@ -430,7 +429,6 @@
     <string name="settings_eh_show_gallery_comments">Show gallery comments</string>
     <string name="settings_eh_show_gallery_comments_summary">Show comments on the gallery details page</string>
     <string name="settings_eh_preview_num">The maximum number of previews on the gallery details page</string>
-    <string name="settings_eh_preview_num_summary">For historical reasons, large value could cause lag</string>
     <string name="settings_eh_preview_size">Preview image size on the gallery details page</string>
     <string name="settings_eh_show_tag_translations">Show tag translations</string>
     <string name="settings_eh_show_tag_translations_summary">Show tag translations instead of the original text (It takes time to download the data file)</string>

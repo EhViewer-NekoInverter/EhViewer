@@ -216,7 +216,7 @@ public class GalleryPreviewsScene extends ToolbarScene {
                 return true;
             }
             int pages = mHelper.getPages();
-            if (pages > 0 && mHelper.canGoTo()) {
+            if (pages > 1 && mHelper.canGoTo()) {
                 GoToDialogHelper helper = new GoToDialogHelper(pages, mHelper.getPageForTop());
                 AlertDialog dialog = new AlertDialog.Builder(context).setTitle(R.string.go_to)
                         .setView(R.layout.dialog_go_to)

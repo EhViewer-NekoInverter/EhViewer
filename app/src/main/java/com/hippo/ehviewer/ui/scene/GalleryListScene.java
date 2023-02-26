@@ -555,9 +555,6 @@ public final class GalleryListScene extends BaseScene
         mShowActionFab = true;
 
         View mainLayout = ViewUtils.$$(view, R.id.main_layout);
-        /*---------------
-     View life cycle
-     ---------------*/
         ContentLayout mContentLayout = (ContentLayout) ViewUtils.$$(mainLayout, R.id.content_layout);
         mRecyclerView = mContentLayout.getRecyclerView();
         FastScroller fastScroller = mContentLayout.getFastScroller();
