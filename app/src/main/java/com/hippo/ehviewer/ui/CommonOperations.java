@@ -281,6 +281,7 @@ public final class CommonOperations {
             info.favoriteName = newFavoriteName;
             info.favoriteSlot = slot;
             delegate.onSuccess(result);
+            EhDB.updateHistoryFavSlot(info.gid, slot);
             EhApplication.getFavouriteStatusRouter().modifyFavourites(info.gid, slot);
         }
 

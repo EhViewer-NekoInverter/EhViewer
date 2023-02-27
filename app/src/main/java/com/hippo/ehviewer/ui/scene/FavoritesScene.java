@@ -173,6 +173,8 @@ public class FavoritesScene extends BaseScene implements
     private int mModifyFavCat;
     // For modify action
     private boolean mModifyAdd;
+    // For modify fav action
+    private int mFavSlot = -2;
 
     @Override
     public int getNavCheckedItem() {
@@ -883,23 +885,38 @@ public class FavoritesScene extends BaseScene implements
         }
     }
 
+    // Update fav cat on history
+    private void updateHistoryFavSlot(long[] gidArray, int slot) {
+        if (gidArray != null) {
+            for (long gid : gidArray) {
+                EhDB.updateHistoryFavSlot(gid, slot);
+            }
+        }
+    }
+
     private static class AddFavoritesListener extends EhCallback<FavoritesScene, Void> {
         private final int mTaskId;
         private final String mKeyword;
         private final List<GalleryInfo> mBackup;
+        private final long[] mGidArray;
+        private final int mSlot;
 
         private AddFavoritesListener(Context context, int stageId,
-                                     String sceneTag, int taskId, String keyword, List<GalleryInfo> backup) {
+                                     String sceneTag, int taskId, String keyword,
+                                     List<GalleryInfo> backup, long[] gidArray, int slot) {
             super(context, stageId, sceneTag);
             mTaskId = taskId;
             mKeyword = keyword;
             mBackup = backup;
+            mGidArray = gidArray;
+            mSlot = slot;
         }
 
         @Override
         public void onSuccess(Void result) {
             FavoritesScene scene = getScene();
             if (scene != null) {
+                scene.updateHistoryFavSlot(mGidArray, mSlot);
                 scene.onGetFavoritesLocal(mKeyword, mTaskId);
             }
         }
@@ -931,13 +948,18 @@ public class FavoritesScene extends BaseScene implements
         // Local fav is shown now, but operation need be done for cloud fav
         private final boolean mLocal;
         private final String mKeyword;
+        private final long[] mGidArray;
+        private final int mSlot;
 
         private GetFavoritesListener(Context context, int stageId,
-                                     String sceneTag, int taskId, boolean local, String keyword) {
+                                     String sceneTag, int taskId, boolean local,
+                                     String keyword, long[] gidArray, int slot) {
             super(context, stageId, sceneTag);
             mTaskId = taskId;
             mLocal = local;
             mKeyword = keyword;
+            mGidArray = gidArray;
+            mSlot = slot;
         }
 
         @Override
@@ -947,6 +969,7 @@ public class FavoritesScene extends BaseScene implements
             Settings.putFavCount(result.countArray);
             FavoritesScene scene = getScene();
             if (scene != null) {
+                scene.updateHistoryFavSlot(mGidArray, mSlot);
                 if (mLocal) {
                     scene.onGetFavoritesLocal(mKeyword, mTaskId);
                 } else {
@@ -1052,6 +1075,7 @@ public class FavoritesScene extends BaseScene implements
             }
 
             mRecyclerView.outOfCustomChoiceMode();
+            mFavSlot = -2;
 
             if (mUrlBuilder.getFavCat() == FavListUrlBuilder.FAV_CAT_LOCAL) { // Delete local fav
                 long[] gidArray = new long[mModifyGiList.size()];
@@ -1059,6 +1083,7 @@ public class FavoritesScene extends BaseScene implements
                     gidArray[i] = mModifyGiList.get(i).gid;
                 }
                 EhDB.removeLocalFavorites(gidArray);
+                updateHistoryFavSlot(gidArray, mFavSlot);
                 mModifyGiList.clear();
                 mHelper.refresh();
             } else { // Delete cloud fav
@@ -1104,17 +1129,20 @@ public class FavoritesScene extends BaseScene implements
                 mEnableModify = true;
                 mModifyFavCat = dstCat;
                 mModifyAdd = true;
+                mFavSlot = dstCat;
                 mHelper.refresh();
             } else if (dstCat == FavListUrlBuilder.FAV_CAT_LOCAL) { // Move from cloud to local
                 EhDB.putLocalFavorites(mModifyGiList);
                 mEnableModify = true;
                 mModifyFavCat = -1;
                 mModifyAdd = false;
+                mFavSlot = -1;
                 mHelper.refresh();
             } else {
                 mEnableModify = true;
                 mModifyFavCat = dstCat;
                 mModifyAdd = false;
+                mFavSlot = dstCat;
                 mHelper.refresh();
             }
         }
@@ -1181,7 +1209,7 @@ public class FavoritesScene extends BaseScene implements
                     request.setMethod(EhClient.METHOD_ADD_FAVORITES_RANGE);
                     request.setCallback(new AddFavoritesListener(getContext(),
                             activity.getStageId(), getTag(),
-                            taskId, mUrlBuilder.getKeyword(), modifyGiListBackup));
+                            taskId, mUrlBuilder.getKeyword(), modifyGiListBackup, gidArray, mFavSlot));
                     request.setArgs(gidArray, tokenArray, mModifyFavCat);
                     mClient.execute(request);
                 } else {
@@ -1203,7 +1231,7 @@ public class FavoritesScene extends BaseScene implements
                     request.setMethod(EhClient.METHOD_MODIFY_FAVORITES);
                     request.setCallback(new GetFavoritesListener(getContext(),
                             activity.getStageId(), getTag(),
-                            taskId, local, mUrlBuilder.getKeyword()));
+                            taskId, local, mUrlBuilder.getKeyword(), gidArray, mFavSlot));
                     request.setArgs(url, gidArray, mModifyFavCat);
                     mClient.execute(request);
                 }
@@ -1219,7 +1247,7 @@ public class FavoritesScene extends BaseScene implements
                 request.setMethod(EhClient.METHOD_GET_FAVORITES);
                 request.setCallback(new GetFavoritesListener(getContext(),
                         activity.getStageId(), getTag(),
-                        taskId, false, mUrlBuilder.getKeyword()));
+                        taskId, false, mUrlBuilder.getKeyword(), null, -2));
                 request.setArgs(url);
                 mClient.execute(request);
             }

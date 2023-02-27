@@ -328,15 +328,16 @@ public class EhDB {
 
     public static synchronized void putHistoryInfo(GalleryInfo galleryInfo) {
         HistoryDao dao = db.historyDao();
-        HistoryInfo info = dao.load(galleryInfo.gid);
-        if (null != info) {
-            // Update time
-            info.time = System.currentTimeMillis();
+        HistoryInfo info;
+        if (galleryInfo instanceof HistoryInfo) {
+            info = (HistoryInfo) galleryInfo;
+        } else {
+            info = new HistoryInfo(galleryInfo);
+        }
+        info.time = System.currentTimeMillis();
+        if (null != dao.load(info.gid)) {
             dao.update(info);
         } else {
-            // New history
-            info = new HistoryInfo(galleryInfo);
-            info.time = System.currentTimeMillis();
             dao.insert(info);
         }
     }
@@ -347,6 +348,15 @@ public class EhDB {
             if (null == dao.load(info.gid)) {
                 dao.insert(info);
             }
+        }
+    }
+
+    public static synchronized void updateHistoryFavSlot(long gid, int slot) {
+        HistoryDao dao = db.historyDao();
+        HistoryInfo info = dao.load(gid);
+        if (null != info) {
+            info.favoriteSlot = slot;
+            dao.update(info);
         }
     }
 

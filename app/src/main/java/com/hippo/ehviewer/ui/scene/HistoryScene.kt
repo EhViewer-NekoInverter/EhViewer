@@ -230,18 +230,6 @@ class HistoryScene : ToolbarScene() {
         return false
     }
 
-    fun isFavorited(gi: GalleryInfo): Boolean {
-        var favourited = gi.favoriteSlot != -2 || EhDB.containLocalFavorites(gi.gid)
-        if (!favourited) {
-            EhApplication.galleryDetailCache.get(gi.gid)?.isFavorited?.let {
-                favourited = it
-            } ?: let {
-                favourited = false
-            }
-        }
-        return favourited
-    }
-
     fun onItemClick(view: View, gi: GalleryInfo): Boolean {
         val args = Bundle()
         args.putString(GalleryDetailScene.KEY_ACTION, GalleryDetailScene.ACTION_GALLERY_INFO)
@@ -257,7 +245,7 @@ class HistoryScene : ToolbarScene() {
         val context = requireContext()
         val activity = mainActivity ?: return false
         val downloaded = mDownloadManager.getDownloadState(gi.gid) != DownloadInfo.STATE_INVALID
-        val favourited = isFavorited(gi)
+        val favourited = gi.favoriteSlot != -2
         val items = if (downloaded) arrayOf<CharSequence>(
             context.getString(R.string.read),
             context.getString(R.string.delete_downloads),
@@ -406,6 +394,7 @@ class HistoryScene : ToolbarScene() {
         val simpleLanguage: TextView = itemView.findViewById(R.id.simple_language)
         val pages: TextView = itemView.findViewById(R.id.pages)
         val downloaded: ImageView = itemView.findViewById(R.id.downloaded)
+        val favourited: ImageView = itemView.findViewById(R.id.favourited)
     }
 
     private inner class MoveDialogHelper(
@@ -468,6 +457,8 @@ class HistoryScene : ToolbarScene() {
             }
             holder.downloaded.visibility =
                 if (mDownloadManager.containDownloadInfo(gi.gid)) View.VISIBLE else View.GONE
+            holder.favourited.visibility =
+                if (gi.favoriteSlot != -2) View.VISIBLE else View.GONE
             // Update transition name
             ViewCompat.setTransitionName(
                 holder.thumb,
