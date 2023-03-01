@@ -25,7 +25,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.SparseBooleanArray;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +35,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsAnimationCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -66,9 +66,6 @@ import com.hippo.ehviewer.client.data.GalleryInfo;
 import com.hippo.ehviewer.client.parser.FavoritesParser;
 import com.hippo.ehviewer.ui.CommonOperations;
 import com.hippo.ehviewer.ui.MainActivity;
-import com.hippo.ehviewer.ui.annotation.DrawerLifeCircle;
-import com.hippo.ehviewer.ui.annotation.ViewLifeCircle;
-import com.hippo.ehviewer.ui.annotation.WholeLifeCircle;
 import com.hippo.ehviewer.widget.GalleryInfoContentHelper;
 import com.hippo.ehviewer.widget.SearchBar;
 import com.hippo.scene.Announcer;
@@ -108,13 +105,10 @@ public class FavoritesScene extends BaseScene implements
     public int current; // -1 for error
     public int limit; // -1 for error
     @Nullable
-    @ViewLifeCircle
     private EasyRecyclerView mRecyclerView;
     @Nullable
-    @ViewLifeCircle
     private SearchBar mSearchBar;
     @Nullable
-    @ViewLifeCircle
     private FabLayout mFabLayout;
     private final Runnable showNormalFabsRunnable = new Runnable() {
         @Override
@@ -131,34 +125,25 @@ public class FavoritesScene extends BaseScene implements
         }
     };
     @Nullable
-    @ViewLifeCircle
     private FavoritesAdapter mAdapter;
     @Nullable
-    @ViewLifeCircle
     private FavoritesHelper mHelper;
     @Nullable
-    @ViewLifeCircle
     private SearchBarMover mSearchBarMover;
     @Nullable
-    @ViewLifeCircle
     private DrawerArrowDrawable mLeftDrawable;
     private AddDeleteDrawable mActionFabDrawable;
     @Nullable
     private DrawerLayout mDrawerLayout;
     @Nullable
-    @DrawerLifeCircle
     private FavDrawerAdapter mDrawerAdapter;
     @Nullable
-    @WholeLifeCircle
     private EhClient mClient;
     @Nullable
-    @WholeLifeCircle
     private String[] mFavCatArray;
     @Nullable
-    @WholeLifeCircle
     private int[] mFavCountArray;
     @Nullable
-    @WholeLifeCircle
     private FavListUrlBuilder mUrlBuilder;
     private int mFavLocalCount = 0;
     private int mFavCountSum = 0;
@@ -461,14 +446,14 @@ public class FavoritesScene extends BaseScene implements
     @Override
     public void onStartDragHandler() {
         // Lock right drawer
-        setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.RIGHT);
+        setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END);
     }
 
     @Override
     public void onEndDragHandler() {
         // Restore right drawer
         if (null != mRecyclerView && !mRecyclerView.isInCustomChoice()) {
-            setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.RIGHT);
+            setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.END);
         }
 
         if (mSearchBarMover != null) {
@@ -477,7 +462,7 @@ public class FavoritesScene extends BaseScene implements
     }
 
     public boolean onItemClick(View view, int position) {
-        if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(Gravity.RIGHT)) {
+        if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
             // Skip if in search mode
             if (mRecyclerView != null && mRecyclerView.isInCustomChoice()) {
                 return true;
@@ -503,7 +488,7 @@ public class FavoritesScene extends BaseScene implements
             updateJumpFab();
             mHelper.refresh();
 
-            closeDrawer(Gravity.RIGHT);
+            closeDrawer(GravityCompat.END);
 
         } else {
             if (mRecyclerView != null && mRecyclerView.isInCustomChoice()) {
@@ -575,7 +560,7 @@ public class FavoritesScene extends BaseScene implements
         if (mSearchMode) {
             exitSearchMode(true);
         } else {
-            toggleDrawer(Gravity.LEFT);
+            toggleDrawer(GravityCompat.START);
         }
     }
 
@@ -686,7 +671,7 @@ public class FavoritesScene extends BaseScene implements
         if (!mRecyclerView.isInCustomChoice()) {
             switch (position) {
                 // Open right
-                case 0 -> openDrawer(Gravity.RIGHT);
+                case 0 -> openDrawer(GravityCompat.END);
                 // Go to
                 case 1 -> showGoToDialog();
                 // Last page
@@ -784,8 +769,8 @@ public class FavoritesScene extends BaseScene implements
             mHelper.setRefreshLayoutEnable(false);
         }
         // Lock drawer
-        setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.LEFT);
-        setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.RIGHT);
+        setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.START);
+        setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END);
     }
 
     @Override
@@ -799,8 +784,8 @@ public class FavoritesScene extends BaseScene implements
             mHelper.setRefreshLayoutEnable(true);
         }
         // Unlock drawer
-        setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.LEFT);
-        setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.RIGHT);
+        setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.START);
+        setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.END);
     }
 
     @Override

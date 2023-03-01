@@ -16,7 +16,6 @@
 
 package com.hippo.ehviewer.spider;
 
-import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
 import android.os.AsyncTask;
@@ -177,13 +176,11 @@ public final class SpiderQueen implements Runnable {
     }
 
     @UiThread
-    public static SpiderQueen obtainSpiderQueen(@NonNull Context context,
-                                                @NonNull GalleryInfo galleryInfo, @Mode int mode) {
+    public static SpiderQueen obtainSpiderQueen(@NonNull GalleryInfo galleryInfo, @Mode int mode) {
         OSUtils.checkMainLoop();
 
         SpiderQueen queen = sQueenMap.get(galleryInfo.gid);
         if (queen == null) {
-            context.getApplicationContext();
             queen = new SpiderQueen(galleryInfo);
             sQueenMap.put(galleryInfo.gid, queen);
             // Set mode
@@ -1096,12 +1093,7 @@ public final class SpiderQueen implements Runnable {
 
         private String getPageUrl(long gid, int index, String pToken,
                                   String oldPageUrl, String skipHathKey) {
-            String pageUrl;
-            if (oldPageUrl != null) {
-                pageUrl = oldPageUrl;
-            } else {
-                pageUrl = EhUrl.getPageUrl(gid, index, pToken);
-            }
+            String pageUrl = oldPageUrl != null ? oldPageUrl : EhUrl.getPageUrl(gid, index, pToken);
             // Add skipHathKey
             if (skipHathKey != null) {
                 if (pageUrl.contains("?")) {
@@ -1257,10 +1249,7 @@ public final class SpiderQueen implements Runnable {
                         Log.d(TAG, "Start download image " + index);
                     }
 
-                    // disable Call Timeout for image-downloading requests
-                    Call call = mHttpClient.newBuilder()
-                            .callTimeout(0, TimeUnit.SECONDS).build()
-                            .newCall(new EhRequestBuilder(targetImageUrl, referer).build());
+                    Call call = mHttpClient.newCall(new EhRequestBuilder(targetImageUrl, referer).build());
                     Response response = call.execute();
                     ResponseBody responseBody = response.body();
 

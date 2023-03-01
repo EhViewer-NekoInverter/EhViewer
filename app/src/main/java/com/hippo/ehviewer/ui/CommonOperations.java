@@ -278,10 +278,10 @@ public final class CommonOperations {
 
         @Override
         public void onSuccess(Void result) {
+            EhDB.updateHistoryFavSlot(info.gid, slot);
             info.favoriteName = newFavoriteName;
             info.favoriteSlot = slot;
             delegate.onSuccess(result);
-            EhDB.updateHistoryFavSlot(info.gid, slot);
             EhApplication.getFavouriteStatusRouter().modifyFavourites(info.gid, slot);
         }
 

@@ -28,7 +28,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseBooleanArray;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -45,6 +44,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -459,7 +459,7 @@ public class DownloadsScene extends ToolbarScene
 
     @Override
     public void onNavigationClick() {
-        toggleDrawer(Gravity.LEFT);
+        toggleDrawer(GravityCompat.START);
     }
 
     @Override
@@ -502,7 +502,7 @@ public class DownloadsScene extends ToolbarScene
             }
             return true;
         } else if (id == R.id.action_reset_reading_progress) {
-            new AlertDialog.Builder(getContext())
+            new AlertDialog.Builder(requireContext())
                     .setMessage(R.string.reset_reading_progress_message)
                     .setNegativeButton(android.R.string.cancel, null)
                     .setPositiveButton(android.R.string.ok, (dialog, which) -> {
@@ -660,14 +660,14 @@ public class DownloadsScene extends ToolbarScene
     @Override
     public void onStartDragHandler() {
         // Lock right drawer
-        setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.RIGHT);
+        setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END);
     }
 
     @Override
     public void onEndDragHandler() {
         // Restore right drawer
         if (null != mRecyclerView && !mRecyclerView.isInCustomChoice()) {
-            setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.RIGHT);
+            setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.END);
         }
     }
 
@@ -1038,7 +1038,7 @@ public class DownloadsScene extends ToolbarScene
                         mLabel = label1;
                         updateForLabel();
                         updateView();
-                        closeDrawer(Gravity.RIGHT);
+                        closeDrawer(GravityCompat.END);
                     }
                 });
                 if (position < LABEL_OFFSET) {
@@ -1317,8 +1317,8 @@ public class DownloadsScene extends ToolbarScene
                 mFabLayout.setExpanded(true);
             }
             // Lock drawer
-            setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.LEFT);
-            setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.RIGHT);
+            setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.START);
+            setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END);
         }
 
         @Override
@@ -1327,8 +1327,8 @@ public class DownloadsScene extends ToolbarScene
                 mFabLayout.setExpanded(false);
             }
             // Unlock drawer
-            setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.LEFT);
-            setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.RIGHT);
+            setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.START);
+            setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.END);
         }
 
         @Override

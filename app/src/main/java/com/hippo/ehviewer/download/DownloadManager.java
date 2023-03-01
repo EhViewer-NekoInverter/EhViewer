@@ -17,7 +17,6 @@
 package com.hippo.ehviewer.download;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -44,7 +43,6 @@ import com.hippo.yorozuya.collect.SparseJLArray;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -55,7 +53,6 @@ import java.util.Map;
 public class DownloadManager implements SpiderQueen.OnSpiderListener {
     private static final String TAG = DownloadManager.class.getSimpleName();
     private static final Comparator<DownloadInfo> DATE_DESC_COMPARATOR = (lhs, rhs) -> lhs.time - rhs.time > 0 ? -1 : 1;
-    private final Context mContext;
     // All download info list
     private final LinkedList<DownloadInfo> mAllInfoList;
     // All download info map
@@ -78,9 +75,7 @@ public class DownloadManager implements SpiderQueen.OnSpiderListener {
     @Nullable
     private SpiderQueen mCurrentSpider;
 
-    public DownloadManager(Context context) {
-        mContext = context;
-
+    public DownloadManager() {
         // Get all labels
         List<DownloadLabel> labels = EhDB.getAllDownloadLabelList();
         mLabelList = labels;
@@ -210,7 +205,7 @@ public class DownloadManager implements SpiderQueen.OnSpiderListener {
         // Get download from wait list
         if (!mWaitList.isEmpty()) {
             DownloadInfo info = mWaitList.removeFirst();
-            SpiderQueen spider = SpiderQueen.obtainSpiderQueen(mContext, info, SpiderQueen.MODE_DOWNLOAD);
+            SpiderQueen spider = SpiderQueen.obtainSpiderQueen(info, SpiderQueen.MODE_DOWNLOAD);
             mCurrentTask = info;
             mCurrentSpider = spider;
             spider.addOnSpiderListener(this);
@@ -391,7 +386,7 @@ public class DownloadManager implements SpiderQueen.OnSpiderListener {
             }
             list.add(info);
             // Sort
-            Collections.sort(list, DATE_DESC_COMPARATOR);
+            list.sort(DATE_DESC_COMPARATOR);
 
             // Add to all download list and map
             mAllInfoList.add(info);
@@ -402,7 +397,7 @@ public class DownloadManager implements SpiderQueen.OnSpiderListener {
         }
 
         // Sort all download list
-        Collections.sort(mAllInfoList, DATE_DESC_COMPARATOR);
+        mAllInfoList.sort(DATE_DESC_COMPARATOR);
 
         // Notify
         if (notify) {
@@ -734,7 +729,7 @@ public class DownloadManager implements SpiderQueen.OnSpiderListener {
             srcList.remove(info);
             dstList.add(info);
             info.label = label;
-            Collections.sort(dstList, DATE_DESC_COMPARATOR);
+            dstList.sort(DATE_DESC_COMPARATOR);
 
             // Save to DB
             EhDB.putDownloadInfo(info);
@@ -834,7 +829,7 @@ public class DownloadManager implements SpiderQueen.OnSpiderListener {
         }
 
         // Sort
-        Collections.sort(mDefaultInfoList, DATE_DESC_COMPARATOR);
+        mDefaultInfoList.sort(DATE_DESC_COMPARATOR);
 
         // Notify listener
         for (DownloadInfoListener l : mDownloadInfoListeners) {
@@ -1052,7 +1047,7 @@ public class DownloadManager implements SpiderQueen.OnSpiderListener {
         @Override
         public void run() {
             switch (mType) {
-                case TYPE_ON_GET_PAGES: {
+                case TYPE_ON_GET_PAGES -> {
                     DownloadInfo info = mCurrentTask;
                     if (info == null) {
                         Log.e(TAG, "Current task is null, but it should not be");
@@ -1065,19 +1060,15 @@ public class DownloadManager implements SpiderQueen.OnSpiderListener {
                             }
                         }
                     }
-                    break;
                 }
-                case TYPE_ON_GET_509: {
+                case TYPE_ON_GET_509 -> {
                     if (mDownloadListener != null) {
                         mDownloadListener.onGet509();
                     }
-                    break;
                 }
-                case TYPE_ON_PAGE_DOWNLOAD: {
+                case TYPE_ON_PAGE_DOWNLOAD ->
                     mSpeedReminder.onDownload(mIndex, mContentLength, mReceivedSize, mBytesRead);
-                    break;
-                }
-                case TYPE_ON_PAGE_SUCCESS: {
+                case TYPE_ON_PAGE_SUCCESS -> {
                     mSpeedReminder.onDone(mIndex);
                     DownloadInfo info = mCurrentTask;
                     if (info == null) {
@@ -1096,9 +1087,8 @@ public class DownloadManager implements SpiderQueen.OnSpiderListener {
                             }
                         }
                     }
-                    break;
                 }
-                case TYPE_ON_PAGE_FAILURE: {
+                case TYPE_ON_PAGE_FAILURE -> {
                     mSpeedReminder.onDone(mIndex);
                     DownloadInfo info = mCurrentTask;
                     if (info == null) {
@@ -1114,9 +1104,8 @@ public class DownloadManager implements SpiderQueen.OnSpiderListener {
                             }
                         }
                     }
-                    break;
                 }
-                case TYPE_ON_FINISH: {
+                case TYPE_ON_FINISH -> {
                     mSpeedReminder.onFinish();
                     // Download done
                     DownloadInfo info = mCurrentTask;
@@ -1159,7 +1148,6 @@ public class DownloadManager implements SpiderQueen.OnSpiderListener {
                     }
                     // Start next download
                     ensureDownload();
-                    break;
                 }
             }
 

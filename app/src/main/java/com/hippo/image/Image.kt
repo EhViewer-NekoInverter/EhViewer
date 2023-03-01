@@ -22,16 +22,14 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ImageDecoder
-import android.graphics.ImageDecoder.ALLOCATOR_DEFAULT
-import android.graphics.ImageDecoder.ALLOCATOR_SOFTWARE
 import android.graphics.ImageDecoder.DecodeException
 import android.graphics.ImageDecoder.ImageInfo
 import android.graphics.ImageDecoder.Source
-import android.graphics.PixelFormat
 import android.graphics.PorterDuff
 import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
 import androidx.core.graphics.drawable.toDrawable
 import coil.decode.FrameDelayRewritingSource
 import com.hippo.ehviewer.EhApplication
@@ -59,10 +57,11 @@ class Image private constructor(
         source?.let {
             mObtainedDrawable =
                 ImageDecoder.decodeDrawable(source) { decoder: ImageDecoder, info: ImageInfo, _: Source ->
-                    decoder.allocator = if (hardware) ALLOCATOR_DEFAULT else ALLOCATOR_SOFTWARE
-                    // Sadly we must use software memory since we need copy it to tile buffer, fuck glgallery
-                    // Idk it will cause how much performance regression
-
+                    if (!hardware || Build.VERSION.SDK_INT == Build.VERSION_CODES.P) {
+                        // Sadly we must use software memory in glgallery since we need copy it to tile buffer
+                        // Allocating hardware bitmap may cause a crash on framework versions prior to Android Q
+                        decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
+                    }
                     decoder.setTargetSampleSize(
                         min(
                             info.size.width / (2 * screenWidth),
@@ -74,13 +73,14 @@ class Image private constructor(
         if (mObtainedDrawable == null) {
             mObtainedDrawable = drawable!!
         }
+        if (mObtainedDrawable is BitmapDrawable)
+            release()
     }
 
     val animated = mObtainedDrawable is AnimatedImageDrawable
     val width = mObtainedDrawable!!.intrinsicWidth
     val height = mObtainedDrawable!!.intrinsicHeight
     val isRecycled = mObtainedDrawable == null
-
     var started = false
 
     @Synchronized
@@ -89,11 +89,12 @@ class Image private constructor(
         (mObtainedDrawable as? AnimatedImageDrawable)?.stop()
         (mObtainedDrawable as? BitmapDrawable)?.bitmap?.recycle()
         mObtainedDrawable?.callback = null
+        if (mObtainedDrawable is AnimatedImageDrawable)
+            release()
         mObtainedDrawable = null
         mCanvas = null
         mBitmap?.recycle()
         mBitmap = null
-        release()
     }
 
     private fun prepareBitmap() {
@@ -136,14 +137,12 @@ class Image private constructor(
 
     val delay: Int
         get() {
-            if (animated)
-                return 10
-            return 0
+            return if (animated) 10 else 0
         }
 
     val isOpaque: Boolean
         get() {
-            return mObtainedDrawable?.opacity == PixelFormat.OPAQUE
+            return false
         }
 
     companion object {

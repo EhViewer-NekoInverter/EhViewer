@@ -75,7 +75,6 @@ import com.hippo.ehviewer.Settings;
 import com.hippo.ehviewer.client.EhUrl;
 import com.hippo.ehviewer.client.data.GalleryInfo;
 import com.hippo.ehviewer.gallery.ArchiveGalleryProvider;
-import com.hippo.ehviewer.gallery.DirGalleryProvider;
 import com.hippo.ehviewer.gallery.EhGalleryProvider;
 import com.hippo.ehviewer.gallery.GalleryProvider2;
 import com.hippo.ehviewer.widget.GalleryGuideView;
@@ -112,7 +111,6 @@ import rikka.material.app.DayNightDelegate;
 
 public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChangeListener,
         GalleryView.Listener {
-    public static final String ACTION_DIR = "dir";
     public static final String ACTION_EH = "eh";
 
     public static final String KEY_ACTION = "action";
@@ -231,13 +229,9 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
             return;
         }
 
-        if (ACTION_DIR.equals(mAction)) {
-            if (mFilename != null) {
-                mGalleryProvider = new DirGalleryProvider(UniFile.fromFile(new File(mFilename)));
-            }
-        } else if (ACTION_EH.equals(mAction)) {
+        if (ACTION_EH.equals(mAction)) {
             if (mGalleryInfo != null) {
-                mGalleryProvider = new EhGalleryProvider(this, mGalleryInfo);
+                mGalleryProvider = new EhGalleryProvider(mGalleryInfo);
             }
         } else if (Intent.ACTION_VIEW.equals(mAction)) {
             if (mUri != null) {

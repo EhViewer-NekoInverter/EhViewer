@@ -59,18 +59,10 @@ abstract class EhActivity : MaterialActivity() {
         super.onApplyTranslucentSystemBars()
         window.statusBarColor = Color.TRANSPARENT
         window.decorView.post {
-            val rootWindowInsets = window.decorView.rootWindowInsets
-            if (rootWindowInsets != null && rootWindowInsets.systemWindowInsetBottom >= Resources.getSystem().displayMetrics.density * 40) {
-                window.navigationBarColor =
-                    theme.resolveColor(android.R.attr.navigationBarColor) and 0x00ffffff or -0x20000000
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    window.isNavigationBarContrastEnforced = false
-                }
-            } else {
-                window.navigationBarColor = Color.TRANSPARENT
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    window.isNavigationBarContrastEnforced = true
-                }
+            window.navigationBarColor =
+                theme.resolveColor(android.R.attr.navigationBarColor) and 0x00ffffff or -0x20000000
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                window.isNavigationBarContrastEnforced = false
             }
         }
     }
@@ -83,32 +75,18 @@ abstract class EhActivity : MaterialActivity() {
     override fun onResume() {
         super.onResume()
         if (Settings.getEnabledSecurity()) {
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_SECURE,
-                WindowManager.LayoutParams.FLAG_SECURE
-            )
+            window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         } else {
             window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
         }
     }
 
-    private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) {
-        Settings.putNotificationRequired()
-    }
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { Settings.putNotificationRequired() }
 
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun checkAndRequestNotificationPermission() {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.POST_NOTIFICATIONS
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            return
-        }
-        if (Settings.getNotificationRequired())
-            return
+        if (Settings.getNotificationRequired() || ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS ) == PackageManager.PERMISSION_GRANTED) return
         requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
     }
 

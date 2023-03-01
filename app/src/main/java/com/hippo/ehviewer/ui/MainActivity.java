@@ -30,7 +30,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -45,6 +44,7 @@ import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
@@ -509,16 +509,15 @@ public final class MainActivity extends StageActivity
 
     @SuppressLint("RtlHardcoded")
     public void createDrawerView(SceneFragment scene) {
-        if (scene instanceof BaseScene && mRightDrawer != null && mDrawerLayout != null) {
-            BaseScene baseScene = (BaseScene) scene;
+        if (scene instanceof BaseScene baseScene && mRightDrawer != null && mDrawerLayout != null) {
             mRightDrawer.removeAllViews();
             View drawerView = baseScene.createDrawerView(
                     baseScene.getLayoutInflater(), mRightDrawer, null);
             if (drawerView != null) {
                 mRightDrawer.addView(drawerView);
-                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.RIGHT);
+                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.END);
             } else {
-                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.RIGHT);
+                mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END);
             }
         }
     }
@@ -527,8 +526,7 @@ public final class MainActivity extends StageActivity
     public void onSceneViewDestroyed(SceneFragment scene) {
         super.onSceneViewDestroyed(scene);
 
-        if (scene instanceof BaseScene) {
-            BaseScene baseScene = (BaseScene) scene;
+        if (scene instanceof BaseScene baseScene) {
             baseScene.destroyDrawerView();
         }
     }
@@ -624,8 +622,8 @@ public final class MainActivity extends StageActivity
     @SuppressLint("RtlHardcoded")
     @Override
     public void onBackPressed() {
-        if (mDrawerLayout != null && (mDrawerLayout.isDrawerOpen(Gravity.LEFT) ||
-                mDrawerLayout.isDrawerOpen(Gravity.RIGHT))) {
+        if (mDrawerLayout != null && (mDrawerLayout.isDrawerOpen(GravityCompat.START) ||
+                mDrawerLayout.isDrawerOpen(GravityCompat.END))) {
             mDrawerLayout.closeDrawers();
         } else {
             super.onBackPressed();

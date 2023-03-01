@@ -31,7 +31,6 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ImageSpan;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -52,6 +51,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsAnimationCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -981,7 +981,7 @@ public final class GalleryListScene extends BaseScene
 
         switch (position) {
             // Open right
-            case 0 -> openDrawer(Gravity.RIGHT);
+            case 0 -> openDrawer(GravityCompat.END);
             // Go to
             case 1 -> {
                 if (!mIsTopList || mHelper.canGoTo()) showGoToDialog();
@@ -1002,12 +1002,12 @@ public final class GalleryListScene extends BaseScene
         }
 
         if (expanded) {
-            setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.LEFT);
-            setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.RIGHT);
+            setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.START);
+            setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END);
             mActionFabDrawable.setDelete(ANIMATE_TIME);
         } else {
-            setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.LEFT);
-            setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.RIGHT);
+            setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.START);
+            setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.END);
             mActionFabDrawable.setAdd(ANIMATE_TIME);
         }
     }
@@ -1299,7 +1299,7 @@ public final class GalleryListScene extends BaseScene
         }
 
         if (mSearchBar.getState() == SearchBar.STATE_NORMAL) {
-            toggleDrawer(Gravity.LEFT);
+            toggleDrawer(GravityCompat.START);
         } else {
             setState(STATE_NORMAL);
         }
@@ -1376,13 +1376,13 @@ public final class GalleryListScene extends BaseScene
     @Override
     public void onStartDragHandler() {
         // Lock right drawer
-        setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.RIGHT);
+        setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END);
     }
 
     @Override
     public void onEndDragHandler() {
         // Restore right drawer
-        setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.RIGHT);
+        setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.END);
 
         if (null != mSearchBarMover) {
             mSearchBarMover.returnSearchBarPosition();
@@ -1416,11 +1416,11 @@ public final class GalleryListScene extends BaseScene
         }
 
         if (newState == STATE_NORMAL || newState == STATE_SIMPLE_SEARCH) {
-            setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.LEFT);
-            setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.RIGHT);
+            setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.START);
+            setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.END);
         } else {
-            setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.LEFT);
-            setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.RIGHT);
+            setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.START);
+            setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END);
         }
     }
 
@@ -1657,7 +1657,7 @@ public final class GalleryListScene extends BaseScene
                     int index = quickSearch.name.lastIndexOf("@");
                     mHelper.goTo(index != -1 ? quickSearch.name.substring(index + 1) : null, true);
                     setState(STATE_NORMAL);
-                    closeDrawer(Gravity.RIGHT);
+                    closeDrawer(GravityCompat.END);
                 });
                 holder.itemView.setOnLongClickListener(v -> {
                     PopupMenu popupMenu = new PopupMenu(requireContext(), holder.option);
@@ -1700,7 +1700,7 @@ public final class GalleryListScene extends BaseScene
                     onUpdateUrlBuilder();
                     mHelper.refresh();
                     setState(STATE_NORMAL);
-                    closeDrawer(Gravity.RIGHT);
+                    closeDrawer(GravityCompat.END);
                 });
             }
         }

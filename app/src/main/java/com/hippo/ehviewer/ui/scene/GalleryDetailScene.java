@@ -106,7 +106,6 @@ import com.hippo.ehviewer.spider.SpiderDen;
 import com.hippo.ehviewer.ui.CommonOperations;
 import com.hippo.ehviewer.ui.GalleryActivity;
 import com.hippo.ehviewer.ui.MainActivity;
-import com.hippo.ehviewer.ui.annotation.WholeLifeCircle;
 import com.hippo.ehviewer.widget.GalleryRatingBar;
 import com.hippo.scene.Announcer;
 import com.hippo.scene.SceneFragment;
@@ -261,7 +260,6 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
     private ViewTransition mViewTransition2;
     @Nullable
     private PopupMenu mPopupMenu;
-    @WholeLifeCircle
     private int mDownloadState;
     @Nullable
     private String mAction;
@@ -447,7 +445,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
         super.onResume();
         if (mRead != null) {
             try {
-                GalleryProvider2 galleryProvider = new EhGalleryProvider(requireContext(), mGalleryInfo);
+                GalleryProvider2 galleryProvider = new EhGalleryProvider(mGalleryInfo);
                 galleryProvider.start();
                 int startPage = galleryProvider.getStartPage();
                 if (startPage != 0) {
@@ -492,7 +490,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
         outState.putInt(KEY_REQUEST_ID, mRequestId);
     }
 
-    @Nullable
+    @NonNull
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -731,7 +729,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
             return false;
         }
 
-        EhClient.Callback<GalleryDetail> callback = new GetGalleryDetailListener(context,
+        EhClient.Callback<?> callback = new GetGalleryDetailListener(context,
                 activity.getStageId(), getTag());
         mRequestId = ((EhApplication) context.getApplicationContext()).putGlobalStuff(callback);
         EhRequest request = new EhRequest()
@@ -2260,7 +2258,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
         }
     }
 
-    private class DeleteDialogHelper implements DialogInterface.OnClickListener {
+    private static class DeleteDialogHelper implements DialogInterface.OnClickListener {
         private final com.hippo.ehviewer.download.DownloadManager mDownloadManager;
         private final GalleryInfo mGalleryInfo;
         private final CheckBoxDialogBuilder mBuilder;

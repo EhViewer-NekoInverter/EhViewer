@@ -20,46 +20,46 @@
     <rikka.preference.SimpleMenuPreference
         android:defaultValue="0"
         android:key="screen_rotation"
-        android:summary="%s"
         android:title="@string/settings_read_screen_rotation"
         app:entries="@array/screen_rotation_entries"
         app:entryValues="@array/screen_rotation_entry_values"
+        app:useSimpleSummaryProvider="true"
         app:iconSpaceReserved="false" />
 
     <rikka.preference.SimpleMenuPreference
         android:defaultValue="1"
         android:key="reading_direction"
-        android:summary="%s"
         android:title="@string/settings_read_reading_direction"
         app:entries="@array/reading_direction_entries"
         app:entryValues="@array/reading_direction_entry_values"
+        app:useSimpleSummaryProvider="true"
         app:iconSpaceReserved="false" />
 
     <rikka.preference.SimpleMenuPreference
         android:defaultValue="3"
         android:key="page_scaling"
-        android:summary="%s"
         android:title="@string/settings_read_page_scaling"
         app:entries="@array/page_scaling_entries"
         app:entryValues="@array/page_scaling_entry_values"
+        app:useSimpleSummaryProvider="true"
         app:iconSpaceReserved="false" />
 
     <rikka.preference.SimpleMenuPreference
         android:defaultValue="1"
         android:key="start_position"
-        android:summary="%s"
         android:title="@string/settings_read_start_position"
         app:entries="@array/start_position_entries"
         app:entryValues="@array/start_position_values"
+        app:useSimpleSummaryProvider="true"
         app:iconSpaceReserved="false" />
 
     <rikka.preference.SimpleMenuPreference
         android:defaultValue="1"
         android:key="read_theme"
-        android:summary="%s"
         android:title="@string/settings_read_theme"
         app:entries="@array/read_theme_entries"
         app:entryValues="@array/read_theme_entry_values"
+        app:useSimpleSummaryProvider="true"
         app:iconSpaceReserved="false" />
 
     <SwitchPreferenceCompat

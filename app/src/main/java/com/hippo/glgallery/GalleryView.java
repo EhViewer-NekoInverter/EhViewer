@@ -26,7 +26,6 @@ import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.hippo.glview.annotation.RenderThread;
 import com.hippo.glview.glrenderer.BasicTexture;
 import com.hippo.glview.glrenderer.GLCanvas;
 import com.hippo.glview.glrenderer.StringTexture;
@@ -487,7 +486,6 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
         }
     }
 
-    @RenderThread
     public void onDataChanged() {
         GalleryUtils.assertInRenderThread();
 
@@ -711,13 +709,11 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
         }
     }
 
-    @RenderThread
     void forceFill() {
         mRequestFill = true;
         fill();
     }
 
-    @RenderThread
     private void fill() {
         GalleryUtils.assertInRenderThread();
 
@@ -862,7 +858,6 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
         }
     }
 
-    @RenderThread
     public GalleryPageView findPageByIndex(int id) {
         if (mLayoutManager != null) {
             return mLayoutManager.findPageByIndex(id);
@@ -961,19 +956,14 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
     }
 
     public interface Listener {
-        @RenderThread
         void onUpdateCurrentIndex(int index);
 
-        @RenderThread
         void onTapSliderArea();
 
-        @RenderThread
         void onTapMenuArea();
 
-        @RenderThread
         void onTapErrorText(int index);
 
-        @RenderThread
         void onLongPressPage(int index);
     }
 

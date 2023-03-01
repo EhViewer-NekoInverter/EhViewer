@@ -16,8 +16,6 @@
 
 package com.hippo.ehviewer.gallery;
 
-import android.content.Context;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -31,13 +29,11 @@ import com.hippo.yorozuya.SimpleHandler;
 import java.util.Locale;
 
 public class EhGalleryProvider extends GalleryProvider2 implements SpiderQueen.OnSpiderListener {
-    private final Context mContext;
     private final GalleryInfo mGalleryInfo;
     @Nullable
     private SpiderQueen mSpiderQueen;
 
-    public EhGalleryProvider(Context context, GalleryInfo galleryInfo) {
-        mContext = context;
+    public EhGalleryProvider(GalleryInfo galleryInfo) {
         mGalleryInfo = galleryInfo;
     }
 
@@ -45,7 +41,7 @@ public class EhGalleryProvider extends GalleryProvider2 implements SpiderQueen.O
     public void start() {
         super.start();
 
-        mSpiderQueen = SpiderQueen.obtainSpiderQueen(mContext, mGalleryInfo, SpiderQueen.MODE_READ);
+        mSpiderQueen = SpiderQueen.obtainSpiderQueen(mGalleryInfo, SpiderQueen.MODE_READ);
         mSpiderQueen.addOnSpiderListener(this);
     }
 

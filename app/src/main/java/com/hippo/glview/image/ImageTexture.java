@@ -24,7 +24,6 @@ import android.os.SystemClock;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 
-import com.hippo.glview.annotation.RenderThread;
 import com.hippo.glview.glrenderer.GLCanvas;
 import com.hippo.glview.glrenderer.NativeTexture;
 import com.hippo.glview.glrenderer.Texture;
@@ -296,7 +295,6 @@ public class ImageTexture implements Texture, Animatable {
         return mHeight;
     }
 
-    @RenderThread
     private void syncFrame() {
         if (mFrameDirty.getAndSet(false)) {
             // invalid tiles

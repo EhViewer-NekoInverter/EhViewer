@@ -51,6 +51,10 @@ android {
 
     kotlinOptions {
         jvmTarget = '19'
+        freeCompilerArgs += [
+            // https://kotlinlang.org/docs/compiler-reference.html#progressive
+            "-progressive"
+        ]
     }
 
     lint {

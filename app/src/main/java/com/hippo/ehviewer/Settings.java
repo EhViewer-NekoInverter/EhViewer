@@ -16,7 +16,6 @@
 
 package com.hippo.ehviewer;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
@@ -239,18 +238,16 @@ public class Settings {
     private static final int DEFAULT_CLIPBOARD_TEXT_HASH_CODE = 0;
     private static final String KEY_ARCHIVE_PASSWDS = "archive_passwds";
     private static final String KEY_NOTIFICATION_REQUIRED = "notification_required";
-    private static Context sContext;
     private static SharedPreferences sSettingsPre;
     private static EhConfig sEhConfig;
 
-    public static void initialize(Context context) {
-        sContext = context.getApplicationContext();
-        sSettingsPre = PreferenceManager.getDefaultSharedPreferences(sContext);
-        sEhConfig = loadEhConfig();
-        fixDefaultValue(context);
+    public static void initialize() {
+        sSettingsPre = PreferenceManager.getDefaultSharedPreferences(EhApplication.getApplication());
+        sEhConfig = new EhConfig();
+        fixDefaultValue();
     }
 
-    private static void fixDefaultValue(Context context) {
+    private static void fixDefaultValue() {
         if ("zh".equals(Locale.getDefault().getLanguage())) {
             // Enable show tag translations if the language is zh
             if (!sSettingsPre.contains(KEY_SHOW_TAG_TRANSLATIONS)) {
@@ -267,11 +264,6 @@ public class Settings {
         } else {
             return Locale.getDefault();
         }
-    }
-
-    private static EhConfig loadEhConfig() {
-        EhConfig ehConfig = new EhConfig();
-        return ehConfig;
     }
 
     public static boolean getBoolean(String key, boolean defValue) {
@@ -416,7 +408,7 @@ public class Settings {
     }
 
     public static int dip2px(int dpValue) {
-        final float scale = sContext.getResources().getDisplayMetrics().density;
+        final float scale = EhApplication.getApplication().getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
 
@@ -601,7 +593,7 @@ public class Settings {
             builder.encodedPath(getString(KEY_DOWNLOAD_SAVE_PATH, null));
             builder.encodedQuery(getString(KEY_DOWNLOAD_SAVE_QUERY, null));
             builder.encodedFragment(getString(KEY_DOWNLOAD_SAVE_FRAGMENT, null));
-            dir = UniFile.fromUri(sContext, builder.build());
+            dir = UniFile.fromUri(EhApplication.getApplication(), builder.build());
         } catch (Throwable e) {
             ExceptionUtils.throwIfFatal(e);
             // Ignore

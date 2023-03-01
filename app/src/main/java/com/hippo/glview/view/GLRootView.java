@@ -38,9 +38,7 @@ import com.hippo.glview.glrenderer.GLCanvas;
 import com.hippo.glview.glrenderer.GLES11Canvas;
 import com.hippo.glview.glrenderer.GLES20Canvas;
 import com.hippo.glview.glrenderer.UploadedTexture;
-import com.hippo.glview.util.ApiHelper;
 import com.hippo.glview.util.GalleryUtils;
-import com.hippo.glview.util.MotionEventHelper;
 import com.hippo.yorozuya.AssertUtils;
 
 import java.util.ArrayDeque;
@@ -347,7 +345,8 @@ public class GLRootView extends GLSurfaceView
         }
 
         if (mCompensation != 0) {
-            event = MotionEventHelper.transformEvent(event, mCompensationMatrix);
+            event = MotionEvent.obtain(event);
+            event.transform(mCompensationMatrix);
         }
 
         mRenderLock.lock();
@@ -428,14 +427,9 @@ public class GLRootView extends GLSurfaceView
 
     @Override
     public void setLightsOutMode(boolean enabled) {
-        if (!ApiHelper.HAS_SET_SYSTEM_UI_VISIBILITY) return;
-
         int flags = 0;
         if (enabled) {
-            flags = STATUS_BAR_HIDDEN;
-            if (ApiHelper.HAS_VIEW_SYSTEM_UI_FLAG_LAYOUT_STABLE) {
-                flags |= (SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_LAYOUT_STABLE);
-            }
+            flags = STATUS_BAR_HIDDEN | SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_LAYOUT_STABLE;
         }
         setSystemUiVisibility(flags);
     }
