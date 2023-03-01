@@ -156,6 +156,7 @@
     <string name="star_5">5 星</string>
     <string name="search_sp">頁數：</string>
     <string name="search_sp_to">到</string>
+    <string name="search_sp_err0">頁數最小值至多為 1000</string>
     <string name="search_sp_err1">頁數最大值至少為 10</string>
     <string name="search_sp_err2">頁數範圍差至少為 20</string>
     <string name="search_sf">停用排除項：</string>
