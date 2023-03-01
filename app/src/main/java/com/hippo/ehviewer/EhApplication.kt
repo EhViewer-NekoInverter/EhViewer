@@ -33,6 +33,7 @@ import com.hippo.ehviewer.client.EhDns
 import com.hippo.ehviewer.client.EhEngine
 import com.hippo.ehviewer.client.EhRequestBuilder
 import com.hippo.ehviewer.client.EhSSLSocketFactory
+import com.hippo.ehviewer.client.EhTagDatabase
 import com.hippo.ehviewer.client.EhUrl
 import com.hippo.ehviewer.client.EhX509TrustManager
 import com.hippo.ehviewer.client.data.GalleryDetail
@@ -107,6 +108,7 @@ class EhApplication : SceneApplication() {
         EhDB.initialize(this)
         EhEngine.initialize()
         BitmapUtils.initialize(this)
+        EhTagDatabase.update()
         LocaleDelegate.defaultLocale = Settings.getLocale()
         DayNightDelegate.setApplicationContext(this)
         DayNightDelegate.setDefaultNightMode(Settings.getTheme())

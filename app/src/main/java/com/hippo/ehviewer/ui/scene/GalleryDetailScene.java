@@ -949,7 +949,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
             mNoTags.setVisibility(View.GONE);
         }
 
-        EhTagDatabase ehTags = Settings.getShowTagTranslations() ? EhTagDatabase.getInstance(context) : null;
+        EhTagDatabase ehTags = Settings.getShowTagTranslations() && EhTagDatabase.INSTANCE.isTranslatable(context) ? EhTagDatabase.INSTANCE : null;
         int colorTag = ResourcesKt.resolveColor(getTheme(), R.attr.tagBackgroundColor);
         int colorName = ResourcesKt.resolveColor(getTheme(), R.attr.tagGroupBackgroundColor);
         for (GalleryTagGroup tg : tagGroups) {
@@ -958,8 +958,8 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
             mTags.addView(ll);
 
             String readableTagName = null;
-            if (ehTags != null) {
-                readableTagName = ehTags.getTranslation("n:" + tg.groupName);
+            if (ehTags != null && ehTags.isInitialized()) {
+                readableTagName = ehTags.getTranslation("n", tg.groupName);
             }
 
             TextView tgName = (TextView) inflater.inflate(R.layout.item_gallery_tag, ll, false);
@@ -968,9 +968,6 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
             tgName.setBackgroundTintList(ColorStateList.valueOf(colorName));
 
             String prefix = EhTagDatabase.namespaceToPrefix(tg.groupName);
-            if (prefix == null) {
-                prefix = "";
-            }
 
             AutoWrapLayout awl = new AutoWrapLayout(context);
             ll.addView(awl, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -990,8 +987,8 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
                 }
 
                 String readableTag = null;
-                if (ehTags != null) {
-                    readableTag = ehTags.getTranslation(prefix + tagStr);
+                if (ehTags != null && ehTags.isInitialized()) {
+                    readableTag = ehTags.getTranslation(prefix, tagStr);
                 }
 
                 tag.setText(readableTag != null ? readableTag : tagStr);

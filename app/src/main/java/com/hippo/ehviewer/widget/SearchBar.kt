@@ -13,663 +13,534 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.ehviewer.widget
 
-package com.hippo.ehviewer.widget;
+import android.animation.Animator
+import android.animation.ObjectAnimator
+import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Rect
+import android.graphics.drawable.Drawable
+import android.net.Uri
+import android.os.Bundle
+import android.os.Parcelable
+import android.text.Editable
+import android.text.TextUtils
+import android.text.TextWatcher
+import android.util.AttributeSet
+import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.card.MaterialCardView
+import com.hippo.easyrecyclerview.EasyRecyclerView
+import com.hippo.easyrecyclerview.LinearDividerItemDecoration
+import com.hippo.ehviewer.R
+import com.hippo.ehviewer.Settings
+import com.hippo.ehviewer.client.EhTagDatabase
+import com.hippo.util.getParcelableCompat
+import com.hippo.view.ViewTransition
+import com.hippo.yorozuya.AnimationUtils
+import com.hippo.yorozuya.LayoutUtils
+import com.hippo.yorozuya.MathUtils
+import com.hippo.yorozuya.SimpleAnimatorListener
+import com.hippo.yorozuya.ViewUtils
+import rikka.core.res.resolveColor
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Parcelable;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.util.AttributeSet;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageView;
-import android.widget.TextView;
+class SearchBar @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null
+) : MaterialCardView(context, attrs), View.OnClickListener, TextView.OnEditorActionListener,
+        TextWatcher, SearchEditText.SearchEditTextListener {
+    private val mRect = Rect()
+    private val mSearchDatabase by lazy { SearchDatabase.getInstance(context) }
+    private var mState = STATE_NORMAL
+    private var mBaseHeight = 0
+    private var mWidth = 0
+    private var mHeight = 0
+    private var mProgress = 0f
+    private var mMenuButton: ImageView? = null
+    private var mTitleTextView: TextView? = null
+    private var mActionButton: ImageView? = null
+    private var mEditText: SearchEditText? = null
+    private var mListContainer: View? = null
+    private var mListView: EasyRecyclerView? = null
+    private var mListHeader: View? = null
+    private var mViewTransition: ViewTransition? = null
+    private var mSuggestionList: List<Suggestion>? = null
+    private var mSuggestionAdapter: SuggestionAdapter? = null
+    private var mHelper: Helper? = null
+    private var mSuggestionProvider: SuggestionProvider? = null
+    private var mOnStateChangeListener: OnStateChangeListener? = null
+    private var mAllowEmptySearch = true
+    private var mInAnimation = false
 
-import androidx.annotation.Keep;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.util.Pair;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.material.card.MaterialCardView;
-import com.hippo.easyrecyclerview.EasyRecyclerView;
-import com.hippo.easyrecyclerview.LinearDividerItemDecoration;
-import com.hippo.ehviewer.R;
-import com.hippo.ehviewer.client.EhTagDatabase;
-import com.hippo.view.ViewTransition;
-import com.hippo.yorozuya.AnimationUtils;
-import com.hippo.yorozuya.LayoutUtils;
-import com.hippo.yorozuya.MathUtils;
-import com.hippo.yorozuya.SimpleAnimatorListener;
-import com.hippo.yorozuya.ViewUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import rikka.core.res.ResourcesKt;
-
-public class SearchBar extends MaterialCardView implements View.OnClickListener,
-        TextView.OnEditorActionListener, TextWatcher,
-        SearchEditText.SearchEditTextListener {
-    public static final int STATE_NORMAL = 0;
-    public static final int STATE_SEARCH = 1;
-    public static final int STATE_SEARCH_LIST = 2;
-    private static final String STATE_KEY_SUPER = "super";
-    private static final String STATE_KEY_STATE = "state";
-    private static final long ANIMATE_TIME = 300L;
-    private final Rect mRect = new Rect();
-    private int mState = STATE_NORMAL;
-    private int mWidth;
-    private int mHeight;
-    private int mBaseHeight;
-    private float mProgress;
-
-    private ImageView mMenuButton;
-    private TextView mTitleTextView;
-    private ImageView mActionButton;
-    private SearchEditText mEditText;
-    private EasyRecyclerView mListView;
-    private View mListContainer;
-    private View mListHeader;
-
-    private ViewTransition mViewTransition;
-
-    private SearchDatabase mSearchDatabase;
-    private List<Suggestion> mSuggestionList;
-    private SuggestionAdapter mSuggestionAdapter;
-
-    private Helper mHelper;
-    private OnStateChangeListener mOnStateChangeListener;
-    private SuggestionProvider mSuggestionProvider;
-
-    private boolean mAllowEmptySearch = true;
-
-    private boolean mInAnimation;
-
-    public SearchBar(Context context) {
-        super(context);
-        init(context);
-    }
-
-    public SearchBar(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
-    }
-
-    public SearchBar(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context);
-    }
-
-    private void init(Context context) {
-        mSearchDatabase = SearchDatabase.getInstance(getContext());
-
-        LayoutInflater inflater = LayoutInflater.from(context);
-        inflater.inflate(R.layout.widget_search_bar, this);
-        mMenuButton = (ImageView) ViewUtils.$$(this, R.id.search_menu);
-        mTitleTextView = (TextView) ViewUtils.$$(this, R.id.search_title);
-        mActionButton = (ImageView) ViewUtils.$$(this, R.id.search_action);
-        mEditText = (SearchEditText) ViewUtils.$$(this, R.id.search_edit_text);
-        mListContainer = ViewUtils.$$(this, R.id.list_container);
-        mListView = (EasyRecyclerView) ViewUtils.$$(mListContainer, R.id.search_bar_list);
-        mListHeader = ViewUtils.$$(mListContainer, R.id.list_header);
-
-        mViewTransition = new ViewTransition(mTitleTextView, mEditText);
-
-        mTitleTextView.setOnClickListener(this);
-        mMenuButton.setOnClickListener(this);
-        mActionButton.setOnClickListener(this);
-        mEditText.setSearchEditTextListener(this);
-        mEditText.setOnEditorActionListener(this);
-        mEditText.addTextChangedListener(this);
+    init {
+        val inflater = LayoutInflater.from(context)
+        inflater.inflate(R.layout.widget_search_bar, this)
+        mMenuButton = ViewUtils.`$$`(this, R.id.search_menu) as ImageView
+        mTitleTextView = ViewUtils.`$$`(this, R.id.search_title) as TextView
+        mActionButton = ViewUtils.`$$`(this, R.id.search_action) as ImageView
+        mEditText = ViewUtils.`$$`(this, R.id.search_edit_text) as SearchEditText
+        mListContainer = ViewUtils.`$$`(this, R.id.list_container)
+        mListView = ViewUtils.`$$`(mListContainer, R.id.search_bar_list) as EasyRecyclerView
+        mListHeader = ViewUtils.`$$`(mListContainer, R.id.list_header)
+        mViewTransition = ViewTransition(mTitleTextView, mEditText)
+        mTitleTextView!!.setOnClickListener(this)
+        mMenuButton!!.setOnClickListener(this)
+        mActionButton!!.setOnClickListener(this)
+        mEditText!!.setSearchEditTextListener(this)
+        mEditText!!.setOnEditorActionListener(this)
+        mEditText!!.addTextChangedListener(this)
 
         // Get base height
-        ViewUtils.measureView(this, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        mBaseHeight = getMeasuredHeight();
+        ViewUtils.measureView(this, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        mBaseHeight = measuredHeight
 
-        mSuggestionList = new ArrayList<>();
-        mSuggestionAdapter = new SuggestionAdapter(LayoutInflater.from(getContext()));
-        mListView.setAdapter(mSuggestionAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-        LinearDividerItemDecoration decoration = new LinearDividerItemDecoration(
-                LinearDividerItemDecoration.VERTICAL,
-                ResourcesKt.resolveColor(context.getTheme(), R.attr.dividerColor),
-                LayoutUtils.dp2pix(context, 1));
-        decoration.setShowLastDivider(false);
-        mListView.addItemDecoration(decoration);
-        mListView.setLayoutManager(layoutManager);
+        mSuggestionList = ArrayList()
+        mSuggestionAdapter = SuggestionAdapter(LayoutInflater.from(context))
+        mListView!!.setAdapter(mSuggestionAdapter)
+        val decoration = LinearDividerItemDecoration(
+            LinearDividerItemDecoration.VERTICAL,
+            context.theme.resolveColor(R.attr.dividerColor),
+            LayoutUtils.dp2pix(context, 1f)
+        )
+        decoration.setShowLastDivider(false)
+        mListView!!.addItemDecoration(decoration)
+        mListView!!.setLayoutManager(LinearLayoutManager(context))
     }
 
-    private void addListHeader() {
-        mListHeader.setVisibility(VISIBLE);
+    private fun addListHeader() {
+        mListHeader!!.visibility = View.VISIBLE
     }
 
-    private void removeListHeader() {
-        mListHeader.setVisibility(GONE);
+    private fun removeListHeader() {
+        mListHeader!!.visibility = View.GONE
     }
 
-    private void updateSuggestions() {
-        updateSuggestions(true);
-    }
-
-    private void updateSuggestions(boolean scrollToTop) {
-        List<Suggestion> suggestions = new ArrayList<>();
-
-        String text = mEditText.getText().toString();
-
-        if (mSuggestionProvider != null) {
-            List<Suggestion> providerSuggestions = mSuggestionProvider.providerSuggestions(text);
-            if (providerSuggestions != null && !providerSuggestions.isEmpty()) {
-                suggestions.addAll(providerSuggestions);
+    private fun updateSuggestions(scrollToTop: Boolean = true) {
+        val suggestions = arrayListOf<Suggestion>()
+        val text = mEditText!!.text.toString()
+        mSuggestionProvider?.run {
+            providerSuggestions(text)?.let {
+                suggestions.addAll(it)
             }
         }
-
-        String[] keywords = mSearchDatabase.getSuggestions(text, 128);
-        for (String keyword : keywords) {
-            suggestions.add(new KeywordSuggestion(keyword));
+        mSearchDatabase.getSuggestions(text, 128).forEach {
+            suggestions.add(KeywordSuggestion(it))
         }
-
-        EhTagDatabase ehTagDatabase = EhTagDatabase.getInstance(getContext());
-        if (!TextUtils.isEmpty(text) && ehTagDatabase != null && !text.endsWith(" ")) {
-            String[] s = text.split(" ");
-            if (s.length > 0) {
-                String keyword = s[s.length - 1];
-                ArrayList<Pair<String, String>> searchHints = ehTagDatabase.suggest(keyword);
-
-                for (Pair<String, String> searchHint : searchHints) {
-                    suggestions.add(new TagSuggestion(searchHint.first, searchHint.second));
+        EhTagDatabase.takeIf { it.isInitialized() }?.run {
+            if (!TextUtils.isEmpty(text) && !text.endsWith(" ")) {
+                val keyword = text.substringAfterLast(" ")
+                val translate = Settings.getShowTagTranslations() && isTranslatable(context)
+                suggest(keyword, translate).forEach {
+                    suggestions.add(TagSuggestion(it.first, it.second))
                 }
-
             }
         }
-
-        mSuggestionList = suggestions;
-        if (mSuggestionList.size() == 0) {
-            removeListHeader();
+        mSuggestionList = suggestions
+        if (mSuggestionList?.size == 0) {
+            removeListHeader()
         } else {
-            addListHeader();
+            addListHeader()
         }
-        mSuggestionAdapter.notifyDataSetChanged();
-
+        mSuggestionAdapter?.notifyDataSetChanged()
         if (scrollToTop) {
-            mListView.scrollToPosition(0);
+            mListView!!.scrollToPosition(0)
         }
     }
 
-    public void setAllowEmptySearch(boolean allowEmptySearch) {
-        mAllowEmptySearch = allowEmptySearch;
+    fun setAllowEmptySearch(allowEmptySearch: Boolean) {
+        mAllowEmptySearch = allowEmptySearch
     }
 
-    public void setEditTextHint(CharSequence hint) {
-        mEditText.setHint(hint);
+    fun setEditTextHint(hint: CharSequence) {
+        mEditText!!.hint = hint
     }
 
-    public void setHelper(Helper helper) {
-        mHelper = helper;
+    fun setHelper(helper: Helper) {
+        mHelper = helper
     }
 
-    public void setOnStateChangeListener(OnStateChangeListener listener) {
-        mOnStateChangeListener = listener;
+    fun setOnStateChangeListener(listener: OnStateChangeListener) {
+        mOnStateChangeListener = listener
     }
 
-    public void setSuggestionProvider(SuggestionProvider suggestionProvider) {
-        mSuggestionProvider = suggestionProvider;
+    fun setSuggestionProvider(suggestionProvider: SuggestionProvider) {
+        mSuggestionProvider = suggestionProvider
     }
 
-    public String getText() {
-        return mEditText.getText().toString();
+    fun getText(): String {
+        return mEditText!!.text.toString()
     }
 
-    public void setText(String text) {
-        mEditText.setText(text);
+    fun setText(text: String) {
+        mEditText!!.setText(text)
     }
 
-    public void cursorToEnd() {
-        mEditText.setSelection(mEditText.getText().length());
+    fun cursorToEnd() {
+        mEditText!!.setSelection(mEditText!!.text!!.length)
     }
 
-    public void setTitle(String title) {
-        mTitleTextView.setText(title);
+    fun setTitle(title: String) {
+        mTitleTextView!!.text = title
     }
 
-    public void setSearch(String search) {
-        mTitleTextView.setText(search);
-        mEditText.setText(search);
+    fun setSearch(search: String) {
+        mTitleTextView!!.text = search
+        mEditText!!.setText(search)
     }
 
-    public void setLeftDrawable(Drawable drawable) {
-        mMenuButton.setImageDrawable(drawable);
+    fun setLeftDrawable(drawable: Drawable) {
+        mMenuButton!!.setImageDrawable(drawable)
     }
 
-    public void setRightDrawable(Drawable drawable) {
-        mActionButton.setImageDrawable(drawable);
+    fun setRightDrawable(drawable: Drawable) {
+        mActionButton!!.setImageDrawable(drawable)
     }
 
-    public void applySearch() {
-        String query = mEditText.getText().toString().trim();
-
+    fun applySearch() {
+        val query = mEditText!!.text.toString().trim { it <= ' ' }
         if (!mAllowEmptySearch && TextUtils.isEmpty(query)) {
-            return;
+            return
         }
-
         // Put it into db
-        mSearchDatabase.addQuery(query);
+        mSearchDatabase.addQuery(query)
         // Callback
-        mHelper.onApplySearch(query);
+        mHelper?.onApplySearch(query)
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v == mTitleTextView) {
-            mHelper.onClickTitle();
-        } else if (v == mMenuButton) {
-            mHelper.onClickLeftIcon();
-        } else if (v == mActionButton) {
-            mHelper.onClickRightIcon();
+    override fun onClick(v: View) {
+        if (v === mTitleTextView) {
+            mHelper?.onClickTitle()
+        } else if (v === mMenuButton) {
+            mHelper?.onClickLeftIcon()
+        } else if (v === mActionButton) {
+            mHelper?.onClickRightIcon()
         }
     }
 
-    @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        if (v == mEditText) {
+    override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent?): Boolean {
+        if (v === mEditText) {
             if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_NULL) {
-                applySearch();
-                return true;
+                applySearch()
+                return true
             }
         }
-        return false;
+        return false
     }
 
-    public int getState() {
-        return mState;
+    fun getState(): Int {
+        return mState
     }
 
-    public void setState(int state) {
-        setState(state, true);
-    }
-
-    public void setState(int state, boolean animation) {
+    fun setState(state: Int, animation: Boolean = true) {
         if (mState != state) {
-            int oldState = mState;
-            mState = state;
-
-            switch (oldState) {
-                default:
-                case STATE_NORMAL:
-                    mViewTransition.showView(1, animation);
-                    mEditText.requestFocus();
-
+            val oldState = mState
+            mState = state
+            when (oldState) {
+                STATE_NORMAL -> {
+                    mViewTransition!!.showView(1, animation)
+                    mEditText!!.requestFocus()
                     if (state == STATE_SEARCH_LIST) {
-                        showImeAndSuggestionsList(animation);
+                        showImeAndSuggestionsList(animation)
                     }
-                    if (mOnStateChangeListener != null) {
-                        mOnStateChangeListener.onStateChange(this, state, oldState, animation);
-                    }
-                    break;
-                case STATE_SEARCH:
+                    mOnStateChangeListener?.onStateChange(this, state, oldState, animation)
+                }
+                STATE_SEARCH -> {
                     if (state == STATE_NORMAL) {
-                        mViewTransition.showView(0, animation);
+                        mViewTransition!!.showView(0, animation)
                     } else if (state == STATE_SEARCH_LIST) {
-                        showImeAndSuggestionsList(animation);
+                        showImeAndSuggestionsList(animation)
                     }
-                    if (mOnStateChangeListener != null) {
-                        mOnStateChangeListener.onStateChange(this, state, oldState, animation);
-                    }
-                    break;
-                case STATE_SEARCH_LIST:
-                    hideImeAndSuggestionsList(animation);
+                    mOnStateChangeListener?.onStateChange(this, state, oldState, animation)
+                }
+                STATE_SEARCH_LIST -> {
+                    hideImeAndSuggestionsList(animation)
                     if (state == STATE_NORMAL) {
-                        mViewTransition.showView(0, animation);
+                        mViewTransition!!.showView(0, animation)
                     }
-                    if (mOnStateChangeListener != null) {
-                        mOnStateChangeListener.onStateChange(this, state, oldState, animation);
-                    }
-                    break;
+                    mOnStateChangeListener?.onStateChange(this, state, oldState, animation)
+                }
             }
         }
     }
 
-    public void showImeAndSuggestionsList(boolean animation) {
+    fun showImeAndSuggestionsList(animation: Boolean) {
         // Show ime
-        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(mEditText, 0);
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(mEditText, 0)
         // update suggestion for show suggestions list
-        updateSuggestions();
+        updateSuggestions()
         // Show suggestions list
         if (animation) {
-            ObjectAnimator oa = ObjectAnimator.ofFloat(this, "progress", 1f);
-            oa.setDuration(ANIMATE_TIME);
-            oa.setInterpolator(AnimationUtils.FAST_SLOW_INTERPOLATOR);
-            oa.addListener(new SimpleAnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    mListContainer.setVisibility(View.VISIBLE);
-                    mInAnimation = true;
+            val oa = ObjectAnimator.ofFloat(this, "progress", 1f)
+            oa.duration = ANIMATE_TIME
+            oa.interpolator = AnimationUtils.FAST_SLOW_INTERPOLATOR
+            oa.addListener(object : SimpleAnimatorListener() {
+                override fun onAnimationStart(animation: Animator) {
+                    mListContainer!!.visibility = View.VISIBLE
+                    mInAnimation = true
                 }
 
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mInAnimation = false;
+                override fun onAnimationEnd(animation: Animator) {
+                    mInAnimation = false
                 }
-            });
-            oa.setAutoCancel(true);
-            oa.start();
+            })
+            oa.setAutoCancel(true)
+            oa.start()
         } else {
-            mListContainer.setVisibility(View.VISIBLE);
-            setProgress(1f);
+            mListContainer!!.visibility = View.VISIBLE
+            setProgress(1f)
         }
     }
 
-    private void hideImeAndSuggestionsList(boolean animation) {
+    fun hideImeAndSuggestionsList(animation: Boolean) {
         // Hide ime
-        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(this.getWindowToken(), 0);
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(windowToken, 0)
         // Hide suggestions list
         if (animation) {
-            ObjectAnimator oa = ObjectAnimator.ofFloat(this, "progress", 0f);
-            oa.setDuration(ANIMATE_TIME);
-            oa.setInterpolator(AnimationUtils.SLOW_FAST_INTERPOLATOR);
-            oa.addListener(new SimpleAnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    mInAnimation = true;
+            val oa = ObjectAnimator.ofFloat(this, "progress", 0f)
+            oa.duration = ANIMATE_TIME
+            oa.interpolator = AnimationUtils.SLOW_FAST_INTERPOLATOR
+            oa.addListener(object : SimpleAnimatorListener() {
+                override fun onAnimationStart(animation: Animator) {
+                    mInAnimation = true
                 }
 
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mListContainer.setVisibility(View.GONE);
-                    mInAnimation = false;
+                override fun onAnimationEnd(animation: Animator) {
+                    mListContainer!!.visibility = View.GONE
+                    mInAnimation = false
                 }
-            });
-            oa.setAutoCancel(true);
-            oa.start();
+            })
+            oa.setAutoCancel(true)
+            oa.start()
         } else {
-            setProgress(0f);
-            mListContainer.setVisibility(View.GONE);
+            setProgress(0f)
+            mListContainer!!.visibility = View.GONE
         }
     }
 
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-        if (mListContainer.getVisibility() == View.VISIBLE && (!mInAnimation || mHeight == 0)) {
-            mWidth = right - left;
-            mHeight = bottom - top;
+    override protected fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+        if (mListContainer!!.visibility == View.VISIBLE && (!mInAnimation || mHeight == 0)) {
+            mWidth = right - left
+            mHeight = bottom - top
         }
     }
 
-    public float getProgress() {
-        return mProgress;
+    override fun getProgress(): Float {
+        return mProgress
     }
 
-    @Keep
-    public void setProgress(float progress) {
-        mProgress = progress;
-        invalidate();
+    override fun setProgress(progress: Float) {
+        mProgress = progress
+        invalidate()
     }
 
-    public SearchEditText getEditText() {
-        return mEditText;
+    fun getEditText(): SearchEditText {
+        return mEditText!!
     }
 
-    @Override
-    public void draw(@NonNull Canvas canvas) {
+    override fun draw(canvas: Canvas) {
         if (mInAnimation && mHeight != 0) {
-            final int state = canvas.save();
-            int bottom = MathUtils.lerp(mBaseHeight, mHeight, mProgress);
-            mRect.set(0, 0, mWidth, bottom);
-            setClipBounds(mRect);
-            canvas.clipRect(mRect);
-            super.draw(canvas);
-            canvas.restoreToCount(state);
+            val state = canvas.save()
+            val bottom = MathUtils.lerp(mBaseHeight, mHeight, mProgress)
+            mRect.set(0, 0, mWidth, bottom)
+            setClipBounds(mRect)
+            canvas.clipRect(mRect)
+            super.draw(canvas)
+            canvas.restoreToCount(state)
         } else {
-            setClipBounds(null);
-            super.draw(canvas);
+            setClipBounds(null)
+            super.draw(canvas)
         }
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
         // Empty
     }
 
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
+    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
         // Empty
     }
 
-    @Override
-    public void afterTextChanged(Editable s) {
-        updateSuggestions();
+    override fun afterTextChanged(s: Editable) {
+        updateSuggestions()
     }
 
-    @Override
-    public void onClick() {
-        mHelper.onSearchEditTextClick();
+    override fun onClick() {
+        mHelper?.onSearchEditTextClick()
     }
 
-    @Override
-    public void onBackPressed() {
-        mHelper.onSearchEditTextBackPressed();
+    override fun onBackPressed() {
+        mHelper?.onSearchEditTextBackPressed()
     }
 
-    @Override
-    public void onReceiveContent(Uri uri) {
-        mHelper.onReceiveContent(uri);
+    override fun onReceiveContent(uri: Uri) {
+        mHelper?.onReceiveContent(uri)
     }
 
-    @Override
-    public Parcelable onSaveInstanceState() {
-        final Bundle state = new Bundle();
-        state.putParcelable(STATE_KEY_SUPER, super.onSaveInstanceState());
-        state.putInt(STATE_KEY_STATE, mState);
-        return state;
+    override fun onSaveInstanceState(): Parcelable {
+        val state = Bundle()
+        state.putParcelable(STATE_KEY_SUPER, super.onSaveInstanceState())
+        state.putInt(STATE_KEY_STATE, mState)
+        return state
     }
 
-    @Override
-    public void onRestoreInstanceState(Parcelable state) {
-        if (state instanceof final Bundle savedState) {
-            super.onRestoreInstanceState(savedState.getParcelable(STATE_KEY_SUPER));
-            setState(savedState.getInt(STATE_KEY_STATE), false);
+    override fun onRestoreInstanceState(state: Parcelable) {
+        if (state is Bundle) {
+            super.onRestoreInstanceState(state.getParcelableCompat(STATE_KEY_SUPER))
+            setState(state.getInt(STATE_KEY_STATE), false)
         }
     }
 
-    private String wrapTagKeyword(String keyword) {
-        keyword = keyword.trim();
-
-        int index1 = keyword.indexOf(':');
-        if (index1 == -1 || index1 >= keyword.length() - 1) {
-            // Can't find :, or : is the last char
-            return keyword;
-        }
-        if (keyword.charAt(index1 + 1) == '"') {
-            // The char after : is ", the word must be quoted
-            return keyword;
-        }
-        int index2 = keyword.indexOf(' ');
-        if (index2 <= index1) {
-            // Can't find space, or space is before :
-            return keyword + "$";
-        }
-
-        return keyword.substring(0, index1 + 1) + "\"" + keyword.substring(index1 + 1) + "$\"";
-    }
-
-    public interface Helper {
-        void onClickTitle();
-
-        void onClickLeftIcon();
-
-        void onClickRightIcon();
-
-        void onSearchEditTextClick();
-
-        void onApplySearch(String query);
-
-        void onSearchEditTextBackPressed();
-
-        default void onReceiveContent(Uri uri) {
-        }
-
-    }
-
-    public interface OnStateChangeListener {
-        void onStateChange(SearchBar searchBar, int newState, int oldState, boolean animation);
-    }
-
-    public interface SuggestionProvider {
-        List<Suggestion> providerSuggestions(String text);
-    }
-
-    public abstract static class Suggestion {
-        public abstract CharSequence getText(TextView textView);
-
-        public abstract void onClick();
-
-        public boolean onLongClick() {
-            return false;
-        }
-
-    }
-
-    private static class SuggestionHolder extends RecyclerView.ViewHolder {
-        TextView text1;
-        TextView text2;
-
-        public SuggestionHolder(@NonNull View itemView) {
-            super(itemView);
-            text1 = itemView.findViewById(android.R.id.text1);
-            text2 = itemView.findViewById(android.R.id.text2);
+    private fun wrapTagKeyword(keyword: String): String {
+        return if (keyword.endsWith(':')) {
+            keyword
+        } else if (keyword.contains(" ")) {
+            val tag = keyword.substringAfter(':')
+            val prefix = keyword.dropLast(tag.length)
+            "$prefix\"$tag$\" "
+        } else {
+            "$keyword$ "
         }
     }
 
-    private class SuggestionAdapter extends RecyclerView.Adapter<SuggestionHolder> {
-        private final LayoutInflater mInflater;
+    interface Helper {
+        fun onClickTitle()
+        fun onClickLeftIcon()
+        fun onClickRightIcon()
+        fun onSearchEditTextClick()
+        fun onApplySearch(query: String)
+        fun onSearchEditTextBackPressed()
+        fun onReceiveContent(uri: Uri)
+    }
 
-        private SuggestionAdapter(LayoutInflater inflater) {
-            mInflater = inflater;
+    interface OnStateChangeListener {
+        fun onStateChange(searchBar: SearchBar, newState: Int, oldState: Int, animation: Boolean)
+    }
+
+    interface SuggestionProvider {
+        fun providerSuggestions(text: String): List<Suggestion>?
+    }
+
+    abstract class Suggestion {
+        abstract fun getText(textView: TextView): CharSequence?
+        abstract fun onClick()
+        open fun onLongClick(): Boolean {
+            return false
+        }
+    }
+
+    private class SuggestionHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val text1 = itemView.findViewById(android.R.id.text1) as TextView
+        val text2 = itemView.findViewById(android.R.id.text2) as TextView
+    }
+
+    private inner class SuggestionAdapter constructor(
+        private val mInflater: LayoutInflater
+    ) : RecyclerView.Adapter<SuggestionHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SuggestionHolder {
+            return SuggestionHolder(mInflater.inflate(R.layout.item_simple_list_2, parent, false))
         }
 
-        @NonNull
-        @Override
-        public SuggestionHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new SuggestionHolder(mInflater.inflate(R.layout.item_simple_list_2, parent, false));
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull SuggestionHolder holder, int position) {
-            Suggestion suggestion = mSuggestionList.get(position);
-            CharSequence text1 = suggestion.getText(holder.text1);
-            CharSequence text2 = suggestion.getText(holder.text2);
-            holder.text1.setText(text1);
+        override fun onBindViewHolder(holder: SuggestionHolder, position: Int) {
+            val suggestion = mSuggestionList?.get(position)
+            val text1 = suggestion?.getText(holder.text1)
+            val text2 = suggestion?.getText(holder.text2)
+            holder.text1.text = text1
             if (text2 == null) {
-                holder.text2.setVisibility(View.GONE);
-                holder.text2.setText("");
+                holder.text2.visibility = View.GONE
+                holder.text2.text = ""
             } else {
-                holder.text2.setVisibility(View.VISIBLE);
-                holder.text2.setText(text2);
+                holder.text2.visibility = View.VISIBLE
+                holder.text2.text = text2
             }
 
-            holder.itemView.setOnClickListener(v -> {
-                if (position < mSuggestionList.size()) {
-                    mSuggestionList.get(position).onClick();
+            holder.itemView.setOnClickListener {
+                mSuggestionList?.run {
+                    if (position < size) {
+                        this[position].onClick()
+                    }
                 }
-            });
-            holder.itemView.setOnLongClickListener(v -> {
-                if (position < mSuggestionList.size()) {
-                    return mSuggestionList.get(position).onLongClick();
-                } else {
-                    return false;
+            }
+            holder.itemView.setOnLongClickListener {
+                mSuggestionList?.run {
+                    if (position < size) {
+                        return@setOnLongClickListener this[position].onLongClick()
+                    }
                 }
-            });
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public int getItemCount() {
-            return mSuggestionList.size();
-        }
-
-    }
-
-    public class TagSuggestion extends SearchBar.Suggestion {
-        public String mHint;
-        public String mKeyword;
-
-        private TagSuggestion(String hint, String keyword) {
-            mHint = hint;
-            mKeyword = keyword;
-        }
-
-        @Override
-        public CharSequence getText(TextView textView) {
-            if (textView.getId() == android.R.id.text1) {
-                return mKeyword;
-            } else {
-                return mHint;
+                return@setOnLongClickListener false
             }
         }
 
-        @Override
-        public void onClick() {
-            Editable editable = mEditText.getText();
-            if (editable != null) {
-                String text = editable.toString();
-                String temp = wrapTagKeyword(mKeyword) + " ";
-                if (text.contains(" ")) {
-                    temp = text.substring(0, text.lastIndexOf(" ")) + " " + temp;
-                }
-                mEditText.setText(temp);
-                mEditText.setSelection(temp.length());
-            }
+        override fun getItemId(position: Int): Long {
+            return position.toLong()
+        }
+
+        override fun getItemCount(): Int {
+            return mSuggestionList?.size ?: 0
         }
     }
 
-    public class KeywordSuggestion extends Suggestion {
-        private final String mKeyword;
-
-        private KeywordSuggestion(String keyword) {
-            mKeyword = keyword;
-        }
-
-        @Override
-        public CharSequence getText(TextView textView) {
-            if (textView.getId() == android.R.id.text1) {
-                return mKeyword;
+    inner class TagSuggestion constructor(
+        private var mHint: String?,
+        private var mKeyword: String
+    ) : SearchBar.Suggestion() {
+        override fun getText(textView: TextView): CharSequence? {
+            return if (textView.id == android.R.id.text1) {
+                mKeyword
             } else {
-                return null;
+                mHint
             }
         }
 
-        @Override
-        public void onClick() {
-            mEditText.setText(mKeyword);
-            mEditText.setSelection(mEditText.length());
+        override fun onClick() {
+            val editable = mEditText!!.text as Editable
+            val keywords = editable.toString().substringBeforeLast(" ", "")
+            val keyword = wrapTagKeyword(mKeyword)
+            val newKeywords = if (keywords.isNotEmpty()) "$keywords $keyword" else keyword
+            mEditText!!.setText(newKeywords)
+            mEditText!!.setSelection(newKeywords.length)
+        }
+    }
+
+    inner class KeywordSuggestion constructor(
+        private val mKeyword: String
+    ) : Suggestion() {
+        override fun getText(textView: TextView): CharSequence? {
+            return if (textView.id == android.R.id.text1) {
+                mKeyword
+            } else {
+                null
+            }
         }
 
-        @Override
-        public boolean onLongClick() {
-            mSearchDatabase.deleteQuery(mKeyword);
-            updateSuggestions(false);
-            return true;
+        override fun onClick() {
+            mEditText!!.setText(mKeyword)
+            mEditText!!.setSelection(mEditText!!.length())
         }
+
+        override fun onLongClick(): Boolean {
+            mSearchDatabase.deleteQuery(mKeyword)
+            updateSuggestions(false)
+            return true
+        }
+    }
+
+    companion object {
+        const val STATE_NORMAL = 0
+        const val STATE_SEARCH = 1
+        const val STATE_SEARCH_LIST = 2
+        private const val STATE_KEY_SUPER = "super"
+        private const val STATE_KEY_STATE = "state"
+        private const val ANIMATE_TIME = 300L
     }
 }

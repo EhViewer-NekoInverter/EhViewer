@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.SparseBooleanArray;
@@ -621,6 +622,10 @@ public class FavoritesScene extends BaseScene implements
     @Override
     public void onSearchEditTextBackPressed() {
         onBackPressed();
+    }
+
+    @Override
+    public void onReceiveContent(Uri uri) {
     }
 
     @Override
