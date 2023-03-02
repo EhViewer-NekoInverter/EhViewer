@@ -15,9 +15,7 @@
  */
 package com.hippo.ehviewer.client.data
 
-import android.os.Parcel
 import android.os.Parcelable
-import android.os.Parcelable.Creator
 import android.text.TextUtils
 import androidx.annotation.IntDef
 import com.hippo.ehviewer.client.EhConfig
@@ -26,49 +24,31 @@ import com.hippo.ehviewer.client.EhUtils
 import com.hippo.ehviewer.dao.QuickSearch
 import com.hippo.ehviewer.widget.AdvanceSearchTable
 import com.hippo.network.UrlBuilder
+import com.hippo.util.encodeUTF8
 import com.hippo.yorozuya.NumberUtils
 import com.hippo.yorozuya.StringUtils
+import kotlinx.parcelize.Parcelize
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
-import java.net.URLEncoder
 
-open class ListUrlBuilder : Cloneable, Parcelable {
-    @get:Mode
-    @Mode
-    var mode = MODE_NORMAL
-    private var mPrev: String? = null
-    private var mNext: String? = null
-    private var mJumpTo: String? = null
-    var category = EhUtils.NONE
-    private var mKeyword: String? = null
-    private var mSHash: String? = null
-    var advanceSearch = -1
-    var minRating = -1
-    var pageFrom = -1
-    var pageTo = -1
-    var imagePath: String? = null
-    var isUseSimilarityScan = false
-    var isOnlySearchCovers = false
-    var isShowExpunged = false
-
-    constructor()
-    protected constructor(parcel: Parcel) {
-        mode = parcel.readInt()
-        mPrev = parcel.readString()
-        mNext = parcel.readString()
-        mJumpTo = parcel.readString()
-        this.category = parcel.readInt()
-        mKeyword = parcel.readString()
-        advanceSearch = parcel.readInt()
-        minRating = parcel.readInt()
-        pageFrom = parcel.readInt()
-        pageTo = parcel.readInt()
-        imagePath = parcel.readString()
-        isUseSimilarityScan = parcel.readByte().toInt() != 0
-        isOnlySearchCovers = parcel.readByte().toInt() != 0
-        isShowExpunged = parcel.readByte().toInt() != 0
-        mSHash = parcel.readString()
-    }
+@Parcelize
+open class ListUrlBuilder(
+    @get:Mode @Mode var mode: Int = MODE_NORMAL,
+    private var mPrev: String? = null,
+    private var mNext: String? = null,
+    private var mJumpTo: String? = null,
+    var category: Int = EhUtils.NONE,
+    private var mKeyword: String? = null,
+    private var mSHash: String? = null,
+    var advanceSearch: Int = -1,
+    var minRating: Int = -1,
+    var pageFrom: Int = -1,
+    var pageTo: Int = -1,
+    var imagePath: String? = null,
+    var isUseSimilarityScan: Boolean = false,
+    var isOnlySearchCovers: Boolean = false,
+    var isShowExpunged: Boolean = false,
+) : Cloneable, Parcelable {
 
     fun reset() {
         mode = MODE_NORMAL
@@ -86,14 +66,6 @@ open class ListUrlBuilder : Cloneable, Parcelable {
         isOnlySearchCovers = false
         isShowExpunged = false
         mSHash = null
-    }
-
-    public override fun clone(): ListUrlBuilder {
-        return try {
-            super.clone() as ListUrlBuilder
-        } catch (e: CloneNotSupportedException) {
-            throw IllegalStateException(e)
-        }
     }
 
     fun setIndex(index: String?, isNext: Boolean = true) {
@@ -340,14 +312,10 @@ open class ListUrlBuilder : Cloneable, Parcelable {
                     ub.addQuery("f_cats", category.inv() and EhConfig.ALL_CATEGORY)
                 }
                 // Search key
-                if (mKeyword != null) {
-                    val keyword = mKeyword!!.trim { it <= ' ' }
+                mKeyword?.run {
+                    val keyword = trim { it <= ' ' }
                     if (keyword.isNotEmpty()) {
-                        try {
-                            ub.addQuery("f_search", URLEncoder.encode(mKeyword, "UTF-8"))
-                        } catch (e: UnsupportedEncodingException) {
-                            // Empty
-                        }
+                        ub.addQuery("f_search", encodeUTF8(this))
                     }
                 }
                 mSHash?.let {
@@ -387,11 +355,9 @@ open class ListUrlBuilder : Cloneable, Parcelable {
 
             MODE_UPLOADER -> {
                 val sb = StringBuilder(EhUrl.getHost())
-                sb.append("uploader/")
-                try {
-                    sb.append(URLEncoder.encode(mKeyword, "UTF-8"))
-                } catch (e: UnsupportedEncodingException) {
-                    // Empty
+                mKeyword?.let {
+                    sb.append("uploader/")
+                    sb.append(encodeUTF8(it))
                 }
                 mPrev?.let {
                     sb.append("?prev=").append(it)
@@ -407,11 +373,9 @@ open class ListUrlBuilder : Cloneable, Parcelable {
 
             MODE_TAG -> {
                 val sb = StringBuilder(EhUrl.getHost())
-                sb.append("tag/")
-                try {
-                    sb.append(URLEncoder.encode(mKeyword, "UTF-8"))
-                } catch (e: UnsupportedEncodingException) {
-                    // Empty
+                mKeyword?.let {
+                    sb.append("tag/")
+                    sb.append(encodeUTF8(it))
                 }
                 mPrev?.let {
                     sb.append("?prev=").append(it)
@@ -430,10 +394,8 @@ open class ListUrlBuilder : Cloneable, Parcelable {
             MODE_TOPLIST -> {
                 val sb = StringBuilder(EhUrl.HOST_E)
                 sb.append("toplist.php?tl=")
-                try {
-                    sb.append(URLEncoder.encode(mKeyword, "UTF-8"))
-                } catch (e: UnsupportedEncodingException) {
-                    e.printStackTrace()
+                mKeyword.orEmpty().let {
+                    sb.append(encodeUTF8(it))
                 }
                 mJumpTo?.let {
                     sb.append("&p=").append(it)
@@ -443,28 +405,6 @@ open class ListUrlBuilder : Cloneable, Parcelable {
 
             else -> throw java.lang.IllegalStateException("Unexpected value: $mode")
         }
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeInt(mode)
-        dest.writeString(mPrev)
-        dest.writeString(mNext)
-        dest.writeString(mJumpTo)
-        dest.writeInt(this.category)
-        dest.writeString(mKeyword)
-        dest.writeInt(advanceSearch)
-        dest.writeInt(minRating)
-        dest.writeInt(pageFrom)
-        dest.writeInt(pageTo)
-        dest.writeString(imagePath)
-        dest.writeByte(if (isUseSimilarityScan) 1.toByte() else 0.toByte())
-        dest.writeByte(if (isOnlySearchCovers) 1.toByte() else 0.toByte())
-        dest.writeByte(if (isShowExpunged) 1.toByte() else 0.toByte())
-        dest.writeString(mSHash)
     }
 
     @IntDef(
@@ -486,16 +426,5 @@ open class ListUrlBuilder : Cloneable, Parcelable {
         const val MODE_IMAGE_SEARCH = 0x4
         const val MODE_SUBSCRIPTION = 0x5
         const val MODE_TOPLIST = 0x6
-
-        @JvmField
-        val CREATOR: Creator<ListUrlBuilder> = object : Creator<ListUrlBuilder> {
-            override fun createFromParcel(source: Parcel): ListUrlBuilder {
-                return ListUrlBuilder(source)
-            }
-
-            override fun newArray(size: Int): Array<ListUrlBuilder?> {
-                return arrayOfNulls(size)
-            }
-        }
     }
 }

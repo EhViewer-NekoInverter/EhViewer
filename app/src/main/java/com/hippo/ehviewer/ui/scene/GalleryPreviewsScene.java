@@ -243,7 +243,7 @@ public class GalleryPreviewsScene extends ToolbarScene {
                 Intent intent = new Intent(context, GalleryActivity.class);
                 intent.setAction(GalleryActivity.ACTION_EH);
                 intent.putExtra(GalleryActivity.KEY_GALLERY_INFO, mGalleryInfo);
-                intent.putExtra(GalleryActivity.KEY_PAGE, p.getPosition());
+                intent.putExtra(GalleryActivity.KEY_PAGE, p.position);
                 startActivity(intent);
             }
         }
@@ -341,7 +341,7 @@ public class GalleryPreviewsScene extends ToolbarScene {
                 GalleryPreview preview = mHelper.getDataAtEx(position);
                 if (preview != null) {
                     preview.load(holder.image);
-                    holder.text.setText(Integer.toString(preview.getPosition() + 1));
+                    holder.text.setText(Integer.toString(preview.position + 1));
                 }
             }
             holder.itemView.setOnClickListener(v -> onItemClick(position));
