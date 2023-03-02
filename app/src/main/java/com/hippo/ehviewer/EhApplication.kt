@@ -108,30 +108,39 @@ class EhApplication : SceneApplication() {
         DayNightDelegate.setDefaultNightMode(Settings.getTheme())
 
         launchIO {
-            // Check no media file
-            try {
-                val downloadLocation = Settings.getDownloadLocation()
-                if (Settings.getMediaScan()) {
-                    CommonOperations.removeNoMediaFile(downloadLocation)
-                } else {
-                    CommonOperations.ensureNoMediaFile(downloadLocation)
-                }
-            } catch (t: Throwable) {
-                t.printStackTrace()
-                ExceptionUtils.throwIfFatal(t)
+            launchIO {
+                downloadManager
             }
-            // Clear temp files
-            try {
-                clearTempDir()
-            } catch (t: Throwable) {
-                t.printStackTrace()
-                ExceptionUtils.throwIfFatal(t)
+            launchIO {
+                cleanupDownload()
             }
-        }
-        launchIO {
-            theDawnOfNewDay()
+            launchIO {
+                theDawnOfNewDay()
+            }
         }
         mIdGenerator.setNextId(Settings.getInt(KEY_GLOBAL_STUFF_NEXT_ID, 0))
+    }
+
+    private fun cleanupDownload() {
+        // Check no media file
+        try {
+            val downloadLocation = Settings.getDownloadLocation()
+            if (Settings.getMediaScan()) {
+                CommonOperations.removeNoMediaFile(downloadLocation)
+            } else {
+                CommonOperations.ensureNoMediaFile(downloadLocation)
+            }
+        } catch (t: Throwable) {
+            t.printStackTrace()
+            ExceptionUtils.throwIfFatal(t)
+        }
+        // Clear temp files
+        try {
+            clearTempDir()
+        } catch (t: Throwable) {
+            t.printStackTrace()
+            ExceptionUtils.throwIfFatal(t)
+        }
     }
 
     private fun theDawnOfNewDay() {
