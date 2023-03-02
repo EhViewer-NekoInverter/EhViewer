@@ -51,12 +51,12 @@ import java.util.Objects;
 public final class CommonOperations {
     private static void doAddToFavorites(Activity activity, GalleryInfo galleryInfo,
                                          int slot, String note, EhClient.Callback<Void> listener) {
-            EhClient client = EhApplication.getEhClient();
+            EhClient client = EhClient.INSTANCE;
             EhRequest request = new EhRequest();
             request.setMethod(EhClient.METHOD_ADD_FAVORITES);
             request.setArgs(galleryInfo.gid, galleryInfo.token, slot, note);
             request.setCallback(listener);
-            client.execute(request);
+            request.enqueue(activity);
     }
 
     public static void doAddToFavorites(final Activity activity, final GalleryInfo galleryInfo,
@@ -120,12 +120,12 @@ public final class CommonOperations {
     public static void removeFromFavorites(Activity activity, GalleryInfo galleryInfo,
                                            final EhClient.Callback<Void> listener) {
         EhDB.removeLocalFavorites(galleryInfo.gid);
-        EhClient client = EhApplication.getEhClient();
+        EhClient client = EhClient.INSTANCE;
         EhRequest request = new EhRequest();
         request.setMethod(EhClient.METHOD_ADD_FAVORITES);
         request.setArgs(galleryInfo.gid, galleryInfo.token, -1, "");
         request.setCallback(new DelegateFavoriteCallback(listener, galleryInfo, null, -2));
-        client.execute(request);
+        request.enqueue(activity);
     }
 
     public static void startDownload(final MainActivity activity, final GalleryInfo galleryInfo, boolean forceDefault) {

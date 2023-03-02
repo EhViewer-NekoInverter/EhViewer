@@ -197,7 +197,7 @@ public class CookieSignInScene extends SolidScene implements EditText.OnEditorAc
         EhRequest request = new EhRequest()
                 .setMethod(EhClient.METHOD_GET_PROFILE)
                 .setCallback(new CookieSignInListener());
-        EhApplication.getEhClient().execute(request);
+        request.enqueue(this);
     }
 
     private class CookieSignInListener implements EhClient.Callback<Object> {

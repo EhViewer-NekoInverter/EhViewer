@@ -53,7 +53,6 @@ import com.hippo.drawable.DrawerArrowDrawable;
 import com.hippo.easyrecyclerview.EasyRecyclerView;
 import com.hippo.easyrecyclerview.FastScroller;
 import com.hippo.easyrecyclerview.LinearDividerItemDecoration;
-import com.hippo.ehviewer.EhApplication;
 import com.hippo.ehviewer.EhDB;
 import com.hippo.ehviewer.R;
 import com.hippo.ehviewer.Settings;
@@ -173,7 +172,7 @@ public class FavoritesScene extends BaseScene implements
 
         Context context = getContext();
         AssertUtils.assertNotNull(context);
-        mClient = EhApplication.getEhClient();
+        mClient = EhClient.INSTANCE;
         mFavCatArray = Settings.getFavCat();
         mFavCountArray = Settings.getFavCount();
         mFavLocalCount = Settings.getFavLocalCount();
@@ -1201,7 +1200,7 @@ public class FavoritesScene extends BaseScene implements
                             activity.getStageId(), getTag(),
                             taskId, mUrlBuilder.getKeyword(), modifyGiListBackup, gidArray, mFavSlot));
                     request.setArgs(gidArray, tokenArray, mModifyFavCat);
-                    mClient.execute(request);
+                    request.enqueue(FavoritesScene.this);
                 } else {
                     for (int i = 0, n = mModifyGiList.size(); i < n; i++) {
                         gidArray[i] = mModifyGiList.get(i).gid;
@@ -1223,7 +1222,7 @@ public class FavoritesScene extends BaseScene implements
                             activity.getStageId(), getTag(),
                             taskId, local, mUrlBuilder.getKeyword(), gidArray, mFavSlot));
                     request.setArgs(url, gidArray, mModifyFavCat);
-                    mClient.execute(request);
+                    request.enqueue(FavoritesScene.this);
                 }
             } else if (mUrlBuilder.getFavCat() == FavListUrlBuilder.FAV_CAT_LOCAL) {
                 final String keyword = mUrlBuilder.getKeyword();
@@ -1239,7 +1238,7 @@ public class FavoritesScene extends BaseScene implements
                         activity.getStageId(), getTag(),
                         taskId, false, mUrlBuilder.getKeyword(), null, -2));
                 request.setArgs(url);
-                mClient.execute(request);
+                request.enqueue(FavoritesScene.this);
             }
         }
 

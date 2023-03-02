@@ -37,7 +37,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.hippo.easyrecyclerview.EasyRecyclerView;
 import com.hippo.easyrecyclerview.MarginItemDecoration;
-import com.hippo.ehviewer.EhApplication;
 import com.hippo.ehviewer.R;
 import com.hippo.ehviewer.Settings;
 import com.hippo.ehviewer.client.EhClient;
@@ -97,7 +96,7 @@ public class GalleryPreviewsScene extends ToolbarScene {
 
         Context context = getContext();
         AssertUtils.assertNotNull(context);
-        mClient = EhApplication.getEhClient();
+        mClient = EhClient.INSTANCE;
         if (savedInstanceState == null) {
             onInit();
         } else {
@@ -368,7 +367,7 @@ public class GalleryPreviewsScene extends ToolbarScene {
             request.setCallback(new GetPreviewSetListener(getContext(),
                     activity.getStageId(), getTag(), taskId));
             request.setArgs(url);
-            mClient.execute(request);
+            request.enqueue(GalleryPreviewsScene.this);
         }
 
         @Override

@@ -37,7 +37,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -736,7 +735,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
                 .setMethod(EhClient.METHOD_GET_GALLERY_DETAIL)
                 .setArgs(url)
                 .setCallback(callback);
-        EhApplication.getEhClient().execute(request);
+        request.enqueue(this);
 
         return true;
     }
@@ -1524,7 +1523,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
                 .setArgs(mGalleryDetail.apiUid, mGalleryDetail.apiKey, mGalleryDetail.gid, mGalleryDetail.token, tag.replace("，", ","), vote)
                 .setCallback(new VoteTagListener(context,
                         activity.getStageId(), getTag()));
-        EhApplication.getEhClient().execute(request);
+        request.enqueue(this);
     }
 
     @Override
@@ -2006,7 +2005,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
                     mRequest = new EhRequest().setMethod(EhClient.METHOD_ARCHIVE_LIST)
                             .setArgs(url, mGid, mToken)
                             .setCallback(this);
-                    EhApplication.getEhClient().execute(mRequest);
+                    mRequest.enqueue(GalleryDetailScene.this);
                 } else {
                     bind(mArchiveList);
                 }
@@ -2043,7 +2042,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
                 request.setMethod(EhClient.METHOD_DOWNLOAD_ARCHIVE);
                 request.setArgs(mGalleryDetail.gid, mGalleryDetail.token, mArchiveFormParamOr, res, isHAtH);
                 request.setCallback(new DownloadArchiveListener(context, activity.getStageId(), getTag(), mGalleryDetail));
-                EhApplication.getEhClient().execute(request);
+                request.enqueue(GalleryDetailScene.this);
             }
 
             if (mDialog != null) {
@@ -2120,7 +2119,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
                     mRequest = new EhRequest().setMethod(EhClient.METHOD_GET_TORRENT_LIST)
                             .setArgs(url, mGid, mToken)
                             .setCallback(this);
-                    EhApplication.getEhClient().execute(mRequest);
+                    mRequest.enqueue(GalleryDetailScene.this);
                 } else {
                     bind(mTorrentList);
                 }
@@ -2254,7 +2253,7 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
                             mGalleryDetail.gid, mGalleryDetail.token, mRatingBar.getRating())
                     .setCallback(new RateGalleryListener(context,
                             activity.getStageId(), getTag(), mGalleryDetail.gid));
-            EhApplication.getEhClient().execute(request);
+            request.enqueue(GalleryDetailScene.this);
         }
     }
 

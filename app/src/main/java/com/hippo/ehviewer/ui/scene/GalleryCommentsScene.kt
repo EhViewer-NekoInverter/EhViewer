@@ -384,7 +384,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
                 vote
             )
             .setCallback(VoteCommentListener(context, activity.stageId, tag))
-        EhApplication.ehClient.execute(request)
+        request.enqueue(this)
     }
 
     @SuppressLint("InflateParams")
@@ -514,7 +514,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
                     .setMethod(EhClient.METHOD_GET_GALLERY_DETAIL)
                     .setArgs(url)
                     .setCallback(RefreshCommentListener(activity, activity.stageId, tag))
-                EhApplication.ehClient.execute(request)
+                request.enqueue(this)
             }
         }
         return true
@@ -681,7 +681,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
                         if (mCommentId != 0L) mCommentId.toString() else null
                     )
                     .setCallback(CommentGalleryListener(context, activity.stageId, tag, mCommentId))
-                EhApplication.ehClient.execute(request)
+                request.enqueue(this)
                 hideSoftInput()
                 hideEditPanel()
             }
@@ -794,7 +794,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
                     .setMethod(EhClient.METHOD_GET_GALLERY_DETAIL)
                     .setArgs(url)
                     .setCallback(RefreshCommentListener(activity, activity.stageId, tag))
-                EhApplication.ehClient.execute(request)
+                request.enqueue(this)
             }
         }
     }

@@ -288,7 +288,7 @@ public final class SignInScene extends SolidScene implements EditText.OnEditorAc
                 .setMethod(EhClient.METHOD_SIGN_IN)
                 .setArgs(username, password)
                 .setCallback(callback);
-        EhApplication.getEhClient().execute(request);
+        request.enqueue(this);
 
         mSigningIn = true;
     }
@@ -309,10 +309,9 @@ public final class SignInScene extends SolidScene implements EditText.OnEditorAc
         EhRequest request = new EhRequest()
                 .setMethod(EhClient.METHOD_GET_PROFILE)
                 .setCallback(callback);
-        EhApplication.getEhClient().execute(request);
+        request.enqueue(this);
 
-        EhApplication.getEhClient().execute(new EhRequest()
-                .setMethod(EhClient.METHOD_GET_UCONFIG));
+        new EhRequest().setMethod(EhClient.METHOD_GET_UCONFIG).enqueue(this);
     }
 
     private void redirectTo() {

@@ -27,10 +27,8 @@ import androidx.collection.LruCache
 import com.hippo.Native
 import com.hippo.beerbelly.SimpleDiskCache
 import com.hippo.conaco.Conaco
-import com.hippo.ehviewer.client.EhClient
 import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.EhDns
-import com.hippo.ehviewer.client.EhEngine
 import com.hippo.ehviewer.client.EhRequestBuilder
 import com.hippo.ehviewer.client.EhSSLSocketFactory
 import com.hippo.ehviewer.client.EhTagDatabase
@@ -103,7 +101,6 @@ class EhApplication : SceneApplication() {
         AppConfig.initialize(this)
         SpiderDen.initialize(this)
         EhDB.initialize(this)
-        EhEngine.initialize()
         BitmapUtils.initialize(this)
         EhTagDatabase.update()
         LocaleDelegate.defaultLocale = Settings.getLocale()
@@ -248,9 +245,6 @@ class EhApplication : SceneApplication() {
 
         @JvmStatic
         val ehCookieStore by lazy { EhCookieStore(application) }
-
-        @JvmStatic
-        val ehClient by lazy { EhClient() }
 
         @JvmStatic
         val ehProxySelector by lazy { EhProxySelector() }
