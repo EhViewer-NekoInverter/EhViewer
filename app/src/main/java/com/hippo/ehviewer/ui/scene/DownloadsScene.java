@@ -73,11 +73,8 @@ import com.hippo.ehviewer.download.DownloadManager;
 import com.hippo.ehviewer.download.DownloadService;
 import com.hippo.ehviewer.spider.SpiderDen;
 import com.hippo.ehviewer.ui.GalleryActivity;
-import com.hippo.ehviewer.ui.MainActivity;
 import com.hippo.ehviewer.widget.SimpleRatingView;
-import com.hippo.io.UniFileInputStreamPipe;
 import com.hippo.scene.Announcer;
-import com.hippo.streampipe.InputStreamPipe;
 import com.hippo.unifile.UniFile;
 import com.hippo.util.IoThreadPoolExecutor;
 import com.hippo.view.ViewTransition;
@@ -86,15 +83,11 @@ import com.hippo.widget.LoadImageView;
 import com.hippo.widget.recyclerview.AutoStaggeredGridLayoutManager;
 import com.hippo.yorozuya.AssertUtils;
 import com.hippo.yorozuya.FileUtils;
-import com.hippo.yorozuya.IOUtils;
 import com.hippo.yorozuya.LayoutUtils;
 import com.hippo.yorozuya.ObjectUtils;
 import com.hippo.yorozuya.ViewUtils;
 import com.hippo.yorozuya.collect.LongList;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -223,7 +216,7 @@ public class DownloadsScene extends ToolbarScene
         if (null != mDownloadManager && -1L != (gid = args.getLong(KEY_GID, -1L))) {
             DownloadInfo info = mDownloadManager.getDownloadInfo(gid);
             if (null != info) {
-                mLabel = info.getLabel();
+                mLabel = info.label;
                 updateForLabel();
                 updateView();
 
@@ -320,12 +313,14 @@ public class DownloadsScene extends ToolbarScene
             Collections.sort(mList, new Comparator<DownloadInfo>() {
                 @Override
                 public int compare(DownloadInfo o1, DownloadInfo o2) {
+                    String title1 = EhUtils.getSuitableTitle(o1);
+                    String title2 = EhUtils.getSuitableTitle(o2);
                     return switch (mSort) {
                         case 0 -> Long.valueOf(o2.time).compareTo(Long.valueOf(o1.time));
-                        case 2 -> EhUtils.getSuitableTitle(o1).compareToIgnoreCase(EhUtils.getSuitableTitle(o2));
-                        case 3 -> getAuthor(EhUtils.getSuitableTitle(o1)).compareToIgnoreCase(getAuthor(EhUtils.getSuitableTitle(o2)));
-                        case 4 -> getName(EhUtils.getSuitableTitle(o1)).compareToIgnoreCase(getName(EhUtils.getSuitableTitle(o2)));
-                        case 5 -> Integer.valueOf(o1.category).compareTo(Integer.valueOf(o2.category));
+                        case 2 -> title1.compareToIgnoreCase(title2);
+                        case 3 -> getAuthor(title1).compareToIgnoreCase(getAuthor(title2));
+                        case 4 -> getName(title1).compareToIgnoreCase(getName(title2));
+                        case 5 -> Integer.valueOf(o1.getCategory()).compareTo(Integer.valueOf(o2.getCategory()));
                         default -> 0;
                     };
                 }
@@ -520,7 +515,7 @@ public class DownloadsScene extends ToolbarScene
             for (int i = list.size() - 1; i > -1; i--) {
                 DownloadInfo info = list.get(i);
                 if (info.state != DownloadInfo.STATE_FINISH) {
-                    gidList.add(info.gid);
+                    gidList.add(info.getGid());
                 }
             }
             Intent intent = new Intent(activity, DownloadService.class);
@@ -755,7 +750,7 @@ public class DownloadsScene extends ToolbarScene
                         downloadInfoList.add(info);
                     }
                     if (collectGid) {
-                        gidList.add(info.gid);
+                        gidList.add(info.getGid());
                     }
                 }
             }
@@ -1127,9 +1122,9 @@ public class DownloadsScene extends ToolbarScene
                 int i = 0;
                 for (DownloadInfo info : mDownloadInfoList) {
                     // Put file
-                    files[i] = SpiderDen.getGalleryDownloadDir(info.gid);
+                    files[i] = SpiderDen.getGalleryDownloadDir(info.getGid());
                     // Remove download path
-                    EhDB.removeDownloadDirname(info.gid);
+                    EhDB.removeDownloadDirname(info.getGid());
                     i++;
                 }
                 // Delete file
@@ -1237,7 +1232,7 @@ public class DownloadsScene extends ToolbarScene
                 ContextCompat.startForegroundService(activity, intent);
             } else if (stop == v) {
                 if (null != mDownloadManager) {
-                    mDownloadManager.stopDownload(list.get(index).gid);
+                    mDownloadManager.stopDownload(list.get(index).getGid());
                 }
             }
         }
@@ -1263,7 +1258,7 @@ public class DownloadsScene extends ToolbarScene
             if (mList == null || position < 0 || position >= mList.size()) {
                 return 0;
             }
-            return mList.get(position).gid;
+            return mList.get(position).getGid();
         }
 
         @NonNull
@@ -1285,20 +1280,20 @@ public class DownloadsScene extends ToolbarScene
                 return;
             }
             DownloadInfo info = mList.get(position);
-            holder.thumb.load(EhCacheKeyFactory.getThumbKey(info.gid), info.thumb);
+            holder.thumb.load(EhCacheKeyFactory.getThumbKey(info.getGid()), info.getThumb());
             holder.title.setText(EhUtils.getSuitableTitle(info));
-            holder.uploader.setText(info.uploader);
-            holder.rating.setRating(info.rating);
+            holder.uploader.setText(info.getUploader());
+            holder.rating.setRating(info.getRating());
             TextView category = holder.category;
-            String newCategoryText = EhUtils.getCategory(info.category);
+            String newCategoryText = EhUtils.getCategory(info.getCategory());
             if (!newCategoryText.contentEquals(category.getText())) {
                 category.setText(newCategoryText);
-                category.setBackgroundColor(EhUtils.getCategoryColor(info.category));
+                category.setBackgroundColor(EhUtils.getCategoryColor(info.getCategory()));
             }
             bindForState(holder, info);
 
             // Update transition name
-            ViewCompat.setTransitionName(holder.thumb, TransitionNameFactory.getThumbTransitionName(info.gid));
+            ViewCompat.setTransitionName(holder.thumb, TransitionNameFactory.getThumbTransitionName(info.getGid()));
 
             holder.itemView.setOnClickListener(v -> onItemClick(position));
             holder.itemView.setOnLongClickListener(v -> onItemLongClick(position));

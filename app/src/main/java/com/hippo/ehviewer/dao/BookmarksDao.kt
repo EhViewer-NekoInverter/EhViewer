@@ -15,24 +15,21 @@
  * You should have received a copy of the GNU General Public License along with EhViewer.
  * If not, see <https://www.gnu.org/licenses/>.
  */
+package com.hippo.ehviewer.dao
 
-package com.hippo.ehviewer.dao;
-
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.Query;
-
-import java.util.List;
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.Query
 
 @Dao
-public interface BookmarksDao extends BasicDao<BookmarkInfo> {
+interface BookmarksDao : BasicDao<BookmarkInfo> {
     @Insert
-    long insert(BookmarkInfo bookmark);
+    override fun insert(t: BookmarkInfo): Long
 
     @Delete
-    void delete(BookmarkInfo bookmark);
+    fun delete(bookmark: BookmarkInfo)
 
     @Query("SELECT * FROM BOOKMARKS ORDER BY TIME DESC")
-    List<BookmarkInfo> list();
+    override fun list(): List<BookmarkInfo>
 }

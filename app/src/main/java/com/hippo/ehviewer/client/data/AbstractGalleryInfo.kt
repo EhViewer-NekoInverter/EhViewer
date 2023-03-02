@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Moedog
+ * Copyright 2023 Moedog
  *
  * This file is part of EhViewer
  *
@@ -15,28 +15,29 @@
  * You should have received a copy of the GNU General Public License along with EhViewer.
  * If not, see <https://www.gnu.org/licenses/>.
  */
-package com.hippo.ehviewer.dao
+package com.hippo.ehviewer.client.data
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
-
-@Dao
-interface DownloadsDao : BasicDao<DownloadInfo> {
-    @Query("SELECT * FROM DOWNLOADS ORDER BY TIME DESC")
-    override fun list(): List<DownloadInfo>
-
-    @Query("SELECT * FROM DOWNLOADS WHERE GID = :gid")
-    fun load(gid: Long): DownloadInfo?
-
-    @Update
-    fun update(downloadInfo: DownloadInfo)
-
-    @Insert
-    override fun insert(t: DownloadInfo): Long
-
-    @Delete
-    fun delete(downloadInfo: DownloadInfo)
+interface AbstractGalleryInfo {
+    var gid: Long
+    var token: String?
+    var title: String?
+    var titleJpn: String?
+    var thumb: String?
+    var category: Int
+    var posted: String?
+    var uploader: String?
+    var disowned: Boolean
+    var rating: Float
+    var rated: Boolean
+    var simpleTags: Array<String>?
+    var pages: Int
+    var thumbWidth: Int
+    var thumbHeight: Int
+    var spanSize: Int
+    var spanIndex: Int
+    var spanGroupIndex: Int
+    var simpleLanguage: String?
+    var favoriteSlot: Int
+    var favoriteName: String?
+    var favoriteNote: String?
 }

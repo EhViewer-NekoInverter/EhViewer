@@ -55,8 +55,8 @@ public final class SpiderDen {
 
     public SpiderDen(GalleryInfo galleryInfo) {
         mGalleryInfo = galleryInfo;
-        mGid = galleryInfo.gid;
-        mDownloadDir = getGalleryDownloadDir(galleryInfo.gid);
+        mGid = galleryInfo.getGid();
+        mDownloadDir = getGalleryDownloadDir(galleryInfo.getGid());
     }
 
     public static void initialize(Context context) {

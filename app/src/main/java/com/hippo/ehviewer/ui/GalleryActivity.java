@@ -852,7 +852,7 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.putExtra(Intent.EXTRA_STREAM, uri);
         if (mGalleryInfo != null)
-            intent.putExtra(Intent.EXTRA_TEXT, EhUrl.getGalleryDetailUrl(mGalleryInfo.gid, mGalleryInfo.token));
+            intent.putExtra(Intent.EXTRA_TEXT, EhUrl.getGalleryDetailUrl(mGalleryInfo.getGid(), mGalleryInfo.getToken()));
         intent.setDataAndType(uri, mimeType);
 
         try {
@@ -1030,8 +1030,8 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
         long gid;
         String token;
         if (mGalleryInfo != null) {
-            gid = mGalleryInfo.gid;
-            token = mGalleryInfo.token;
+            gid = mGalleryInfo.getGid();
+            token = mGalleryInfo.getToken();
         } else {
             return null;
         }

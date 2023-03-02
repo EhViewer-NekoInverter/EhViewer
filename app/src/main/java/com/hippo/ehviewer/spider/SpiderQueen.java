@@ -179,10 +179,10 @@ public final class SpiderQueen implements Runnable {
     public static SpiderQueen obtainSpiderQueen(@NonNull GalleryInfo galleryInfo, @Mode int mode) {
         OSUtils.checkMainLoop();
 
-        SpiderQueen queen = sQueenMap.get(galleryInfo.gid);
+        SpiderQueen queen = sQueenMap.get(galleryInfo.getGid());
         if (queen == null) {
             queen = new SpiderQueen(galleryInfo);
-            sQueenMap.put(galleryInfo.gid, queen);
+            sQueenMap.put(galleryInfo.getGid(), queen);
             // Set mode
             queen.setMode(mode);
             queen.start();
@@ -203,7 +203,7 @@ public final class SpiderQueen implements Runnable {
         if (queen.mReadReference == 0 && queen.mDownloadReference == 0) {
             // Stop and remove if there is no reference
             queen.stop();
-            sQueenMap.remove(queen.mGalleryInfo.gid);
+            sQueenMap.remove(queen.mGalleryInfo.getGid());
         }
     }
 
@@ -683,20 +683,20 @@ public final class SpiderQueen implements Runnable {
         if (downloadDir != null) {
             UniFile file = downloadDir.findFile(SPIDER_INFO_FILENAME);
             spiderInfo = SpiderInfo.read(file);
-            if (spiderInfo != null && spiderInfo.gid == mGalleryInfo.gid &&
-                    spiderInfo.token.equals(mGalleryInfo.token)) {
+            if (spiderInfo != null && spiderInfo.gid == mGalleryInfo.getGid() &&
+                    spiderInfo.token.equals(mGalleryInfo.getToken())) {
                 return spiderInfo;
             }
         }
 
         // Read from cache
-        InputStreamPipe pipe = mSpiderInfoCache.getInputStreamPipe(Long.toString(mGalleryInfo.gid));
+        InputStreamPipe pipe = mSpiderInfoCache.getInputStreamPipe(Long.toString(mGalleryInfo.getGid()));
         if (null != pipe) {
             try {
                 pipe.obtain();
                 spiderInfo = SpiderInfo.read(pipe.open());
-                if (spiderInfo != null && spiderInfo.gid == mGalleryInfo.gid &&
-                        spiderInfo.token.equals(mGalleryInfo.token)) {
+                if (spiderInfo != null && spiderInfo.gid == mGalleryInfo.getGid() &&
+                        spiderInfo.token.equals(mGalleryInfo.getToken())) {
                     return spiderInfo;
                 }
             } catch (IOException e) {
@@ -735,11 +735,11 @@ public final class SpiderQueen implements Runnable {
 
     private SpiderInfo readSpiderInfoFromInternet() {
         SpiderInfo spiderInfo = new SpiderInfo();
-        spiderInfo.gid = mGalleryInfo.gid;
-        spiderInfo.token = mGalleryInfo.token;
+        spiderInfo.gid = mGalleryInfo.getGid();
+        spiderInfo.token = mGalleryInfo.getToken();
 
         Request request = new EhRequestBuilder(EhUrl.getGalleryDetailUrl(
-                mGalleryInfo.gid, mGalleryInfo.token, 0, false), EhUrl.getReferer()).build();
+                mGalleryInfo.getGid(), mGalleryInfo.getToken(), 0, false), EhUrl.getReferer()).build();
         try (Response response = mHttpClient.newCall(request).execute()) {
             String body = response.body().string();
 
@@ -760,7 +760,7 @@ public final class SpiderQueen implements Runnable {
         }
 
         String url = EhUrl.getGalleryMultiPageViewerUrl(
-                mGalleryInfo.gid, mGalleryInfo.token);
+                mGalleryInfo.getGid(), mGalleryInfo.getToken());
         if (DEBUG_PTOKEN) {
             Log.d(TAG, "getPTokenFromMultiPageViewer index " + index + ", url " + url);
         }
@@ -806,7 +806,7 @@ public final class SpiderQueen implements Runnable {
         }
 
         String url = EhUrl.getGalleryDetailUrl(
-                mGalleryInfo.gid, mGalleryInfo.token, previewIndex, false);
+                mGalleryInfo.getGid(), mGalleryInfo.getToken(), previewIndex, false);
         String referer = EhUrl.getReferer();
         if (DEBUG_PTOKEN) {
             Log.d(TAG, "index " + index + ", previewIndex " + previewIndex +
@@ -851,8 +851,8 @@ public final class SpiderQueen implements Runnable {
             }
         }
 
-        // Read from cache
-        OutputStreamPipe pipe = mSpiderInfoCache.getOutputStreamPipe(Long.toString(mGalleryInfo.gid));
+        // Write to cache
+        OutputStreamPipe pipe = mSpiderInfoCache.getOutputStreamPipe(Long.toString(mGalleryInfo.getGid()));
         try {
             pipe.obtain();
             spiderInfo.write(pipe.open());
@@ -1088,7 +1088,7 @@ public final class SpiderQueen implements Runnable {
         private final long mGid;
 
         public SpiderWorker() {
-            mGid = mGalleryInfo.gid;
+            mGid = mGalleryInfo.getGid();
         }
 
         private String getPageUrl(long gid, int index, String pToken,
@@ -1106,7 +1106,7 @@ public final class SpiderQueen implements Runnable {
         }
 
         private GalleryPageParser.Result fetchPageResultFromHtml(int index, String pageUrl) throws Throwable {
-            GalleryPageParser.Result result = EhEngine.getGalleryPage(pageUrl, mGalleryInfo.gid, mGalleryInfo.token);
+            GalleryPageParser.Result result = EhEngine.getGalleryPage(pageUrl, mGalleryInfo.getGid(), mGalleryInfo.getToken());
             if (StringUtils.endsWith(result.imageUrl, URL_509_SUFFIX_ARRAY)) {
                 // Get 509
                 // Notify listeners

@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import com.hippo.ehviewer.EhDB;
 import com.hippo.ehviewer.client.EhUtils;
 import com.hippo.ehviewer.client.data.GalleryInfo;
+import com.hippo.ehviewer.client.data.BaseGalleryInfo;
 import com.hippo.ehviewer.client.exception.ParseException;
 import com.hippo.util.ExceptionUtils;
 import com.hippo.util.JsoupUtils;
@@ -109,7 +110,7 @@ public class GalleryListParser {
     }
 
     private static GalleryInfo parseGalleryInfo(Element e) {
-        GalleryInfo gi = new GalleryInfo();
+        GalleryInfo gi = new BaseGalleryInfo();
 
         // Title, gid, token (required)
         Element glname = JsoupUtils.getElementByClass(e, "glname");
@@ -124,8 +125,8 @@ public class GalleryListParser {
             if (a != null) {
                 GalleryDetailUrlParser.Result result = GalleryDetailUrlParser.parse(a.attr("href"));
                 if (result != null) {
-                    gi.gid = result.gid;
-                    gi.token = result.token;
+                    gi.setGid(result.gid);
+                    gi.setToken(result.token);
                 }
             }
 
@@ -135,9 +136,9 @@ public class GalleryListParser {
                 child = children.get(0);
                 children = child.children();
             }
-            gi.title = child.text().trim();
+            gi.setTitle(child.text().trim());
         }
-        if (gi.title == null) {
+        if (gi.getTitle() == null) {
             return null;
         }
 
@@ -148,17 +149,17 @@ public class GalleryListParser {
             for (Element gt : gts) {
                 tags.add(gt.attr("title"));
             }
-            gi.simpleTags = tags.toArray(new String[0]);
+            gi.setSimpleTags(tags.toArray(new String[0]));
         }
 
         // Category
-        gi.category = EhUtils.UNKNOWN;
+        gi.setCategory(EhUtils.UNKNOWN);
         Element ce = JsoupUtils.getElementByClass(e, "cn");
         if (ce == null) {
             ce = JsoupUtils.getElementByClass(e, "cs");
         }
         if (ce != null) {
-            gi.category = EhUtils.getCategory(ce.text());
+            gi.setCategory(EhUtils.getCategory(ce.text()));
         }
 
         // Thumb and pages
@@ -169,12 +170,12 @@ public class GalleryListParser {
                 // Thumb size
                 Matcher m = PATTERN_THUMB_SIZE.matcher(img.attr("style"));
                 if (m.find()) {
-                    gi.thumbWidth = NumberUtils.parseIntSafely(m.group(2), 0);
-                    gi.thumbHeight = NumberUtils.parseIntSafely(m.group(1), 0);
+                    gi.setThumbWidth(NumberUtils.parseIntSafely(m.group(2), 0));
+                    gi.setThumbHeight(NumberUtils.parseIntSafely(m.group(1), 0));
                 } else {
                     Log.w(TAG, "Can't parse gallery info thumb size");
-                    gi.thumbWidth = 0;
-                    gi.thumbHeight = 0;
+                    gi.setThumbWidth(0);
+                    gi.setThumbHeight(0);
                 }
                 // Thumb url
                 String url = img.attr("data-src");
@@ -184,19 +185,19 @@ public class GalleryListParser {
                 if (TextUtils.isEmpty(url)) {
                     url = null;
                 }
-                gi.thumb = EhUtils.handleThumbUrlResolution(url);
+                gi.setThumb(EhUtils.handleThumbUrlResolution(url));
             }
             // Pages
             Element div = glthumb.select("div:nth-child(2)>div:nth-child(2)>div:nth-child(2)").first();
             if (div != null) {
                 Matcher matcher = PATTERN_PAGES.matcher(div.text());
                 if (matcher.find()) {
-                    gi.pages = NumberUtils.parseIntSafely(matcher.group(1), 0);
+                    gi.setPages(NumberUtils.parseIntSafely(matcher.group(1), 0));
                 }
             }
         }
         // Try extended and thumbnail version
-        if (gi.thumb == null) {
+        if (gi.getThumb() == null) {
             Element gl = JsoupUtils.getElementByClass(e, "gl1e");
             if (gl == null) {
                 gl = JsoupUtils.getElementByClass(e, "gl3t");
@@ -207,35 +208,35 @@ public class GalleryListParser {
                     // Thumb size
                     Matcher m = PATTERN_THUMB_SIZE.matcher(img.attr("style"));
                     if (m.find()) {
-                        gi.thumbWidth = NumberUtils.parseIntSafely(m.group(2), 0);
-                        gi.thumbHeight = NumberUtils.parseIntSafely(m.group(1), 0);
+                        gi.setThumbWidth(NumberUtils.parseIntSafely(m.group(2), 0));
+                        gi.setThumbHeight(NumberUtils.parseIntSafely(m.group(1), 0));
                     } else {
                         Log.w(TAG, "Can't parse gallery info thumb size");
-                        gi.thumbWidth = 0;
-                        gi.thumbHeight = 0;
+                        gi.setThumbWidth(0);
+                        gi.setThumbHeight(0);
                     }
-                    gi.thumb = EhUtils.handleThumbUrlResolution(img.attr("src"));
+                    gi.setThumb(EhUtils.handleThumbUrlResolution(img.attr("src")));
                 }
             }
         }
 
         // Posted
-        gi.favoriteSlot = -2;
-        Element posted = e.getElementById("posted_" + gi.gid);
+        gi.setFavoriteSlot(-2);
+        Element posted = e.getElementById("posted_" + gi.getGid());
         if (posted != null) {
-            gi.posted = posted.text().trim();
-            gi.favoriteSlot = parseFavoriteSlot(posted.attr("style"));
+            gi.setPosted(posted.text().trim());
+            gi.setFavoriteSlot(parseFavoriteSlot(posted.attr("style")));
         }
-        if (gi.favoriteSlot == -2) {
-            gi.favoriteSlot = EhDB.containLocalFavorites(gi.gid) ? -1 : -2;
+        if (gi.getFavoriteSlot() == -2) {
+            gi.setFavoriteSlot(EhDB.containLocalFavorites(gi.getGid()) ? -1 : -2);
         }
 
         // Rating
         Element ir = JsoupUtils.getElementByClass(e, "ir");
         if (ir != null) {
-            gi.rating = NumberUtils.parseFloatSafely(parseRating(ir.attr("style")), -1.0f);
+            gi.setRating(NumberUtils.parseFloatSafely(parseRating(ir.attr("style")), -1.0f));
             // TODO The gallery may be rated even if it doesn't has one of these classes
-            gi.rated = ir.hasClass("irr") || ir.hasClass("irg") || ir.hasClass("irb");
+            gi.setRated(ir.hasClass("irr") || ir.hasClass("irg") || ir.hasClass("irb"));
         }
 
         // Uploader and pages
@@ -253,15 +254,15 @@ public class GalleryListParser {
             if (children.size() > uploaderIndex) {
                 Element div = children.get(uploaderIndex);
                 if (div != null) {
-                    gi.disowned = div.attr("style").contains("opacity:0.5");
+                    gi.setDisowned(div.attr("style").contains("opacity:0.5"));
                     Element a = div.children().first();
-                    gi.uploader = a == null ? div.text().trim() : a.text().trim();
+                    gi.setUploader(a == null ? div.text().trim() : a.text().trim());
                 }
             }
             if (children.size() > pagesIndex) {
                 Matcher matcher = PATTERN_PAGES.matcher(children.get(pagesIndex).text());
                 if (matcher.find()) {
-                    gi.pages = NumberUtils.parseIntSafely(matcher.group(1), 0);
+                    gi.setPages(NumberUtils.parseIntSafely(matcher.group(1), 0));
                 }
             }
         }
@@ -272,7 +273,7 @@ public class GalleryListParser {
             if (div != null) {
                 Matcher matcher = PATTERN_PAGES.matcher(div.text());
                 if (matcher.find()) {
-                    gi.pages = NumberUtils.parseIntSafely(matcher.group(1), 0);
+                    gi.setPages(NumberUtils.parseIntSafely(matcher.group(1), 0));
                 }
             }
         }
@@ -282,7 +283,7 @@ public class GalleryListParser {
         if (glfnote != null) {
             String favoriteNote = glfnote.text().trim();
             if (!TextUtils.isEmpty(favoriteNote)) {
-                gi.favoriteNote = favoriteNote;
+                gi.setFavoriteNote(favoriteNote);
             }
         }
 

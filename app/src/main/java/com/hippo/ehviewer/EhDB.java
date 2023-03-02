@@ -118,7 +118,7 @@ public class EhDB {
     // Insert or update
     public static synchronized void putDownloadInfo(DownloadInfo downloadInfo) {
         DownloadsDao dao = db.downloadsDao();
-        if (null != dao.load(downloadInfo.gid)) {
+        if (null != dao.load(downloadInfo.getGid())) {
             // Update
             dao.update(downloadInfo);
         } else {
@@ -256,7 +256,7 @@ public class EhDB {
 
     public static synchronized void putLocalFavorites(GalleryInfo galleryInfo) {
         LocalFavoritesDao dao = db.localFavoritesDao();
-        if (null == dao.load(galleryInfo.gid)) {
+        if (null == dao.load(galleryInfo.getGid())) {
             LocalFavoriteInfo info;
             if (galleryInfo instanceof LocalFavoriteInfo) {
                 info = (LocalFavoriteInfo) galleryInfo;
@@ -281,9 +281,9 @@ public class EhDB {
 
     public static synchronized void insertQuickSearch(QuickSearch quickSearch) {
         QuickSearchDao dao = db.quickSearchDao();
-        quickSearch.id = null;
-        quickSearch.time = System.currentTimeMillis();
-        quickSearch.id = dao.insert(quickSearch);
+        quickSearch.setId(null);
+        quickSearch.setTime(System.currentTimeMillis());
+        quickSearch.setId(dao.insert(quickSearch));
     }
 
     public static synchronized void importQuickSearch(List<QuickSearch> quickSearchList) {
@@ -335,7 +335,7 @@ public class EhDB {
             info = new HistoryInfo(galleryInfo);
         }
         info.time = System.currentTimeMillis();
-        if (null != dao.load(info.gid)) {
+        if (null != dao.load(info.getGid())) {
             dao.update(info);
         } else {
             dao.insert(info);
@@ -345,7 +345,7 @@ public class EhDB {
     public static synchronized void putHistoryInfo(List<HistoryInfo> historyInfoList) {
         HistoryDao dao = db.historyDao();
         for (HistoryInfo info : historyInfoList) {
-            if (null == dao.load(info.gid)) {
+            if (null == dao.load(info.getGid())) {
                 dao.insert(info);
             }
         }
@@ -355,7 +355,7 @@ public class EhDB {
         HistoryDao dao = db.historyDao();
         HistoryInfo info = dao.load(gid);
         if (null != info) {
-            info.favoriteSlot = slot;
+            info.setFavoriteSlot(slot);
             dao.update(info);
         }
     }
@@ -395,7 +395,7 @@ public class EhDB {
     }
 
     public static synchronized void triggerFilter(Filter filter) {
-        filter.setEnable(!filter.enable);
+        filter.enable = !filter.enable;
         db.filterDao().update(filter);
     }
 
@@ -530,9 +530,9 @@ public class EhDB {
                 List<QuickSearch> currentQuickSearchList = db.quickSearchDao().list();
                 List<QuickSearch> importList = new ArrayList<>();
                 for (QuickSearch quickSearch : quickSearchList) {
-                    String name = quickSearch.name;
+                    String name = quickSearch.getName();
                     for (QuickSearch q : currentQuickSearchList) {
-                        if (ObjectUtils.equal(q.name, name)) {
+                        if (ObjectUtils.equal(q.getName(), name)) {
                             // The same name
                             name = null;
                             break;

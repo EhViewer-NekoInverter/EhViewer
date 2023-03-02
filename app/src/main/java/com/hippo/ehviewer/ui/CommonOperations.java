@@ -54,7 +54,7 @@ public final class CommonOperations {
             EhClient client = EhClient.INSTANCE;
             EhRequest request = new EhRequest();
             request.setMethod(EhClient.METHOD_ADD_FAVORITES);
-            request.setArgs(galleryInfo.gid, galleryInfo.token, slot, note);
+            request.setArgs(galleryInfo.getGid(), galleryInfo.getToken(), slot, note);
             request.setCallback(listener);
             request.enqueue(activity);
     }
@@ -119,11 +119,11 @@ public final class CommonOperations {
 
     public static void removeFromFavorites(Activity activity, GalleryInfo galleryInfo,
                                            final EhClient.Callback<Void> listener) {
-        EhDB.removeLocalFavorites(galleryInfo.gid);
+        EhDB.removeLocalFavorites(galleryInfo.getGid());
         EhClient client = EhClient.INSTANCE;
         EhRequest request = new EhRequest();
         request.setMethod(EhClient.METHOD_ADD_FAVORITES);
-        request.setArgs(galleryInfo.gid, galleryInfo.token, -1, "");
+        request.setArgs(galleryInfo.getGid(), galleryInfo.getToken(), -1, "");
         request.setCallback(new DelegateFavoriteCallback(listener, galleryInfo, null, -2));
         request.enqueue(activity);
     }
@@ -145,8 +145,8 @@ public final class CommonOperations {
         LongList toStart = new LongList();
         List<GalleryInfo> toAdd = new ArrayList<>();
         for (GalleryInfo gi : galleryInfos) {
-            if (dm.containDownloadInfo(gi.gid)) {
-                toStart.add(gi.gid);
+            if (dm.containDownloadInfo(gi.getGid())) {
+                toStart.add(gi.getGid());
             } else {
                 toAdd.add(gi);
             }
@@ -278,11 +278,11 @@ public final class CommonOperations {
 
         @Override
         public void onSuccess(Void result) {
-            EhDB.updateHistoryFavSlot(info.gid, slot);
-            info.favoriteName = newFavoriteName;
-            info.favoriteSlot = slot;
+            EhDB.updateHistoryFavSlot(info.getGid(), slot);
+            info.setFavoriteName(newFavoriteName);
+            info.setFavoriteSlot(slot);
             delegate.onSuccess(result);
-            EhApplication.getFavouriteStatusRouter().modifyFavourites(info.gid, slot);
+            EhApplication.getFavouriteStatusRouter().modifyFavourites(info.getGid(), slot);
         }
 
         @Override

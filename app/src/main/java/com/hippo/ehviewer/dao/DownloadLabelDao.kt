@@ -15,34 +15,31 @@
  * You should have received a copy of the GNU General Public License along with EhViewer.
  * If not, see <https://www.gnu.org/licenses/>.
  */
+package com.hippo.ehviewer.dao
 
-package com.hippo.ehviewer.dao;
-
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.Query;
-import androidx.room.Update;
-
-import java.util.List;
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.Query
+import androidx.room.Update
 
 @Dao
-public interface DownloadLabelDao extends BasicDao<DownloadLabel> {
+interface DownloadLabelDao : BasicDao<DownloadLabel> {
     @Query("SELECT * FROM DOWNLOAD_LABELS ORDER BY TIME ASC")
-    List<DownloadLabel> list();
+    override fun list(): List<DownloadLabel>
 
     @Query("SELECT * FROM DOWNLOAD_LABELS ORDER BY TIME ASC LIMIT :limit OFFSET :offset")
-    List<DownloadLabel> list(int offset, int limit);
+    fun list(offset: Int, limit: Int): List<DownloadLabel>
 
     @Update
-    void update(List<DownloadLabel> downloadLabels);
+    fun update(downloadLabels: List<DownloadLabel>)
 
     @Update
-    void update(DownloadLabel downloadLabel);
+    fun update(downloadLabel: DownloadLabel)
 
     @Insert
-    long insert(DownloadLabel downloadLabel);
+    override fun insert(t: DownloadLabel): Long
 
     @Delete
-    void delete(DownloadLabel downloadLabel);
+    fun delete(downloadLabel: DownloadLabel)
 }

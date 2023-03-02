@@ -155,7 +155,7 @@ public final class EhFilter {
         }
 
         // Title
-        String title = info.title;
+        String title = info.getTitle();
         List<Filter> filters = mTitleFilterList;
         if (null != title && filters.size() > 0) {
             for (int i = 0, n = filters.size(); i < n; i++) {
@@ -174,7 +174,7 @@ public final class EhFilter {
         }
 
         // Uploader
-        String uploader = info.uploader;
+        String uploader = info.getUploader();
         List<Filter> filters = mUploaderFilterList;
         if (null != uploader && filters.size() > 0) {
             for (int i = 0, n = filters.size(); i < n; i++) {
@@ -226,7 +226,7 @@ public final class EhFilter {
         }
 
         // Tag
-        String[] tags = info.simpleTags;
+        String[] tags = info.getSimpleTags();
         List<Filter> filters = mTagFilterList;
         if (null != tags && filters.size() > 0) {
             for (String tag : tags) {
@@ -261,7 +261,7 @@ public final class EhFilter {
             return false;
         }
 
-        String[] tags = info.simpleTags;
+        String[] tags = info.getSimpleTags();
         List<Filter> filters = mTagNamespaceFilterList;
         if (null != tags && filters.size() > 0) {
             for (String tag : tags) {

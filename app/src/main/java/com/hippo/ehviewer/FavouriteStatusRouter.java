@@ -50,7 +50,7 @@ public class FavouriteStatusRouter {
         for (Map<Long, GalleryInfo> map : maps.values()) {
             GalleryInfo info = map.get(gid);
             if (info != null) {
-                info.favoriteSlot = slot;
+                info.setFavoriteSlot(slot);
             }
         }
 

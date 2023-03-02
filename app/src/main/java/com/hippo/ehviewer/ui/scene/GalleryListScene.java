@@ -311,7 +311,7 @@ public final class GalleryListScene extends BaseScene
         } else if (ACTION_LIST_URL_BUILDER.equals(action)) {
             ListUrlBuilder builder = args.getParcelable(KEY_LIST_URL_BUILDER);
             if (builder != null) {
-                mUrlBuilder.set(builder);
+                mUrlBuilder = builder.copyJ();
             }
         }
     }
@@ -693,14 +693,14 @@ public final class GalleryListScene extends BaseScene
 
         // Get next gid
         GalleryInfo gi = mHelper.getFirstVisibleItem();
-        String next = gi != null ? "@" + (gi.gid + 1) : null;
+        String next = gi != null ? "@" + (gi.getGid() + 1) : null;
 
         // Check duplicate
         for (QuickSearch q : mQuickSearchList) {
             if (urlBuilder.equalsQuickSearch(q)) {
-                int index = q.name.lastIndexOf("@");
-                if (index != -1 && q.name.substring(index).equals(next)) {
-                    showTip(getString(R.string.duplicate_quick_search, q.name), LENGTH_LONG);
+                int index = q.getName().lastIndexOf("@");
+                if (index != -1 && q.getName().substring(index).equals(next)) {
+                    showTip(getString(R.string.duplicate_quick_search, q.getName()), LENGTH_LONG);
                     return;
                 }
             }
@@ -730,7 +730,7 @@ public final class GalleryListScene extends BaseScene
 
             // Check name duplicate
             for (QuickSearch q : mQuickSearchList) {
-                if (text.equals(q.name)) {
+                if (text.equals(q.getName())) {
                     builder.setError(getString(R.string.duplicate_name));
                     return;
                 }
@@ -739,7 +739,7 @@ public final class GalleryListScene extends BaseScene
             builder.setError(null);
             dialog.dismiss();
             QuickSearch quickSearch = urlBuilder.toQuickSearch();
-            quickSearch.name = text;
+            quickSearch.setName(text);
             EhDB.insertQuickSearch(quickSearch);
             mQuickSearchList.add(quickSearch);
             adapter.notifyItemInserted(mQuickSearchList.size() - 1);
@@ -1024,8 +1024,8 @@ public final class GalleryListScene extends BaseScene
             return true;
         }
 
-        boolean downloaded = mDownloadManager.getDownloadState(gi.gid) != DownloadInfo.STATE_INVALID;
-        boolean favourited = gi.favoriteSlot != -2;
+        boolean downloaded = mDownloadManager.getDownloadState(gi.getGid()) != DownloadInfo.STATE_INVALID;
+        boolean favourited = gi.getFavoriteSlot() != -2;
 
         CharSequence[] items = downloaded ? new CharSequence[]{
                 context.getString(R.string.read),
@@ -1063,8 +1063,8 @@ public final class GalleryListScene extends BaseScene
                             if (downloaded) {
                                 new AlertDialog.Builder(context)
                                         .setTitle(R.string.download_remove_dialog_title)
-                                        .setMessage(getString(R.string.download_remove_dialog_message, gi.title))
-                                        .setPositiveButton(android.R.string.ok, (dialog1, which1) -> mDownloadManager.deleteDownload(gi.gid))
+                                        .setMessage(getString(R.string.download_remove_dialog_message, gi.getTitle()))
+                                        .setPositiveButton(android.R.string.ok, (dialog1, which1) -> mDownloadManager.deleteDownload(gi.getGid()))
                                         .show();
                             } else {
                                 CommonOperations.startDownload(activity, gi, false);
@@ -1617,7 +1617,7 @@ public final class GalleryListScene extends BaseScene
             }
 
             DownloadManager downloadManager = EhApplication.getDownloadManager();
-            DownloadInfo downloadInfo = downloadManager.getDownloadInfo(mGi.gid);
+            DownloadInfo downloadInfo = downloadManager.getDownloadInfo(mGi.getGid());
             if (downloadInfo == null) {
                 return;
             }
@@ -1654,8 +1654,8 @@ public final class GalleryListScene extends BaseScene
                     QuickSearch quickSearch = mQuickSearchList.get(holder.getBindingAdapterPosition());
                     mUrlBuilder.set(quickSearch);
                     onUpdateUrlBuilder();
-                    int index = quickSearch.name.lastIndexOf("@");
-                    mHelper.goTo(index != -1 ? quickSearch.name.substring(index + 1) : null, true);
+                    int index = quickSearch.getName().lastIndexOf("@");
+                    mHelper.goTo(index != -1 ? quickSearch.getName().substring(index + 1) : null, true);
                     setState(STATE_NORMAL);
                     closeDrawer(GravityCompat.END);
                 });
@@ -1671,7 +1671,7 @@ public final class GalleryListScene extends BaseScene
                             if (item.getItemId() == R.id.menu_qs_remove) {
                                 new AlertDialog.Builder(requireContext())
                                         .setTitle(getString(R.string.delete_quick_search_title))
-                                        .setMessage(getString(R.string.delete_quick_search_message, quickSearch.name))
+                                        .setMessage(getString(R.string.delete_quick_search_message, quickSearch.getName()))
                                         .setPositiveButton(R.string.delete, (dialog, which) -> {
                                             EhDB.deleteQuickSearch(quickSearch);
                                             mQuickSearchList.remove(holder.getBindingAdapterPosition());
@@ -1889,7 +1889,7 @@ public final class GalleryListScene extends BaseScene
 
         @Override
         protected boolean isDuplicate(GalleryInfo d1, GalleryInfo d2) {
-            return d1.gid == d2.gid;
+            return d1.getGid() == d2.getGid();
         }
 
         @Override

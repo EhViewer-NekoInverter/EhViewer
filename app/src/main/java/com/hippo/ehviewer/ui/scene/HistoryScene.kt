@@ -336,7 +336,7 @@ class HistoryScene : ToolbarScene() {
                         var i = 0
                         val n = labelRawList.size
                         while (i < n) {
-                            labelList.add(labelRawList[i].label)
+                            labelRawList[i].label?.let { labelList.add(it) }
                             i++
                         }
                         val labels = labelList.toTypedArray()

@@ -203,55 +203,55 @@ abstract class GalleryAdapter extends RecyclerView.Adapter<GalleryHolder> {
 
         switch (mType) {
             case TYPE_LIST -> {
-                holder.thumb.load(EhCacheKeyFactory.getThumbKey(gi.gid), gi.thumb);
+                holder.thumb.load(EhCacheKeyFactory.getThumbKey(gi.getGid()), gi.getThumb());
                 holder.title.setText(EhUtils.getSuitableTitle(gi));
-                holder.uploader.setAlpha(gi.disowned ? .5f : 1f);
-                if (TextUtils.isEmpty(gi.uploader)) {
+                holder.uploader.setAlpha(gi.getDisowned() ? .5f : 1f);
+                if (TextUtils.isEmpty(gi.getUploader())) {
                     holder.uploader.setText(null);
                     holder.uploader.setVisibility(View.GONE);
                 } else {
-                    holder.uploader.setText(gi.uploader);
+                    holder.uploader.setText(gi.getUploader());
                     holder.uploader.setVisibility(View.VISIBLE);
                 }
-                holder.note.setText(gi.favoriteNote);
-                holder.rating.setRating(gi.rating);
+                holder.note.setText(gi.getFavoriteNote());
+                holder.rating.setRating(gi.getRating());
                 TextView category = holder.category;
-                String newCategoryText = EhUtils.getCategory(gi.category);
+                String newCategoryText = EhUtils.getCategory(gi.getCategory());
                 if (!newCategoryText.equals(category.getText().toString())) {
                     category.setText(newCategoryText);
-                    category.setBackgroundColor(EhUtils.getCategoryColor(gi.category));
+                    category.setBackgroundColor(EhUtils.getCategoryColor(gi.getCategory()));
                 }
-                holder.posted.setText(gi.posted);
-                if (gi.pages == 0 || !Settings.getShowGalleryPages()) {
+                holder.posted.setText(gi.getPosted());
+                if (gi.getPages() == 0 || !Settings.getShowGalleryPages()) {
                     holder.pages.setText(null);
                     holder.pages.setVisibility(View.GONE);
                 } else {
-                    holder.pages.setText(gi.pages + "P");
+                    holder.pages.setText(gi.getPages() + "P");
                     holder.pages.setVisibility(View.VISIBLE);
                 }
-                if (TextUtils.isEmpty(gi.simpleLanguage)) {
+                if (TextUtils.isEmpty(gi.getSimpleLanguage())) {
                     holder.simpleLanguage.setText(null);
                     holder.simpleLanguage.setVisibility(View.GONE);
                 } else {
-                    holder.simpleLanguage.setText(gi.simpleLanguage);
+                    holder.simpleLanguage.setText(gi.getSimpleLanguage());
                     holder.simpleLanguage.setVisibility(View.VISIBLE);
                 }
-                holder.favourited.setVisibility((mShowFavourited && gi.favoriteSlot >= -1 && gi.favoriteSlot <= 10) ? View.VISIBLE : View.GONE);
-                holder.downloaded.setVisibility(mDownloadManager.containDownloadInfo(gi.gid) ? View.VISIBLE : View.GONE);
+                holder.favourited.setVisibility((mShowFavourited && gi.getFavoriteSlot() >= -1 && gi.getFavoriteSlot() <= 10) ? View.VISIBLE : View.GONE);
+                holder.downloaded.setVisibility(mDownloadManager.containDownloadInfo(gi.getGid()) ? View.VISIBLE : View.GONE);
             }
             case TYPE_GRID -> {
-                ((TileThumb) holder.thumb).setThumbSize(gi.thumbWidth, gi.thumbHeight);
-                holder.thumb.load(EhCacheKeyFactory.getThumbKey(gi.gid), gi.thumb);
+                ((TileThumb) holder.thumb).setThumbSize(gi.getThumbWidth(), gi.getThumbHeight());
+                holder.thumb.load(EhCacheKeyFactory.getThumbKey(gi.getGid()), gi.getThumb());
                 if (Settings.getThumbShowTitle()) {
                     holder.title.setText(EhUtils.getSuitableTitle(gi));
                     holder.title.setVisibility(View.VISIBLE);
-                    holder.rating.setRating(gi.rating);
+                    holder.rating.setRating(gi.getRating());
                     holder.rating.setVisibility(View.VISIBLE);
-                    if (gi.pages == 0 || !Settings.getShowGalleryPages()) {
+                    if (gi.getPages() == 0 || !Settings.getShowGalleryPages()) {
                         holder.pages.setText(null);
                         holder.pages.setVisibility(View.GONE);
                     } else {
-                        holder.pages.setText(gi.pages + "P");
+                        holder.pages.setText(gi.getPages() + "P");
                         holder.pages.setVisibility(View.VISIBLE);
                     }
                 } else {
@@ -263,19 +263,19 @@ abstract class GalleryAdapter extends RecyclerView.Adapter<GalleryHolder> {
                 }
                 View category = holder.category;
                 Drawable drawable = category.getBackground();
-                int color = EhUtils.getCategoryColor(gi.category);
+                int color = EhUtils.getCategoryColor(gi.getCategory());
                 if (!(drawable instanceof TriangleDrawable)) {
                     drawable = new TriangleDrawable(color);
                     category.setBackground(drawable);
                 } else {
                     ((TriangleDrawable) drawable).setColor(color);
                 }
-                holder.simpleLanguage.setText(gi.simpleLanguage);
+                holder.simpleLanguage.setText(gi.getSimpleLanguage());
             }
         }
 
         // Update transition name
-        ViewCompat.setTransitionName(holder.thumb, TransitionNameFactory.getThumbTransitionName(gi.gid));
+        ViewCompat.setTransitionName(holder.thumb, TransitionNameFactory.getThumbTransitionName(gi.getGid()));
     }
 
     @IntDef({TYPE_LIST, TYPE_GRID})

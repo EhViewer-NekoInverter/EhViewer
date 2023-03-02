@@ -109,20 +109,6 @@ public class FavoritesScene extends BaseScene implements
     private SearchBar mSearchBar;
     @Nullable
     private FabLayout mFabLayout;
-    private final Runnable showNormalFabsRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mFabLayout != null) {
-                updateJumpFab(); // Index: 1, 2
-                mFabLayout.setSecondaryFabVisibilityAt(0, true);
-                mFabLayout.setSecondaryFabVisibilityAt(3, true);
-                mFabLayout.setSecondaryFabVisibilityAt(4, false);
-                mFabLayout.setSecondaryFabVisibilityAt(5, false);
-                mFabLayout.setSecondaryFabVisibilityAt(6, false);
-                mFabLayout.setSecondaryFabVisibilityAt(7, false);
-            }
-        }
-    };
     @Nullable
     private FavoritesAdapter mAdapter;
     @Nullable
@@ -144,6 +130,20 @@ public class FavoritesScene extends BaseScene implements
     private int[] mFavCountArray;
     @Nullable
     private FavListUrlBuilder mUrlBuilder;
+    private final Runnable showNormalFabsRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mFabLayout != null) {
+                updateJumpFab(); // Index: 1, 2
+                mFabLayout.setSecondaryFabVisibilityAt(0, true);
+                mFabLayout.setSecondaryFabVisibilityAt(3, true);
+                mFabLayout.setSecondaryFabVisibilityAt(4, false);
+                mFabLayout.setSecondaryFabVisibilityAt(5, false);
+                mFabLayout.setSecondaryFabVisibilityAt(6, false);
+                mFabLayout.setSecondaryFabVisibilityAt(7, false);
+            }
+        }
+    };
     private int mFavLocalCount = 0;
     private int mFavCountSum = 0;
     private boolean mHasFirstRefresh;
@@ -228,7 +228,7 @@ public class FavoritesScene extends BaseScene implements
         mUrlBuilder = null;
     }
 
-    @Nullable
+    @NonNull
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -1069,7 +1069,7 @@ public class FavoritesScene extends BaseScene implements
             if (mUrlBuilder.getFavCat() == FavListUrlBuilder.FAV_CAT_LOCAL) { // Delete local fav
                 long[] gidArray = new long[mModifyGiList.size()];
                 for (int i = 0, n = mModifyGiList.size(); i < n; i++) {
-                    gidArray[i] = mModifyGiList.get(i).gid;
+                    gidArray[i] = mModifyGiList.get(i).getGid();
                 }
                 EhDB.removeLocalFavorites(gidArray);
                 updateHistoryFavSlot(gidArray, mFavSlot);
@@ -1112,7 +1112,7 @@ public class FavoritesScene extends BaseScene implements
             if (srcCat == FavListUrlBuilder.FAV_CAT_LOCAL) { // Move from local to cloud
                 long[] gidArray = new long[mModifyGiList.size()];
                 for (int i = 0, n = mModifyGiList.size(); i < n; i++) {
-                    gidArray[i] = mModifyGiList.get(i).gid;
+                    gidArray[i] = mModifyGiList.get(i).getGid();
                 }
                 EhDB.removeLocalFavorites(gidArray);
                 mEnableModify = true;
@@ -1188,8 +1188,8 @@ public class FavoritesScene extends BaseScene implements
                     String[] tokenArray = new String[mModifyGiList.size()];
                     for (int i = 0, n = mModifyGiList.size(); i < n; i++) {
                         GalleryInfo gi = mModifyGiList.get(i);
-                        gidArray[i] = gi.gid;
-                        tokenArray[i] = gi.token;
+                        gidArray[i] = gi.getGid();
+                        tokenArray[i] = gi.getToken();
                     }
                     List<GalleryInfo> modifyGiListBackup = new ArrayList<>(mModifyGiList);
                     mModifyGiList.clear();
@@ -1203,7 +1203,7 @@ public class FavoritesScene extends BaseScene implements
                     request.enqueue(FavoritesScene.this);
                 } else {
                     for (int i = 0, n = mModifyGiList.size(); i < n; i++) {
-                        gidArray[i] = mModifyGiList.get(i).gid;
+                        gidArray[i] = mModifyGiList.get(i).getGid();
                     }
                     mModifyGiList.clear();
 
@@ -1275,7 +1275,7 @@ public class FavoritesScene extends BaseScene implements
 
         @Override
         protected boolean isDuplicate(GalleryInfo d1, GalleryInfo d2) {
-            return d1.gid == d2.gid;
+            return d1.getGid() == d2.getGid();
         }
 
         @Override

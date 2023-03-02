@@ -58,7 +58,7 @@ public final class UrlOpener {
             if (galleryDetail != null) {
                 GalleryPageUrlParser.Result result = GalleryPageUrlParser.parse(url);
                 if (result != null) {
-                    if (result.gid == galleryDetail.gid) {
+                    if (result.gid == galleryDetail.getGid()) {
                         intent = new Intent(context, GalleryActivity.class);
                         intent.setAction(GalleryActivity.ACTION_EH);
                         intent.putExtra(GalleryActivity.KEY_GALLERY_INFO, galleryDetail);
