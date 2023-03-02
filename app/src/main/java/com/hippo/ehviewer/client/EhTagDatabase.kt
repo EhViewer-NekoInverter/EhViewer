@@ -22,6 +22,7 @@ import com.hippo.ehviewer.EhApplication.Companion.okHttpClient
 import com.hippo.ehviewer.R
 import com.hippo.util.ExceptionUtils
 import com.hippo.util.HashCodeUtils
+import com.hippo.util.launchIO
 import com.hippo.yorozuya.FileUtils
 import com.hippo.yorozuya.IOUtils
 import java.io.File
@@ -32,9 +33,6 @@ import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.BufferedSource
@@ -210,7 +208,7 @@ object EhTagDatabase {
     @OptIn(DelicateCoroutinesApi::class)
     @JvmStatic
     fun update() {
-        GlobalScope.launch(Dispatchers.IO) {
+        launchIO {
             updateInternal()
         }
     }
