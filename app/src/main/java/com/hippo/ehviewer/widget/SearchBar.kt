@@ -383,7 +383,7 @@ class SearchBar @JvmOverloads constructor(
         mHelper?.onSearchEditTextBackPressed()
     }
 
-    override fun onReceiveContent(uri: Uri) {
+    override fun onReceiveContent(uri: Uri?) {
         mHelper?.onReceiveContent(uri)
     }
 
@@ -420,7 +420,7 @@ class SearchBar @JvmOverloads constructor(
         fun onSearchEditTextClick()
         fun onApplySearch(query: String)
         fun onSearchEditTextBackPressed()
-        fun onReceiveContent(uri: Uri)
+        fun onReceiveContent(uri: Uri?)
     }
 
     interface OnStateChangeListener {
