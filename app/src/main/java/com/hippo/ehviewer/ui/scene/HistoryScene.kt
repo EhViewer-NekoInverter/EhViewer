@@ -61,6 +61,8 @@ import com.hippo.ehviewer.ui.dialog.SelectItemWithIconAdapter
 import com.hippo.ehviewer.widget.SimpleRatingView
 import com.hippo.scene.Announcer
 import com.hippo.scene.SceneFragment
+import com.hippo.util.launchIO
+import com.hippo.util.withUIContext
 import com.hippo.view.ViewTransition
 import com.hippo.widget.LoadImageView
 import com.hippo.widget.recyclerview.AutoStaggeredGridLayoutManager
@@ -206,7 +208,6 @@ class HistoryScene : ToolbarScene() {
         return R.menu.scene_history
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun showClearAllDialog() {
         AlertDialog.Builder(requireContext())
             .setMessage(R.string.clear_all_history)
@@ -214,8 +215,12 @@ class HistoryScene : ToolbarScene() {
                 if (DialogInterface.BUTTON_POSITIVE != which) {
                     return@setPositiveButton
                 }
-                EhDB.clearHistoryInfo()
-                mAdapter.refresh()
+                lifecycleScope.launchIO {
+                    EhDB.clearHistoryInfo()
+                    withUIContext {
+                        mAdapter.refresh()
+                    }
+                }
             }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
@@ -322,10 +327,12 @@ class HistoryScene : ToolbarScene() {
                     }
 
                     3 -> {
-                        val hi: HistoryInfo? = gi as? HistoryInfo
-                        hi?.let {
-                            EhDB.deleteHistoryInfo(hi)
-                            mAdapter.refresh()
+                        lifecycleScope.launchIO {
+                            val hi: HistoryInfo? = gi as? HistoryInfo
+                            hi?.let { EhDB.deleteHistoryInfo(hi) }
+                            withUIContext {
+                                mAdapter.refresh()
+                            }
                         }
                     }
 
@@ -491,9 +498,13 @@ class HistoryScene : ToolbarScene() {
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val mPosition = viewHolder.bindingAdapterPosition
-            val info: HistoryInfo? = mAdapter.peek(mPosition)
-            info?.let { EhDB.deleteHistoryInfo(info) }
-            mAdapter.refresh()
+            lifecycleScope.launchIO {
+                val info: HistoryInfo? = mAdapter.peek(mPosition)
+                info?.let { EhDB.deleteHistoryInfo(info) }
+                withUIContext {
+                    mAdapter.refresh()
+                }
+            }
         }
     }
 }
