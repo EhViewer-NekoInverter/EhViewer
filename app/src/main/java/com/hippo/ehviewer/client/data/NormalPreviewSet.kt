@@ -22,13 +22,13 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 class NormalPreviewSet(
     private var mPositionList: IntList = IntList(),
-    private var mImageKeyList: ArrayList<String> = ArrayList(),
-    private var mImageUrlList: ArrayList<String> = ArrayList(),
+    private var mImageKeyList: ArrayList<String> = arrayListOf(),
+    private var mImageUrlList: ArrayList<String> = arrayListOf(),
     private var mOffsetXList: IntList = IntList(),
     private var mOffsetYList: IntList = IntList(),
     private var mClipWidthList: IntList = IntList(),
     private var mClipHeightList: IntList = IntList(),
-    private var mPageUrlList: ArrayList<String> = ArrayList()
+    private var mPageUrlList: ArrayList<String> = arrayListOf()
 ) : PreviewSet() {
     private fun getImageKey(imageUrl: String): String {
         val index = imageUrl.indexOf('/')

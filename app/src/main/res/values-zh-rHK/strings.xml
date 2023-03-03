@@ -578,7 +578,6 @@
     <string name="error_unknown">奇怪的錯誤</string>
     <string name="error_cant_find_activity">找不到相應的應用</string>
     <string name="error_cannot_parse_the_url">無法解析鏈接</string>
-    <string name="error_not_folder_path">非文件夾路徑</string>
     <string name="error_decoding_failed">解碼失敗</string>
     <string name="error_empty">空</string>
     <string name="error_reading_failed">讀取失敗</string>

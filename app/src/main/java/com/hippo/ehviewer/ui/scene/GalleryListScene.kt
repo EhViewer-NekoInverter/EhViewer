@@ -129,62 +129,6 @@ import java.time.ZoneOffset
 class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
     OnDragHandlerListener, SearchLayout.Helper, SearchBarMover.Helper, View.OnClickListener,
     OnClickFabListener, OnExpandListener {
-    private lateinit var mUrlBuilder: ListUrlBuilder
-    private var mRecyclerView: EasyRecyclerView? = null
-    private var mSearchLayout: SearchLayout? = null
-    private val selectImageLauncher = registerForActivityResult<PickVisualMediaRequest, Uri>(
-        ActivityResultContracts.PickVisualMedia()
-    ) { result: Uri? -> mSearchLayout?.setImageUri(result) }
-    private var mSearchBar: SearchBar? = null
-    private var mSearchFab: View? = null
-    private val mSearchFabAnimatorListener: Animator.AnimatorListener =
-        object : SimpleAnimatorListener() {
-            override fun onAnimationEnd(animation: Animator) {
-                if (null != mSearchFab) {
-                    mSearchFab!!.visibility = View.INVISIBLE
-                }
-            }
-        }
-    private var mFabLayout: FabLayout? = null
-    private val mActionFabAnimatorListener: Animator.AnimatorListener =
-        object : SimpleAnimatorListener() {
-            override fun onAnimationEnd(animation: Animator) {
-                if (null != mFabLayout) {
-                    (mFabLayout!!.primaryFab as View?)!!.visibility = View.INVISIBLE
-                }
-            }
-        }
-    private var fabAnimator: ViewPropertyAnimator? = null
-    private var mViewTransition: ViewTransition? = null
-    private var mDrawerViewTransition: ViewTransition? = null
-    private var mAdapter: GalleryListAdapter? = null
-    private var mHelper: GalleryListHelper? = null
-    private var mLeftDrawable: DrawerArrowDrawable? = null
-    private var mRightDrawable: AddDeleteDrawable? = null
-    private var mSearchBarMover: SearchBarMover? = null
-    private var mActionFabDrawable: AddDeleteDrawable? = null
-    lateinit var mQuickSearchList: MutableList<QuickSearch>
-    private var mHideActionFabSlop = 0
-    private var mShowActionFab = true
-
-    @State
-    private var mState = STATE_NORMAL
-    private val mOnScrollListener: RecyclerView.OnScrollListener =
-        object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {}
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (dy >= mHideActionFabSlop) {
-                    hideActionFab()
-                } else if (dy <= -mHideActionFabSlop / 2) {
-                    showActionFab()
-                }
-            }
-        }
-    private var mItemTouchHelper: ItemTouchHelper? = null
-    // Double click to exit
-    private var mPressBackTime: Long = 0
-    private var mHasFirstRefresh = false
-    private var mNavCheckedId = 0
     private val mDownloadManager: DownloadManager = downloadManager
 
     @SuppressLint("NotifyDataSetChanged")
@@ -215,6 +159,66 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
             mAdapter?.notifyDataSetChanged()
         }
 
+    private val mOnScrollListener: RecyclerView.OnScrollListener =
+        object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {}
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (dy >= mHideActionFabSlop) {
+                    hideActionFab()
+                } else if (dy <= -mHideActionFabSlop / 2) {
+                    showActionFab()
+                }
+            }
+        }
+
+    private val mActionFabAnimatorListener: Animator.AnimatorListener =
+        object : SimpleAnimatorListener() {
+            override fun onAnimationEnd(animation: Animator) {
+                if (null != mFabLayout) {
+                    (mFabLayout!!.primaryFab as View?)!!.visibility = View.INVISIBLE
+                }
+            }
+        }
+
+    private val mSearchFabAnimatorListener: Animator.AnimatorListener =
+        object : SimpleAnimatorListener() {
+            override fun onAnimationEnd(animation: Animator) {
+                if (null != mSearchFab) {
+                    mSearchFab!!.visibility = View.INVISIBLE
+                }
+            }
+        }
+
+    private val selectImageLauncher =
+        registerForActivityResult<PickVisualMediaRequest, Uri>(
+            ActivityResultContracts.PickVisualMedia()
+        ) { result: Uri? -> mSearchLayout?.setImageUri(result) }
+
+    private lateinit var mUrlBuilder: ListUrlBuilder
+    private lateinit var mQuickSearchList: MutableList<QuickSearch>
+    private var mRecyclerView: EasyRecyclerView? = null
+    private var mAdapter: GalleryListAdapter? = null
+    private var mHelper: GalleryListHelper? = null
+    private var mViewTransition: ViewTransition? = null
+    private var mSearchBar: SearchBar? = null
+    private var mSearchBarMover: SearchBarMover? = null
+    private var mSearchFab: View? = null
+    private var mSearchLayout: SearchLayout? = null
+    private var mLeftDrawable: DrawerArrowDrawable? = null
+    private var mRightDrawable: AddDeleteDrawable? = null
+    private var fabAnimator: ViewPropertyAnimator? = null
+    private var mActionFabDrawable: AddDeleteDrawable? = null
+    private var mFabLayout: FabLayout? = null
+    private var mHideActionFabSlop = 0
+    private var mShowActionFab = true
+    private var mDrawerViewTransition: ViewTransition? = null
+    private var mItemTouchHelper: ItemTouchHelper? = null
+    @State
+    private var mState = STATE_NORMAL
+    // Double click to exit
+    private var mPressBackTime: Long = 0
+    private var mNavCheckedId = 0
+    private var mHasFirstRefresh = false
     private var mIsTopList = false
 
     override fun getNavCheckedItem(): Int {
@@ -286,7 +290,7 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
     }
 
     private fun setSearchBarSuggestionProvider(searchBar: SearchBar) {
-        searchBar.setSuggestionProvider(object: SuggestionProvider {
+        searchBar.setSuggestionProvider(object : SuggestionProvider {
             override fun providerSuggestions(text: String): List<Suggestion>? {
                 val result1 = GalleryDetailUrlParser.parse(text, false)
                 if (result1 != null) {
@@ -359,13 +363,8 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
         }
 
         // Update title
-        var title = getSuitableTitleForUrlBuilder(resources, mUrlBuilder, true)
-        if (null == title) {
-            title = resources.getString(R.string.search)
-        }
-        if (null != mSearchBar) {
-            mSearchBar!!.setTitle(title)
-        }
+        var title = getSuitableTitleForUrlBuilder(resources, mUrlBuilder, true) ?: resources.getString(R.string.search)
+        mSearchBar?.setTitle(title)
 
         // Update nav checked item
         val checkedItemId: Int = when (mode) {
@@ -491,6 +490,17 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
         mActionFabDrawable = null
     }
 
+    private fun updateDrawerView(animation: Boolean) {
+        if (null == mDrawerViewTransition) {
+            return
+        }
+        if (mIsTopList || mQuickSearchList.size > 0) {
+            mDrawerViewTransition!!.showView(0, animation)
+        } else {
+            mDrawerViewTransition!!.showView(1, animation)
+        }
+    }
+
     private fun showQuickSearchTipDialog() {
         val context = context ?: return
         AlertDialog.Builder(context)
@@ -500,10 +510,7 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
                 .show();
     }
 
-    private fun showAddQuickSearchDialog(
-        adapter: QsDrawerAdapter,
-        recyclerView: EasyRecyclerView, tip: TextView
-    ) {
+    private fun showAddQuickSearchDialog(adapter: QsDrawerAdapter) {
         val context = context
         if (null == context || null == mHelper) {
             return
@@ -584,17 +591,6 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
         }
     }
 
-    private fun updateDrawerView(animation: Boolean) {
-        if (null == mDrawerViewTransition) {
-            return
-        }
-        if (mIsTopList || mQuickSearchList.size > 0) {
-            mDrawerViewTransition!!.showView(0, animation)
-        } else {
-            mDrawerViewTransition!!.showView(1, animation)
-        }
-    }
-
     override fun onCreateDrawerView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -626,18 +622,12 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
             }
         }
         tip.setText(R.string.quick_search_tip)
-        if (mIsTopList) {
-            toolbar.setTitle(R.string.toplist)
-        } else {
-            toolbar.setTitle(R.string.quick_search)
-        }
+        toolbar.setTitle(if (mIsTopList) R.string.toplist else R.string.quick_search)
         if (!mIsTopList) toolbar.inflateMenu(R.menu.drawer_gallery_list)
         toolbar.setOnMenuItemClickListener { item: MenuItem ->
-            val id = item.itemId
-            if (id == R.id.action_add) {
-                showAddQuickSearchDialog(qsDrawerAdapter, recyclerView, tip)
-            } else if (id == R.id.action_help) {
-                showQuickSearchTipDialog()
+            when (item.itemId) {
+                R.id.action_add -> showAddQuickSearchDialog(qsDrawerAdapter)
+                R.id.action_help -> showQuickSearchTipDialog()
             }
             true
         }
@@ -724,10 +714,6 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
                 .setPositiveButton(android.R.string.ok, null)
                 .show()
             dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
-                if (null == mHelper) {
-                    dialog.dismiss()
-                    return@setOnClickListener
-                }
                 val text = builder.text.trim { it <= ' ' }
                 val goTo: Int = try {
                     text.toInt() - 1
@@ -937,9 +923,7 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
         if (null != mFabLayout && STATE_NORMAL == mState && !mShowActionFab) {
             mShowActionFab = true
             val fab: View? = mFabLayout!!.primaryFab
-            if (fabAnimator != null) {
-                fabAnimator!!.cancel()
-            }
+            fabAnimator?.cancel()
             fab!!.visibility = View.VISIBLE
             fab.rotation = -45.0f
             fabAnimator = fab.animate().scaleX(1.0f).scaleY(1.0f).rotation(0.0f).setListener(null)
@@ -953,9 +937,7 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
         if (null != mFabLayout && STATE_NORMAL == mState && mShowActionFab) {
             mShowActionFab = false
             val fab: View? = mFabLayout!!.primaryFab
-            if (fabAnimator != null) {
-                fabAnimator!!.cancel()
-            }
+            fabAnimator?.cancel()
             fabAnimator =
                 fab!!.animate().scaleX(0.0f).scaleY(0.0f).setListener(mActionFabAnimatorListener)
                     .setDuration(ANIMATE_TIME).setStartDelay(0L)
@@ -1385,9 +1367,7 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
         override fun onClick(dialog: DialogInterface, which: Int) {
             // Cancel check mode
             context ?: return
-            if (null != mRecyclerView) {
-                mRecyclerView!!.outOfCustomChoiceMode()
-            }
+            mRecyclerView?.outOfCustomChoiceMode()
             val downloadManager = downloadManager
             val downloadInfo = downloadManager.getDownloadInfo(mGi.gid) ?: return
             val label = if (which == 0) null else mLabels[which]
@@ -1398,57 +1378,73 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
     private inner class QsDrawerAdapter(private val mInflater: LayoutInflater) :
         RecyclerView.Adapter<QsDrawerHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QsDrawerHolder {
-            return QsDrawerHolder(mInflater.inflate(R.layout.item_drawer_list, parent, false))
-        }
-
-        override fun onBindViewHolder(holder: QsDrawerHolder, position: Int) {
+            val holder = QsDrawerHolder(mInflater.inflate(R.layout.item_drawer_list, parent, false))
             if (!mIsTopList) {
-                holder.key.text = mQuickSearchList[holder.bindingAdapterPosition].name
                 holder.itemView.setOnClickListener {
                     if (null == mHelper) {
                         return@setOnClickListener
                     }
-                    val q = mQuickSearchList[holder.bindingAdapterPosition]
-                    mUrlBuilder.set(q)
+                    val quickSearch = mQuickSearchList[holder.bindingAdapterPosition]
+                    mUrlBuilder.set(quickSearch)
                     onUpdateUrlBuilder()
-                    val i = q.name!!.lastIndexOf("@")
-                    mHelper!!.goTo(if (i != -1) q.name!!.substring(i + 1) else null, true)
+                    val i = quickSearch.name!!.lastIndexOf("@")
+                    mHelper!!.goTo(if (i != -1) quickSearch.name!!.substring(i + 1) else null, true)
                     setState(STATE_NORMAL)
                     closeDrawer(GravityCompat.END)
                 }
                 holder.itemView.setOnLongClickListener {
+                    val index = holder.bindingAdapterPosition
+                    val quickSearch = mQuickSearchList[index]
                     val popupMenu = PopupMenu(requireContext(), holder.option)
                     popupMenu.inflate(R.menu.quicksearch_option)
                     popupMenu.show()
-                    popupMenu.setOnMenuItemClickListener(object: PopupMenu.OnMenuItemClickListener {
-                        val index = holder.bindingAdapterPosition
-                        val quickSearch = mQuickSearchList[index]
-                        override fun onMenuItemClick(item: MenuItem): Boolean {
-                            if (item.itemId == R.id.menu_qs_remove) {
-                                AlertDialog.Builder(requireContext())
-                                    .setTitle(getString(R.string.delete_quick_search_title))
-                                    .setMessage(getString(R.string.delete_quick_search_message, quickSearch.name))
-                                    .setPositiveButton(R.string.delete) { _: DialogInterface?, _: Int ->
-                                        lifecycleScope.launchIO {
-                                            EhDB.deleteQuickSearch(quickSearch)
-                                            mQuickSearchList.removeAt(index)
-                                            withUIContext {
-                                                notifyItemRemoved(index)
-                                                updateDrawerView(true)
+                    popupMenu.setOnMenuItemClickListener(
+                        object : PopupMenu.OnMenuItemClickListener {
+                            override fun onMenuItemClick(item: MenuItem): Boolean {
+                                if (item.itemId == R.id.menu_qs_remove) {
+                                    AlertDialog.Builder(requireContext())
+                                        .setTitle(R.string.delete_quick_search_title)
+                                        .setMessage(getString(R.string.delete_quick_search_message, quickSearch.name))
+                                        .setPositiveButton(R.string.delete) { _: DialogInterface?, _: Int ->
+                                            lifecycleScope.launchIO {
+                                                EhDB.deleteQuickSearch(quickSearch)
+                                                mQuickSearchList.removeAt(index)
+                                                withUIContext {
+                                                    notifyItemRemoved(index)
+                                                    updateDrawerView(true)
+                                                }
                                             }
                                         }
-                                    }
-                                    .setNegativeButton(android.R.string.cancel, null)
-                                    .show()
-                                return true
+                                        .setNegativeButton(android.R.string.cancel, null)
+                                        .show()
+                                    return true
+                                }
+                                return false
                             }
-                            return false
                         }
-                    })
+                    )
                     return@setOnLongClickListener true
                 }
             } else {
                 val keywords = intArrayOf(15, 13, 12, 11)
+                holder.itemView.setOnClickListener {
+                    if (null == mHelper) {
+                        return@setOnClickListener
+                    }
+                    mUrlBuilder.keyword = keywords[holder.bindingAdapterPosition].toString()
+                    onUpdateUrlBuilder()
+                    mHelper!!.refresh()
+                    setState(STATE_NORMAL)
+                    closeDrawer(GravityCompat.END)
+                }
+            }
+            return holder
+        }
+
+        override fun onBindViewHolder(holder: QsDrawerHolder, position: Int) {
+            if (!mIsTopList) {
+                holder.key.text = mQuickSearchList[position].name
+            } else {
                 val toplists = intArrayOf(
                     R.string.toplist_yesterday,
                     R.string.toplist_pastmonth,
@@ -1457,28 +1453,15 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
                 )
                 holder.key.text = getString(toplists[position])
                 holder.option.visibility = View.GONE
-                holder.itemView.setOnClickListener {
-                    if (null == mHelper) {
-                        return@setOnClickListener
-                    }
-                    mUrlBuilder.keyword = keywords[position].toString()
-                    onUpdateUrlBuilder()
-                    mHelper!!.refresh()
-                    setState(STATE_NORMAL)
-                    closeDrawer(GravityCompat.END)
-                }
             }
         }
 
         override fun getItemId(position: Int): Long {
-            if (mIsTopList) {
-                return position.toLong()
-            }
-            return mQuickSearchList[position].id!!
+            return if (mIsTopList) position.toLong() else mQuickSearchList[position].id!!
         }
 
         override fun getItemCount(): Int {
-            return if (!mIsTopList) mQuickSearchList.size else 4
+            return if (mIsTopList) 4 else mQuickSearchList.size
         }
     }
 
@@ -1545,7 +1528,7 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
         resources: Resources, recyclerView: RecyclerView, type: Int
     ) : GalleryAdapter(inflater, resources, recyclerView, type, true) {
         override fun getItemCount(): Int {
-            return if (null != mHelper) mHelper!!.size() else 0
+            return mHelper?.size() ?: 0
         }
 
         public override fun onItemClick(view: View, position: Int) {
@@ -1557,7 +1540,7 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
         }
 
         override fun getDataAt(position: Int): GalleryInfo? {
-            return if (null != mHelper) mHelper!!.getDataAtEx(position) else null
+            return mHelper?.getDataAtEx(position)
         }
     }
 
@@ -1615,21 +1598,15 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
 
         @SuppressLint("NotifyDataSetChanged")
         override fun notifyDataSetChanged() {
-            if (null != mAdapter) {
-                mAdapter!!.notifyDataSetChanged()
-            }
+            mAdapter?.notifyDataSetChanged()
         }
 
         override fun notifyItemRangeInserted(positionStart: Int, itemCount: Int) {
-            if (null != mAdapter) {
-                mAdapter!!.notifyItemRangeInserted(positionStart, itemCount)
-            }
+            mAdapter?.notifyItemRangeInserted(positionStart, itemCount)
         }
 
         override fun onShowView(hiddenView: View, shownView: View) {
-            if (null != mSearchBarMover) {
-                mSearchBarMover!!.showSearchBar()
-            }
+            mSearchBarMover?.showSearchBar()
             showActionFab()
         }
 
@@ -1639,9 +1616,7 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
 
         override fun onScrollToPosition(position: Int) {
             if (0 == position) {
-                if (null != mSearchBarMover) {
-                    mSearchBarMover!!.showSearchBar()
-                }
+                mSearchBarMover?.showSearchBar()
                 showActionFab()
             }
         }

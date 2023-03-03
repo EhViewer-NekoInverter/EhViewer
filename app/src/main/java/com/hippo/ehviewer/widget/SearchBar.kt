@@ -124,7 +124,7 @@ class SearchBar @JvmOverloads constructor(
     }
 
     private fun updateSuggestions(scrollToTop: Boolean = true) {
-        val suggestions = arrayListOf<Suggestion>()
+        val suggestions = ArrayList<Suggestion>()
         val text = mEditText!!.text.toString()
         mSuggestionProvider?.run {
             providerSuggestions(text)?.let {

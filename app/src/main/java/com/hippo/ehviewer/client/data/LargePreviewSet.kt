@@ -23,8 +23,8 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 class LargePreviewSet(
     private val mPositionList: IntList = IntList(),
-    private val mImageUrlList: ArrayList<String> = ArrayList(),
-    private val mPageUrlList: ArrayList<String> = ArrayList()
+    private val mImageUrlList: ArrayList<String> = arrayListOf(),
+    private val mPageUrlList: ArrayList<String> = arrayListOf()
 ) : PreviewSet() {
     fun addItem(index: Int, imageUrl: String, pageUrl: String) {
         mPositionList.add(index)

@@ -82,9 +82,9 @@ object EhTagDatabase {
         tags: Map<String, String>, prefix: String?,
         keyword: String, translate: Boolean
     ): ArrayList<Pair<String?, String>> {
-        val equalsTags = arrayListOf<Pair<String?, String>>()
-        val startsTags = arrayListOf<Pair<String?, String>>()
-        val containsTags = arrayListOf<Pair<String?, String>>()
+        val equalsTags = ArrayList<Pair<String?, String>>()
+        val startsTags = ArrayList<Pair<String?, String>>()
+        val containsTags = ArrayList<Pair<String?, String>>()
         tags.forEach { (tag, hint) ->
             val pair = Pair(if (translate) hint else null, if (prefix == null) tag else "$prefix:$tag")
             val tagStr = if (prefix == null && (keyword.endsWith(':') || !tag.endsWith(':')))

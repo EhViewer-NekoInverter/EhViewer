@@ -309,9 +309,9 @@ public final class SignInScene extends SolidScene implements EditText.OnEditorAc
         EhRequest request = new EhRequest()
                 .setMethod(EhClient.METHOD_GET_PROFILE)
                 .setCallback(callback);
-        request.enqueue(this);
+        request.enqueue();
 
-        new EhRequest().setMethod(EhClient.METHOD_GET_UCONFIG).enqueue(this);
+        new EhRequest().setMethod(EhClient.METHOD_GET_UCONFIG).enqueue();
     }
 
     private void redirectTo() {

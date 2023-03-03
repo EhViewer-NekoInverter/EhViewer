@@ -126,8 +126,7 @@ class ProxyPreference @JvmOverloads constructor(
         if (null == dialog || null == mType || null == mIpInputLayout || null == mIp || null == mPortInputLayout || null == mPort) {
             return
         }
-        val spinner = mType
-        val type = spinner!!.selectedItemPosition
+        val type = mType!!.selectedItemPosition
         val ip = mIp!!.text.toString().trim { it <= ' ' }
         if (ip.isEmpty()) {
             if (type == EhProxySelector.TYPE_HTTP || type == EhProxySelector.TYPE_SOCKS) {

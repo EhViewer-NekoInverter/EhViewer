@@ -41,7 +41,7 @@ class GalleryDetail(
     var parent: String? = null,
 
     @JvmField
-    var newerVersions: ArrayList<GalleryInfo> = ArrayList(),
+    var newerVersions: ArrayList<GalleryInfo> = arrayListOf(),
 
     @JvmField
     var visible: String? = null,
