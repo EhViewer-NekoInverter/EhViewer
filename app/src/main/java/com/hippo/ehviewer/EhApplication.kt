@@ -36,6 +36,7 @@ import com.hippo.ehviewer.client.EhUrl
 import com.hippo.ehviewer.client.EhX509TrustManager
 import com.hippo.ehviewer.client.data.GalleryDetail
 import com.hippo.ehviewer.client.parser.EventPaneParser
+import com.hippo.ehviewer.dao.buildMainDB
 import com.hippo.ehviewer.download.DownloadManager
 import com.hippo.ehviewer.spider.SpiderDen
 import com.hippo.ehviewer.ui.CommonOperations
@@ -100,7 +101,6 @@ class EhApplication : SceneApplication() {
         ReadableTime.initialize(this)
         AppConfig.initialize(this)
         SpiderDen.initialize(this)
-        EhDB.initialize(this)
         BitmapUtils.initialize(this)
         EhTagDatabase.update()
         LocaleDelegate.defaultLocale = Settings.getLocale()
@@ -108,6 +108,9 @@ class EhApplication : SceneApplication() {
         DayNightDelegate.setDefaultNightMode(Settings.getTheme())
 
         launchIO {
+            launchIO {
+                ehDatabase
+            }
             launchIO {
                 downloadManager
             }
@@ -330,5 +333,8 @@ class EhApplication : SceneApplication() {
 
         @JvmStatic
         val favouriteStatusRouter by lazy { FavouriteStatusRouter() }
+
+        @JvmStatic
+        val ehDatabase by lazy { buildMainDB(application) }
     }
 }
