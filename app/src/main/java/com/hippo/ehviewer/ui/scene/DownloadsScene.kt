@@ -78,7 +78,6 @@ import com.hippo.widget.FabLayout.OnClickFabListener
 import com.hippo.widget.FabLayout.OnExpandListener
 import com.hippo.widget.LoadImageView
 import com.hippo.widget.recyclerview.AutoStaggeredGridLayoutManager
-import com.hippo.yorozuya.AssertUtils
 import com.hippo.yorozuya.FileUtils
 import com.hippo.yorozuya.LayoutUtils
 import com.hippo.yorozuya.ObjectUtils
@@ -207,7 +206,7 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
 
         if (mType != -1) {
             mList = ArrayList()
-            list!!.forEach {
+            list.forEach {
                 if (mKeyword != null && EhUtils.getSuitableTitle(it).contains(mKeyword!!, true) || it.state == mType) {
                     mList!!.add(it)
                 }
@@ -279,7 +278,6 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
         mTip = ViewUtils.`$$`(view, R.id.tip) as TextView
         mViewTransition = ViewTransition(content, mTip)
         val context = context
-        AssertUtils.assertNotNull(content)
         val resources = context!!.resources
         val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.big_download)
         drawable!!.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)

@@ -114,7 +114,6 @@ import com.hippo.widget.FabLayout.OnClickFabListener
 import com.hippo.widget.FabLayout.OnExpandListener
 import com.hippo.widget.SearchBarMover
 import com.hippo.yorozuya.AnimationUtils
-import com.hippo.yorozuya.AssertUtils
 import com.hippo.yorozuya.LayoutUtils
 import com.hippo.yorozuya.MathUtils
 import com.hippo.yorozuya.SimpleAnimatorListener
@@ -375,7 +374,7 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
             ListUrlBuilder.MODE_TAG, ListUrlBuilder.MODE_UPLOADER, ListUrlBuilder.MODE_IMAGE_SEARCH -> 0
             else -> throw IllegalStateException("Unexpected value: $mode")
         }
-        navCheckedItem = checkedItemId
+        setNavCheckedItem(checkedItemId)
         mNavCheckedId = checkedItemId
     }
 
@@ -393,7 +392,6 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
         mSearchLayout = ViewUtils.`$$`(mainLayout, R.id.search_layout) as SearchLayout
         mSearchBar = ViewUtils.`$$`(mainLayout, R.id.search_bar) as SearchBar
         mFabLayout = ViewUtils.`$$`(mainLayout, R.id.fab_layout) as FabLayout
-        AssertUtils.assertNotNull(container)
         mSearchFab = ViewUtils.`$$`(mainLayout, R.id.search_fab)
         ViewCompat.setWindowInsetsAnimationCallback(
             view, WindowInsetsAnimationHelper(
@@ -599,15 +597,13 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
         val view = inflater.inflate(R.layout.drawer_list_rv, container, false)
         val toolbar = ViewUtils.`$$`(view, R.id.toolbar) as Toolbar
         val tip = ViewUtils.`$$`(view, R.id.tip) as TextView
-        val context = context
-        AssertUtils.assertNotNull(context)
         val recyclerView = view.findViewById<EasyRecyclerView>(R.id.recycler_view_drawer)
         mDrawerViewTransition = ViewTransition(recyclerView, tip)
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
         val decoration = LinearDividerItemDecoration(
             LinearDividerItemDecoration.VERTICAL,
             theme.resolveColor(R.attr.dividerColor),
-            LayoutUtils.dp2pix(context, 1f)
+            LayoutUtils.dp2pix(requireContext(), 1f)
         )
         decoration.setShowLastDivider(true)
         recyclerView.addItemDecoration(decoration)
@@ -1292,23 +1288,24 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
     @IntDef(STATE_NORMAL, STATE_SIMPLE_SEARCH, STATE_SEARCH, STATE_SEARCH_SHOW_LIST)
     @Retention(AnnotationRetention.SOURCE)
     private annotation class State
-    private class GetGalleryListListener(
+    private inner class GetGalleryListListener(
         context: Context,
         stageId: Int,
         sceneTag: String?,
         private val mTaskId: Int
     ) : EhCallback<GalleryListScene, GalleryListParser.Result>(context, stageId, sceneTag) {
         override fun onSuccess(result: GalleryListParser.Result) {
-            val scene = scene
-            scene?.onGetGalleryListSuccess(result, mTaskId)
+            val scene = this@GalleryListScene
+            scene.onGetGalleryListSuccess(result, mTaskId)
         }
 
         override fun onFailure(e: Exception) {
-            val scene = scene
-            scene?.onGetGalleryListFailure(e, mTaskId)
+            val scene = this@GalleryListScene
+            scene.onGetGalleryListFailure(e, mTaskId)
         }
 
         override fun onCancel() {}
+
         override fun isInstance(scene: SceneFragment): Boolean {
             return scene is GalleryListScene
         }
@@ -1325,6 +1322,7 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
         }
 
         override fun onCancel() {}
+
         override fun isInstance(scene: SceneFragment): Boolean {
             return scene is GalleryListScene
         }
@@ -1341,6 +1339,7 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
         }
 
         override fun onCancel() {}
+
         override fun isInstance(scene: SceneFragment): Boolean {
             return scene is GalleryListScene
         }
