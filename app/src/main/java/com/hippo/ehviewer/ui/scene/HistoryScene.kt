@@ -150,6 +150,7 @@ class HistoryScene : ToolbarScene() {
         val historyData = Pager(
             PagingConfig(20)
         ) {
+            // DB Actions
             EhDB.getHistoryLazyList()
         }.flow.cachedIn(viewLifecycleOwner.lifecycleScope)
         recyclerView.adapter = mAdapter
@@ -216,6 +217,7 @@ class HistoryScene : ToolbarScene() {
                     return@setPositiveButton
                 }
                 lifecycleScope.launchIO {
+                    // DB Actions
                     EhDB.clearHistoryInfo()
                     withUIContext {
                         mAdapter.refresh()
@@ -302,22 +304,26 @@ class HistoryScene : ToolbarScene() {
                                 )
                             )
                             .setPositiveButton(android.R.string.ok) { _: DialogInterface?, _: Int ->
+                                // DownloadManager Actions
                                 mDownloadManager.deleteDownload(
                                     gi.gid
                                 )
                             }
                             .show()
                     } else {
+                        // CommonOperations Actions
                         CommonOperations.startDownload(activity, gi, false)
                     }
 
                     2 -> if (favourited) {
+                        // CommonOperations Actions
                         CommonOperations.removeFromFavorites(
                             activity,
                             gi,
                             RemoveFromFavoriteListener(context, activity.stageId, tag)
                         )
                     } else {
+                        // CommonOperations Actions
                         CommonOperations.addToFavorites(
                             activity,
                             gi,
@@ -329,6 +335,7 @@ class HistoryScene : ToolbarScene() {
                     3 -> {
                         lifecycleScope.launchIO {
                             val hi: HistoryInfo? = gi as? HistoryInfo
+                            // DB Actions
                             hi?.let { EhDB.deleteHistoryInfo(hi) }
                             withUIContext {
                                 mAdapter.refresh()
@@ -412,6 +419,7 @@ class HistoryScene : ToolbarScene() {
             val downloadManager = EhApplication.downloadManager
             val downloadInfo = downloadManager.getDownloadInfo(mGi.gid) ?: return
             val label = if (which == 0) null else mLabels[which]
+            // DownloadManager Actions
             downloadManager.changeLabel(listOf(downloadInfo), label)
         }
     }
@@ -500,6 +508,7 @@ class HistoryScene : ToolbarScene() {
             val mPosition = viewHolder.bindingAdapterPosition
             lifecycleScope.launchIO {
                 val info: HistoryInfo? = mAdapter.peek(mPosition)
+                // DB Actions
                 info?.let { EhDB.deleteHistoryInfo(info) }
                 withUIContext {
                     mAdapter.refresh()

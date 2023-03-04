@@ -581,8 +581,9 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
                 dialog.dismiss()
                 val quickSearch = mUrlBuilder.toQuickSearch()
                 quickSearch.name = text
-                EhDB.insertQuickSearch(quickSearch)
                 mQuickSearchList.add(quickSearch)
+                // DB Actions
+                EhDB.insertQuickSearch(quickSearch)
                 withUIContext {
                     adapter.notifyItemInserted(mQuickSearchList.size - 1)
                     updateDrawerView(true)
@@ -616,6 +617,7 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
         mItemTouchHelper!!.attachToRecyclerView(recyclerView)
         recyclerView.adapter = qsDrawerAdapter
         lifecycleScope.launchIO {
+            // DB Actions
             mQuickSearchList = EhDB.getAllQuickSearch()
             withUIContext {
                 updateDrawerView(false)
@@ -873,22 +875,26 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
                                 )
                             )
                             .setPositiveButton(android.R.string.ok) { _: DialogInterface?, _: Int ->
+                                // DownloadManager Actions
                                 mDownloadManager.deleteDownload(
                                     gi.gid
                                 )
                             }
                             .show()
                     } else {
+                        // CommonOperations Actions
                         CommonOperations.startDownload(activity, gi, false)
                     }
 
                     2 -> if (favourited) {
+                        // CommonOperations Actions
                         CommonOperations.removeFromFavorites(
                             activity,
                             gi,
                             RemoveFromFavoriteListener(context, activity.stageId, tag)
                         )
                     } else {
+                        // CommonOperations Actions
                         CommonOperations.addToFavorites(
                             activity,
                             gi,
@@ -1371,6 +1377,7 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
             val downloadManager = downloadManager
             val downloadInfo = downloadManager.getDownloadInfo(mGi.gid) ?: return
             val label = if (which == 0) null else mLabels[which]
+            // DownloadManager Actions
             downloadManager.changeLabel(listOf(downloadInfo), label)
         }
     }
@@ -1406,13 +1413,12 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
                                         .setTitle(R.string.delete_quick_search_title)
                                         .setMessage(getString(R.string.delete_quick_search_message, quickSearch.name))
                                         .setPositiveButton(R.string.delete) { _: DialogInterface?, _: Int ->
+                                            mQuickSearchList.removeAt(index)
+                                            notifyItemRemoved(index)
+                                            updateDrawerView(true)
                                             lifecycleScope.launchIO {
+                                                // DB Actions
                                                 EhDB.deleteQuickSearch(quickSearch)
-                                                mQuickSearchList.removeAt(index)
-                                                withUIContext {
-                                                    notifyItemRemoved(index)
-                                                    updateDrawerView(true)
-                                                }
                                             }
                                         }
                                         .setNegativeButton(android.R.string.cancel, null)
@@ -1648,15 +1654,13 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
             if (fromPosition == toPosition) {
                 return false
             }
-            // May cause movement disruption
-            // lifecycleScope.launchIO {
+            val item = mQuickSearchList.removeAt(fromPosition)
+            mQuickSearchList.add(toPosition, item)
+            mAdapter.notifyItemMoved(fromPosition, toPosition)
+            lifecycleScope.launchIO {
+                // DB Actions
                 EhDB.moveQuickSearch(fromPosition, toPosition)
-                val item = mQuickSearchList.removeAt(fromPosition)
-                mQuickSearchList.add(toPosition, item)
-                // withUIContext {
-                    mAdapter.notifyItemMoved(fromPosition, toPosition)
-                // }
-            // }
+            }
             return true
         }
 
