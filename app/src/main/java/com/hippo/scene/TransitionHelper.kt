@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.scene
 
-package com.hippo.scene;
+import android.content.Context
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 
-import android.content.Context;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-
-public interface TransitionHelper {
-    boolean onTransition(Context context, FragmentTransaction transaction, Fragment exit, Fragment enter);
+interface TransitionHelper {
+    fun onTransition(context: Context, transaction: FragmentTransaction, exit: Fragment, enter: Fragment): Boolean
 }

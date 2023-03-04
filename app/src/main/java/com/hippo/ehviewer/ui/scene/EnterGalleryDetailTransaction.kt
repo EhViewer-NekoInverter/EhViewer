@@ -13,46 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.ehviewer.ui.scene
 
-package com.hippo.ehviewer.ui.scene;
+import android.content.Context
+import android.view.View
+import androidx.core.view.ViewCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import androidx.transition.TransitionInflater
+import com.hippo.ehviewer.R
+import com.hippo.scene.TransitionHelper
 
-import android.content.Context;
-import android.view.View;
-
-import androidx.core.view.ViewCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.transition.TransitionInflater;
-
-import com.hippo.ehviewer.R;
-import com.hippo.scene.TransitionHelper;
-
-class EnterGalleryDetailTransaction implements TransitionHelper {
-    private final View mThumb;
-
-    public EnterGalleryDetailTransaction(View thumb) {
-        mThumb = thumb;
-    }
-
-    @Override
-    public boolean onTransition(Context context, FragmentTransaction transaction,
-                                Fragment exit, Fragment enter) {
-        if (mThumb == null || !(enter instanceof GalleryDetailScene)) {
-            return false;
+class EnterGalleryDetailTransaction(
+    private val mThumb: View?
+) : TransitionHelper {
+    override fun onTransition(
+        context: Context, transaction: FragmentTransaction,
+        exit: Fragment, enter: Fragment
+    ): Boolean {
+        if (mThumb == null || enter !is GalleryDetailScene) {
+            return false
         }
-
-        String transitionName = ViewCompat.getTransitionName(mThumb);
-        if (transitionName != null) {
-            exit.setSharedElementReturnTransition(
-                    TransitionInflater.from(context).inflateTransition(R.transition.trans_move));
-            exit.setExitTransition(
-                    TransitionInflater.from(context).inflateTransition(R.transition.trans_fade));
-            enter.setSharedElementEnterTransition(
-                    TransitionInflater.from(context).inflateTransition(R.transition.trans_move));
-            enter.setEnterTransition(
-                    TransitionInflater.from(context).inflateTransition(R.transition.trans_fade));
-            transaction.addSharedElement(mThumb, transitionName);
+        ViewCompat.getTransitionName(mThumb)?.let {
+            exit.sharedElementReturnTransition =
+                TransitionInflater.from(context).inflateTransition(R.transition.trans_move)
+            exit.exitTransition =
+                TransitionInflater.from(context).inflateTransition(R.transition.trans_fade)
+            enter.sharedElementEnterTransition =
+                TransitionInflater.from(context).inflateTransition(R.transition.trans_move)
+            enter.enterTransition =
+                TransitionInflater.from(context).inflateTransition(R.transition.trans_fade)
+            transaction.addSharedElement(mThumb, it)
         }
-        return true;
+        return true
     }
 }
