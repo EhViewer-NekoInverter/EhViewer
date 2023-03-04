@@ -1154,12 +1154,12 @@ public class FavoritesScene extends BaseScene implements
         }
 
         @Override
-        void onItemClick(View view, int position) {
+        public void onItemClick(View view, int position) {
             FavoritesScene.this.onItemClick(view, position);
         }
 
         @Override
-        boolean onItemLongClick(View view, int position) {
+        public boolean onItemLongClick(View view, int position) {
             return FavoritesScene.this.onItemLongClick(position);
         }
 

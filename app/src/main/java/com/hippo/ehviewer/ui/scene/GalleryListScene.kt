@@ -1536,11 +1536,11 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
             return mHelper?.size() ?: 0
         }
 
-        public override fun onItemClick(view: View, position: Int) {
+        override fun onItemClick(view: View, position: Int) {
             this@GalleryListScene.onItemClick(view, position)
         }
 
-        public override fun onItemLongClick(view: View, position: Int): Boolean {
+        override fun onItemLongClick(view: View, position: Int): Boolean {
             return this@GalleryListScene.onItemLongClick(position)
         }
 
