@@ -260,7 +260,10 @@ internal abstract class GalleryAdapter(
             }
         }
         // Update transition name
-        ViewCompat.setTransitionName(holder.thumb, TransitionNameFactory.getThumbTransitionName(gi.gid))
+        ViewCompat.setTransitionName(
+            holder.thumb,
+            TransitionNameFactory.getThumbTransitionName(gi.gid)
+        )
     }
 
     @IntDef(TYPE_LIST, TYPE_GRID)

@@ -1080,10 +1080,10 @@ public class GalleryDetailScene extends BaseScene implements View.OnClickListene
 
         if (gid != -1 && mThumb != null &&
                 mTitle != null && mUploader != null && mCategory != null) {
-            ViewCompat.setTransitionName(mThumb, TransitionNameFactory.getThumbTransitionName(gid));
-            ViewCompat.setTransitionName(mTitle, TransitionNameFactory.getTitleTransitionName(gid));
-            ViewCompat.setTransitionName(mUploader, TransitionNameFactory.getUploaderTransitionName(gid));
-            ViewCompat.setTransitionName(mCategory, TransitionNameFactory.getCategoryTransitionName(gid));
+            ViewCompat.setTransitionName(mThumb, TransitionNameFactory.INSTANCE.getThumbTransitionName(gid));
+            ViewCompat.setTransitionName(mTitle, TransitionNameFactory.INSTANCE.getTitleTransitionName(gid));
+            ViewCompat.setTransitionName(mUploader, TransitionNameFactory.INSTANCE.getUploaderTransitionName(gid));
+            ViewCompat.setTransitionName(mCategory, TransitionNameFactory.INSTANCE.getCategoryTransitionName(gid));
         }
     }
 

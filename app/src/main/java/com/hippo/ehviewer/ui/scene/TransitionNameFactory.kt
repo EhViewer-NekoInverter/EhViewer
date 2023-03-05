@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.ehviewer.ui.scene
 
-package com.hippo.ehviewer.ui.scene;
-
-public final class TransitionNameFactory {
-    public static String getThumbTransitionName(long gid) {
-        return "thumb:" + gid;
+object TransitionNameFactory {
+    fun getThumbTransitionName(gid: Long): String {
+        return "thumb:$gid"
     }
 
-    public static String getTitleTransitionName(long gid) {
-        return "title:" + gid;
+    fun getTitleTransitionName(gid: Long): String {
+        return "title:$gid"
     }
 
-    public static String getUploaderTransitionName(long gid) {
-        return "uploader:" + gid;
+    fun getUploaderTransitionName(gid: Long): String {
+        return "uploader:$gid"
     }
 
-    public static String getCategoryTransitionName(long gid) {
-        return "category:" + gid;
+    fun getCategoryTransitionName(gid: Long): String {
+        return "category:$gid"
     }
 }
