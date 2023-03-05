@@ -44,7 +44,6 @@ import androidx.annotation.IntDef
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsAnimationCompat
@@ -125,8 +124,8 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
 
-class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
-    OnDragHandlerListener, SearchLayout.Helper, SearchBarMover.Helper, View.OnClickListener,
+class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListener,
+    SearchLayout.Helper, SearchBarMover.Helper, SearchBar.Helper, View.OnClickListener,
     OnClickFabListener, OnExpandListener {
     private val mDownloadManager: DownloadManager = downloadManager
 
@@ -383,6 +382,7 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
         savedInstanceState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.scene_gallery_list, container, false)
+        val context = context!!
         mHideActionFabSlop = ViewConfiguration.get(requireContext()).scaledTouchSlop
         mShowActionFab = true
         val mainLayout = ViewUtils.`$$`(view, R.id.main_layout)
@@ -437,7 +437,7 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
         mFabLayout!!.setOnClickFabListener(this)
         mFabLayout!!.setOnExpandListener(this)
         addAboveSnackView(mFabLayout)
-        mActionFabDrawable = AddDeleteDrawable(context, context!!.getColor(R.color.primary_drawable_dark))
+        mActionFabDrawable = AddDeleteDrawable(context, context.getColor(R.color.primary_drawable_dark))
         mFabLayout!!.primaryFab!!.setImageDrawable(mActionFabDrawable)
         mSearchFab!!.setOnClickListener(this)
         mSearchBarMover = SearchBarMover(this, mSearchBar, mRecyclerView, mSearchLayout)
@@ -678,8 +678,9 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
         args.putString(GalleryDetailScene.KEY_ACTION, GalleryDetailScene.ACTION_GALLERY_INFO)
         args.putParcelable(GalleryDetailScene.KEY_GALLERY_INFO, gi)
         val announcer = Announcer(GalleryDetailScene::class.java).setArgs(args)
-        val thumb: View? = view.findViewById(R.id.thumb)
-        thumb?.let { announcer.setTranHelper(EnterGalleryDetailTransaction(thumb)) }
+        (view.findViewById(R.id.thumb) as View?)?.let {
+            announcer.setTranHelper(EnterGalleryDetailTransaction(it))
+        }
         startScene(announcer)
     }
 
@@ -1474,7 +1475,7 @@ class GalleryListScene : BaseScene(), SearchBar.Helper, OnStateChangeListener,
         override fun getText(textView: TextView): CharSequence? {
             return if (textView.id == android.R.id.text1) {
                 val bookImage =
-                    ContextCompat.getDrawable(textView.context, R.drawable.v_book_open_x24)
+                    textView.context.getDrawable(R.drawable.v_book_open_x24)
                 val ssb = SpannableStringBuilder("    ")
                 ssb.append(getString(R.string.gallery_list_search_bar_open_gallery))
                 val imageSize = (textView.textSize * 1.25).toInt()
