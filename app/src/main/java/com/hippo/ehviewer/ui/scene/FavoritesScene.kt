@@ -64,6 +64,7 @@ import com.hippo.ehviewer.widget.GalleryInfoContentHelper
 import com.hippo.ehviewer.widget.SearchBar
 import com.hippo.scene.Announcer
 import com.hippo.scene.SceneFragment
+import com.hippo.util.getParcelableCompat
 import com.hippo.widget.ContentLayout
 import com.hippo.widget.FabLayout
 import com.hippo.widget.FabLayout.OnClickFabListener
@@ -147,7 +148,7 @@ class FavoritesScene : BaseScene(), OnDragHandlerListener, SearchBarMover.Helper
     }
 
     private fun onRestore(savedInstanceState: Bundle) {
-        mUrlBuilder = savedInstanceState.getParcelable(KEY_URL_BUILDER)
+        mUrlBuilder = savedInstanceState.getParcelableCompat(KEY_URL_BUILDER)
         if (mUrlBuilder == null) {
             mUrlBuilder = FavListUrlBuilder()
         }
@@ -747,7 +748,7 @@ class FavoritesScene : BaseScene(), OnDragHandlerListener, SearchBarMover.Helper
     private fun onGetFavoritesSuccess(result: FavoritesParser.Result, taskId: Int) {
         if (mHelper != null && mHelper!!.isCurrentTask(taskId)) {
             if (mFavCatArray != null) {
-                System.arraycopy(result.catArray, 0, mFavCatArray, 0, 10)
+                System.arraycopy(result.catArray, 0, mFavCatArray!!, 0, 10)
             }
             mFavCountArray = result.countArray
             if (mFavCountArray != null) {

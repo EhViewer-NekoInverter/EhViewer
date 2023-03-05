@@ -984,13 +984,14 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
                 for ((i, info) in mDownloadInfoList.withIndex()) {
                     // Put file
                     files[i] = SpiderDen.getGalleryDownloadDir(info.gid)
-                    // Remove download path
                     // DB Actions
                     EhDB.removeDownloadDirname(info.gid)
                 }
-                // Delete file
+                // Other Actions
                 lifecycleScope.launchIO {
-                    files.forEach { it?.delete() }
+                    runCatching {
+                        files.forEach { it?.delete() }
+                    }
                 }
             }
         }
@@ -1119,7 +1120,7 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
                 return
             }
             val info = mList!![position]
-            holder.thumb.load(EhCacheKeyFactory.getThumbKey(info.gid), info.thumb)
+            holder.thumb.load(EhCacheKeyFactory.getThumbKey(info.gid), info.thumb!!)
             holder.title.text = EhUtils.getSuitableTitle(info)
             holder.uploader.text = info.uploader
             holder.rating.rating = info.rating

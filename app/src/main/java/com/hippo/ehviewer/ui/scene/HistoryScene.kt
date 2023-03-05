@@ -450,7 +450,7 @@ class HistoryScene : ToolbarScene() {
         override fun onBindViewHolder(holder: HistoryHolder, position: Int) {
             val gi: GalleryInfo? = getItem(position)
             gi ?: return
-            holder.thumb.load(EhCacheKeyFactory.getThumbKey(gi.gid), gi.thumb)
+            holder.thumb.load(EhCacheKeyFactory.getThumbKey(gi.gid), gi.thumb!!)
             holder.title.text = EhUtils.getSuitableTitle(gi)
             holder.uploader.text = gi.uploader
             holder.rating.rating = gi.rating

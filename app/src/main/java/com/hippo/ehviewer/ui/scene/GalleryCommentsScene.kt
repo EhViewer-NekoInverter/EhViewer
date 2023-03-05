@@ -61,7 +61,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.hippo.app.EditTextDialogBuilder
 import com.hippo.easyrecyclerview.EasyRecyclerView
 import com.hippo.easyrecyclerview.LinearDividerItemDecoration
-import com.hippo.ehviewer.EhApplication
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.UrlOpener
 import com.hippo.ehviewer.WindowInsetsAnimationHelper
@@ -903,7 +902,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
             sp = Html.fromHtml(
                 comment.comment,
                 Html.FROM_HTML_MODE_LEGACY,
-                URLImageGetter(textView, EhApplication.conaco),
+                URLImageGetter(textView),
                 null
             )
             val ssb = SpannableStringBuilder(sp)
