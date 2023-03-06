@@ -279,7 +279,7 @@ public final class SignInScene extends SolidScene implements EditText.OnEditorAc
         showProgress(true);
 
         // Clean up for sign in
-        EhUtils.signOut();
+        EhUtils.INSTANCE.signOut();
 
         EhCallback<?, ?> callback = new SignInListener(context,
                 activity.getStageId(), getTag());

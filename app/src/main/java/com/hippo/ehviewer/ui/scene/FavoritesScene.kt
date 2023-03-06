@@ -1088,7 +1088,7 @@ class FavoritesScene : BaseScene(), OnDragHandlerListener, SearchBarMover.Helper
                     mModifyGiList.clear()
                     val url: String = if (local) {
                         // Local fav is shown now, but operation need be done for cloud fav
-                        EhUrl.getFavoritesUrl()
+                        EhUrl.favoritesUrl
                     } else {
                         mUrlBuilder!!.build()
                     }

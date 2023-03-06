@@ -64,7 +64,7 @@ public class WebViewSignInScene extends SolidScene {
         Context context = getContext();
         AssertUtils.assertNotNull(context);
 
-        EhUtils.signOut();
+        EhUtils.INSTANCE.signOut();
 
         // http://stackoverflow.com/questions/32284642/how-to-handle-an-uncatched-exception
         CookieManager cookieManager = CookieManager.getInstance();
@@ -116,7 +116,7 @@ public class WebViewSignInScene extends SolidScene {
         }
 
         private void addCookie(String domain, Cookie cookie) {
-            EhApplication.getEhCookieStore().addCookie(EhCookieStore.newCookie(cookie, domain, true, true, true));
+            EhApplication.getEhCookieStore().addCookie(EhCookieStore.INSTANCE.newCookie(cookie, domain, true, true, true));
         }
 
         @Override

@@ -228,7 +228,7 @@ public class CookieSignInScene extends SolidScene implements EditText.OnEditorAc
             return;
         }
 
-        EhUtils.signOut();
+        EhUtils.INSTANCE.signOut();
 
         EhCookieStore store = EhApplication.getEhCookieStore();
         store.addCookie(newCookie(EhCookieStore.KEY_IPB_MEMBER_ID, id, EhUrl.DOMAIN_E));
