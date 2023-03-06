@@ -135,7 +135,7 @@ public final class SpiderDen {
             return false;
         }
 
-        String key = EhCacheKeyFactory.getImageKey(mGid, index);
+        String key = EhCacheKeyFactory.INSTANCE.getImageKey(mGid, index);
         return sCache.contain(key);
     }
 
@@ -170,7 +170,7 @@ public final class SpiderDen {
         }
 
         // Find image file in cache
-        String key = EhCacheKeyFactory.getImageKey(mGid, index);
+        String key = EhCacheKeyFactory.INSTANCE.getImageKey(mGid, index);
         InputStreamPipe pipe = sCache.getInputStreamPipe(key);
         if (pipe == null) {
             return false;
@@ -229,7 +229,7 @@ public final class SpiderDen {
             return false;
         }
 
-        String key = EhCacheKeyFactory.getImageKey(mGid, index);
+        String key = EhCacheKeyFactory.INSTANCE.getImageKey(mGid, index);
         return sCache.remove(key);
     }
 
@@ -262,7 +262,7 @@ public final class SpiderDen {
             return null;
         }
 
-        String key = EhCacheKeyFactory.getImageKey(mGid, index);
+        String key = EhCacheKeyFactory.INSTANCE.getImageKey(mGid, index);
         return sCache.getOutputStreamPipe(key);
     }
 
@@ -307,7 +307,7 @@ public final class SpiderDen {
             return null;
         }
 
-        String key = EhCacheKeyFactory.getImageKey(mGid, index);
+        String key = EhCacheKeyFactory.INSTANCE.getImageKey(mGid, index);
         return sCache.getInputStreamPipe(key);
     }
 
