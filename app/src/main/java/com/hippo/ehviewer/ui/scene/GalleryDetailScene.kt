@@ -89,6 +89,8 @@ import com.hippo.ehviewer.client.data.GalleryTagGroup
 import com.hippo.ehviewer.client.data.ListUrlBuilder
 import com.hippo.ehviewer.client.exception.NoHAtHClientException
 import com.hippo.ehviewer.client.parser.ArchiveParser
+import com.hippo.ehviewer.client.parser.HomeParser
+import com.hippo.ehviewer.client.parser.ParserUtils
 import com.hippo.ehviewer.client.parser.RateGalleryParser
 import com.hippo.ehviewer.client.parser.TorrentParser
 import com.hippo.ehviewer.client.parser.VoteTagParser
@@ -212,6 +214,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
     }
     private var mArchiveFormParamOr: String? = null
     private var mArchiveList: List<ArchiveParser.Archive>? = null
+    private var mCurrentFunds: HomeParser.Funds? = null
     @State
     private var mState = STATE_INIT
     private var mModifyingFavorites = false
@@ -1749,12 +1752,12 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                         .setCallback(this)
                     mRequest!!.enqueue(this@GalleryDetailScene)
                 } else {
-                    bind(mArchiveList)
+                    bind(mArchiveList, mCurrentFunds)
                 }
             }
         }
 
-        private fun bind(data: List<ArchiveParser.Archive>?) {
+        private fun bind(data: List<ArchiveParser.Archive>?, funds: HomeParser.Funds?) {
             if (null == mDialog || null == mProgressView || null == mErrorText || null == mListView) {
                 return
             }
@@ -1784,6 +1787,14 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                 mListView!!.visibility = View.VISIBLE
                 mListView!!.adapter =
                     ArrayAdapter(mDialog!!.context, R.layout.item_select_dialog, nameArray)
+                if (funds != null) {
+                    var fundsGP = funds.fundsGP.toString()
+                    // Ex GP numbers are rounded down to the nearest thousand
+                    if (EhUtils.isExHentai) {
+                        fundsGP += "+"
+                    }
+                    mDialog!!.setTitle(getString(R.string.current_funds, fundsGP, funds.fundsC))
+                }
             }
         }
 
@@ -1791,6 +1802,18 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
             val context = context
             val activity = mainActivity
             if (null != context && null != activity && null != mArchiveList && position < mArchiveList!!.size) {
+                if (mArchiveList!![position].name == "Insufficient Funds") {
+                    showTip(R.string.insufficient_funds, LENGTH_SHORT)
+                    return
+                } else if (mCurrentFunds != null) {
+                    val cost = ParserUtils.parseInt(
+                        mArchiveList!![position].cost.removeSuffix("GP").removeSuffix("Credits"), 0
+                    )
+                    if (cost > maxOf(mCurrentFunds!!.fundsGP, mCurrentFunds!!.fundsC)) {
+                        showTip(R.string.insufficient_funds, LENGTH_SHORT)
+                        return
+                    }
+                }
                 val res = mArchiveList!![position].res
                 val isHAtH = mArchiveList!![position].isHAtH
                 val request = EhRequest()
@@ -1827,7 +1850,8 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                 mRequest = null
                 mArchiveFormParamOr = result.paramOr
                 mArchiveList = result.archiveList
-                bind(result.archiveList)
+                mCurrentFunds = result.funds
+                bind(result.archiveList, result.funds)
             }
         }
 

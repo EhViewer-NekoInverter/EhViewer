@@ -21,6 +21,8 @@ import org.jsoup.Jsoup
 object ArchiveParser {
     private val PATTERN_ARCHIVE_URL =
         Regex("<strong>(.*)</strong>.*<a href=\"([^\"]*)\">Click Here To Start Downloading</a>")
+    private val PATTERN_CURRENT_FUNDS =
+        Regex("<p>([\\d,]+) GP \\[[^]]*] &nbsp; ([\\d,]+) Credits \\[[^]]*]</p>")
     private val PATTERN_HATH_FORM =
         Regex("<form id=\"hathdl_form\" action=\"[^\"]*?or=([^=\"]*?)\" method=\"post\">")
     private val PATTERN_HATH_ARCHIVE =
@@ -53,7 +55,14 @@ object ArchiveParser {
             val item = Archive(res, name, size, cost, true)
             archiveList.add(item)
         }
-        return Result(paramOr, archiveList)
+        val result = Result(paramOr, archiveList, null)
+        PATTERN_CURRENT_FUNDS.find(body)?.groupValues?.run {
+            val fundsGP = ParserUtils.parseInt(get(1), 0)
+            val fundsC = ParserUtils.parseInt(get(2), 0)
+            val funds = HomeParser.Funds(fundsGP, fundsC)
+            result.funds = funds
+        }
+        return result
     }
 
     @Throws(NoHAtHClientException::class)
@@ -72,5 +81,5 @@ object ArchiveParser {
         val isHAtH: Boolean
     )
 
-    class Result(val paramOr: String?, val archiveList: List<Archive>)
+    class Result(val paramOr: String?, val archiveList: List<Archive>, var funds: HomeParser.Funds?)
 }

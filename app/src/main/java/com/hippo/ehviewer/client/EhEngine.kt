@@ -681,6 +681,13 @@ object EhEngine {
                 headers = response.headers
                 body = response.body.string()
                 result = ArchiveParser.parse(body!!)!!
+                if (result.funds == null) {
+                    try {
+                        result.funds = getFunds()
+                    } catch (e: Throwable) {
+                        e.printStackTrace()
+                    }
+                }
             }
         } catch (e: Throwable) {
             ExceptionUtils.throwIfFatal(e)
