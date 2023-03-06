@@ -41,6 +41,7 @@ import com.hippo.ehviewer.client.parser.GalleryNotAvailableParser
 import com.hippo.ehviewer.client.parser.GalleryPageApiParser
 import com.hippo.ehviewer.client.parser.GalleryPageParser
 import com.hippo.ehviewer.client.parser.GalleryTokenApiParser
+import com.hippo.ehviewer.client.parser.HomeParser
 import com.hippo.ehviewer.client.parser.ProfileParser
 import com.hippo.ehviewer.client.parser.RateGalleryParser
 import com.hippo.ehviewer.client.parser.SignInParser
@@ -49,7 +50,6 @@ import com.hippo.ehviewer.client.parser.VoteCommentParser
 import com.hippo.ehviewer.client.parser.VoteTagParser
 import com.hippo.network.StatusCodeException
 import com.hippo.util.ExceptionUtils
-import com.hippo.yorozuya.AssertUtils
 import java.io.File
 import kotlin.math.ceil
 import kotlinx.coroutines.delay
@@ -87,7 +87,7 @@ object EhEngine {
 
         // Check sad panda (without panda)
         if (headers != null && "text/html; charset=UTF-8" == headers["Content-Type"] &&
-                "0" == headers["Content-Length"] && EhUrl.SITE_EX == Settings.getGallerySite()) {
+                "0" == headers["Content-Length"] && EhUtils.isExHentai) {
             throw EhException("Sad Panda\n(without panda)")
         }
 
@@ -334,7 +334,7 @@ object EhEngine {
                 if (html != null) {
                     application.showEventPane(html)
                 }
-                return GalleryDetailParser.parse(body)
+                return GalleryDetailParser.parse(body!!)
             }
         } catch (e: Throwable) {
             ExceptionUtils.throwIfFatal(e)
@@ -359,8 +359,8 @@ object EhEngine {
                 headers = response.headers
                 body = response.body.string()
                 return Pair.create(
-                    GalleryDetailParser.parsePreviewSet(body),
-                    GalleryDetailParser.parsePreviewPages(body)
+                    GalleryDetailParser.parsePreviewSet(body!!),
+                    GalleryDetailParser.parsePreviewPages(body!!)
                 )
             }
         } catch (e: Throwable) {
@@ -574,7 +574,7 @@ object EhEngine {
         gidArray: LongArray,
         tokenArray: Array<String?>, dstCat: Int
     ): Void? {
-        AssertUtils.assertEquals(gidArray.size, tokenArray.size)
+        check(gidArray.size == tokenArray.size)
         var i = 0
         val n = gidArray.size
         while (i < n) {
@@ -680,7 +680,7 @@ object EhEngine {
                 code = response.code
                 headers = response.headers
                 body = response.body.string()
-                result = ArchiveParser.parse(body)!!
+                result = ArchiveParser.parse(body!!)!!
             }
         } catch (e: Throwable) {
             ExceptionUtils.throwIfFatal(e)
@@ -722,6 +722,7 @@ object EhEngine {
         val call = okHttpClient.newCall(request)
         var body: String? = null
         var headers: Headers? = null
+        var result: String?
         var code = -1
         try {
             call.executeAsync().use { response ->
@@ -729,15 +730,16 @@ object EhEngine {
                 headers = response.headers
                 body = response.body.string()
                 transformException(code, headers, body, null)
+                result = ArchiveParser.parseArchiveUrl(body!!)
             }
         } catch (e: Throwable) {
             ExceptionUtils.throwIfFatal(e)
             transformException(code, headers, body, e)
             throw e
         }
-        var result = ArchiveParser.parseArchiveUrl(body)
         if (!isHAtH) {
             if (result == null) {
+                // Wait for the server to prepare archives
                 delay(1000)
                 try {
                     call.clone().executeAsync().use { response ->
@@ -745,13 +747,13 @@ object EhEngine {
                         headers = response.headers
                         body = response.body.string()
                         transformException(code, headers, body, null)
+                        result = ArchiveParser.parseArchiveUrl(body!!)
                     }
                 } catch (e: Throwable) {
                     ExceptionUtils.throwIfFatal(e)
                     transformException(code, headers, body, e)
                     throw e
                 }
-                result = ArchiveParser.parseArchiveUrl(body)
                 if (result == null) {
                     throw EhException("Archive unavailable")
                 }
@@ -759,6 +761,29 @@ object EhEngine {
             return result
         }
         return null
+    }
+
+    @Throws(Throwable::class)
+    suspend fun getFunds(): HomeParser.Funds {
+        val url = EhUrl.URL_FUNDS
+        Log.d(TAG, url)
+        val request = EhRequestBuilder(url, null).build()
+        val call = okHttpClient.newCall(request)
+        var body: String? = null
+        var headers: Headers? = null
+        var code = -1
+        try {
+            call.executeAsync().use { response ->
+                code = response.code
+                headers = response.headers
+                body = response.body.string()
+                return HomeParser.parseFunds(body!!)
+            }
+        } catch (e: Throwable) {
+            ExceptionUtils.throwIfFatal(e)
+            transformException(code, headers, body, e)
+            throw e
+        }
     }
 
     @Throws(Throwable::class)
