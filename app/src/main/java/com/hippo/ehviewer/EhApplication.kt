@@ -59,8 +59,6 @@ import javax.net.ssl.X509TrustManager
 import kotlin.math.min
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import okhttp3.Cache
-import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import rikka.material.app.DayNightDelegate
 import rikka.material.app.LocaleDelegate
@@ -150,11 +148,7 @@ class EhApplication : SceneApplication() {
         if (!Settings.getRequestNews()) {
             return
         }
-        val store = ehCookieStore
-        val eh = EhUrl.HOST_E.toHttpUrl()
-        if (store.contains(eh, EhCookieStore.KEY_IPB_MEMBER_ID) ||
-            store.contains(eh, EhCookieStore.KEY_IPB_PASS_HASH)
-        ) {
+        if (ehCookieStore.hasSignedIn()) {
             val referer = EhUrl.REFERER_E
             val request = EhRequestBuilder(EhUrl.HOST_E + "news.php", referer).build()
             val call = okHttpClient.newCall(request)
@@ -265,7 +259,6 @@ class EhApplication : SceneApplication() {
         val okHttpClient by lazy {
             val builder = OkHttpClient.Builder()
                 .cookieJar(ehCookieStore)
-                .cache(Cache(File(application.cacheDir, "http_cache"), 50L * 1024L * 1024L))
                 .dns(EhDns)
                 .proxySelector(ehProxySelector)
 

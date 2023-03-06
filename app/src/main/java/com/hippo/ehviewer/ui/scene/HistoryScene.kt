@@ -35,7 +35,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingDataAdapter
-import androidx.paging.cachedIn
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -152,7 +151,7 @@ class HistoryScene : ToolbarScene() {
         ) {
             // DB Actions
             EhDB.getHistoryLazyList()
-        }.flow.cachedIn(viewLifecycleOwner.lifecycleScope)
+        }.flow
         recyclerView.adapter = mAdapter
         val layoutManager = AutoStaggeredGridLayoutManager(
             0, StaggeredGridLayoutManager.VERTICAL
