@@ -1579,8 +1579,8 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
     private class DownloadArchiveListener(
         context: Context?, stageId: Int, sceneTag: String?,
         private val mGalleryInfo: GalleryInfo?
-    ) : EhCallback<GalleryDetailScene?, String>(context, stageId, sceneTag) {
-        override fun onSuccess(result: String) {
+    ) : EhCallback<GalleryDetailScene?, String?>(context, stageId, sceneTag) {
+        override fun onSuccess(result: String?) {
             // TODO: Don't use buggy system download service
             val r = DownloadManager.Request(Uri.parse(result))
             val name =
@@ -1764,9 +1764,19 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                 mListView!!.visibility = View.GONE
                 mErrorText!!.setText(R.string.no_archives)
             } else {
-                val nameArray = data.stream().map { archive: ArchiveParser.Archive ->
-                    archive.format { id: Int ->
-                        resources.getString(id)
+                val nameArray = data.stream().map {
+                    it.run {
+                        if (isHAtH) {
+                            val costStr =
+                                if (cost == "Free") resources.getString(R.string.archive_free) else cost
+                            "[H@H] $name [$size] [$costStr]"
+                        } else {
+                            val nameStr =
+                                resources.getString(if (res == "org") R.string.archive_original else R.string.archive_resample)
+                            val costStr =
+                                if (cost == "Free!") resources.getString(R.string.archive_free) else cost
+                            "$nameStr [$size] [$costStr]"
+                        }
                     }
                 }.toArray()
                 mProgressView!!.visibility = View.GONE

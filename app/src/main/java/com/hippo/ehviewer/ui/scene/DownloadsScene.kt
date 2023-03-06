@@ -84,8 +84,6 @@ import com.hippo.yorozuya.ObjectUtils
 import com.hippo.yorozuya.ViewUtils
 import com.hippo.yorozuya.collect.LongList
 import java.util.LinkedList
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 import rikka.core.res.resolveColor
 
 @SuppressLint("RtlHardcoded")
@@ -1287,23 +1285,19 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
         const val KEY_ACTION = "action"
         const val ACTION_CLEAR_DOWNLOAD_SERVICE = "clear_download_service"
         private val TAG = DownloadsScene::class.java.simpleName
-        private val PATTERN_AUTHOR = Pattern.compile("^(?:\\([^\\[\\]\\(\\)]+\\))?\\s*\\[([^\\[\\]]+)\\]")
-        private val PATTERN_NAME = Pattern.compile("^(?:\\([^\\[\\]\\(\\)]+\\))?\\s*(?:\\[[^\\[\\]]+\\])?\\s*(.+)")
+        private val PATTERN_AUTHOR = Regex("^(?:\\([^\\[\\]\\(\\)]+\\))?\\s*\\[([^\\[\\]]+)\\]")
+        private val PATTERN_NAME = Regex("^(?:\\([^\\[\\]\\(\\)]+\\))?\\s*(?:\\[[^\\[\\]]+\\])?\\s*(.+)")
         private const val KEY_LABEL = "label"
         private const val LABEL_OFFSET = 2
 
         private fun getAuthor(title: String): String {
-            val matcher = PATTERN_AUTHOR.matcher(title)
-            return if (matcher.find()) {
-                matcher.group(1)!!.trim { it <= ' ' }
-            } else ""
+            val matcher = PATTERN_AUTHOR.find(title) ?: return ""
+            return matcher.groupValues[1].trim { it <= ' ' }
         }
 
         private fun getName(title: String): String {
-            val matcher = PATTERN_NAME.matcher(title)
-            return if (matcher.find()) {
-                matcher.group(1)!!.trim { it <= ' ' }
-            } else title
+            val matcher = PATTERN_NAME.find(title) ?: return title
+            return matcher.groupValues[1].trim { it <= ' ' }
         }
     }
 }
