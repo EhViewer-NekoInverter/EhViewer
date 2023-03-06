@@ -407,7 +407,7 @@ public final class ConacoTask<V> {
             V value;
             InputStream is = null;
             try {
-                Log.d("TAG", "Conaco " + mUrl);
+                // Log.d("TAG", "Conaco " + mUrl);
 
                 // Load it from internet
                 Request request = new ChromeRequestBuilder(mUrl).build();
