@@ -631,7 +631,7 @@ class FavoritesScene : BaseScene(), OnDragHandlerListener, SearchBarMover.Helper
                 val activity: Activity? = mainActivity
                 if (activity != null) {
                     // CommonOperations Actions
-                    CommonOperations.startDownload(mainActivity, mModifyGiList, false)
+                    CommonOperations.startDownload(mainActivity!!, mModifyGiList, false)
                 }
                 mModifyGiList.clear()
                 if (mRecyclerView != null && mRecyclerView!!.isInCustomChoice) {

@@ -1357,20 +1357,20 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                 if (EhDB.containLocalFavorites(mGalleryDetail!!.gid)) {
                     mModifyingFavorites = true
                     CommonOperations.removeFromFavorites(
-                        activity, mGalleryDetail,
+                        activity, mGalleryDetail!!,
                         ModifyFavoritesListener(activity, activity.stageId, tag, true)
                     )
                     removeOrEdit = true
                 } else if (mGalleryDetail!!.isFavorited) {
                     mModifyingFavorites = true
-                    CommonOperations.doAddToFavorites(activity, mGalleryDetail, mGalleryDetail!!.favoriteSlot,
+                    CommonOperations.doAddToFavorites(activity, mGalleryDetail!!, mGalleryDetail!!.favoriteSlot,
                         ModifyFavoritesListener(activity, activity.stageId, tag, false), true)
                     removeOrEdit = true
                 }
                 if (!removeOrEdit) {
                     mModifyingFavorites = true
                     CommonOperations.addToFavorites(
-                        activity, mGalleryDetail,
+                        activity, mGalleryDetail!!,
                         ModifyFavoritesListener(activity, activity.stageId, tag, false), true
                     )
                 }
