@@ -23,19 +23,18 @@ import com.hippo.glview.glrenderer.GLCanvas;
 import com.hippo.glview.glrenderer.MovableTextTexture;
 import com.hippo.glview.view.GLView;
 import com.hippo.glview.view.Gravity;
-import com.hippo.yorozuya.collect.CollectionUtils;
 
 public class GLMovableTextView extends GLView {
     MovableTextTexture mTextTexture;
 
     private String mText = "";
-    private int[] mIndexes = CollectionUtils.EMPTY_INT_ARRAY;
+    private int[] mIndexes = new int[0];
 
     private int mGravity = Gravity.NO_GRAVITY;
 
     private void generateIndexes() {
         if (mTextTexture == null || TextUtils.isEmpty(mText)) {
-            mIndexes = CollectionUtils.EMPTY_INT_ARRAY;
+            mIndexes = new int[0];
         } else {
             mIndexes = mTextTexture.getTextIndexes(mText);
         }

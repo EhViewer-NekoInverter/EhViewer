@@ -54,7 +54,7 @@ class NormalPreviewSet(
     }
 
     override fun size(): Int {
-        return mPositionList.size()
+        return mPositionList.size
     }
 
     override fun getPosition(index: Int): Int {

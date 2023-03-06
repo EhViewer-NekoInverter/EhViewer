@@ -657,7 +657,7 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
                 4 -> {
                     val builder = CheckBoxDialogBuilder(
                         context,
-                        getString(R.string.download_remove_dialog_message_2, gidList!!.size()),
+                        getString(R.string.download_remove_dialog_message_2, gidList!!.size),
                         getString(R.string.download_remove_dialog_check_text),
                         Settings.getRemoveImageFiles()
                     )

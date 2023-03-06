@@ -36,7 +36,7 @@ android {
         targetSdkVersion 33
         versionCode 172809
         versionName "1.7.28.7"
-        resConfigs "zh", "zh-rCN", "zh-rHK", "zh-rTW", "ja"
+        resourceConfigurations += ["zh", "zh-rCN", "zh-rHK", "zh-rTW", "ja"]
     }
 
     externalNativeBuild {

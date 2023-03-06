@@ -51,7 +51,7 @@ public class SceneFragment extends Fragment {
     int resultCode = RESULT_CANCELED;
     Bundle result = null;
     List<String> mRequestSceneTagList = new ArrayList<>(0);
-    IntList mRequestCodeList = new IntList(0);
+    IntList mRequestCodeList = new IntList();
 
     public void onNewArguments(@NonNull Bundle args) {
     }

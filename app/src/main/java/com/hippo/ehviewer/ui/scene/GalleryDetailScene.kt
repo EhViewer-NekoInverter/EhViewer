@@ -1289,7 +1289,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         AlertDialog.Builder(context)
             .setTitle(tag)
             .setItems(menu.toTypedArray()) { _: DialogInterface?, which: Int ->
-                if (which < 0 || which >= menuId.size()) {
+                if (which < 0 || which >= menuId.size) {
                     return@setItems
                 }
                 when (menuId[which]) {
