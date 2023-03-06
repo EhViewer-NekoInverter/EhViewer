@@ -28,11 +28,11 @@ class ImageBitmap private constructor(image: Image) {
 
     @Synchronized
     fun obtain(): Boolean {
-        return if (mImage?.isRecycled == true) {
-            false
-        } else {
+        return if (mImage?.isRecycled == false) {
             ++mReferences
             true
+        } else {
+            false
         }
     }
 
