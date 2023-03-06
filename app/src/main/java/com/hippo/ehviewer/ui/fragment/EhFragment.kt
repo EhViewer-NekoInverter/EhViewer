@@ -19,11 +19,15 @@ import android.app.Activity
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.annotation.StringRes
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
 import com.hippo.ehviewer.EhApplication
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
+import com.hippo.ehviewer.client.EhCookieStore
+import com.hippo.ehviewer.client.EhEngine
 import com.hippo.ehviewer.client.EhTagDatabase
+import com.hippo.util.launchNonCancellable
 import rikka.material.app.DayNightDelegate
 
 class EhFragment : BasePreferenceFragment() {
@@ -38,7 +42,7 @@ class EhFragment : BasePreferenceFragment() {
         val thumbSize = findPreference<Preference>(Settings.KEY_THUMB_SIZE)
         val thumbShowTitle = findPreference<Preference>(Settings.KEY_THUMB_SHOW_TITLE)
         val showTagTranslations = findPreference<Preference>(Settings.KEY_SHOW_TAG_TRANSLATIONS)
-        val tagTranslationsSource = findPreference<Preference>("tag_translations_source")
+        val tagTranslationsSource = findPreference<Preference>(Settings.KEY_TAG_TRANSLATIONS_SOURCE)
 
         theme!!.onPreferenceChangeListener = this
         blackDarkTheme!!.onPreferenceChangeListener = this
@@ -56,6 +60,12 @@ class EhFragment : BasePreferenceFragment() {
             }
             preferenceScreen.removePreference(tagTranslationsSource!!)
         }
+        if (!EhCookieStore.hasSignedIn()) {
+            Settings.SIGN_IN_REQUIRED.forEach {
+                val preference = findPreference<Preference>(it)
+                preferenceScreen.removePreference(preference!!)
+            }
+        }
         updateListPreference(Settings.getListMode())
     }
 
@@ -70,6 +80,13 @@ class EhFragment : BasePreferenceFragment() {
             }
         } else if (Settings.KEY_GALLERY_SITE == key) {
             requireActivity().setResult(Activity.RESULT_OK)
+            lifecycleScope.launchNonCancellable {
+                runCatching {
+                    EhEngine.getUConfig()
+                }.onFailure {
+                    it.printStackTrace()
+                }
+            }
         } else if (Settings.KEY_LIST_MODE == key) {
             updateListPreference((newValue as String).toInt())
             requireActivity().setResult(Activity.RESULT_OK)

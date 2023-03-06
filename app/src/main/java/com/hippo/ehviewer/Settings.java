@@ -43,6 +43,9 @@ public class Settings {
      ********************/
     public static final String KEY_GALLERY_SITE = "gallery_site";
     private static final int DEFAULT_GALLERY_SITE = 1;
+    public static final String KEY_IMAGE_LIMITS = "image_limits";
+    public static final String KEY_U_CONFIG = "uconfig";
+    public static final String KEY_MY_TAGS = "mytags";
     public static final String KEY_THEME = "theme";
     private static final int DEFAULT_THEME = -1;
     public static final String KEY_BLACK_DARK_THEME = "black_dark_theme";
@@ -74,6 +77,7 @@ public class Settings {
     private static final int DEFAULT_PREVIEW_SIZE = 3;
     public static final String KEY_SHOW_TAG_TRANSLATIONS = "show_tag_translations";
     private static final boolean DEFAULT_SHOW_TAG_TRANSLATIONS = false;
+    public static final String KEY_TAG_TRANSLATIONS_SOURCE = "tag_translations_source";
     private static final String KEY_METERED_NETWORK_WARNING = "cellular_network_warning";
     private static final boolean DEFAULT_METERED_NETWORK_WARNING = false;
     private static final String KEY_REQUEST_NEWS = "request_news";
@@ -242,6 +246,15 @@ public class Settings {
     private static final String KEY_NOTIFICATION_REQUIRED = "notification_required";
     private static SharedPreferences sSettingsPre;
     private static EhConfig sEhConfig;
+    public static final String[] SIGN_IN_REQUIRED = {
+            KEY_GALLERY_SITE,
+            KEY_IMAGE_LIMITS,
+            KEY_U_CONFIG,
+            KEY_MY_TAGS,
+            KEY_SHOW_JPN_TITLE,
+            KEY_REQUEST_NEWS,
+            KEY_HIDE_HV_EVENTS
+    };
 
     public static void initialize() {
         sSettingsPre = PreferenceManager.getDefaultSharedPreferences(EhApplication.getApplication());
