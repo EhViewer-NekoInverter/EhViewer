@@ -265,7 +265,7 @@ class FilterFragment : BaseFragment() {
     }
 
     private inner class FilterList {
-        private val mEhFilter: EhFilter = EhFilter.getInstance()
+        private val mEhFilter: EhFilter = EhFilter
         private val mTitleFilterList: List<Filter> = mEhFilter.titleFilterList
         private val mUploaderFilterList: List<Filter> = mEhFilter.uploaderFilterList
         private val mTagFilterList: List<Filter> = mEhFilter.tagFilterList
@@ -413,15 +413,15 @@ class FilterFragment : BaseFragment() {
             throw IndexOutOfBoundsException()
         }
 
-        fun add(filter: Filter?): Boolean {
+        fun add(filter: Filter): Boolean {
             return mEhFilter.addFilter(filter)
         }
 
-        fun delete(filter: Filter?) {
+        fun delete(filter: Filter) {
             mEhFilter.deleteFilter(filter)
         }
 
-        fun trigger(filter: Filter?) {
+        fun trigger(filter: Filter) {
             mEhFilter.triggerFilter(filter)
         }
     }
