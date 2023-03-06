@@ -1781,7 +1781,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
             val context = context
             val activity = mainActivity
             if (null != context && null != activity && null != mArchiveList && position < mArchiveList!!.size) {
-                val res = mArchiveList!![position].res()
+                val res = mArchiveList!![position].res
                 val isHAtH = mArchiveList!![position].isHAtH
                 val request = EhRequest()
                 request.setMethod(EhClient.METHOD_DOWNLOAD_ARCHIVE)
@@ -1815,9 +1815,9 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         override fun onSuccess(result: ArchiveParser.Result) {
             if (mRequest != null) {
                 mRequest = null
-                mArchiveFormParamOr = result.paramOr()
-                mArchiveList = result.archiveList()
-                bind(result.archiveList())
+                mArchiveFormParamOr = result.paramOr
+                mArchiveList = result.archiveList
+                bind(result.archiveList)
             }
         }
 

@@ -680,7 +680,7 @@ object EhEngine {
                 code = response.code
                 headers = response.headers
                 body = response.body.string()
-                result = ArchiveParser.parse(body)
+                result = ArchiveParser.parse(body)!!
             }
         } catch (e: Throwable) {
             ExceptionUtils.throwIfFatal(e)
