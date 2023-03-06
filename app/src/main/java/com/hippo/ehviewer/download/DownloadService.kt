@@ -25,6 +25,7 @@ import android.os.IBinder
 import android.os.SystemClock
 import android.util.Log
 import androidx.annotation.IntDef
+import androidx.collection.LongSparseArray
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
@@ -42,8 +43,6 @@ import com.hippo.util.ReadableTime
 import com.hippo.yorozuya.FileUtils
 import com.hippo.yorozuya.SimpleHandler
 import com.hippo.yorozuya.collect.LongList
-import com.hippo.yorozuya.collect.SparseJBArray
-import com.hippo.yorozuya.collect.SparseJLArray
 
 class DownloadService : Service(), DownloadManager.DownloadListener {
     private var mNotifyManager: NotificationManagerCompat? = null
@@ -534,8 +533,8 @@ class DownloadService : Service(), DownloadManager.DownloadListener {
         private const val ID_DOWNLOADING = 1
         private const val ID_DOWNLOADED = 2
         private const val ID_509 = 3
-        private val sItemStateArray = SparseJBArray()
-        private val sItemTitleArray = SparseJLArray<String>()
+        private val sItemStateArray = LongSparseArray<Boolean>()
+        private val sItemTitleArray = LongSparseArray<String>()
         private var sFailedCount = 0
         private var sFinishedCount = 0
         private var sDownloadedCount = 0

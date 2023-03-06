@@ -22,6 +22,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.collection.LongSparseArray;
+import androidx.collection.SparseArrayCompat;
 
 import com.hippo.ehviewer.EhDB;
 import com.hippo.ehviewer.client.data.GalleryInfo;
@@ -39,8 +41,6 @@ import com.hippo.yorozuya.MathUtils;
 import com.hippo.yorozuya.ObjectUtils;
 import com.hippo.yorozuya.SimpleHandler;
 import com.hippo.yorozuya.collect.LongList;
-import com.hippo.yorozuya.collect.SparseIJArray;
-import com.hippo.yorozuya.collect.SparseJLArray;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class DownloadManager implements SpiderQueen.OnSpiderListener {
     // All download info list
     private final LinkedList<DownloadInfo> mAllInfoList;
     // All download info map
-    private final SparseJLArray<DownloadInfo> mAllInfoMap;
+    private final LongSparseArray<DownloadInfo> mAllInfoMap;
     // label and info list map, without default label info list
     private final Map<String, LinkedList<DownloadInfo>> mMap;
     // All labels without default label
@@ -96,7 +96,7 @@ public class DownloadManager implements SpiderQueen.OnSpiderListener {
         mAllInfoList = new LinkedList<>(allInfoList);
 
         // Create all info map
-        SparseJLArray<DownloadInfo> allInfoMap = new SparseJLArray<>(allInfoList.size() + 10);
+        LongSparseArray<DownloadInfo> allInfoMap = new LongSparseArray<>(allInfoList.size() + 10);
         mAllInfoMap = allInfoMap;
 
         for (int i = 0, n = allInfoList.size(); i < n; i++) {
@@ -1157,8 +1157,8 @@ public class DownloadManager implements SpiderQueen.OnSpiderListener {
     }
 
     class SpeedReminder implements Runnable {
-        private final SparseIJArray mContentLengthMap = new SparseIJArray();
-        private final SparseIJArray mReceivedSizeMap = new SparseIJArray();
+        private final SparseArrayCompat mContentLengthMap = new SparseArrayCompat();
+        private final SparseArrayCompat mReceivedSizeMap = new SparseArrayCompat();
         private boolean mStop = true;
         private long mBytesRead;
         private long oldSpeed = -1;
@@ -1188,8 +1188,8 @@ public class DownloadManager implements SpiderQueen.OnSpiderListener {
         }
 
         public void onDone(int index) {
-            mContentLengthMap.delete(index);
-            mReceivedSizeMap.delete(index);
+            mContentLengthMap.remove(index);
+            mReceivedSizeMap.remove(index);
         }
 
         public void onFinish() {
@@ -1218,8 +1218,8 @@ public class DownloadManager implements SpiderQueen.OnSpiderListener {
                     long downloadingContentLengthSum = 0;
                     long totalSize = 0;
                     for (int i = 0, n = Math.max(mContentLengthMap.size(), mReceivedSizeMap.size()); i < n; i++) {
-                        long contentLength = mContentLengthMap.valueAt(i);
-                        long receivedSize = mReceivedSizeMap.valueAt(i);
+                        long contentLength = Long.valueOf(String.valueOf(mContentLengthMap.valueAt(i)));
+                        long receivedSize = Long.valueOf(String.valueOf(mReceivedSizeMap.valueAt(i)));
                         downloadingCount++;
                         downloadingContentLengthSum += contentLength;
                         totalSize += contentLength - receivedSize;

@@ -16,13 +16,13 @@
 
 package com.hippo.conaco;
 
+import androidx.collection.SparseArrayCompat;
 import com.hippo.yorozuya.collect.Multimap;
-import com.hippo.yorozuya.collect.SparseILArray;
 
 import java.util.List;
 
 class Register<V> {
-    private final SparseILArray<ConacoTask<V>> mIdMap = new SparseILArray<>();
+    private final SparseArrayCompat<ConacoTask<V>> mIdMap = new SparseArrayCompat<>();
     private final Multimap<String, ConacoTask<V>> mKeyMap = Multimap.create();
 
     /**
@@ -45,8 +45,9 @@ class Register<V> {
     }
 
     public synchronized ConacoTask<V> unregister(int id) {
-        ConacoTask<V> task = mIdMap.remove(id);
+        ConacoTask<V> task = mIdMap.get(id);
         if (task != null) {
+            mIdMap.remove(id);
             mKeyMap.removeElement(task.getKey(), task);
         }
         return task;

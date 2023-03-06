@@ -29,6 +29,7 @@ import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
+import androidx.collection.LongSparseArray;
 
 import com.hippo.beerbelly.SimpleDiskCache;
 import com.hippo.ehviewer.EhApplication;
@@ -60,7 +61,6 @@ import com.hippo.yorozuya.IOUtils;
 import com.hippo.yorozuya.MathUtils;
 import com.hippo.yorozuya.OSUtils;
 import com.hippo.yorozuya.StringUtils;
-import com.hippo.yorozuya.collect.SparseJLArray;
 import com.hippo.yorozuya.thread.PriorityThread;
 import com.hippo.yorozuya.thread.PriorityThreadFactory;
 
@@ -109,7 +109,7 @@ public final class SpiderQueen implements Runnable {
             "exhentai.org/img/509.gif",
             "exhentai.org/img/509s.gif"
     };
-    private static final SparseJLArray<SpiderQueen> sQueenMap = new SparseJLArray<>();
+    private static final LongSparseArray<SpiderQueen> sQueenMap = new LongSparseArray<>();
     @NonNull
     private final OkHttpClient mHttpClient;
     @NonNull
