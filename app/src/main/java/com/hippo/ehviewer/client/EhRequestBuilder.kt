@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.ehviewer.client
 
-package com.hippo.ehviewer.client;
+import com.hippo.okhttp.ChromeRequestBuilder
 
-import com.hippo.okhttp.ChromeRequestBuilder;
-
-public class EhRequestBuilder extends ChromeRequestBuilder {
-    public EhRequestBuilder(String url, String referer) {
-        this(url, referer, null);
-    }
-
-    public EhRequestBuilder(String url, String referer, String origin) {
-        super(url);
-        if (referer != null) {
-            addHeader("Referer", referer);
-        }
-        if (origin != null) {
-            addHeader("Origin", origin);
-        }
+class EhRequestBuilder @JvmOverloads constructor(
+    url: String,
+    referer: String?,
+    origin: String? = null
+) : ChromeRequestBuilder(url) {
+    init {
+        referer?.let { addHeader("Referer", it) }
+        origin?.let { addHeader("Origin", it) }
     }
 }
