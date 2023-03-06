@@ -33,6 +33,7 @@ import com.hippo.ehviewer.BuildConfig
 import com.hippo.ehviewer.EhDB
 import com.hippo.ehviewer.GetText
 import com.hippo.ehviewer.R
+import com.hippo.ehviewer.Settings as AppSettings
 import com.hippo.ehviewer.client.EhClient
 import com.hippo.ehviewer.client.EhRequest
 import com.hippo.ehviewer.client.data.FavListUrlBuilder
@@ -230,11 +231,13 @@ class AdvancedFragment : BasePreferenceFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.advanced_settings)
         val dumpLogcat = findPreference<Preference>(KEY_DUMP_LOGCAT)
-        val appLanguage = findPreference<Preference>(KEY_APP_LANGUAGE)
+        val appLanguage = findPreference<Preference>(AppSettings.KEY_APP_LANGUAGE)
         val importData = findPreference<Preference>(KEY_IMPORT_DATA)
         val exportData = findPreference<Preference>(KEY_EXPORT_DATA)
         val backupFavorite = findPreference<Preference>(KEY_BACKUP_FAVORITE)
         val openByDefault = findPreference<Preference>(KEY_OPEN_BY_DEFAULT)
+        val domainFronting = findPreference<Preference>(AppSettings.KEY_DOMAIN_FRONTING)
+        val bypassVPN = findPreference<Preference>(AppSettings.KEY_BYPASS_VPN)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             openByDefault!!.isVisible = false
         } else {
@@ -245,6 +248,11 @@ class AdvancedFragment : BasePreferenceFragment() {
         exportData!!.onPreferenceClickListener = this
         backupFavorite!!.onPreferenceClickListener = this
         appLanguage!!.onPreferenceChangeListener = this
+        bypassVPN!!.isVisible = AppSettings.getDF()
+        domainFronting!!.setOnPreferenceChangeListener { _, newValue ->
+            bypassVPN.isVisible = newValue as Boolean
+            true
+        }
     }
 
     override fun onPreferenceClick(preference: Preference): Boolean {
@@ -377,7 +385,7 @@ class AdvancedFragment : BasePreferenceFragment() {
 
     override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {
         val key = preference.key
-        if (KEY_APP_LANGUAGE == key) {
+        if (AppSettings.KEY_APP_LANGUAGE == key) {
             if ("system" == newValue) {
                 LocaleDelegate.defaultLocale = LocaleDelegate.systemLocale
             } else {
@@ -394,7 +402,6 @@ class AdvancedFragment : BasePreferenceFragment() {
 
     companion object {
         private const val KEY_DUMP_LOGCAT = "dump_logcat"
-        private const val KEY_APP_LANGUAGE = "app_language"
         private const val KEY_IMPORT_DATA = "import_data"
         private const val KEY_EXPORT_DATA = "export_data"
         private const val KEY_OPEN_BY_DEFAULT = "open_by_default"

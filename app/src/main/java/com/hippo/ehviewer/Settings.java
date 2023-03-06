@@ -159,8 +159,10 @@ public class Settings {
     private static final int DEFAULT_PROXY_PORT = -1;
     private static final String KEY_BUILT_IN_HOSTS = "built_in_hosts_2";
     private static final boolean DEFAULT_BUILT_IN_HOSTS = false;
-    private static final String KEY_DOMAIN_FRONTING = "domain_fronting";
+    public static final String KEY_DOMAIN_FRONTING = "domain_fronting";
     private static final boolean DEFAULT_DOMAIN_FRONTING = false;
+    public static final String KEY_BYPASS_VPN = "bypass_vpn";
+    private static final boolean DEFAULT_BYPASS_VPN = true;
     private static final String KEY_APP_LINK_VERIFY_TIP = "app_link_verify_tip";
     private static final boolean DEFAULT_APP_LINK_VERIFY_TIP = false;
     /********************
@@ -719,6 +721,10 @@ public class Settings {
 
     public static void putDF(boolean value) {
         putBoolean(KEY_DOMAIN_FRONTING, value);
+    }
+
+    public static boolean getBypassVPN() {
+        return getBoolean(KEY_BYPASS_VPN, DEFAULT_BYPASS_VPN);
     }
 
     public static boolean getAppLinkVerifyTip() {

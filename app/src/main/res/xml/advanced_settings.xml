@@ -80,6 +80,13 @@
         android:title="@string/settings_advanced_domain_fronting_title"
         app:iconSpaceReserved="false" />
 
+    <SwitchPreferenceCompat
+        android:defaultValue="true"
+        android:key="bypass_vpn"
+        android:summary="@string/settings_advanced_bypass_vpn_summary"
+        android:title="@string/settings_advanced_bypass_vpn_title"
+        app:iconSpaceReserved="false" />
+
     <Preference
         android:key="backup_favorite"
         android:summary="@string/settings_advanced_backup_favorite_summary"
