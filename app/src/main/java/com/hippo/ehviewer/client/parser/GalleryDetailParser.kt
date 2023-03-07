@@ -319,9 +319,10 @@ object GalleryDetailParser {
     /**
      * Parse tag groups with html parser
      */
-    private fun parseTagGroups(document: Document): Array<GalleryTagGroup> {
+    private fun parseTagGroups(document: Document): Array<GalleryTagGroup>? {
         return try {
             val taglist = document.getElementById("taglist")!!
+            if (taglist.children().isEmpty()) return null
             val tagGroups = taglist.child(0).child(0).children()
             parseTagGroups(tagGroups)
         } catch (e: Throwable) {
