@@ -71,6 +71,7 @@ import com.hippo.ehviewer.widget.SimpleRatingView
 import com.hippo.scene.Announcer
 import com.hippo.unifile.UniFile
 import com.hippo.util.launchIO
+import com.hippo.util.launchNonCancellable
 import com.hippo.util.launchUI
 import com.hippo.view.ViewTransition
 import com.hippo.widget.FabLayout
@@ -394,8 +395,10 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
                     .setMessage(R.string.reset_reading_progress_message)
                     .setNegativeButton(android.R.string.cancel, null)
                     .setPositiveButton(android.R.string.ok) { _: DialogInterface?, _: Int ->
-                        // DownloadManager Actions
-                        mDownloadManager?.resetAllReadingProgress()
+                        lifecycleScope.launchNonCancellable {
+                            // DownloadManager Actions
+                            mDownloadManager?.resetAllReadingProgress()
+                        }
                     }.show()
                 return true
             }

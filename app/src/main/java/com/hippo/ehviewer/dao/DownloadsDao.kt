@@ -32,6 +32,9 @@ interface DownloadsDao : BasicDao<DownloadInfo> {
     fun load(gid: Long): DownloadInfo?
 
     @Update
+    fun update(downloadInfos: List<DownloadInfo>)
+
+    @Update
     fun update(downloadInfo: DownloadInfo)
 
     @Insert

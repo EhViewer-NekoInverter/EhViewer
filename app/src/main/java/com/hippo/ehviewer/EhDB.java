@@ -111,6 +111,11 @@ public class EhDB {
         return list;
     }
 
+    public static synchronized void updateDownloadInfo(List<DownloadInfo> downloadInfos) {
+        DownloadsDao dao = db.downloadsDao();
+        dao.update(downloadInfos);
+    }
+
     // Insert or update
     public static synchronized void putDownloadInfo(DownloadInfo downloadInfo) {
         DownloadsDao dao = db.downloadsDao();
