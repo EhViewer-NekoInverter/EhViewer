@@ -104,6 +104,7 @@ class SignInScene : SolidScene(), OnEditorActionListener, View.OnClickListener {
         mSignInViaWebView = null
         mSignInViaCookies = null
         mSkipSigningIn = null
+        mSignInJob = null
     }
 
     private fun showProgress() {
@@ -123,11 +124,9 @@ class SignInScene : SolidScene(), OnEditorActionListener, View.OnClickListener {
     override fun onSceneResult(requestCode: Int, resultCode: Int, data: Bundle?) {
         when (requestCode) {
             REQUEST_CODE_WEBVIEW -> if (resultCode == RESULT_OK) {
-                showProgress()
                 getProfile()
             }
             REQUEST_CODE_COOKIE -> if (resultCode == RESULT_OK) {
-                showProgress()
                 finishSignIn()
             }
             else -> super.onSceneResult(requestCode, resultCode, data)
@@ -206,26 +205,24 @@ class SignInScene : SolidScene(), OnEditorActionListener, View.OnClickListener {
 
     private fun getProfile() {
         lifecycleScope.launchIO {
+            withUIContext {
+                showProgress()
+            }
             runCatching {
                 EhEngine.getProfile().run {
                     Settings.putDisplayName(displayName)
                     Settings.putAvatar(avatar)
                 }
-            }.onFailure {
-                withUIContext {
-                    finishSignIn()
-                }
-            }.onSuccess {
-                withUIContext {
-                    updateAvatar()
-                    finishSignIn()
-                }
             }
+            finishSignIn()
         }
     }
 
     private fun finishSignIn(check: Boolean = true) {
         lifecycleScope.launchIO {
+            withUIContext {
+                showProgress()
+            }
             if (check) {
                 runCatching {
                     // For the `star` cookie, https://github.com/Ehviewer-Overhauled/Ehviewer/issues/873
@@ -240,6 +237,7 @@ class SignInScene : SolidScene(), OnEditorActionListener, View.OnClickListener {
             }
             withUIContext {
                 Settings.putNeedSignIn(false)
+                updateAvatar()
                 if (null != mainActivity) {
                     startSceneForCheckStep(CHECK_STEP_SIGN_IN, arguments)
                 }

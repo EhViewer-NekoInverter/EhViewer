@@ -43,8 +43,10 @@ import com.hippo.util.withUIContext
 import com.hippo.yorozuya.ViewUtils
 import okhttp3.Cookie
 import java.util.Locale
+import kotlinx.coroutines.Job
 
 class CookieSignInScene : SolidScene(), OnEditorActionListener, View.OnClickListener {
+    private var mProgress: View? = null
     private var mIpbMemberIdLayout: TextInputLayout? = null
     private var mIpbPassHashLayout: TextInputLayout? = null
     private var mIgneousLayout: TextInputLayout? = null
@@ -53,6 +55,7 @@ class CookieSignInScene : SolidScene(), OnEditorActionListener, View.OnClickList
     private var mIgneous: EditText? = null
     private var mOk: View? = null
     private var mFromClipboard: TextView? = null
+    private var mSignInJob: Job? = null
 
     override fun needShowLeftDrawer(): Boolean {
         return false
@@ -63,14 +66,16 @@ class CookieSignInScene : SolidScene(), OnEditorActionListener, View.OnClickList
         container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.scene_cookie_sign_in, container, false)
-        mIpbMemberIdLayout = ViewUtils.`$$`(view, R.id.ipb_member_id_layout) as TextInputLayout
+        val loginForm = ViewUtils.`$$`(view, R.id.cookie_signin_form)
+        mProgress = ViewUtils.`$$`(view, R.id.progress)
+        mIpbMemberIdLayout = ViewUtils.`$$`(loginForm, R.id.ipb_member_id_layout) as TextInputLayout
         mIpbMemberId = mIpbMemberIdLayout!!.editText!!
-        mIpbPassHashLayout = ViewUtils.`$$`(view, R.id.ipb_pass_hash_layout) as TextInputLayout
+        mIpbPassHashLayout = ViewUtils.`$$`(loginForm, R.id.ipb_pass_hash_layout) as TextInputLayout
         mIpbPassHash = mIpbPassHashLayout!!.editText!!
-        mIgneousLayout = ViewUtils.`$$`(view, R.id.igneous_layout) as TextInputLayout
+        mIgneousLayout = ViewUtils.`$$`(loginForm, R.id.igneous_layout) as TextInputLayout
         mIgneous = mIgneousLayout!!.editText!!
-        mOk = ViewUtils.`$$`(view, R.id.ok)
-        mFromClipboard = ViewUtils.`$$`(view, R.id.from_clipboard) as TextView
+        mOk = ViewUtils.`$$`(loginForm, R.id.ok)
+        mFromClipboard = ViewUtils.`$$`(loginForm, R.id.from_clipboard) as TextView
         mFromClipboard!!.run {
             paintFlags = paintFlags or Paint.UNDERLINE_TEXT_FLAG or Paint.ANTI_ALIAS_FLAG
         }
@@ -82,12 +87,28 @@ class CookieSignInScene : SolidScene(), OnEditorActionListener, View.OnClickList
 
     override fun onDestroyView() {
         super.onDestroyView()
+        mProgress = null
         mIpbMemberIdLayout = null
         mIpbPassHashLayout = null
         mIgneousLayout = null
         mIpbMemberId = null
         mIpbPassHash = null
         mIgneous = null
+        mSignInJob = null
+    }
+
+    private fun showProgress() {
+        if (null != mProgress && View.VISIBLE != mProgress!!.visibility) {
+            mProgress!!.run {
+                alpha = 0.0f
+                visibility = View.VISIBLE
+                animate().alpha(1.0f).setDuration(500).start()
+            }
+        }
+    }
+
+    private fun hideProgress() {
+        mProgress?.visibility = View.GONE
     }
 
     override fun onClick(v: View) {
@@ -105,8 +126,11 @@ class CookieSignInScene : SolidScene(), OnEditorActionListener, View.OnClickList
     }
 
     fun enter() {
-        if (null == mIpbMemberIdLayout || null == mIpbPassHashLayout || null == mIgneousLayout ||
-                null == mIpbMemberId || null == mIpbPassHash || null == mIgneous) {
+        if (mSignInJob?.isActive == true ||
+            null == mIpbMemberIdLayout || null == mIpbPassHashLayout ||
+            null == mIgneousLayout || null == mIpbMemberId ||
+            null == mIpbPassHash || null == mIgneous
+        ) {
             return
         }
         val ipbMemberId = mIpbMemberId!!.text.toString().trim { it <= ' ' }
@@ -125,12 +149,9 @@ class CookieSignInScene : SolidScene(), OnEditorActionListener, View.OnClickList
             mIpbPassHashLayout!!.error = null
         }
         hideSoftInput()
+        showProgress()
         storeCookie(ipbMemberId, ipbPassHash, igneous)
-        getProfile()
-    }
-
-    private fun getProfile() {
-        viewLifecycleOwner.lifecycleScope.launchIO {
+        mSignInJob = viewLifecycleOwner.lifecycleScope.launchIO {
             runCatching {
                 EhEngine.getProfile().run {
                     Settings.putDisplayName(displayName)
@@ -138,6 +159,7 @@ class CookieSignInScene : SolidScene(), OnEditorActionListener, View.OnClickList
                 }
             }.onFailure {
                 withUIContext {
+                    hideProgress()
                     showResultErrorDialog(it)
                 }
             }.onSuccess {
