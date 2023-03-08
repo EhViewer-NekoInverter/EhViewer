@@ -31,6 +31,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.UrlOpener
+import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.EhEngine
 import com.hippo.ehviewer.client.EhUrl
 import com.hippo.ehviewer.client.EhUtils
@@ -227,12 +228,13 @@ class SignInScene : SolidScene(), OnEditorActionListener, View.OnClickListener {
                 runCatching {
                     // For the `star` cookie, https://github.com/Ehviewer-Overhauled/Ehviewer/issues/873
                     EhEngine.getNews(false)
+                    EhCookieStore.copyCookie(EhUrl.DOMAIN_E, EhUrl.DOMAIN_EX, EhCookieStore.KEY_STAR)
                     // Sad panda check
                     Settings.putGallerySite(EhUrl.SITE_EX)
                     EhEngine.getUConfig()
                 }.onFailure {
-                    Settings.putSelectSite(false)
                     Settings.putGallerySite(EhUrl.SITE_E)
+                    Settings.putSelectSite(false)
                 }
             }
             withUIContext {
