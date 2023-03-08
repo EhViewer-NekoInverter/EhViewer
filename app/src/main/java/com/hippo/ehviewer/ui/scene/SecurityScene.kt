@@ -13,180 +13,143 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.ehviewer.ui.scene
 
-package com.hippo.ehviewer.ui.scene;
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorManager
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricPrompt
+import com.hippo.ehviewer.R
+import com.hippo.ehviewer.Settings
+import com.hippo.widget.lockpattern.LockPatternUtils
+import com.hippo.widget.lockpattern.LockPatternView
+import com.hippo.widget.lockpattern.LockPatternView.OnPatternListener
+import com.hippo.yorozuya.ObjectUtils
+import com.hippo.yorozuya.ViewUtils
+import java.util.concurrent.Executors
 
-import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+class SecurityScene : SolidScene(), OnPatternListener {
+    private var mPatternView: LockPatternView? = null
+    private var mSensorManager: SensorManager? = null
+    private var mAccelerometer: Sensor? = null
+    private var promptInfo: BiometricPrompt.PromptInfo? = null
+    private var biometricPrompt: BiometricPrompt? = null
+    private var canAuthenticate = false
+    private var mRetryTimes = 0
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.biometric.BiometricManager;
-import androidx.biometric.BiometricPrompt;
-
-import com.hippo.ehviewer.R;
-import com.hippo.ehviewer.Settings;
-import com.hippo.ehviewer.ui.MainActivity;
-import com.hippo.widget.lockpattern.LockPatternUtils;
-import com.hippo.widget.lockpattern.LockPatternView;
-import com.hippo.yorozuya.ObjectUtils;
-import com.hippo.yorozuya.ViewUtils;
-
-import java.util.List;
-import java.util.concurrent.Executors;
-
-public class SecurityScene extends SolidScene implements
-        LockPatternView.OnPatternListener {
-    private static final int MAX_RETRY_TIMES = 5;
-    private static final String KEY_RETRY_TIMES = "retry_times";
-
-    @Nullable
-    private LockPatternView mPatternView;
-
-    private SensorManager mSensorManager;
-    private Sensor mAccelerometer;
-    private BiometricPrompt.PromptInfo promptInfo;
-    private BiometricPrompt biometricPrompt;
-    private boolean canAuthenticate = false;
-
-    private int mRetryTimes;
-
-    @Override
-    public boolean needShowLeftDrawer() {
-        return false;
+    override fun needShowLeftDrawer(): Boolean {
+        return false
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val context = requireContext()
+        mSensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        mAccelerometer = mSensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
-        Context context = requireContext();
-        mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        if (null != mSensorManager) {
-            mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        }
-
-        if (null == savedInstanceState) {
-            mRetryTimes = MAX_RETRY_TIMES;
+        if (savedInstanceState == null) {
+            mRetryTimes = MAX_RETRY_TIMES
         } else {
-            mRetryTimes = savedInstanceState.getInt(KEY_RETRY_TIMES);
+            mRetryTimes = savedInstanceState.getInt(KEY_RETRY_TIMES)
         }
 
         canAuthenticate = Settings.getEnableFingerprint() &&
-                BiometricManager.from(requireContext()).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS;
-        biometricPrompt = new BiometricPrompt(this, Executors.newSingleThreadExecutor(), new BiometricPrompt.AuthenticationCallback() {
-            @Override
-            public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
-                super.onAuthenticationError(errorCode, errString);
-            }
+                BiometricManager.from(context).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS
+        biometricPrompt = BiometricPrompt(
+            this, Executors.newSingleThreadExecutor(),
+            object : BiometricPrompt.AuthenticationCallback() {
+                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+                    super.onAuthenticationError(errorCode, errString)
+                }
 
-            @Override
-            public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
-                startSceneForCheckStep(CHECK_STEP_SECURITY, getArguments());
-                finish();
-            }
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                    startSceneForCheckStep(CHECK_STEP_SECURITY, arguments)
+                    finish()
+                }
 
-            @Override
-            public void onAuthenticationFailed() {
-                super.onAuthenticationFailed();
+                override fun onAuthenticationFailed() {
+                    super.onAuthenticationFailed()
+                }
             }
-        });
-        promptInfo = new BiometricPrompt.PromptInfo.Builder()
+        )
+        promptInfo = BiometricPrompt.PromptInfo.Builder()
                 .setTitle(getString(R.string.app_name))
                 .setNegativeButtonText(getString(android.R.string.cancel))
                 .setConfirmationRequired(false)
-                .build();
+                .build()
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        mSensorManager = null;
-        mAccelerometer = null;
+    override fun onDestroy() {
+        super.onDestroy()
+        mSensorManager = null
+        mAccelerometer = null
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
+    override fun onResume() {
+        super.onResume()
         if (canAuthenticate) {
-            startBiometricPrompt();
+            startBiometricPrompt()
         }
     }
 
-    private void startBiometricPrompt() {
-        biometricPrompt.authenticate(promptInfo);
+    private fun startBiometricPrompt() {
+        biometricPrompt!!.authenticate(promptInfo!!)
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
+    override fun onPause() {
+        super.onPause()
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(KEY_RETRY_TIMES, mRetryTimes);
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(KEY_RETRY_TIMES, mRetryTimes)
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.scene_security, container, false);
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.scene_security, container, false)
         if (canAuthenticate) {
-            view.setOnClickListener(v -> startBiometricPrompt());
+            view.setOnClickListener { startBiometricPrompt() }
         }
-
-        mPatternView = (LockPatternView) ViewUtils.$$(view, R.id.pattern_view);
-        mPatternView.setOnPatternListener(this);
-        return view;
+        mPatternView = ViewUtils.`$$`(view, R.id.pattern_view) as LockPatternView
+        mPatternView!!.setOnPatternListener(this)
+        return view
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
-        mPatternView = null;
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mPatternView = null
     }
 
-    @Override
-    public void onPatternStart() {
-    }
+    override fun onPatternStart() {}
+    override fun onPatternCleared() {}
+    override fun onPatternCellAdded(pattern: List<LockPatternView.Cell>) {}
 
-    @Override
-    public void onPatternCleared() {
-    }
-
-    @Override
-    public void onPatternCellAdded(List<LockPatternView.Cell> pattern) {
-    }
-
-    @Override
-    public void onPatternDetected(List<LockPatternView.Cell> pattern) {
-        MainActivity activity = getMainActivity();
+    override fun onPatternDetected(pattern: List<LockPatternView.Cell>) {
+        val activity = mainActivity
         if (null == activity || null == mPatternView) {
-            return;
+            return
         }
-
-        String enteredPatter = LockPatternUtils.patternToString(pattern);
-        String targetPatter = Settings.getSecurity();
-
+        val enteredPatter = LockPatternUtils.patternToString(pattern)
+        val targetPatter = Settings.getSecurity()
         if (ObjectUtils.equal(enteredPatter, targetPatter)) {
-            startSceneForCheckStep(CHECK_STEP_SECURITY, getArguments());
-            finish();
+            startSceneForCheckStep(CHECK_STEP_SECURITY, arguments)
+            finish()
         } else {
-            mPatternView.setDisplayMode(LockPatternView.DisplayMode.Wrong);
-            mRetryTimes--;
+            mPatternView!!.setDisplayMode(LockPatternView.DisplayMode.Wrong)
+            mRetryTimes--
             if (mRetryTimes <= 0) {
-                finish();
+                finish()
             }
         }
+    }
+
+    companion object {
+        private const val KEY_RETRY_TIMES = "retry_times"
+        private const val MAX_RETRY_TIMES = 5
     }
 }

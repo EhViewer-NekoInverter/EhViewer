@@ -896,19 +896,15 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
         }
 
         override fun onBindViewHolder(holder: DownloadLabelHolder, position: Int) {
-            val context = context
             val index = holder.bindingAdapterPosition
             val label = mLabels[index]
-            var list: List<DownloadInfo?>? = null
-            list = when (position) {
+            val list = when (position) {
                 0 -> {
                     mDownloadManager.allDownloadInfoList
                 }
-
                 1 -> {
                     mDownloadManager.defaultDownloadInfoList
                 }
-
                 else -> {
                     mDownloadManager.getLabelDownloadInfoList(label)
                 }

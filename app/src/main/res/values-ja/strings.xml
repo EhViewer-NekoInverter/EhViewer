@@ -32,7 +32,6 @@
     <string name="cookie_explain">Cookiesはブラウザに保存した特殊なデータです。よくわからない場合はGoogleで検索してください。\n\nCookiesを入力してログインしてください。</string>
     <string name="text_is_empty">テキストを入力してください</string>
     <string name="wrong_cookie_warning">入力したCookieは正しくないようです。確認してください。</string>
-    <string name="found_cookies">Cookieが見つかりました</string>
 
     <!-- Select Site Scene -->
     <string name="select_scene">ギャラリーサイトを選択してください</string>

@@ -35,7 +35,6 @@
     <string name="text_is_empty">文本为空</string>
     <string name="wrong_cookie_warning">看起来您输入的 Cookie 是错误的，最好检查一下。</string>
     <string name="from_clipboard_error">未在剪贴板中发现 Cookies。</string>
-    <string name="found_cookies">找到旧版 Cookie</string>
 
     <!-- Select Site Scene -->
     <string name="select_scene">您希望访问哪个画廊站点？</string>

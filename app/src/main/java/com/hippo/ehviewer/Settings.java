@@ -41,8 +41,9 @@ public class Settings {
     /********************
      ****** Eh
      ********************/
+    public static final String KEY_IDENTITY_COOKIE = "identity_cookie";
     public static final String KEY_GALLERY_SITE = "gallery_site";
-    private static final int DEFAULT_GALLERY_SITE = 1;
+    private static final int DEFAULT_GALLERY_SITE = 0;
     public static final String KEY_IMAGE_LIMITS = "image_limits";
     public static final String KEY_U_CONFIG = "uconfig";
     public static final String KEY_MY_TAGS = "mytags";
@@ -247,6 +248,7 @@ public class Settings {
     private static SharedPreferences sSettingsPre;
     private static EhConfig sEhConfig;
     public static final String[] SIGN_IN_REQUIRED = {
+            KEY_IDENTITY_COOKIE,
             KEY_GALLERY_SITE,
             KEY_IMAGE_LIMITS,
             KEY_U_CONFIG,

@@ -13,424 +13,251 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.ehviewer.ui.scene
 
-package com.hippo.ehviewer.ui.scene;
+import android.graphics.Paint
+import android.os.Bundle
+import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.TextView.OnEditorActionListener
+import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
+import com.google.android.material.textfield.TextInputLayout
+import com.hippo.ehviewer.R
+import com.hippo.ehviewer.Settings
+import com.hippo.ehviewer.UrlOpener
+import com.hippo.ehviewer.client.EhEngine
+import com.hippo.ehviewer.client.EhUrl
+import com.hippo.ehviewer.client.EhUtils
+import com.hippo.scene.Announcer
+import com.hippo.util.ExceptionUtils
+import com.hippo.util.launchIO
+import com.hippo.util.withUIContext
+import com.hippo.yorozuya.ViewUtils
+import kotlinx.coroutines.Job
 
-import android.content.Context;
-import android.graphics.Paint;
-import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.TextView;
+class SignInScene : SolidScene(), OnEditorActionListener, View.OnClickListener {
+    private var mProgress: View? = null
+    private var mUsernameLayout: TextInputLayout? = null
+    private var mPasswordLayout: TextInputLayout? = null
+    private var mUsername: EditText? = null
+    private var mPassword: EditText? = null
+    private var mRegister: View? = null
+    private var mSignIn: View? = null
+    private var mSignInViaWebView: TextView? = null
+    private var mSignInViaCookies: TextView? = null
+    private var mSkipSigningIn: TextView? = null
+    private var mSignInJob: Job? = null
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-
-import com.google.android.material.textfield.TextInputLayout;
-import com.hippo.ehviewer.EhApplication;
-import com.hippo.ehviewer.R;
-import com.hippo.ehviewer.Settings;
-import com.hippo.ehviewer.UrlOpener;
-import com.hippo.ehviewer.client.EhClient;
-import com.hippo.ehviewer.client.EhRequest;
-import com.hippo.ehviewer.client.EhUrl;
-import com.hippo.ehviewer.client.EhUtils;
-import com.hippo.ehviewer.client.parser.ProfileParser;
-import com.hippo.ehviewer.ui.MainActivity;
-import com.hippo.scene.Announcer;
-import com.hippo.scene.SceneFragment;
-import com.hippo.util.ExceptionUtils;
-import com.hippo.yorozuya.AssertUtils;
-import com.hippo.yorozuya.IntIdGenerator;
-import com.hippo.yorozuya.ViewUtils;
-
-public final class SignInScene extends SolidScene implements EditText.OnEditorActionListener,
-        View.OnClickListener {
-    private static final String KEY_REQUEST_ID = "request_id";
-
-    private static final int REQUEST_CODE_WEBVIEW = 0;
-    private static final int REQUEST_CODE_COOKIE = 0;
-
-    /*---------------
-     View life cycle
-     ---------------*/
-    @Nullable
-    private View mProgress;
-    @Nullable
-    private TextInputLayout mUsernameLayout;
-    @Nullable
-    private TextInputLayout mPasswordLayout;
-    @Nullable
-    private EditText mUsername;
-    @Nullable
-    private EditText mPassword;
-    @Nullable
-    private View mRegister;
-    @Nullable
-    private View mSignIn;
-    @Nullable
-    private TextView mSignInViaWebView;
-    @Nullable
-    private TextView mSignInViaCookies;
-    @Nullable
-    private TextView mSkipSigningIn;
-
-    private boolean mSigningIn;
-    private int mRequestId = IntIdGenerator.INVALID_ID;
-
-    @Override
-    public boolean needShowLeftDrawer() {
-        return false;
+    override fun needShowLeftDrawer(): Boolean {
+        return false
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (savedInstanceState == null) {
-            onInit();
-        } else {
-            onRestore(savedInstanceState);
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val view = inflater.inflate(R.layout.scene_login, container, false)
+        val loginForm = ViewUtils.`$$`(view, R.id.login_form)
+        mProgress = ViewUtils.`$$`(view, R.id.progress)
+        mUsernameLayout = ViewUtils.`$$`(loginForm, R.id.username_layout) as TextInputLayout
+        mUsername = mUsernameLayout!!.editText!!
+        mPasswordLayout = ViewUtils.`$$`(loginForm, R.id.password_layout) as TextInputLayout
+        mPassword = mPasswordLayout!!.editText!!
+        mRegister = ViewUtils.`$$`(loginForm, R.id.register)
+        mSignIn = ViewUtils.`$$`(loginForm, R.id.sign_in)
+        mSignInViaWebView = ViewUtils.`$$`(loginForm, R.id.sign_in_via_webview) as TextView
+        mSignInViaCookies = ViewUtils.`$$`(loginForm, R.id.sign_in_via_cookies) as TextView
+        mSkipSigningIn = ViewUtils.`$$`(loginForm, R.id.tourist_mode) as TextView
+        mSignInViaWebView!!.run {
+            paintFlags = paintFlags or Paint.UNDERLINE_TEXT_FLAG or Paint.ANTI_ALIAS_FLAG
         }
-    }
-
-    private void onInit() {
-    }
-
-    private void onRestore(Bundle savedInstanceState) {
-        mRequestId = savedInstanceState.getInt(KEY_REQUEST_ID);
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(KEY_REQUEST_ID, mRequestId);
-    }
-
-    @NonNull
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.scene_login, container, false);
-
-        View loginForm = ViewUtils.$$(view, R.id.login_form);
-        mProgress = ViewUtils.$$(view, R.id.progress);
-        mUsernameLayout = (TextInputLayout) ViewUtils.$$(loginForm, R.id.username_layout);
-        mUsername = mUsernameLayout.getEditText();
-        AssertUtils.assertNotNull(mUsername);
-        mPasswordLayout = (TextInputLayout) ViewUtils.$$(loginForm, R.id.password_layout);
-        mPassword = mPasswordLayout.getEditText();
-        AssertUtils.assertNotNull(mPassword);
-        mRegister = ViewUtils.$$(loginForm, R.id.register);
-        mSignIn = ViewUtils.$$(loginForm, R.id.sign_in);
-        mSignInViaWebView = (TextView) ViewUtils.$$(loginForm, R.id.sign_in_via_webview);
-        mSignInViaCookies = (TextView) ViewUtils.$$(loginForm, R.id.sign_in_via_cookies);
-        mSkipSigningIn = (TextView) ViewUtils.$$(loginForm, R.id.tourist_mode);
-
-        mSignInViaWebView.setPaintFlags(mSignInViaWebView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
-        mSignInViaCookies.setPaintFlags(mSignInViaCookies.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
-        mSkipSigningIn.setPaintFlags(mSignInViaCookies.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
-
-        mPassword.setOnEditorActionListener(this);
-
-        mRegister.setOnClickListener(this);
-        mSignIn.setOnClickListener(this);
-        mSignInViaWebView.setOnClickListener(this);
-        mSignInViaCookies.setOnClickListener(this);
-        mSkipSigningIn.setOnClickListener(this);
-
-        Context context = getContext();
-        AssertUtils.assertNotNull(context);
-        EhApplication application = (EhApplication) context.getApplicationContext();
-        if (application.containGlobalStuff(mRequestId)) {
-            mSigningIn = true;
-            // request exist
-            showProgress(false);
+        mSignInViaCookies!!.run {
+            paintFlags = paintFlags or Paint.UNDERLINE_TEXT_FLAG or Paint.ANTI_ALIAS_FLAG
         }
-
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        // Show IME
-        if (mProgress != null && View.INVISIBLE != mProgress.getVisibility()) {
-            showSoftInput(mUsername);
+        mSkipSigningIn!!.run {
+            paintFlags = paintFlags or Paint.UNDERLINE_TEXT_FLAG or Paint.ANTI_ALIAS_FLAG
         }
+        mPassword!!.setOnEditorActionListener(this)
+        mRegister!!.setOnClickListener(this)
+        mSignIn!!.setOnClickListener(this)
+        mSignInViaWebView!!.setOnClickListener(this)
+        mSignInViaCookies!!.setOnClickListener(this)
+        mSkipSigningIn!!.setOnClickListener(this)
+        return view
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
-        mProgress = null;
-        mUsernameLayout = null;
-        mPasswordLayout = null;
-        mUsername = null;
-        mPassword = null;
-        mRegister = null;
-        mSignIn = null;
-        mSignInViaWebView = null;
-        mSignInViaCookies = null;
-        mSkipSigningIn = null;
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mProgress = null
+        mUsernameLayout = null
+        mPasswordLayout = null
+        mUsername = null
+        mPassword = null
+        mRegister = null
+        mSignIn = null
+        mSignInViaWebView = null
+        mSignInViaCookies = null
+        mSkipSigningIn = null
     }
 
-    private void showProgress(boolean animation) {
-        if (null != mProgress && View.VISIBLE != mProgress.getVisibility()) {
-            if (animation) {
-                mProgress.setAlpha(0.0f);
-                mProgress.setVisibility(View.VISIBLE);
-                mProgress.animate().alpha(1.0f).setDuration(500).start();
-            } else {
-                mProgress.setAlpha(1.0f);
-                mProgress.setVisibility(View.VISIBLE);
+    private fun showProgress() {
+        if (null != mProgress && View.VISIBLE != mProgress!!.visibility) {
+            mProgress!!.run {
+                alpha = 0.0f
+                visibility = View.VISIBLE
+                animate().alpha(1.0f).setDuration(500).start()
             }
         }
     }
 
-    private void hideProgress() {
-        if (null != mProgress) {
-            mProgress.setVisibility(View.GONE);
-        }
+    private fun hideProgress() {
+        mProgress?.visibility = View.GONE
     }
 
-    @Override
-    protected void onSceneResult(int requestCode, int resultCode, Bundle data) {
-        if (REQUEST_CODE_WEBVIEW == requestCode) {
-            if (RESULT_OK == resultCode) {
-                getProfile();
+    override fun onSceneResult(requestCode: Int, resultCode: Int, data: Bundle?) {
+        when (requestCode) {
+            REQUEST_CODE_WEBVIEW -> if (resultCode == RESULT_OK) {
+                showProgress()
+                getProfile()
             }
-        } else {
-            super.onSceneResult(requestCode, resultCode, data);
+            REQUEST_CODE_COOKIE -> if (resultCode == RESULT_OK) {
+                showProgress()
+                finishSignIn()
+            }
+            else -> super.onSceneResult(requestCode, resultCode, data)
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        MainActivity activity = getMainActivity();
-        if (null == activity) {
-            return;
-        }
-
-        if (mRegister == v) {
-            UrlOpener.openUrl(activity, EhUrl.URL_REGISTER, false);
-        } else if (mSignIn == v) {
-            signIn();
-        } else if (mSignInViaWebView == v) {
-            startScene(new Announcer(WebViewSignInScene.class).setRequestCode(this, REQUEST_CODE_WEBVIEW));
-        } else if (mSignInViaCookies == v) {
-            startScene(new Announcer(CookieSignInScene.class).setRequestCode(this, REQUEST_CODE_COOKIE));
-        } else if (mSkipSigningIn == v) {
-            // Set gallery size SITE_E if skip sign in
-            Settings.putGallerySite(EhUrl.SITE_E);
-            redirectTo();
+    override fun onClick(v: View) {
+        val activity = mainActivity ?: return
+        when (v) {
+            mRegister ->
+                UrlOpener.openUrl(activity, EhUrl.URL_REGISTER, false)
+            mSignIn ->
+                signIn()
+            mSignInViaCookies ->
+                startScene(Announcer(CookieSignInScene::class.java).setRequestCode(this, REQUEST_CODE_COOKIE))
+            mSignInViaWebView ->
+                startScene(Announcer(WebViewSignInScene::class.java).setRequestCode(this, REQUEST_CODE_WEBVIEW))
+            mSkipSigningIn -> {
+                // Set gallery size SITE_E if skip sign in
+                Settings.putGallerySite(EhUrl.SITE_E)
+                Settings.putSelectSite(false)
+                finishSignIn(false)
+            }
         }
     }
 
-    @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+    override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent?): Boolean {
         if (v == mPassword) {
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_NULL) {
-                signIn();
-                return true;
+                signIn()
+                return true
             }
         }
-
-        return false;
+        return false
     }
 
-    private void signIn() {
-        if (mSigningIn) {
-            return;
+    private fun signIn() {
+        if (mSignInJob?.isActive == true ||
+            mUsername == null || mPassword == null ||
+            mUsernameLayout == null || mPasswordLayout == null
+        ) {
+            return
         }
-
-        Context context = getContext();
-        MainActivity activity = getMainActivity();
-        if (null == context || null == activity || null == mUsername || null == mPassword || null == mUsernameLayout ||
-                null == mPasswordLayout) {
-            return;
-        }
-
-        String username = mUsername.getText().toString();
-        String password = mPassword.getText().toString();
-
+        val username = mUsername!!.text.toString()
+        val password = mPassword!!.text.toString()
         if (username.isEmpty()) {
-            mUsernameLayout.setError(getString(R.string.error_username_cannot_empty));
-            return;
+            mUsernameLayout!!.error = getString(R.string.error_username_cannot_empty)
+            return
         } else {
-            mUsernameLayout.setError(null);
+            mUsernameLayout!!.error = null
         }
-
         if (password.isEmpty()) {
-            mPasswordLayout.setError(getString(R.string.error_password_cannot_empty));
-            return;
+            mPasswordLayout!!.error = getString(R.string.error_password_cannot_empty)
+            return
         } else {
-            mPasswordLayout.setError(null);
+            mPasswordLayout!!.error = null
         }
-
-        hideSoftInput();
-        showProgress(true);
-
+        hideSoftInput()
+        showProgress()
         // Clean up for sign in
-        EhUtils.INSTANCE.signOut();
-
-        EhCallback<?, ?> callback = new SignInListener(context,
-                activity.getStageId(), getTag());
-        mRequestId = ((EhApplication) context.getApplicationContext()).putGlobalStuff(callback);
-        EhRequest request = new EhRequest()
-                .setMethod(EhClient.METHOD_SIGN_IN)
-                .setArgs(username, password)
-                .setCallback(callback);
-        request.enqueue(this);
-
-        mSigningIn = true;
-    }
-
-    private void getProfile() {
-        Context context = getContext();
-        MainActivity activity = getMainActivity();
-        if (null == context || null == activity) {
-            return;
-        }
-
-        hideSoftInput();
-        showProgress(true);
-
-        EhCallback<?, ?> callback = new GetProfileListener(context,
-                activity.getStageId(), getTag());
-        mRequestId = ((EhApplication) context.getApplicationContext()).putGlobalStuff(callback);
-        EhRequest request = new EhRequest()
-                .setMethod(EhClient.METHOD_GET_PROFILE)
-                .setCallback(callback);
-        request.enqueue();
-
-        new EhRequest().setMethod(EhClient.METHOD_GET_UCONFIG).enqueue();
-    }
-
-    private void redirectTo() {
-        Settings.putNeedSignIn(false);
-        MainActivity activity = getMainActivity();
-        if (null != activity) {
-            startSceneForCheckStep(CHECK_STEP_SIGN_IN, getArguments());
-        }
-        finish();
-    }
-
-    private void whetherToSkip(Exception e) {
-        Context context = getContext();
-        if (null == context) {
-            return;
-        }
-
-        new AlertDialog.Builder(context)
-                .setTitle(R.string.sign_in_failed)
-                .setMessage(ExceptionUtils.getReadableString(e) + "\n\n" + getString(R.string.sign_in_failed_tip))
-                .setPositiveButton(R.string.get_it, null)
-                .show();
-    }
-
-    public void onSignInEnd(Exception e) {
-        Context context = getContext();
-        if (null == context) {
-            return;
-        }
-
-        if (EhApplication.getEhCookieStore().hasSignedIn()) {
-            getProfile();
-        } else {
-            mSigningIn = false;
-            hideProgress();
-            whetherToSkip(e);
-        }
-    }
-
-    public void onGetProfileEnd() {
-        mSigningIn = false;
-        updateAvatar();
-        redirectTo();
-    }
-
-    private static class SignInListener extends EhCallback<SignInScene, String> {
-        public SignInListener(Context context, int stageId, String sceneTag) {
-            super(context, stageId, sceneTag);
-        }
-
-        @Override
-        public void onSuccess(String result) {
-            getApplication().removeGlobalStuff(this);
-            Settings.putDisplayName(result);
-
-            SignInScene scene = getScene();
-            if (scene != null) {
-                scene.onSignInEnd(null);
+        EhUtils.signOut()
+        mSignInJob = viewLifecycleOwner.lifecycleScope.launchIO {
+            runCatching {
+                EhEngine.signIn(username, password)
+            }.onFailure {
+                it.printStackTrace()
+                withUIContext {
+                    hideProgress()
+                    showResultErrorDialog(it)
+                }
+            }.onSuccess {
+                getProfile()
             }
         }
+    }
 
-        @Override
-        public void onFailure(Exception e) {
-            getApplication().removeGlobalStuff(this);
-            e.printStackTrace();
-
-            SignInScene scene = getScene();
-            if (scene != null) {
-                scene.onSignInEnd(e);
+    private fun getProfile() {
+        lifecycleScope.launchIO {
+            runCatching {
+                EhEngine.getProfile().run {
+                    Settings.putDisplayName(displayName)
+                    Settings.putAvatar(avatar)
+                }
+            }.onFailure {
+                withUIContext {
+                    finishSignIn()
+                }
+            }.onSuccess {
+                withUIContext {
+                    updateAvatar()
+                    finishSignIn()
+                }
             }
-        }
-
-        @Override
-        public void onCancel() {
-            getApplication().removeGlobalStuff(this);
-        }
-
-        @Override
-        public boolean isInstance(SceneFragment scene) {
-            return scene instanceof SignInScene;
         }
     }
 
-    private static class GetProfileListener extends EhCallback<SignInScene, ProfileParser.Result> {
-        public GetProfileListener(Context context, int stageId, String sceneTag) {
-            super(context, stageId, sceneTag);
-        }
-
-        @Override
-        public void onSuccess(ProfileParser.Result result) {
-            getApplication().removeGlobalStuff(this);
-            Settings.putDisplayName(result.displayName);
-            Settings.putAvatar(result.avatar);
-
-            SignInScene scene = getScene();
-            if (scene != null) {
-                scene.onGetProfileEnd();
+    private fun finishSignIn(check: Boolean = true) {
+        lifecycleScope.launchIO {
+            if (check) {
+                runCatching {
+                    // For the `star` cookie, https://github.com/Ehviewer-Overhauled/Ehviewer/issues/873
+                    EhEngine.getNews(false)
+                    // Sad panda check
+                    Settings.putGallerySite(EhUrl.SITE_EX)
+                    EhEngine.getUConfig()
+                }.onFailure {
+                    Settings.putSelectSite(false)
+                    Settings.putGallerySite(EhUrl.SITE_E)
+                }
+            }
+            withUIContext {
+                Settings.putNeedSignIn(false)
+                if (null != mainActivity) {
+                    startSceneForCheckStep(CHECK_STEP_SIGN_IN, arguments)
+                }
+                finish()
             }
         }
+    }
 
-        @Override
-        public void onFailure(Exception e) {
-            getApplication().removeGlobalStuff(this);
-            e.printStackTrace();
+    private fun showResultErrorDialog(e: Throwable) {
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.sign_in_failed)
+            .setMessage("${ExceptionUtils.getReadableString(e)}\n\n${getString(R.string.sign_in_failed_tip)}")
+            .setPositiveButton(R.string.get_it, null)
+            .show()
+    }
 
-            SignInScene scene = getScene();
-            if (scene != null) {
-                scene.onGetProfileEnd();
-            }
-        }
-
-        @Override
-        public void onCancel() {
-            getApplication().removeGlobalStuff(this);
-        }
-
-        @Override
-        public boolean isInstance(SceneFragment scene) {
-            return scene instanceof SignInScene;
-        }
+    companion object {
+        private const val REQUEST_CODE_COOKIE = 0
+        private const val REQUEST_CODE_WEBVIEW = 1
     }
 }

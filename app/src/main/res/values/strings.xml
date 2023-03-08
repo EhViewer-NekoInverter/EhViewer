@@ -38,7 +38,6 @@
     <string name="text_is_empty">Text is empty</string>
     <string name="wrong_cookie_warning">It seems that the cookies you entered are wrong. You\'d better check them.</string>
     <string name="from_clipboard_error">No cookies found in clipboard.</string>
-    <string name="found_cookies">Found cookies!</string>
 
     <!-- Select Site Scene -->
     <string name="select_scene">Which gallery site do you want to visit?</string>

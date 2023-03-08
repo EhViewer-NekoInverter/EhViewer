@@ -29,13 +29,11 @@ import com.hippo.beerbelly.SimpleDiskCache
 import com.hippo.conaco.Conaco
 import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.EhDns
-import com.hippo.ehviewer.client.EhRequestBuilder
+import com.hippo.ehviewer.client.EhEngine
 import com.hippo.ehviewer.client.EhSSLSocketFactory
 import com.hippo.ehviewer.client.EhTagDatabase
-import com.hippo.ehviewer.client.EhUrl
 import com.hippo.ehviewer.client.EhX509TrustManager
 import com.hippo.ehviewer.client.data.GalleryDetail
-import com.hippo.ehviewer.client.parser.EventPaneParser
 import com.hippo.ehviewer.dao.buildMainDB
 import com.hippo.ehviewer.download.DownloadManager
 import com.hippo.ehviewer.spider.SpiderDen
@@ -144,26 +142,13 @@ class EhApplication : SceneApplication() {
         }
     }
 
-    private fun theDawnOfNewDay() {
-        if (!Settings.getRequestNews()) {
-            return
-        }
-        if (ehCookieStore.hasSignedIn()) {
-            val referer = EhUrl.REFERER_E
-            val request = EhRequestBuilder(EhUrl.HOST_E + "news.php", referer).build()
-            val call = okHttpClient.newCall(request)
-            try {
-                call.execute().use { response ->
-                    val responseBody = response.body
-                    val body = responseBody.string()
-                    val html = EventPaneParser.parse(body)
-                    if (html != null) {
-                        showEventPane(html)
-                    }
-                }
-            } catch (e: Throwable) {
-                e.printStackTrace()
+    private suspend fun theDawnOfNewDay() {
+        runCatching {
+            if (Settings.getRequestNews() && ehCookieStore.hasSignedIn()) {
+                EhEngine.getNews(true)?.let { showEventPane(it) }
             }
+        }.onFailure {
+            it.printStackTrace()
         }
     }
 

@@ -332,7 +332,7 @@ object EhEngine {
                 code = response.code
                 headers = response.headers
                 body = response.body.string()
-                val html = EventPaneParser.parse(body)
+                val html = EventPaneParser.parse(body!!)
                 if (html != null) {
                     application.showEventPane(html)
                 }
@@ -858,6 +858,30 @@ object EhEngine {
     }
 
     @Throws(Throwable::class)
+    suspend fun getNews(parse: Boolean): String? {
+        val url = EhUrl.URL_NEWS
+        val referer = EhUrl.REFERER_E
+        Log.d(TAG, url)
+        val request = EhRequestBuilder(url, referer).build()
+        val call = okHttpClient.newCall(request)
+        var body: String? = null
+        var headers: Headers? = null
+        var code = -1
+        try {
+            call.executeAsync().use { response ->
+                code = response.code
+                headers = response.headers
+                body = response.body.string()
+                return if (parse) EventPaneParser.parse(body!!) else null
+            }
+        } catch (e: Throwable) {
+            ExceptionUtils.throwIfFatal(e)
+            transformException(code, headers, body, e)
+            throw e
+        }
+    }
+
+    @Throws(Throwable::class)
     private suspend fun getProfileInternal(
         url: String, referer: String
     ): ProfileParser.Result {
@@ -905,8 +929,7 @@ object EhEngine {
     }
 
     @Throws(Throwable::class)
-    suspend fun getUConfig(): Void? {
-        val url = EhUrl.uConfigUrl
+    suspend fun getUConfig(url: String = EhUrl.uConfigUrl): Void? {
         Log.d(TAG, url)
         var request = EhRequestBuilder(url, null).build()
         var call = okHttpClient.newCall(request)
