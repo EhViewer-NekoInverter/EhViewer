@@ -17,6 +17,7 @@
  */
 package com.hippo.util
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -75,3 +76,15 @@ suspend fun <T> withIOContext(block: suspend CoroutineScope.() -> T) = withConte
 
 suspend fun <T> withNonCancellableContext(block: suspend CoroutineScope.() -> T) =
     withContext(NonCancellable, block)
+
+// moe.tarsin.coroutines
+inline fun <reified T : Throwable> Result<*>.except(): Result<*> =
+    onFailure { if (it is T) throw it }
+
+inline fun <R> runSuspendCatching(block: () -> R): Result<R> {
+    return runCatching(block).apply { except<CancellationException>() }
+}
+
+inline fun <T, R> T.runSuspendCatching(block: T.() -> R): Result<R> {
+    return runCatching(block).apply { except<CancellationException>() }
+}

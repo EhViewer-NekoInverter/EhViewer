@@ -22,7 +22,6 @@ import android.util.AttributeSet;
 import androidx.annotation.NonNull;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.hippo.ehviewer.EhApplication;
 import com.hippo.ehviewer.R;
 import com.hippo.ehviewer.Settings;
 import com.hippo.ehviewer.download.DownloadManager;
@@ -53,7 +52,7 @@ public class CleanRedundancyPreference extends TaskPreference {
 
         public ClearTask(@NonNull Context context) {
             super(context);
-            mManager = EhApplication.getDownloadManager();
+            mManager = DownloadManager.INSTANCE;
         }
 
         // True for cleared

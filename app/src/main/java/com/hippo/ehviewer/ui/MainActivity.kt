@@ -154,20 +154,14 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
     // Sometimes scene can't show directly
     private fun processAnnouncer(announcer: Announcer): Announcer {
         if (0 == sceneCount) {
+            val newArgs = Bundle()
+            newArgs.putString(SolidScene.KEY_TARGET_SCENE, announcer.clazz.name)
+            newArgs.putBundle(SolidScene.KEY_TARGET_ARGS, announcer.args)
             if (!TextUtils.isEmpty(Settings.getSecurity())) {
-                val newArgs = Bundle()
-                newArgs.putString(SecurityScene.KEY_TARGET_SCENE, announcer.clazz.name)
-                newArgs.putBundle(SecurityScene.KEY_TARGET_ARGS, announcer.args)
                 return Announcer(SecurityScene::class.java).setArgs(newArgs)
             } else if (EhUtils.needSignedIn()) {
-                val newArgs = Bundle()
-                newArgs.putString(SignInScene.KEY_TARGET_SCENE, announcer.clazz.name)
-                newArgs.putBundle(SignInScene.KEY_TARGET_ARGS, announcer.args)
                 return Announcer(SignInScene::class.java).setArgs(newArgs)
             } else if (Settings.getSelectSite()) {
-                val newArgs = Bundle()
-                newArgs.putString(SelectSiteScene.KEY_TARGET_SCENE, announcer.clazz.name)
-                newArgs.putBundle(SelectSiteScene.KEY_TARGET_ARGS, announcer.args)
                 return Announcer(SelectSiteScene::class.java).setArgs(newArgs)
             }
         }

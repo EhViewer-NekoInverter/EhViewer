@@ -527,6 +527,7 @@
     <string name="settings_advanced_import_data_summary">從外置存儲器導入數據</string>
     <string name="settings_advanced_import_data_successfully">導入數據成功</string>
     <string name="settings_advanced_import_data_cant_read">無法讀取文件</string>
+    <string name="settings_advanced_import_data_version_too_low">數據庫版本過低</string>
     <string name="settings_advanced_import_data_version_too_high">數據庫版本過高</string>
     <string name="settings_advanced_open_by_default">默認打開</string>
     <string name="settings_about">關於</string>

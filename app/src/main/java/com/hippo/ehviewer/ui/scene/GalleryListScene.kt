@@ -66,7 +66,6 @@ import com.hippo.drawable.DrawerArrowDrawable
 import com.hippo.easyrecyclerview.EasyRecyclerView
 import com.hippo.easyrecyclerview.FastScroller.OnDragHandlerListener
 import com.hippo.easyrecyclerview.LinearDividerItemDecoration
-import com.hippo.ehviewer.EhApplication.Companion.downloadManager
 import com.hippo.ehviewer.EhApplication.Companion.favouriteStatusRouter
 import com.hippo.ehviewer.EhDB
 import com.hippo.ehviewer.FavouriteStatusRouter
@@ -126,7 +125,7 @@ import java.time.ZoneOffset
 class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListener,
     SearchLayout.Helper, SearchBarMover.Helper, SearchBar.Helper, View.OnClickListener,
     OnClickFabListener, OnExpandListener {
-    private val mDownloadManager: DownloadManager = downloadManager
+    private val mDownloadManager = DownloadManager
 
     @SuppressLint("NotifyDataSetChanged")
     private val mDownloadInfoListener: DownloadInfoListener = object : DownloadInfoListener {
@@ -900,7 +899,7 @@ class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListen
                     }
 
                     3 -> {
-                        val labelRawList = downloadManager.labelList
+                        val labelRawList = mDownloadManager.labelList
                         val labelList: MutableList<String> = ArrayList(labelRawList.size + 1)
                         labelList.add(getString(R.string.default_download_label_name))
                         var i = 0
@@ -1373,11 +1372,10 @@ class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListen
             // Cancel check mode
             context ?: return
             mRecyclerView?.outOfCustomChoiceMode()
-            val downloadManager = downloadManager
-            val downloadInfo = downloadManager.getDownloadInfo(mGi.gid) ?: return
+            val downloadInfo = mDownloadManager.getDownloadInfo(mGi.gid) ?: return
             val label = if (which == 0) null else mLabels[which]
             // DownloadManager Actions
-            downloadManager.changeLabel(listOf(downloadInfo), label)
+            mDownloadManager.changeLabel(listOf(downloadInfo), label)
         }
     }
 

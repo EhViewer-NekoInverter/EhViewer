@@ -555,6 +555,7 @@
     <string name="settings_advanced_import_data_summary">Load data which were previously saved</string>
     <string name="settings_advanced_import_data_successfully">Data imported</string>
     <string name="settings_advanced_import_data_cant_read">Can\'t read the file</string>
+    <string name="settings_advanced_import_data_version_too_low">Database version too low</string>
     <string name="settings_advanced_import_data_version_too_high">Database version too high</string>
     <string name="settings_advanced_open_by_default">Open by default</string>
     <string name="settings_about">About</string>

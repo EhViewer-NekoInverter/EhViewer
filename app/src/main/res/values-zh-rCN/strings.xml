@@ -527,6 +527,7 @@
     <string name="settings_advanced_import_data_summary">从外置存储器导入数据</string>
     <string name="settings_advanced_import_data_successfully">导入数据成功</string>
     <string name="settings_advanced_import_data_cant_read">无法读取文件</string>
+    <string name="settings_advanced_import_data_version_too_low">数据库版本过低</string>
     <string name="settings_advanced_import_data_version_too_high">数据库版本过高</string>
     <string name="settings_advanced_open_by_default">默认打开</string>
     <string name="settings_about">关于</string>

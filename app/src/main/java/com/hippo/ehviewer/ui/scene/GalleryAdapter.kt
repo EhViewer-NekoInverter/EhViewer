@@ -28,14 +28,13 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.hippo.drawable.TriangleDrawable
 import com.hippo.easyrecyclerview.MarginItemDecoration
-import com.hippo.ehviewer.EhApplication.Companion.downloadManager
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.client.EhCacheKeyFactory
 import com.hippo.ehviewer.client.EhUtils
 import com.hippo.ehviewer.client.data.GalleryInfo
 import com.hippo.ehviewer.dao.LocalFavoriteInfo
-import com.hippo.ehviewer.download.DownloadManager
+import com.hippo.ehviewer.download.DownloadManager as downloadManager
 import com.hippo.ehviewer.widget.TileThumb
 import com.hippo.widget.recyclerview.AutoStaggeredGridLayoutManager
 import com.hippo.yorozuya.ViewUtils
@@ -51,7 +50,6 @@ internal abstract class GalleryAdapter(
     private val mListThumbWidth: Int
     private val mListThumbHeight: Int
     private val mShowFavourited: Boolean
-    private val mDownloadManager: DownloadManager
     private var mListDecoration: MarginItemDecoration? = null
     private var mGirdDecoration: MarginItemDecoration? = null
     private var mType = TYPE_INVALID
@@ -121,7 +119,6 @@ internal abstract class GalleryAdapter(
         mListThumbHeight = calculator.measuredHeight
         mListThumbWidth = mListThumbHeight * 2 / 3
         this.type = type
-        mDownloadManager = downloadManager
     }
 
     private fun adjustPaddings() {
@@ -227,7 +224,7 @@ internal abstract class GalleryAdapter(
                 holder.favourited!!.visibility =
                     if (mShowFavourited && gi.favoriteSlot >= -1 && gi.favoriteSlot <= 10) View.VISIBLE else View.GONE
                 holder.downloaded!!.visibility =
-                    if (mDownloadManager.containDownloadInfo(gi.gid)) View.VISIBLE else View.GONE
+                    if (downloadManager.containDownloadInfo(gi.gid)) View.VISIBLE else View.GONE
             }
             TYPE_GRID -> {
                 (holder.thumb as TileThumb).setThumbSize(gi.thumbWidth, gi.thumbHeight)

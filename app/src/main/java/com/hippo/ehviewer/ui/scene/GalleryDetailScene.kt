@@ -19,7 +19,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
-import android.app.DownloadManager
+import android.app.DownloadManager as AndroidDownloadManager
 import android.app.assist.AssistContent
 import android.content.Context
 import android.content.DialogInterface
@@ -65,7 +65,6 @@ import com.hippo.app.CheckBoxDialogBuilder
 import com.hippo.app.EditTextDialogBuilder
 import com.hippo.ehviewer.AppConfig
 import com.hippo.ehviewer.EhApplication
-import com.hippo.ehviewer.EhApplication.Companion.downloadManager
 import com.hippo.ehviewer.EhApplication.Companion.ehCookieStore
 import com.hippo.ehviewer.EhApplication.Companion.galleryDetailCache
 import com.hippo.ehviewer.EhDB
@@ -96,6 +95,7 @@ import com.hippo.ehviewer.client.parser.TorrentParser
 import com.hippo.ehviewer.client.parser.VoteTagParser
 import com.hippo.ehviewer.dao.DownloadInfo
 import com.hippo.ehviewer.dao.Filter
+import com.hippo.ehviewer.download.DownloadManager
 import com.hippo.ehviewer.download.DownloadManager.DownloadInfoListener
 import com.hippo.ehviewer.gallery.EhGalleryProvider
 import com.hippo.ehviewer.gallery.GalleryProvider2
@@ -139,6 +139,7 @@ import rikka.core.res.resolveColor
 
 class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListener,
     OnLongClickListener {
+    private val mDownloadManager = DownloadManager
     private var mTip: TextView? = null
     private var mViewTransition: ViewTransition? = null
     // Header
@@ -433,7 +434,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         // Get download state
         val gid = gid
         mDownloadState = if (gid != -1L) {
-            downloadManager.getDownloadState(gid)
+            mDownloadManager.getDownloadState(gid)
         } else {
             DownloadInfo.STATE_INVALID
         }
@@ -544,7 +545,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
             mTip!!.setText(R.string.error_cannot_find_gallery)
             adjustViewVisibility(STATE_FAILED, false)
         }
-        downloadManager.addDownloadInfoListener(this)
+        mDownloadManager.addDownloadInfoListener(this)
         return view
     }
 
@@ -554,7 +555,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
 
     override fun onDestroyView() {
         super.onDestroyView()
-        downloadManager.removeDownloadInfoListener(this)
+        mDownloadManager.removeDownloadInfoListener(this)
         mTip = null
         mViewTransition = null
         mHeader = null
@@ -1043,7 +1044,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                 GalleryListScene.startScene(this, lub)
             }
             mDownload -> {
-                if (downloadManager.getDownloadState(galleryDetail.gid) == DownloadInfo.STATE_INVALID) {
+                if (mDownloadManager.getDownloadState(galleryDetail.gid) == DownloadInfo.STATE_INVALID) {
                     // CommonOperations Actions
                     CommonOperations.startDownload(activity, galleryDetail, false)
                 } else {
@@ -1053,9 +1054,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                         getString(R.string.download_remove_dialog_check_text),
                         Settings.getRemoveImageFiles()
                     )
-                    val helper = DeleteDialogHelper(
-                        downloadManager, galleryDetail, builder
-                    )
+                    val helper = DeleteDialogHelper(galleryDetail, builder)
                     builder.setTitle(R.string.download_remove_dialog_title)
                         .setPositiveButton(android.R.string.ok, helper)
                         .show()
@@ -1440,7 +1439,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         if (null == context || -1L == gid) {
             return
         }
-        val downloadState = downloadManager.getDownloadState(gid)
+        val downloadState = mDownloadManager.getDownloadState(gid)
         if (downloadState == mDownloadState) {
             return
         }
@@ -1585,15 +1584,15 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
     ) : EhCallback<GalleryDetailScene?, String?>(context, stageId, sceneTag) {
         override fun onSuccess(result: String?) {
             // TODO: Don't use buggy system download service
-            val r = DownloadManager.Request(Uri.parse(result))
+            val r = AndroidDownloadManager.Request(Uri.parse(result))
             val name =
                 mGalleryInfo!!.gid.toString() + "-" + EhUtils.getSuitableTitle(mGalleryInfo) + ".zip"
             r.setDestinationInExternalPublicDir(
                 Environment.DIRECTORY_DOWNLOADS,
                 FileUtils.sanitizeFilename(name)
             )
-            r.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            val dm = application.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            r.setNotificationVisibility(AndroidDownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            val dm = application.getSystemService(Context.DOWNLOAD_SERVICE) as AndroidDownloadManager
             try {
                 dm.enqueue(r)
             } catch (e: Throwable) {
@@ -1619,7 +1618,6 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
     }
 
     private inner class DeleteDialogHelper(
-        private val mDownloadManager: com.hippo.ehviewer.download.DownloadManager?,
         private val mGalleryInfo: GalleryInfo, private val mBuilder: CheckBoxDialogBuilder
     ) : DialogInterface.OnClickListener {
         override fun onClick(dialog: DialogInterface, which: Int) {
@@ -1628,7 +1626,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
             }
             // Delete
             // DownloadManager Actions
-            mDownloadManager?.deleteDownload(mGalleryInfo.gid)
+            mDownloadManager.deleteDownload(mGalleryInfo.gid)
             // Delete image files
             val checked = mBuilder.isChecked
             Settings.putRemoveImageFiles(checked)
@@ -1929,14 +1927,14 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                 val name = mTorrentList!![position].name()
                 // TODO: Don't use buggy system download service
                 val r =
-                    DownloadManager.Request(Uri.parse(url.replace("exhentai.org", "ehtracker.org")))
+                    AndroidDownloadManager.Request(Uri.parse(url.replace("exhentai.org", "ehtracker.org")))
                 r.setDestinationInExternalPublicDir(
                     Environment.DIRECTORY_DOWNLOADS,
                     FileUtils.sanitizeFilename("$name.torrent")
                 )
-                r.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                r.setNotificationVisibility(AndroidDownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 r.addRequestHeader("Cookie", ehCookieStore.getCookieHeader(url.toHttpUrl()))
-                val dm = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                val dm = context.getSystemService(Context.DOWNLOAD_SERVICE) as AndroidDownloadManager
                 try {
                     dm.enqueue(r)
                     showTip(R.string.download_torrent_started, LENGTH_SHORT)

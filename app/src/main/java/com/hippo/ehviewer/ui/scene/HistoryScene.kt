@@ -84,7 +84,7 @@ class HistoryScene : ToolbarScene() {
             }
         })
     }
-    private val mDownloadManager = EhApplication.downloadManager
+    private val mDownloadManager = DownloadManager
     private val mDownloadInfoListener: DownloadInfoListener by lazy {
         object : DownloadInfoListener {
             override fun onAdd(info: DownloadInfo, list: List<DownloadInfo>, position: Int) {
@@ -343,7 +343,7 @@ class HistoryScene : ToolbarScene() {
                     }
 
                     4 -> {
-                        val labelRawList = EhApplication.downloadManager.labelList
+                        val labelRawList = mDownloadManager.labelList
                         val labelList: MutableList<String> = ArrayList(labelRawList.size + 1)
                         labelList.add(getString(R.string.default_download_label_name))
                         var i = 0
@@ -415,11 +415,10 @@ class HistoryScene : ToolbarScene() {
         private val mGi: GalleryInfo
     ) : DialogInterface.OnClickListener {
         override fun onClick(dialog: DialogInterface, which: Int) {
-            val downloadManager = EhApplication.downloadManager
-            val downloadInfo = downloadManager.getDownloadInfo(mGi.gid) ?: return
+            val downloadInfo = mDownloadManager.getDownloadInfo(mGi.gid) ?: return
             val label = if (which == 0) null else mLabels[which]
             // DownloadManager Actions
-            downloadManager.changeLabel(listOf(downloadInfo), label)
+            mDownloadManager.changeLabel(listOf(downloadInfo), label)
         }
     }
 

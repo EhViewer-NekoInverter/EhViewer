@@ -527,6 +527,7 @@
     <string name="settings_advanced_import_data_summary">從之前儲存的檔案匯入</string>
     <string name="settings_advanced_import_data_successfully">成功將資料匯入</string>
     <string name="settings_advanced_import_data_cant_read">無法讀取檔案</string>
+    <string name="settings_advanced_import_data_version_too_low">數據庫版本過低</string>
     <string name="settings_advanced_import_data_version_too_high">數據庫版本過高</string>
     <string name="settings_advanced_open_by_default">預設打開</string>
     <string name="settings_about">關於</string>

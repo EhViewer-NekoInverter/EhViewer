@@ -110,7 +110,7 @@ class EhApplication : SceneApplication() {
                 ehDatabase
             }
             launchIO {
-                downloadManager
+                DownloadManager.isIdle
             }
             launchIO {
                 cleanupDownload()
@@ -317,9 +317,6 @@ class EhApplication : SceneApplication() {
                 20 * 1024 * 1024
             )
         }
-
-        @JvmStatic
-        val downloadManager by lazy { DownloadManager() }
 
         @JvmStatic
         val hosts by lazy { Hosts(application, "hosts.db") }
