@@ -84,7 +84,7 @@ class EhApplication : SceneApplication() {
         Thread.setDefaultUncaughtExceptionHandler { t, e ->
             try {
                 if (Settings.saveCrashLog) {
-                    Crash.saveCrashLog(application, e)
+                    Crash.saveCrashLog(e)
                 }
             } catch (ignored: Throwable) {
             }
