@@ -32,7 +32,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.progressindicator.CircularProgressIndicator;
-import com.hippo.ehviewer.EhApplication;
 import com.hippo.ehviewer.R;
 import com.hippo.ehviewer.client.EhCookieStore;
 import com.hippo.ehviewer.client.EhUrl;
@@ -82,7 +81,7 @@ public class MyTagsFragment extends BaseFragment {
 
         // Copy cookies from okhttp cookie store to CookieManager
         url = EhUrl.getMyTagsUrl();
-        EhCookieStore store = EhApplication.getEhCookieStore();
+        EhCookieStore store = EhCookieStore.INSTANCE;
         for (Cookie cookie : store.getCookies(HttpUrl.parse(url))) {
             cookieManager.setCookie(url, cookie.toString());
         }

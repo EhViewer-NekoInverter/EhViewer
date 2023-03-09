@@ -145,7 +145,7 @@ class EhApplication : SceneApplication() {
 
     private suspend fun theDawnOfNewDay() {
         runCatching {
-            if (Settings.requestNews && ehCookieStore.hasSignedIn()) {
+            if (Settings.requestNews && EhCookieStore.hasSignedIn()) {
                 EhEngine.getNews(true)?.let { showEventPane(it) }
             }
         }.onFailure {
@@ -236,15 +236,12 @@ class EhApplication : SceneApplication() {
             private set
 
         @JvmStatic
-        val ehCookieStore by lazy { EhCookieStore }
-
-        @JvmStatic
         val ehProxySelector by lazy { EhProxySelector() }
 
         @JvmStatic
         val nonCacheOkHttpClient by lazy {
             val builder = OkHttpClient.Builder()
-                .cookieJar(ehCookieStore)
+                .cookieJar(EhCookieStore)
                 .dns(EhDns)
                 .proxySelector(ehProxySelector)
 

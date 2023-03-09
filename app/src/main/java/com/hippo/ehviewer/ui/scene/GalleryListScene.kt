@@ -253,6 +253,11 @@ class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListen
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        mAdapter?.type = Settings.listMode
+    }
+
     private fun onInit() {
         handleArgs(arguments)
     }

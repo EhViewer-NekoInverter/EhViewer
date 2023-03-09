@@ -23,7 +23,6 @@ import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import com.hippo.ehviewer.EhApplication.Companion.ehCookieStore
 import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.EhUrl
 import com.hippo.ehviewer.client.EhUtils
@@ -92,7 +91,7 @@ class WebViewSignInScene : SolidScene() {
         }
 
         private fun addCookie(domain: String, cookie: Cookie) {
-            ehCookieStore.addCookie(EhCookieStore.newCookie(cookie, domain, true, true, true))
+            EhCookieStore.addCookie(EhCookieStore.newCookie(cookie, domain, true, true, true))
         }
 
         override fun onPageFinished(view: WebView, url: String) {

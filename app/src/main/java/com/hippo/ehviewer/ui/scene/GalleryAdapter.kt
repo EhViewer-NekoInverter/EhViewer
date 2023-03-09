@@ -81,7 +81,6 @@ internal abstract class GalleryAdapter(
                             MarginItemDecoration(interval, paddingH, paddingV, paddingH, paddingV)
                     }
                     recyclerView.addItemDecoration(mListDecoration!!)
-                    adjustPaddings()
                     notifyDataSetChanged()
                 }
 
@@ -103,7 +102,6 @@ internal abstract class GalleryAdapter(
                             MarginItemDecoration(interval, paddingH, paddingV, paddingH, paddingV)
                     }
                     recyclerView.addItemDecoration(mGirdDecoration!!)
-                    adjustPaddings()
                     notifyDataSetChanged()
                 }
             }
@@ -119,6 +117,7 @@ internal abstract class GalleryAdapter(
         mListThumbHeight = calculator.measuredHeight
         mListThumbWidth = mListThumbHeight * 2 / 3
         this.type = type
+        adjustPaddings()
     }
 
     private fun adjustPaddings() {

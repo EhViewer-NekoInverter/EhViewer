@@ -20,7 +20,6 @@ import android.content.DialogInterface
 import android.text.Html
 import android.util.AttributeSet
 import androidx.appcompat.app.AlertDialog
-import com.hippo.ehviewer.EhApplication
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.EhUrl
@@ -39,7 +38,7 @@ class IdentityCookiePreference @JvmOverloads constructor(
     private var message: String? = null
 
     init {
-        val store = EhApplication.ehCookieStore
+        val store = EhCookieStore
         val eCookies = store.getCookies(EhUrl.HOST_E.toHttpUrl())
         val exCookies = store.getCookies(EhUrl.HOST_EX.toHttpUrl())
         val cookies: MutableList<Cookie> = LinkedList(eCookies)

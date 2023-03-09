@@ -141,6 +141,11 @@ class FavoritesScene : BaseScene(), OnDragHandlerListener, SearchBarMover.Helper
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        mAdapter?.type = Settings.listMode
+    }
+
     private fun onInit() {
         mUrlBuilder = FavListUrlBuilder()
         mUrlBuilder!!.favCat = Settings.recentFavCat

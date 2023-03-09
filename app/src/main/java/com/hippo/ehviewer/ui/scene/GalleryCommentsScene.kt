@@ -78,7 +78,7 @@ import com.hippo.ehviewer.ui.MainActivity
 import com.hippo.scene.SceneFragment
 import com.hippo.text.URLImageGetter
 import com.hippo.util.addTextToClipboard
-import com.hippo.util.BBCode.toBBCode
+import com.hippo.util.toBBCode
 import com.hippo.util.ExceptionUtils
 import com.hippo.util.ReadableTime
 import com.hippo.util.TextUrl
