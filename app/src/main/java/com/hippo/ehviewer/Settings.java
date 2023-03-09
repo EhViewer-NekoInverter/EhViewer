@@ -24,7 +24,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
-import com.hippo.ehviewer.client.EhConfig;
 import com.hippo.ehviewer.client.data.FavListUrlBuilder;
 import com.hippo.ehviewer.ui.CommonOperations;
 import com.hippo.ehviewer.ui.scene.GalleryListScene;
@@ -246,7 +245,6 @@ public class Settings {
     private static final String KEY_ARCHIVE_PASSWDS = "archive_passwds";
     private static final String KEY_NOTIFICATION_REQUIRED = "notification_required";
     private static SharedPreferences sSettingsPre;
-    private static EhConfig sEhConfig;
     public static final String[] SIGN_IN_REQUIRED = {
             KEY_IDENTITY_COOKIE,
             KEY_GALLERY_SITE,
@@ -260,7 +258,6 @@ public class Settings {
 
     public static void initialize() {
         sSettingsPre = PreferenceManager.getDefaultSharedPreferences(EhApplication.getApplication());
-        sEhConfig = new EhConfig();
         fixDefaultValue();
     }
 
@@ -937,10 +934,6 @@ public class Settings {
 
     public static void putClipboardTextHashCode(int value) {
         putInt(KEY_CLIPBOARD_TEXT_HASH_CODE, value);
-    }
-
-    public static EhConfig getEhConfig() {
-        return sEhConfig;
     }
 
     public static Set<String> getArchivePasswds() {

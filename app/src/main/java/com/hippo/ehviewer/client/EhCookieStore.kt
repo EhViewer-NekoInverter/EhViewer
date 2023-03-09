@@ -39,14 +39,16 @@ object EhCookieStore : CookieJar {
                 contains(url, KEY_IPB_PASS_HASH)
     }
 
+    private const val KEY_CONTENT_WARNING = "nw"
+    private const val CONTENT_WARNING_NOT_SHOW = "1"
     const val KEY_IPB_MEMBER_ID = "ipb_member_id"
     const val KEY_IPB_PASS_HASH = "ipb_pass_hash"
     const val KEY_IGNEOUS = "igneous"
     const val KEY_STAR = "star"
 
     private val sTipsCookie: Cookie = Cookie.Builder()
-        .name(EhConfig.KEY_CONTENT_WARNING)
-        .value(EhConfig.CONTENT_WARNING_NOT_SHOW)
+        .name(KEY_CONTENT_WARNING)
+        .value(CONTENT_WARNING_NOT_SHOW)
         .domain(EhUrl.DOMAIN_E)
         .path("/")
         .expiresAt(Long.MAX_VALUE)
@@ -239,10 +241,7 @@ object EhCookieStore : CookieJar {
             // Add all but skip some
             for (cookie in cookies) {
                 val name = cookie.name
-                if (EhConfig.KEY_CONTENT_WARNING == name) {
-                    continue
-                }
-                if (EhConfig.KEY_UCONFIG == name) {
+                if (KEY_CONTENT_WARNING == name) {
                     continue
                 }
                 result.add(cookie)

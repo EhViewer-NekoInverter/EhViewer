@@ -13,96 +13,79 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.ehviewer.widget
 
-package com.hippo.ehviewer.widget;
+import android.content.Context
+import android.os.Bundle
+import android.os.Parcelable
+import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TableLayout
+import com.hippo.ehviewer.R
+import com.hippo.ehviewer.client.EhUtils
+import com.hippo.util.getParcelableCompat
+import com.hippo.widget.CheckTextView
+import com.hippo.yorozuya.NumberUtils
 
-import android.content.Context;
-import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TableLayout;
+class CategoryTable(
+    context: Context, attrs: AttributeSet
+) : TableLayout(context, attrs), View.OnLongClickListener {
+    private var mDoujinshi: CheckTextView
+    private var mManga: CheckTextView
+    private var mArtistCG: CheckTextView
+    private var mGameCG: CheckTextView
+    private var mWestern: CheckTextView
+    private var mNonH: CheckTextView
+    private var mImageSets: CheckTextView
+    private var mCosplay: CheckTextView
+    private var mAsianPorn: CheckTextView
+    private var mMisc: CheckTextView
+    private var mOptions: Array<CheckTextView>
 
-import com.hippo.ehviewer.R;
-import com.hippo.ehviewer.client.EhConfig;
-import com.hippo.widget.CheckTextView;
-import com.hippo.yorozuya.NumberUtils;
+    init {
+        LayoutInflater.from(context).inflate(R.layout.widget_category_table, this)
 
-public class CategoryTable extends TableLayout implements View.OnLongClickListener {
-    private static final String STATE_KEY_SUPER = "super";
-    private static final String STATE_KEY_CATEGORY = "category";
+        val row0 = getChildAt(0) as ViewGroup
+        mDoujinshi = row0.getChildAt(0) as CheckTextView
+        mManga = row0.getChildAt(1) as CheckTextView
 
-    private CheckTextView mDoujinshi;
-    private CheckTextView mManga;
-    private CheckTextView mArtistCG;
-    private CheckTextView mGameCG;
-    private CheckTextView mWestern;
-    private CheckTextView mNonH;
-    private CheckTextView mImageSets;
-    private CheckTextView mCosplay;
-    private CheckTextView mAsianPorn;
-    private CheckTextView mMisc;
+        val row1 = getChildAt(1) as ViewGroup
+        mArtistCG = row1.getChildAt(0) as CheckTextView
+        mGameCG = row1.getChildAt(1) as CheckTextView
 
-    private CheckTextView[] mOptions;
+        val row2 = getChildAt(2) as ViewGroup
+        mWestern = row2.getChildAt(0) as CheckTextView
+        mNonH = row2.getChildAt(1) as CheckTextView
 
-    public CategoryTable(Context context) {
-        super(context);
-        init();
-    }
+        val row3 = getChildAt(3) as ViewGroup
+        mImageSets = row3.getChildAt(0) as CheckTextView
+        mCosplay = row3.getChildAt(1) as CheckTextView
 
-    public CategoryTable(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-    }
+        val row4 = getChildAt(4) as ViewGroup
+        mAsianPorn = row4.getChildAt(0) as CheckTextView
+        mMisc = row4.getChildAt(1) as CheckTextView
 
-    public void init() {
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        inflater.inflate(R.layout.widget_category_table, this);
+        mOptions = arrayOf(
+            mDoujinshi, mManga, mArtistCG, mGameCG, mWestern, mNonH, mImageSets, mCosplay, mAsianPorn, mMisc
+        )
 
-        ViewGroup row0 = (ViewGroup) getChildAt(0);
-        mDoujinshi = (CheckTextView) row0.getChildAt(0);
-        mManga = (CheckTextView) row0.getChildAt(1);
-
-        ViewGroup row1 = (ViewGroup) getChildAt(1);
-        mArtistCG = (CheckTextView) row1.getChildAt(0);
-        mGameCG = (CheckTextView) row1.getChildAt(1);
-
-        ViewGroup row2 = (ViewGroup) getChildAt(2);
-        mWestern = (CheckTextView) row2.getChildAt(0);
-        mNonH = (CheckTextView) row2.getChildAt(1);
-
-        ViewGroup row3 = (ViewGroup) getChildAt(3);
-        mImageSets = (CheckTextView) row3.getChildAt(0);
-        mCosplay = (CheckTextView) row3.getChildAt(1);
-
-        ViewGroup row4 = (ViewGroup) getChildAt(4);
-        mAsianPorn = (CheckTextView) row4.getChildAt(0);
-        mMisc = (CheckTextView) row4.getChildAt(1);
-
-        mOptions = new CheckTextView[]{
-                mDoujinshi, mManga, mArtistCG, mGameCG, mWestern,
-                mNonH, mImageSets, mCosplay, mAsianPorn, mMisc
-        };
-
-        for (CheckTextView option : mOptions) {
-            option.setOnLongClickListener(this);
+        for (option in mOptions) {
+            option.setOnLongClickListener(this)
         }
     }
 
-    @Override
-    public boolean onLongClick(View v) {
-        if (v instanceof CheckTextView) {
-            boolean checked = ((CheckTextView) v).isChecked();
-            for (CheckTextView option : mOptions) {
-                if (option != v) {
-                    option.setChecked(!checked);
+    override fun onLongClick(v: View): Boolean {
+        if (v is CheckTextView) {
+            val checked = v.isChecked
+            for (option in mOptions) {
+                if (option !== v) {
+                    option.isChecked = !checked
                 }
             }
         }
-
-        return true;
+        return true
     }
 
     /**
@@ -110,19 +93,19 @@ public class CategoryTable extends TableLayout implements View.OnLongClickListen
      *
      * @return the category of this view
      */
-    public int getCategory() {
-        int category = 0;
-        if (!mDoujinshi.isChecked()) category |= EhConfig.DOUJINSHI;
-        if (!mManga.isChecked()) category |= EhConfig.MANGA;
-        if (!mArtistCG.isChecked()) category |= EhConfig.ARTIST_CG;
-        if (!mGameCG.isChecked()) category |= EhConfig.GAME_CG;
-        if (!mWestern.isChecked()) category |= EhConfig.WESTERN;
-        if (!mNonH.isChecked()) category |= EhConfig.NON_H;
-        if (!mImageSets.isChecked()) category |= EhConfig.IMAGE_SET;
-        if (!mCosplay.isChecked()) category |= EhConfig.COSPLAY;
-        if (!mAsianPorn.isChecked()) category |= EhConfig.ASIAN_PORN;
-        if (!mMisc.isChecked()) category |= EhConfig.MISC;
-        return category;
+    fun getCategory(): Int {
+        var category = 0
+        if (!mDoujinshi.isChecked) category = category or EhUtils.DOUJINSHI
+        if (!mManga.isChecked) category = category or EhUtils.MANGA
+        if (!mArtistCG.isChecked) category = category or EhUtils.ARTIST_CG
+        if (!mGameCG.isChecked) category = category or EhUtils.GAME_CG
+        if (!mWestern.isChecked) category = category or EhUtils.WESTERN
+        if (!mNonH.isChecked) category = category or EhUtils.NON_H
+        if (!mImageSets.isChecked) category = category or EhUtils.IMAGE_SET
+        if (!mCosplay.isChecked) category = category or EhUtils.COSPLAY
+        if (!mAsianPorn.isChecked) category = category or EhUtils.ASIAN_PORN
+        if (!mMisc.isChecked) category = category or EhUtils.MISC
+        return category
     }
 
     /**
@@ -130,33 +113,35 @@ public class CategoryTable extends TableLayout implements View.OnLongClickListen
      *
      * @param category target category
      */
-    public void setCategory(int category) {
-        mDoujinshi.setChecked(!NumberUtils.int2boolean(category & EhConfig.DOUJINSHI));
-        mManga.setChecked(!NumberUtils.int2boolean(category & EhConfig.MANGA));
-        mArtistCG.setChecked(!NumberUtils.int2boolean(category & EhConfig.ARTIST_CG));
-        mGameCG.setChecked(!NumberUtils.int2boolean(category & EhConfig.GAME_CG));
-        mWestern.setChecked(!NumberUtils.int2boolean(category & EhConfig.WESTERN));
-        mNonH.setChecked(!NumberUtils.int2boolean(category & EhConfig.NON_H));
-        mImageSets.setChecked(!NumberUtils.int2boolean(category & EhConfig.IMAGE_SET));
-        mCosplay.setChecked(!NumberUtils.int2boolean(category & EhConfig.COSPLAY));
-        mAsianPorn.setChecked(!NumberUtils.int2boolean(category & EhConfig.ASIAN_PORN));
-        mMisc.setChecked(!NumberUtils.int2boolean(category & EhConfig.MISC));
+    fun setCategory(category: Int) {
+        mDoujinshi.isChecked = !NumberUtils.int2boolean(category and EhUtils.DOUJINSHI)
+        mManga.isChecked = !NumberUtils.int2boolean(category and EhUtils.MANGA)
+        mArtistCG.isChecked = !NumberUtils.int2boolean(category and EhUtils.ARTIST_CG)
+        mGameCG.isChecked = !NumberUtils.int2boolean(category and EhUtils.GAME_CG)
+        mWestern.isChecked = !NumberUtils.int2boolean(category and EhUtils.WESTERN)
+        mNonH.isChecked = !NumberUtils.int2boolean(category and EhUtils.NON_H)
+        mImageSets.isChecked = !NumberUtils.int2boolean(category and EhUtils.IMAGE_SET)
+        mCosplay.isChecked = !NumberUtils.int2boolean(category and EhUtils.COSPLAY)
+        mAsianPorn.isChecked = !NumberUtils.int2boolean(category and EhUtils.ASIAN_PORN)
+        mMisc.isChecked = !NumberUtils.int2boolean(category and EhUtils.MISC)
     }
 
-    @Override
-    public Parcelable onSaveInstanceState() {
-        final Bundle state = new Bundle();
-        state.putParcelable(STATE_KEY_SUPER, super.onSaveInstanceState());
-        state.putInt(STATE_KEY_CATEGORY, getCategory());
-        return state;
+    override fun onSaveInstanceState(): Parcelable {
+        val bundle = Bundle()
+        bundle.putParcelable(STATE_KEY_SUPER, super.onSaveInstanceState())
+        bundle.putInt(STATE_KEY_CATEGORY, getCategory())
+        return bundle
     }
 
-    @Override
-    public void onRestoreInstanceState(Parcelable state) {
-        if (state instanceof Bundle) {
-            final Bundle savedState = (Bundle) state;
-            super.onRestoreInstanceState(savedState.getParcelable(STATE_KEY_SUPER));
-            setCategory(savedState.getInt(STATE_KEY_CATEGORY));
+    override fun onRestoreInstanceState(state: Parcelable) {
+        if (state is Bundle) {
+            super.onRestoreInstanceState(state.getParcelableCompat(STATE_KEY_SUPER))
+            setCategory(state.getInt(STATE_KEY_CATEGORY))
         }
+    }
+
+    companion object {
+        private const val STATE_KEY_SUPER = "super"
+        private const val STATE_KEY_CATEGORY = "category"
     }
 }
