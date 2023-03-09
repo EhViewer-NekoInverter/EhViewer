@@ -13,75 +13,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.ehviewer.ui.scene
 
-package com.hippo.ehviewer.ui.scene;
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.button.MaterialButtonToggleGroup
+import com.hippo.ehviewer.R
+import com.hippo.ehviewer.Settings
+import com.hippo.ehviewer.client.EhUrl
+import com.hippo.ehviewer.client.EhUtils
+import com.hippo.yorozuya.ViewUtils
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.button.MaterialButtonToggleGroup;
-import com.hippo.ehviewer.EhApplication;
-import com.hippo.ehviewer.R;
-import com.hippo.ehviewer.Settings;
-import com.hippo.ehviewer.client.EhUrl;
-import com.hippo.ehviewer.ui.MainActivity;
-import com.hippo.yorozuya.ViewUtils;
-
-public class SelectSiteScene extends SolidScene implements View.OnClickListener {
-    private MaterialButtonToggleGroup mButtonGroup;
-    private View mOk;
-
-    @Override
-    public boolean needShowLeftDrawer() {
-        return false;
+class SelectSiteScene : SolidScene(), View.OnClickListener {
+    private var mButtonGroup: MaterialButtonToggleGroup? = null
+    private var mOk: View? = null
+    
+    override fun needShowLeftDrawer(): Boolean {
+        return false
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.scene_select_site, container, false);
-
-        mButtonGroup = (MaterialButtonToggleGroup) ViewUtils.$$(view, R.id.button_group);
-        if (EhApplication.getEhCookieStore().hasSignedIn()) {
-            ((MaterialButton) view.findViewById(R.id.site_ex)).setChecked(true);
-        } else {
-            ((MaterialButton) view.findViewById(R.id.site_e)).setChecked(true);
-        }
-        mOk = ViewUtils.$$(view, R.id.ok);
-
-        mOk.setOnClickListener(this);
-
-        return view;
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val view = inflater.inflate(R.layout.scene_select_site, container, false)
+        mButtonGroup = ViewUtils.`$$`(view, R.id.button_group) as MaterialButtonToggleGroup
+        (ViewUtils.`$$`(view, if (EhUtils.isExHentai) R.id.site_ex else R.id.site_e) as MaterialButton).setChecked(true)
+        mOk = ViewUtils.`$$`(view, R.id.ok)
+        mOk!!.setOnClickListener(this)
+        return view
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
-        mButtonGroup = null;
-        mOk = null;
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mButtonGroup = null
+        mOk = null
     }
 
-    @Override
-    public void onClick(View v) {
-        MainActivity activity = getMainActivity();
-        if (null == activity || null == mButtonGroup) {
-            return;
-        }
-
+    override fun onClick(v: View) {
+        val id = mButtonGroup?.getCheckedButtonId() ?: return
         if (v == mOk) {
-            int id = mButtonGroup.getCheckedButtonId();
-            Settings.putSelectSite(false);
-            Settings.putGallerySite(id == R.id.site_ex ? EhUrl.SITE_EX : EhUrl.SITE_E);
-            startSceneForCheckStep(CHECK_STEP_SELECT_SITE, getArguments());
-            finish();
+            Settings.putSelectSite(false)
+            Settings.putGallerySite(if (id == R.id.site_ex) EhUrl.SITE_EX else EhUrl.SITE_E)
+            startSceneForCheckStep(CHECK_STEP_SELECT_SITE, getArguments())
+            finish()
         }
     }
 }

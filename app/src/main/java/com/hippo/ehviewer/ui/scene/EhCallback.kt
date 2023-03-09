@@ -13,80 +13,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.ehviewer.ui.scene
 
-package com.hippo.ehviewer.ui.scene;
+import android.content.Context
+import android.widget.Toast
+import androidx.annotation.StringRes
+import com.hippo.ehviewer.EhApplication
+import com.hippo.ehviewer.client.EhClient
+import com.hippo.ehviewer.ui.MainActivity
+import com.hippo.scene.SceneFragment
 
-import android.content.Context;
-import android.widget.Toast;
+abstract class EhCallback<E : SceneFragment?, T>(
+    context: Context
+) : EhClient.Callback<T> {
+    val application: EhApplication
 
-import androidx.annotation.StringRes;
-
-import com.hippo.ehviewer.EhApplication;
-import com.hippo.ehviewer.client.EhClient;
-import com.hippo.ehviewer.ui.MainActivity;
-import com.hippo.scene.SceneFragment;
-import com.hippo.scene.StageActivity;
-
-public abstract class EhCallback<E extends SceneFragment, T> implements EhClient.Callback<T> {
-    private final EhApplication mApplication;
-    private final int mStageId;
-    private final String mSceneTag;
-
-    public EhCallback(Context context, int stageId, String sceneTag) {
-        mApplication = (EhApplication) context.getApplicationContext();
-        mStageId = stageId;
-        mSceneTag = sceneTag;
+    init {
+        application = context.applicationContext as EhApplication
     }
 
-    public abstract boolean isInstance(SceneFragment scene);
-
-    public Context getContent() {
-        Context context = getStageActivity();
-        if (context == null) {
-            context = getApplication();
+    val content: Context
+        get() {
+            val context = application.topActivity
+            return context ?: application
         }
-        return context;
-    }
 
-    public EhApplication getApplication() {
-        return mApplication;
-    }
-
-    public StageActivity getStageActivity() {
-        return mApplication.findStageActivityById(mStageId);
-    }
-
-    @SuppressWarnings("unchecked")
-    public E getScene() {
-        StageActivity stage = mApplication.findStageActivityById(mStageId);
-        if (stage == null) {
-            return null;
-        }
-        SceneFragment scene = stage.findSceneByTag(mSceneTag);
-        if (isInstance(scene)) {
-            return (E) scene;
+    fun showTip(@StringRes id: Int, length: Int) {
+        val activity = content
+        if (activity is MainActivity) {
+            activity.showTip(id, length)
         } else {
-            return null;
+            Toast.makeText(
+                application, id,
+                if (length == BaseScene.LENGTH_LONG) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
-    public void showTip(@StringRes int id, int length) {
-        StageActivity activity = getStageActivity();
-        if (activity instanceof MainActivity) {
-            ((MainActivity) activity).showTip(id, length);
+    fun showTip(tip: String, length: Int) {
+        val activity = content
+        if (activity is MainActivity) {
+            activity.showTip(tip, length)
         } else {
-            Toast.makeText(getApplication(), id,
-                    length == BaseScene.LENGTH_LONG ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void showTip(String tip, int length) {
-        StageActivity activity = getStageActivity();
-        if (activity instanceof MainActivity) {
-            ((MainActivity) activity).showTip(tip, length);
-        } else {
-            Toast.makeText(getApplication(), tip,
-                    length == BaseScene.LENGTH_LONG ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show();
+            Toast.makeText(
+                application, tip,
+                if (length == BaseScene.LENGTH_LONG) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
+            ).show()
         }
     }
 }

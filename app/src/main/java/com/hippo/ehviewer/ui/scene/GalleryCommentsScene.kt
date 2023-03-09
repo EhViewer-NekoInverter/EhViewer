@@ -382,7 +382,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
                 id,
                 vote
             )
-            .setCallback(VoteCommentListener(context, activity.stageId, tag))
+            .setCallback(VoteCommentListener(context))
         request.enqueue(this)
     }
 
@@ -512,7 +512,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
                 val request = EhRequest()
                     .setMethod(EhClient.METHOD_GET_GALLERY_DETAIL)
                     .setArgs(url)
-                    .setCallback(RefreshCommentListener(activity, activity.stageId, tag))
+                    .setCallback(RefreshCommentListener(activity))
                 request.enqueue(this)
             }
         }
@@ -679,7 +679,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
                         comment,
                         if (mCommentId != 0L) mCommentId.toString() else null
                     )
-                    .setCallback(CommentGalleryListener(context, activity.stageId, tag, mCommentId))
+                    .setCallback(CommentGalleryListener(context, mCommentId))
                 request.enqueue(this)
                 hideSoftInput()
                 hideEditPanel()
@@ -792,14 +792,14 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
                 val request = EhRequest()
                     .setMethod(EhClient.METHOD_GET_GALLERY_DETAIL)
                     .setArgs(url)
-                    .setCallback(RefreshCommentListener(activity, activity.stageId, tag))
+                    .setCallback(RefreshCommentListener(activity))
                 request.enqueue(this)
             }
         }
     }
 
-    private inner class RefreshCommentListener(context: Context?, stageId: Int, sceneTag: String?) :
-        EhCallback<GalleryCommentsScene?, GalleryDetail>(context, stageId, sceneTag) {
+    private inner class RefreshCommentListener(context: Context) :
+        EhCallback<GalleryCommentsScene?, GalleryDetail>(context) {
         override fun onSuccess(result: GalleryDetail) {
             val scene = this@GalleryCommentsScene
             scene.onRefreshGallerySuccess(result.comments)
@@ -811,14 +811,10 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
         }
 
         override fun onCancel() {}
-
-        override fun isInstance(scene: SceneFragment): Boolean {
-            return scene is GalleryCommentsScene
-        }
     }
 
-    private inner class CommentGalleryListener(context: Context?, stageId: Int, sceneTag: String?, private val mCommentId: Long) :
-        EhCallback<GalleryCommentsScene?, GalleryCommentList>(context, stageId, sceneTag) {
+    private inner class CommentGalleryListener(context: Context, private val mCommentId: Long) :
+        EhCallback<GalleryCommentsScene?, GalleryCommentList>(context) {
         override fun onSuccess(result: GalleryCommentList) {
             showTip(
                 if (mCommentId != 0L) R.string.edit_comment_successfully else R.string.comment_successfully,
@@ -838,14 +834,10 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
         }
 
         override fun onCancel() {}
-
-        override fun isInstance(scene: SceneFragment): Boolean {
-            return scene is GalleryCommentsScene
-        }
     }
 
-    private inner class VoteCommentListener(context: Context?, stageId: Int, sceneTag: String?) :
-        EhCallback<GalleryCommentsScene?, VoteCommentParser.Result>(context, stageId, sceneTag) {
+    private inner class VoteCommentListener(context: Context) :
+        EhCallback<GalleryCommentsScene?, VoteCommentParser.Result>(context) {
         override fun onSuccess(result: VoteCommentParser.Result) {
             showTip(
                 if (result.expectVote > 0) (if (0 != result.vote) R.string.vote_up_successfully else R.string.cancel_vote_up_successfully) else if (0 != result.vote) R.string.vote_down_successfully else R.string.cancel_vote_down_successfully,
@@ -860,10 +852,6 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
         }
 
         override fun onCancel() {}
-
-        override fun isInstance(scene: SceneFragment): Boolean {
-            return scene is GalleryCommentsScene
-        }
     }
 
     private class InfoHolder(itemView: View?) : RecyclerView.ViewHolder(

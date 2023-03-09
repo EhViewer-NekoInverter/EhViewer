@@ -229,9 +229,8 @@ class GalleryPreviewsScene : ToolbarScene() {
     }
 
     private inner class GetPreviewSetListener(
-        context: Context?, stageId: Int, sceneTag: String?,
-        private val mTaskId: Int
-    ) : EhCallback<GalleryPreviewsScene, Pair<PreviewSet, Int>>(context, stageId, sceneTag) {
+        context: Context, private val mTaskId: Int
+    ) : EhCallback<GalleryPreviewsScene, Pair<PreviewSet, Int>>(context) {
         override fun onSuccess(result: Pair<PreviewSet, Int>) {
             val scene = this@GalleryPreviewsScene
             scene.onGetPreviewSetSuccess(result, mTaskId)
@@ -243,10 +242,6 @@ class GalleryPreviewsScene : ToolbarScene() {
         }
 
         override fun onCancel() {}
-
-        override fun isInstance(scene: SceneFragment): Boolean {
-            return scene is GalleryPreviewsScene
-        }
     }
 
     private inner class GalleryPreviewAdapter : RecyclerView.Adapter<GalleryPreviewHolder>() {
@@ -297,12 +292,7 @@ class GalleryPreviewsScene : ToolbarScene() {
             val request = EhRequest()
             request.setMethod(EhClient.METHOD_GET_PREVIEW_SET)
             request.setCallback(
-                GetPreviewSetListener(
-                    context,
-                    activity.stageId,
-                    tag,
-                    taskId
-                )
+                GetPreviewSetListener(context, taskId)
             )
             request.setArgs(url)
             request.enqueue(this@GalleryPreviewsScene)

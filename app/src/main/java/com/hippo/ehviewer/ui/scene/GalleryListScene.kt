@@ -886,14 +886,14 @@ class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListen
                         CommonOperations.removeFromFavorites(
                             activity,
                             gi,
-                            RemoveFromFavoriteListener(context, activity.stageId, tag)
+                            RemoveFromFavoriteListener(context)
                         )
                     } else {
                         // CommonOperations Actions
                         CommonOperations.addToFavorites(
                             activity,
                             gi,
-                            AddToFavoriteListener(context, activity.stageId, tag),
+                            AddToFavoriteListener(context),
                             false
                         )
                     }
@@ -1289,10 +1289,8 @@ class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListen
     private annotation class State
     private inner class GetGalleryListListener(
         context: Context,
-        stageId: Int,
-        sceneTag: String?,
         private val mTaskId: Int
-    ) : EhCallback<GalleryListScene, GalleryListParser.Result>(context, stageId, sceneTag) {
+    ) : EhCallback<GalleryListScene, GalleryListParser.Result>(context) {
         override fun onSuccess(result: GalleryListParser.Result) {
             val scene = this@GalleryListScene
             scene.onGetGalleryListSuccess(result, mTaskId)
@@ -1304,14 +1302,10 @@ class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListen
         }
 
         override fun onCancel() {}
-
-        override fun isInstance(scene: SceneFragment): Boolean {
-            return scene is GalleryListScene
-        }
     }
 
-    private class AddToFavoriteListener(context: Context, stageId: Int, sceneTag: String?) :
-        EhCallback<GalleryListScene, Void?>(context, stageId, sceneTag) {
+    private class AddToFavoriteListener(context: Context) :
+        EhCallback<GalleryListScene, Void?>(context) {
         override fun onSuccess(result: Void?) {
             showTip(R.string.add_to_favorite_success, LENGTH_SHORT)
         }
@@ -1321,14 +1315,10 @@ class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListen
         }
 
         override fun onCancel() {}
-
-        override fun isInstance(scene: SceneFragment): Boolean {
-            return scene is GalleryListScene
-        }
     }
 
-    private class RemoveFromFavoriteListener(context: Context, stageId: Int, sceneTag: String?) :
-        EhCallback<GalleryListScene, Void?>(context, stageId, sceneTag) {
+    private class RemoveFromFavoriteListener(context: Context) :
+        EhCallback<GalleryListScene, Void?>(context) {
         override fun onSuccess(result: Void?) {
             showTip(R.string.remove_from_favorite_success, LENGTH_SHORT)
         }
@@ -1338,10 +1328,6 @@ class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListen
         }
 
         override fun onCancel() {}
-
-        override fun isInstance(scene: SceneFragment): Boolean {
-            return scene is GalleryListScene
-        }
     }
 
     private inner class QsDrawerHolder(
@@ -1569,10 +1555,7 @@ class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListen
                 val request = EhRequest()
                 request.setMethod(EhClient.METHOD_IMAGE_SEARCH)
                 request.setCallback(
-                    GetGalleryListListener(
-                        context,
-                        activity.stageId, tag, taskId
-                    )
+                    GetGalleryListListener(context, taskId)
                 )
                 request.setArgs(
                     File(StringUtils.avoidNull(mUrlBuilder.imagePath)),
@@ -1585,10 +1568,7 @@ class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListen
                 val request = EhRequest()
                 request.setMethod(EhClient.METHOD_GET_GALLERY_LIST)
                 request.setCallback(
-                    GetGalleryListListener(
-                        context,
-                        activity.stageId, tag, taskId
-                    )
+                    GetGalleryListListener(context, taskId)
                 )
                 request.setArgs(url)
                 request.enqueue(this@GalleryListScene)

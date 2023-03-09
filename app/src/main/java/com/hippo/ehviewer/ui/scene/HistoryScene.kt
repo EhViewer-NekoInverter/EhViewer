@@ -319,14 +319,14 @@ class HistoryScene : ToolbarScene() {
                         CommonOperations.removeFromFavorites(
                             activity,
                             gi,
-                            RemoveFromFavoriteListener(context, activity.stageId, tag)
+                            RemoveFromFavoriteListener(context)
                         )
                     } else {
                         // CommonOperations Actions
                         CommonOperations.addToFavorites(
                             activity,
                             gi,
-                            AddToFavoriteListener(context, activity.stageId, tag),
+                            AddToFavoriteListener(context),
                             false
                         )
                     }
@@ -364,8 +364,8 @@ class HistoryScene : ToolbarScene() {
         return true
     }
 
-    private class AddToFavoriteListener(context: Context?, stageId: Int, sceneTag: String?) :
-        EhCallback<GalleryListScene?, Void?>(context, stageId, sceneTag) {
+    private class AddToFavoriteListener(context: Context) :
+        EhCallback<GalleryListScene?, Void?>(context) {
         override fun onSuccess(result: Void?) {
             showTip(R.string.add_to_favorite_success, LENGTH_SHORT)
         }
@@ -375,13 +375,10 @@ class HistoryScene : ToolbarScene() {
         }
 
         override fun onCancel() {}
-        override fun isInstance(scene: SceneFragment): Boolean {
-            return scene is GalleryListScene
-        }
     }
 
-    private class RemoveFromFavoriteListener(context: Context?, stageId: Int, sceneTag: String?) :
-        EhCallback<GalleryListScene?, Void?>(context, stageId, sceneTag) {
+    private class RemoveFromFavoriteListener(context: Context) :
+        EhCallback<GalleryListScene?, Void?>(context) {
         override fun onSuccess(result: Void?) {
             showTip(R.string.remove_from_favorite_success, LENGTH_SHORT)
         }
@@ -391,9 +388,6 @@ class HistoryScene : ToolbarScene() {
         }
 
         override fun onCancel() {}
-        override fun isInstance(scene: SceneFragment): Boolean {
-            return scene is GalleryListScene
-        }
     }
 
     private class HistoryHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

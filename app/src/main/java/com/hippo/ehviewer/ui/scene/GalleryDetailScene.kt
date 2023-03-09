@@ -628,7 +628,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         if (null == context || null == activity || null == url) {
             return false
         }
-        val callback: EhClient.Callback<*> = GetGalleryDetailListener(context, activity.stageId, tag)
+        val callback: EhClient.Callback<*> = GetGalleryDetailListener(context)
         mRequestId = (context.applicationContext as EhApplication).putGlobalStuff(callback)
         val request = EhRequest()
             .setMethod(EhClient.METHOD_GET_GALLERY_DETAIL)
@@ -1102,7 +1102,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                         mModifyingFavorites = true
                         CommonOperations.removeFromFavorites(
                             activity, galleryDetail,
-                            ModifyFavoritesListener(context, activity.stageId, tag, true)
+                            ModifyFavoritesListener(context, true)
                         )
                         remove = true
                     }
@@ -1110,7 +1110,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                         mModifyingFavorites = true
                         CommonOperations.addToFavorites(
                             activity, galleryDetail,
-                            ModifyFavoritesListener(context, activity.stageId, tag, false),
+                            ModifyFavoritesListener(context, false),
                             false
                         )
                     }
@@ -1333,7 +1333,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                 tag,
                 vote
             )
-            .setCallback(VoteTagListener(context, activity.stageId, tag))
+            .setCallback(VoteTagListener(context))
         request.enqueue(this)
     }
 
@@ -1360,20 +1360,20 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                     mModifyingFavorites = true
                     CommonOperations.removeFromFavorites(
                         activity, mGalleryDetail!!,
-                        ModifyFavoritesListener(activity, activity.stageId, tag, true)
+                        ModifyFavoritesListener(activity, true)
                     )
                     removeOrEdit = true
                 } else if (mGalleryDetail!!.isFavorited) {
                     mModifyingFavorites = true
                     CommonOperations.doAddToFavorites(activity, mGalleryDetail!!, mGalleryDetail!!.favoriteSlot,
-                        ModifyFavoritesListener(activity, activity.stageId, tag, false), true)
+                        ModifyFavoritesListener(activity, false), true)
                     removeOrEdit = true
                 }
                 if (!removeOrEdit) {
                     mModifyingFavorites = true
                     CommonOperations.addToFavorites(
                         activity, mGalleryDetail!!,
-                        ModifyFavoritesListener(activity, activity.stageId, tag, false), true
+                        ModifyFavoritesListener(activity, false), true
                     )
                 }
                 // Update UI
@@ -1557,8 +1557,8 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         }
     }
 
-    private class VoteTagListener(context: Context?, stageId: Int, sceneTag: String?) :
-        EhCallback<GalleryDetailScene?, VoteTagParser.Result>(context, stageId, sceneTag) {
+    private class VoteTagListener(context: Context) :
+        EhCallback<GalleryDetailScene?, VoteTagParser.Result>(context) {
         override fun onSuccess(result: VoteTagParser.Result) {
             if (!result.error.isNullOrEmpty()) {
                 showTip(result.error, LENGTH_SHORT)
@@ -1572,16 +1572,11 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         }
 
         override fun onCancel() {}
-
-        override fun isInstance(scene: SceneFragment): Boolean {
-            return scene is GalleryDetailScene
-        }
     }
 
     private class DownloadArchiveListener(
-        context: Context?, stageId: Int, sceneTag: String?,
-        private val mGalleryInfo: GalleryInfo?
-    ) : EhCallback<GalleryDetailScene?, String?>(context, stageId, sceneTag) {
+        context: Context, private val mGalleryInfo: GalleryInfo?
+    ) : EhCallback<GalleryDetailScene?, String?>(context) {
         override fun onSuccess(result: String?) {
             // TODO: Don't use buggy system download service
             val r = AndroidDownloadManager.Request(Uri.parse(result))
@@ -1611,10 +1606,6 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         }
 
         override fun onCancel() {}
-
-        override fun isInstance(scene: SceneFragment): Boolean {
-            return scene is GalleryDetailScene
-        }
     }
 
     private inner class DeleteDialogHelper(
@@ -1644,8 +1635,8 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         }
     }
 
-    private inner class GetGalleryDetailListener(context: Context?, stageId: Int, sceneTag: String?) :
-        EhCallback<GalleryDetailScene?, GalleryDetail>(context, stageId, sceneTag) {
+    private inner class GetGalleryDetailListener(context: Context) :
+        EhCallback<GalleryDetailScene?, GalleryDetail>(context) {
         override fun onSuccess(result: GalleryDetail) {
             application.removeGlobalStuff(this)
             // Put gallery detail to cache
@@ -1667,15 +1658,11 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         override fun onCancel() {
             application.removeGlobalStuff(this)
         }
-
-        override fun isInstance(scene: SceneFragment): Boolean {
-            return scene is GalleryDetailScene
-        }
     }
 
     private inner class RateGalleryListener(
-        context: Context?, stageId: Int, sceneTag: String?
-    ) : EhCallback<GalleryDetailScene?, RateGalleryParser.Result>(context, stageId, sceneTag) {
+        context: Context
+    ) : EhCallback<GalleryDetailScene?, RateGalleryParser.Result>(context) {
         override fun onSuccess(result: RateGalleryParser.Result) {
             showTip(R.string.rate_successfully, LENGTH_SHORT)
             val scene = this@GalleryDetailScene
@@ -1688,17 +1675,12 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         }
 
         override fun onCancel() {}
-
-        override fun isInstance(scene: SceneFragment): Boolean {
-            return scene is GalleryDetailScene
-        }
     }
 
     private inner class ModifyFavoritesListener(
-        context: Context?, stageId: Int, sceneTag: String?,
-        private val mAddOrRemove: Boolean
+        context: Context, private val mAddOrRemove: Boolean
     ) :
-        EhCallback<GalleryDetailScene?, Void?>(context, stageId, sceneTag) {
+        EhCallback<GalleryDetailScene?, Void?>(context) {
         override fun onSuccess(result: Void?) {
             showTip(
                 if (mAddOrRemove) R.string.remove_from_favorite_success else R.string.add_to_favorite_success,
@@ -1720,10 +1702,6 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         override fun onCancel() {
             val scene = this@GalleryDetailScene
             scene.onModifyFavoritesCancel()
-        }
-
-        override fun isInstance(scene: SceneFragment): Boolean {
-            return scene is GalleryDetailScene
         }
     }
 
@@ -1823,7 +1801,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                     res,
                     isHAtH
                 )
-                request.setCallback(DownloadArchiveListener(context, activity.stageId, tag, mGalleryDetail))
+                request.setCallback(DownloadArchiveListener(context, mGalleryDetail))
                 request.enqueue(this@GalleryDetailScene)
             }
             if (mDialog != null) {
@@ -2015,9 +1993,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                     mGalleryDetail!!.gid, mGalleryDetail!!.token!!, mRatingBar!!.rating
                 )
                 .setCallback(
-                    RateGalleryListener(
-                        context, activity.stageId, tag
-                    )
+                    RateGalleryListener(context)
                 )
             request.enqueue(this@GalleryDetailScene)
         }

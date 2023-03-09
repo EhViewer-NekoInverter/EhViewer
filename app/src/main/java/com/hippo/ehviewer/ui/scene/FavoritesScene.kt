@@ -814,14 +814,12 @@ class FavoritesScene : BaseScene(), OnDragHandlerListener, SearchBarMover.Helper
 
     private inner class AddFavoritesListener(
         context: Context,
-        stageId: Int,
-        sceneTag: String?,
         private val mTaskId: Int,
         private val mKeyword: String?,
         private val mBackup: List<GalleryInfo>,
         private val mGidArray: LongArray?,
         private val mSlot: Int
-    ) : EhCallback<FavoritesScene?, Void?>(context, stageId, sceneTag) {
+    ) : EhCallback<FavoritesScene?, Void?>(context) {
         override fun onSuccess(result: Void?) {
             val scene = this@FavoritesScene
             scene.updateHistoryFavSlot(mGidArray, mSlot)
@@ -838,22 +836,16 @@ class FavoritesScene : BaseScene(), OnDragHandlerListener, SearchBarMover.Helper
         }
 
         override fun onCancel() {}
-
-        override fun isInstance(scene: SceneFragment): Boolean {
-            return scene is FavoritesScene
-        }
     }
 
     private inner class GetFavoritesListener(
         context: Context,
-        stageId: Int,
-        sceneTag: String?,
         private val mTaskId: Int, // Local fav is shown now, but operation need be done for cloud fav
         private val mLocal: Boolean,
         private val mKeyword: String?,
         private val mGidArray: LongArray?,
         private val mSlot: Int
-    ) : EhCallback<FavoritesScene?, FavoritesParser.Result>(context, stageId, sceneTag) {
+    ) : EhCallback<FavoritesScene?, FavoritesParser.Result>(context) {
         override fun onSuccess(result: FavoritesParser.Result) {
             // Put fav cat
             Settings.putFavCat(result.catArray)
@@ -878,10 +870,6 @@ class FavoritesScene : BaseScene(), OnDragHandlerListener, SearchBarMover.Helper
         }
 
         override fun onCancel() {}
-
-        override fun isInstance(scene: SceneFragment): Boolean {
-            return scene is FavoritesScene
-        }
     }
 
     private inner class FavDrawerAdapter(private val mInflater: LayoutInflater) :
@@ -1071,9 +1059,8 @@ class FavoritesScene : BaseScene(), OnDragHandlerListener, SearchBarMover.Helper
                     request.setMethod(EhClient.METHOD_ADD_FAVORITES_RANGE)
                     request.setCallback(
                         AddFavoritesListener(
-                            context, activity.stageId, tag,
-                            taskId, mUrlBuilder!!.keyword, modifyGiListBackup,
-                            gidArray, mFavSlot
+                            context, taskId, mUrlBuilder!!.keyword,
+                            modifyGiListBackup, gidArray, mFavSlot
                         )
                     )
                     request.setArgs(gidArray, tokenArray, mModifyFavCat)
@@ -1097,9 +1084,8 @@ class FavoritesScene : BaseScene(), OnDragHandlerListener, SearchBarMover.Helper
                     request.setMethod(EhClient.METHOD_MODIFY_FAVORITES)
                     request.setCallback(
                         GetFavoritesListener(
-                            context, activity.stageId, tag,
-                            taskId, local, mUrlBuilder!!.keyword,
-                            gidArray, mFavSlot
+                            context, taskId, local,
+                            mUrlBuilder!!.keyword, gidArray, mFavSlot
                         )
                     )
                     request.setArgs(url, gidArray, mModifyFavCat)
@@ -1116,9 +1102,8 @@ class FavoritesScene : BaseScene(), OnDragHandlerListener, SearchBarMover.Helper
                 request.setMethod(EhClient.METHOD_GET_FAVORITES)
                 request.setCallback(
                     GetFavoritesListener(
-                        context, activity.stageId, tag,
-                        taskId, false, mUrlBuilder!!.keyword,
-                        null, -2
+                        context, taskId, false,
+                        mUrlBuilder!!.keyword, null, -2
                     )
                 )
                 request.setArgs(url)

@@ -19,7 +19,7 @@ import com.hippo.okhttp.ChromeRequestBuilder
 
 class EhRequestBuilder @JvmOverloads constructor(
     url: String,
-    referer: String?,
+    referer: String? = null,
     origin: String? = null
 ) : ChromeRequestBuilder(url) {
     init {

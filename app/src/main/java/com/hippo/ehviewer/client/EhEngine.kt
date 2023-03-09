@@ -70,7 +70,7 @@ import org.jsoup.Jsoup
 
 object EhEngine {
     private val MEDIA_TYPE_JSON: MediaType = "application/json; charset=utf-8".toMediaType()
-    private val TAG = EhEngine::class.java.simpleName
+    private const val TAG = "EhEngine"
     private const val MAX_REQUEST_SIZE = 25
     private const val SAD_PANDA_DISPOSITION = "inline; filename=\"sadpanda.jpg\""
     private const val SAD_PANDA_TYPE = "image/gif"
@@ -273,7 +273,7 @@ object EhEngine {
     }
 
     @Throws(Throwable::class)
-    suspend fun doFillGalleryListByApi(
+    private suspend fun doFillGalleryListByApi(
         galleryInfoList: List<GalleryInfo>,
         referer: String
     ) {
@@ -776,7 +776,7 @@ object EhEngine {
     suspend fun getFunds(): HomeParser.Funds {
         val url = EhUrl.URL_FUNDS
         Log.d(TAG, url)
-        val request = EhRequestBuilder(url, null).build()
+        val request = EhRequestBuilder(url).build()
         val call = okHttpClient.newCall(request)
         var body: String? = null
         var headers: Headers? = null
@@ -799,7 +799,7 @@ object EhEngine {
     private suspend fun getImageLimitsInternal(): HomeParser.Limits {
         val url = EhUrl.URL_HOME
         Log.d(TAG, url)
-        val request = EhRequestBuilder(url, null).build()
+        val request = EhRequestBuilder(url).build()
         val call = okHttpClient.newCall(request)
         var body: String? = null
         var headers: Headers? = null
@@ -836,7 +836,7 @@ object EhEngine {
             .add("reset", "Reset Limit")
         val url = EhUrl.URL_HOME
         Log.d(TAG, url)
-        val request = EhRequestBuilder(url, null)
+        val request = EhRequestBuilder(url)
             .post(builder.build())
             .build()
         val call = okHttpClient.newCall(request)
@@ -909,7 +909,7 @@ object EhEngine {
     suspend fun getProfile(): ProfileParser.Result {
         val url = EhUrl.URL_FORUMS
         Log.d(TAG, url)
-        val request = EhRequestBuilder(url, null).build()
+        val request = EhRequestBuilder(url).build()
         val call = okHttpClient.newCall(request)
         var body: String? = null
         var headers: Headers? = null
@@ -931,7 +931,7 @@ object EhEngine {
     @Throws(Throwable::class)
     suspend fun getUConfig(url: String = EhUrl.uConfigUrl): Void? {
         Log.d(TAG, url)
-        var request = EhRequestBuilder(url, null).build()
+        var request = EhRequestBuilder(url).build()
         var call = okHttpClient.newCall(request)
         var body: String? = null
         var headers: Headers? = null
@@ -953,7 +953,7 @@ object EhEngine {
         // TODO Use a better way to handle 302
         if (request.url.toString() != url) {
             Log.d(TAG, "Redirected! Retry $url")
-            request = EhRequestBuilder(url, null).build()
+            request = EhRequestBuilder(url).build()
             call = okHttpClient.newCall(request)
             try {
                 call.executeAsync().use { response ->

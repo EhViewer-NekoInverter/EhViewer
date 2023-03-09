@@ -71,9 +71,7 @@ class ProgressScene : BaseScene(), View.OnClickListener {
                 .setMethod(EhClient.METHOD_GET_GALLERY_TOKEN)
                 .setArgs(mGid, mPToken!!, mPage)
                 .setCallback(
-                    GetGalleryTokenListener(
-                        context, activity.stageId, tag
-                    )
+                    GetGalleryTokenListener(context)
                 )
             request.enqueue(this)
             return true
@@ -185,8 +183,8 @@ class ProgressScene : BaseScene(), View.OnClickListener {
     }
 
     private inner class GetGalleryTokenListener(
-        context: Context?, stageId: Int, sceneTag: String?
-    ) : EhCallback<ProgressScene, String>(context, stageId, sceneTag) {
+        context: Context
+    ) : EhCallback<ProgressScene, String>(context) {
         override fun onSuccess(result: String) {
             val scene = this@ProgressScene
             scene.onGetGalleryTokenSuccess(result)
@@ -198,10 +196,6 @@ class ProgressScene : BaseScene(), View.OnClickListener {
         }
 
         override fun onCancel() {}
-
-        override fun isInstance(scene: SceneFragment): Boolean {
-            return scene is ProgressScene
-        }
     }
 
     companion object {
