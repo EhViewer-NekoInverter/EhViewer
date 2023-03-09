@@ -536,6 +536,7 @@
     <string name="settings_about_latest_release">最新版本</string>
     <string name="settings_about_source">源碼</string>
     <string name="settings_about_version">版本號</string>
+    <string name="settings_about_build_time">構建於 %s</string>
     <!-- UConfig Activity -->
     <string name="u_config">EHentai 設置</string>
     <string name="apply">應用</string>

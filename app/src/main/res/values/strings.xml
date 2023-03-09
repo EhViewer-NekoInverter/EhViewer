@@ -567,6 +567,7 @@
     <string name="settings_about_latest_release">Latest release</string>
     <string name="settings_about_source">Source</string>
     <string name="settings_about_version">Build version</string>
+    <string name="settings_about_build_time">Built at %s</string>
     <!-- UConfig Activity -->
     <string name="u_config">EHentai settings</string>
     <string name="apply">Apply</string>
