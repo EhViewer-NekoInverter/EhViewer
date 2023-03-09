@@ -233,7 +233,7 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
 
     private fun onInit() {
         if (!handleArguments(arguments)) {
-            mLabel = Settings.getRecentDownloadLabel()
+            mLabel = Settings.recentDownloadLabel
             updateForLabel()
         }
     }
@@ -268,7 +268,7 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
         mAdapter!!.setHasStableIds(true)
         mRecyclerView!!.adapter = mAdapter
         mLayoutManager = AutoStaggeredGridLayoutManager(0, StaggeredGridLayoutManager.VERTICAL)
-        mLayoutManager!!.setColumnSize(Settings.getDetailSize())
+        mLayoutManager!!.setColumnSize(Settings.detailSize)
         mLayoutManager!!.setStrategy(AutoStaggeredGridLayoutManager.STRATEGY_MIN_SIZE)
         mRecyclerView!!.layoutManager = mLayoutManager
         mRecyclerView!!.clipToPadding = false
@@ -642,7 +642,7 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
                         context,
                         getString(R.string.download_remove_dialog_message_2, gidList!!.size),
                         getString(R.string.download_remove_dialog_check_text),
-                        Settings.getRemoveImageFiles()
+                        Settings.removeImageFiles
                     )
                     val helper = DeleteRangeDialogHelper(
                         downloadInfoList!!, gidList, builder

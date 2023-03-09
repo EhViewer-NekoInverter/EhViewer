@@ -80,7 +80,7 @@ class RestoreDownloadPreference constructor(
         }
 
         override fun doInBackground(vararg params: Void): Any? {
-            val dir = Settings.getDownloadLocation() ?: return null
+            val dir = Settings.downloadLocation ?: return null
             val restoreItemList: MutableList<RestoreItem> = ArrayList()
             val files = dir.listFiles() ?: return null
             for (file in files) {

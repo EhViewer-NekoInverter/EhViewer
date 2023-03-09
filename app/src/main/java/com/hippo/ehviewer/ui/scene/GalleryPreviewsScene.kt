@@ -103,7 +103,7 @@ class GalleryPreviewsScene : ToolbarScene() {
         mRecyclerView = mContentLayout.recyclerView
         mAdapter = GalleryPreviewAdapter()
         mRecyclerView!!.adapter = mAdapter
-        val columnWidth = Settings.getPreviewSize()
+        val columnWidth = Settings.previewSize
         val layoutManager =
             AutoGridLayoutManager(context, columnWidth, LayoutUtils.dp2pix(context, 16f))
         layoutManager.setStrategy(AutoGridLayoutManager.STRATEGY_SUITABLE_SIZE)

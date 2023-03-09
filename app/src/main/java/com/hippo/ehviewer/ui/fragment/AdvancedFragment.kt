@@ -246,7 +246,7 @@ class AdvancedFragment : BasePreferenceFragment() {
         exportData!!.onPreferenceClickListener = this
         backupFavorite!!.onPreferenceClickListener = this
         appLanguage!!.onPreferenceChangeListener = this
-        bypassVpn!!.isVisible = AppSettings.getDF()
+        bypassVpn!!.isVisible = AppSettings.dF
         domainFronting!!.setOnPreferenceChangeListener { _, newValue ->
             bypassVpn.isVisible = newValue as Boolean
             true
@@ -342,7 +342,7 @@ class AdvancedFragment : BasePreferenceFragment() {
                         if (result.next != null) {
                             try {
                                 runBlocking {
-                                    delay(com.hippo.ehviewer.Settings.getDownloadDelay().toLong())
+                                    delay(com.hippo.ehviewer.Settings.downloadDelay.toLong())
                                 }
                             } catch (e: InterruptedException) {
                                 e.printStackTrace()

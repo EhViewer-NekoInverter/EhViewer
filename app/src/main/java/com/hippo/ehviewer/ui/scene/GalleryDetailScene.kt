@@ -517,7 +517,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         mTags = ViewUtils.`$$`(belowHeader, R.id.tags) as LinearLayout
         mNoTags = ViewUtils.`$$`(mTags, R.id.no_tags) as TextView
         mComments = ViewUtils.`$$`(belowHeader, R.id.comments) as LinearLayout
-        if (Settings.getShowComments()) {
+        if (Settings.showComments) {
             mCommentsText = ViewUtils.`$$`(mComments, R.id.comments_text) as TextView
             mComments!!.setOnClickListener(this)
         } else {
@@ -817,7 +817,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
             mNoTags!!.visibility = View.GONE
         }
         val ehTags =
-            if (Settings.getShowTagTranslations() && isTranslatable(context)) EhTagDatabase else null
+            if (Settings.showTagTranslations && isTranslatable(context)) EhTagDatabase else null
         val colorTag = theme.resolveColor(R.attr.tagBackgroundColor)
         val colorName = theme.resolveColor(R.attr.tagGroupBackgroundColor)
         for (tg in tagGroups) {
@@ -911,7 +911,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         }
         mGridLayout!!.removeAllViews()
         val previewSet = gd.previewSet
-        val previewNum = Settings.getPreviewNum()
+        val previewNum = Settings.previewNum
         if (gd.previewPages <= 0 || previewSet == null || previewSet.size() == 0) {
             mPreviewText!!.setText(R.string.no_previews)
             return
@@ -920,7 +920,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         } else {
             mPreviewText!!.setText(R.string.more_previews)
         }
-        mGridLayout!!.setColumnSize(Settings.getPreviewSize())
+        mGridLayout!!.setColumnSize(Settings.previewSize)
         mGridLayout!!.setStrategy(SimpleGridAutoSpanLayout.STRATEGY_SUITABLE_SIZE)
         val size = previewNum.coerceAtMost(previewSet.size())
         for (i in 0 until size) {
@@ -1052,7 +1052,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                         context,
                         getString(R.string.download_remove_dialog_message, galleryDetail.title),
                         getString(R.string.download_remove_dialog_check_text),
-                        Settings.getRemoveImageFiles()
+                        Settings.removeImageFiles
                     )
                     val helper = DeleteDialogHelper(galleryDetail, builder)
                     builder.setTitle(R.string.download_remove_dialog_title)
@@ -1187,7 +1187,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
 
             }
             mPreviews -> {
-                val previewNum = Settings.getPreviewNum()
+                val previewNum = Settings.previewNum
                 var scrollTo = 0
                 if (previewNum < galleryDetail.previewSet?.size() ?: 0) {
                     scrollTo = previewNum

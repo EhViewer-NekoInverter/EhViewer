@@ -62,13 +62,13 @@ object CommonOperations {
                 listener.onSuccess(null)
             }
             in 0..9 -> {
-                if (!foreEdit && Settings.getNeverAddFavNotes()) {
+                if (!foreEdit && Settings.neverAddFavNotes) {
                     doAddToFavorites(activity, galleryInfo, slot, "", listener)
                 } else {
                     val builder = EditTextCheckBoxDialogBuilder(
                         activity, null,
                         activity.getString(R.string.favorite_note), activity.getString(R.string.favorite_note_never_show),
-                        Settings.getNeverAddFavNotes()
+                        Settings.neverAddFavNotes
                     )
                     builder.setTitle(R.string.add_favorite_note_dialog_title)
                     builder.setPositiveButton(android.R.string.ok, null)
@@ -92,9 +92,9 @@ object CommonOperations {
         activity: Activity, galleryInfo: GalleryInfo,
         listener: EhClient.Callback<Void?>, foreSelect: Boolean = false
     ) {
-        val slot = Settings.getDefaultFavSlot()
+        val slot = Settings.defaultFavSlot
         val localFav = activity.getString(R.string.local_favorites)
-        val items = Settings.getFavCat().toMutableList().apply { add(0, localFav) }
+        val items = Settings.favCat.toMutableList().apply { add(0, localFav) }
         if (!foreSelect && slot >= -1 && slot <= 9) {
             val newFavoriteName = if (slot >= 0) items[slot + 1] else null
             doAddToFavorites(
@@ -186,8 +186,8 @@ object CommonOperations {
         var justStart = forceDefault
         var label: String? = null
         // Get default download label
-        if (!justStart && Settings.getHasDefaultDownloadLabel()) {
-            label = Settings.getDefaultDownloadLabel()
+        if (!justStart && Settings.hasDefaultDownloadLabel) {
+            label = Settings.defaultDownloadLabel
             justStart = label == null || downloadManager.containLabel(label)
         }
         // If there is no other label, just use null label

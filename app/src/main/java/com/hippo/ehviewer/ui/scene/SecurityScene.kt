@@ -58,7 +58,7 @@ class SecurityScene : SolidScene(), OnPatternListener {
             mRetryTimes = savedInstanceState.getInt(KEY_RETRY_TIMES)
         }
 
-        canAuthenticate = Settings.getEnableFingerprint() &&
+        canAuthenticate = Settings.enableFingerprint &&
                 BiometricManager.from(context).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS
         biometricPrompt = BiometricPrompt(
             this, Executors.newSingleThreadExecutor(),
@@ -135,7 +135,7 @@ class SecurityScene : SolidScene(), OnPatternListener {
             return
         }
         val enteredPatter = LockPatternUtils.patternToString(pattern)
-        val targetPatter = Settings.getSecurity()
+        val targetPatter = Settings.security
         if (ObjectUtils.equal(enteredPatter, targetPatter)) {
             startSceneForCheckStep(CHECK_STEP_SECURITY, arguments)
             finish()

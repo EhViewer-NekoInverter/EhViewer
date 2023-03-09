@@ -46,14 +46,14 @@ class SetSecurityFragment : BaseFragment(), View.OnClickListener {
         mCancel = ViewUtils.`$$`(view, R.id.cancel)
         mSet = ViewUtils.`$$`(view, R.id.set)
         mFingerprint = ViewUtils.`$$`(view, R.id.fingerprint_checkbox) as CheckBox
-        val pattern = Settings.getSecurity()
+        val pattern = Settings.security
         if (!TextUtils.isEmpty(pattern)) {
             mPatternView!!.setPattern(LockPatternView.DisplayMode.Correct,
                     LockPatternUtils.stringToPattern(pattern))
         }
         if (BiometricManager.from(requireContext()).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS) {
             mFingerprint!!.visibility = View.VISIBLE
-            mFingerprint!!.isChecked = Settings.getEnableFingerprint()
+            mFingerprint!!.isChecked = Settings.enableFingerprint
         }
         mCancel!!.setOnClickListener(this)
         mSet!!.setOnClickListener(this)

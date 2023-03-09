@@ -47,7 +47,7 @@ class ProxyPreference @JvmOverloads constructor(
     init {
         mArray = context.resources.getStringArray(R.array.proxy_types)
         dialogLayoutResource = R.layout.preference_dialog_proxy
-        updateSummary(Settings.getProxyType(), Settings.getProxyIp(), Settings.getProxyPort())
+        updateSummary(Settings.proxyType, Settings.proxyIp, Settings.proxyPort)
     }
 
     private fun getProxyTypeText(type: Int): String {
@@ -92,7 +92,7 @@ class ProxyPreference @JvmOverloads constructor(
         mIp = ViewUtils.`$$`(dialog, R.id.ip) as EditText
         mPortInputLayout = ViewUtils.`$$`(dialog, R.id.port_input_layout) as TextInputLayout
         mPort = ViewUtils.`$$`(dialog, R.id.port) as EditText
-        val type = Settings.getProxyType()
+        val type = Settings.proxyType
         mType!!.setSelection(
             MathUtils.clamp(
                 type,
@@ -100,9 +100,9 @@ class ProxyPreference @JvmOverloads constructor(
                 mArray.size
             )
         )
-        mIp!!.setText(Settings.getProxyIp())
+        mIp!!.setText(Settings.proxyIp)
         val portString: String?
-        val port = Settings.getProxyPort()
+        val port = Settings.proxyPort
         portString = if (!InetValidator.isValidInetPort(port)) {
             null
         } else {

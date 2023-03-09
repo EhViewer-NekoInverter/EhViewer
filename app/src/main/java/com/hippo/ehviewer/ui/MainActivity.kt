@@ -135,17 +135,17 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
     }
 
     override fun getLaunchAnnouncer(): Announcer {
-        return if (!TextUtils.isEmpty(Settings.getSecurity())) {
+        return if (!TextUtils.isEmpty(Settings.security)) {
             Announcer(SecurityScene::class.java)
         } else if (EhUtils.needSignedIn()) {
             Announcer(SignInScene::class.java)
-        } else if (Settings.getSelectSite()) {
+        } else if (Settings.selectSite) {
             Announcer(SelectSiteScene::class.java)
         } else {
             val args = Bundle()
             args.putString(
                 GalleryListScene.KEY_ACTION,
-                Settings.getLaunchPageGalleryListSceneAction()
+                Settings.launchPageGalleryListSceneAction
             )
             Announcer(GalleryListScene::class.java).setArgs(args)
         }
@@ -157,11 +157,11 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
             val newArgs = Bundle()
             newArgs.putString(SolidScene.KEY_TARGET_SCENE, announcer.clazz.name)
             newArgs.putBundle(SolidScene.KEY_TARGET_ARGS, announcer.args)
-            if (!TextUtils.isEmpty(Settings.getSecurity())) {
+            if (!TextUtils.isEmpty(Settings.security)) {
                 return Announcer(SecurityScene::class.java).setArgs(newArgs)
             } else if (EhUtils.needSignedIn()) {
                 return Announcer(SignInScene::class.java).setArgs(newArgs)
-            } else if (Settings.getSelectSite()) {
+            } else if (Settings.selectSite) {
                 return Announcer(SelectSiteScene::class.java).setArgs(newArgs)
             }
         }
@@ -268,7 +268,7 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
                     val args = Bundle()
                     args.putString(
                         GalleryListScene.KEY_ACTION,
-                        Settings.getLaunchPageGalleryListSceneAction()
+                        Settings.launchPageGalleryListSceneAction
                     )
                     startScene(processAnnouncer(Announcer(GalleryListScene::class.java).setArgs(args)))
                 }
@@ -282,7 +282,7 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
 
     override fun onCreate2(savedInstanceState: Bundle?) {
         connectivityManager = getSystemService()!!
-        if (Settings.getDF() && Settings.getBypassVpn()) {
+        if (Settings.dF && Settings.bypassVpn) {
             bypassVpn()
         }
         setContentView(R.layout.activity_main)
@@ -301,7 +301,7 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
                 val theme = if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES > 0) AppCompatDelegate.MODE_NIGHT_NO else AppCompatDelegate.MODE_NIGHT_YES
                 DayNightDelegate.setDefaultNightMode(theme)
                 recreate()
-                if (Settings.getTheme() != AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
+                if (Settings.theme != AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
                     Settings.putTheme(theme)
                 }
             }
@@ -310,11 +310,11 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
         }
         if (savedInstanceState == null) {
             checkDownloadLocation()
-            if (Settings.getMeteredNetworkWarning()) {
+            if (Settings.meteredNetworkWarning) {
                 checkMeteredNetwork()
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                if (!Settings.getAppLinkVerifyTip()) {
+                if (!Settings.appLinkVerifyTip) {
                     try {
                         checkAppLinkVerify()
                     } catch (ignored: PackageManager.NameNotFoundException) {
@@ -384,7 +384,7 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
     }
 
     private fun checkDownloadLocation() {
-        val uniFile = Settings.getDownloadLocation()
+        val uniFile = Settings.downloadLocation
         // null == uniFile for first start
         if (null == uniFile || uniFile.ensureDir()) {
             return
@@ -483,7 +483,7 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
     private fun checkClipboardUrlInternal() {
         val text = this.getClipboardManager().getUrlFromClipboard(this)
         val hashCode = text?.hashCode() ?: 0
-        if (text != null && hashCode != 0 && Settings.getClipboardTextHashCode() != hashCode) {
+        if (text != null && hashCode != 0 && Settings.clipboardTextHashCode != hashCode) {
             val announcer = createAnnouncerFromClipboardUrl(text)
             if (announcer != null && mDrawerLayout != null) {
                 val snackbar = Snackbar.make(
@@ -540,13 +540,13 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
         if (mAvatar == null || mDisplayName == null) {
             return
         }
-        val avatarUrl = Settings.getAvatar()
+        val avatarUrl = Settings.avatar
         if (TextUtils.isEmpty(avatarUrl)) {
             mAvatar!!.load(R.drawable.default_avatar)
         } else {
             mAvatar!!.load(avatarUrl, avatarUrl)
         }
-        val displayName = Settings.getDisplayName()
+        val displayName = Settings.displayName
         if (TextUtils.isEmpty(displayName)) {
             mDisplayName!!.text = getString(R.string.default_display_name)
         } else {

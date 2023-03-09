@@ -156,7 +156,7 @@ class HistoryScene : ToolbarScene() {
         val layoutManager = AutoStaggeredGridLayoutManager(
             0, StaggeredGridLayoutManager.VERTICAL
         )
-        layoutManager.setColumnSize(Settings.getDetailSize())
+        layoutManager.setColumnSize(Settings.detailSize)
         layoutManager.setStrategy(AutoStaggeredGridLayoutManager.STRATEGY_MIN_SIZE)
         recyclerView.layoutManager = layoutManager
         recyclerView.clipToPadding = false

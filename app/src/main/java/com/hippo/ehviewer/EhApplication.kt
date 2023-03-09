@@ -83,7 +83,7 @@ class EhApplication : SceneApplication() {
         val handler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { t, e ->
             try {
-                if (Settings.getSaveCrashLog()) {
+                if (Settings.saveCrashLog) {
                     Crash.saveCrashLog(application, e)
                 }
             } catch (ignored: Throwable) {
@@ -99,9 +99,9 @@ class EhApplication : SceneApplication() {
         SpiderDen.initialize(this)
         BitmapUtils.initialize(this)
         EhTagDatabase.update()
-        LocaleDelegate.defaultLocale = Settings.getLocale()
+        LocaleDelegate.defaultLocale = Settings.locale
         DayNightDelegate.setApplicationContext(this)
-        DayNightDelegate.setDefaultNightMode(Settings.getTheme())
+        DayNightDelegate.setDefaultNightMode(Settings.theme)
 
         launchIO {
             launchIO {
@@ -123,8 +123,8 @@ class EhApplication : SceneApplication() {
     private fun cleanupDownload() {
         // Check no media file
         try {
-            val downloadLocation = Settings.getDownloadLocation()
-            if (Settings.getMediaScan()) {
+            val downloadLocation = Settings.downloadLocation
+            if (Settings.mediaScan) {
                 CommonOperations.removeNoMediaFile(downloadLocation)
             } else {
                 CommonOperations.ensureNoMediaFile(downloadLocation)
@@ -144,7 +144,7 @@ class EhApplication : SceneApplication() {
 
     private suspend fun theDawnOfNewDay() {
         runCatching {
-            if (Settings.getRequestNews() && ehCookieStore.hasSignedIn()) {
+            if (Settings.requestNews && ehCookieStore.hasSignedIn()) {
                 EhEngine.getNews(true)?.let { showEventPane(it) }
             }
         }.onFailure {
@@ -153,7 +153,7 @@ class EhApplication : SceneApplication() {
     }
 
     fun showEventPane(html: String) {
-        if (Settings.getHideHvEvents() && html.contains("You have encountered a monster!")) {
+        if (Settings.hideHvEvents && html.contains("You have encountered a monster!")) {
             return
         }
         val activity = topActivity
@@ -247,7 +247,7 @@ class EhApplication : SceneApplication() {
                 .dns(EhDns)
                 .proxySelector(ehProxySelector)
 
-            if (Settings.getDF()) {
+            if (Settings.dF) {
                 var trustManager: X509TrustManager
                 try {
                     val trustManagerFactory = TrustManagerFactory.getInstance(

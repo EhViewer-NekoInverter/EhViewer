@@ -121,7 +121,7 @@ object EhEngine {
             } else if (body != null && !body.contains("<")) {
                 throw EhException(body)
             } else {
-                if (Settings.getSaveParseErrorBody()) {
+                if (Settings.saveParseErrorBody) {
                     AppConfig.saveParseErrorBody(e as ParseException?)
                 }
                 throw EhException(GetText.getString(R.string.error_parse_error))
@@ -198,7 +198,7 @@ object EhEngine {
             }
         }
         val needApi =
-            filter && sEhFilter.needTags() && !hasTags || Settings.getShowGalleryPages() && !hasPages ||
+            filter && sEhFilter.needTags() && !hasTags || Settings.showGalleryPages && !hasPages ||
                     hasRated
         if (needApi) {
             fillGalleryListByApi(list, url)

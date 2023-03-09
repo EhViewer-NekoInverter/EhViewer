@@ -50,7 +50,7 @@ public class EhProxySelector extends ProxySelector {
     }
 
     public void updateProxy() {
-        switch (Settings.getProxyType()) {
+        switch (Settings.INSTANCE.getProxyType()) {
             case TYPE_DIRECT:
                 delegation = new NullProxySelector();
                 break;
@@ -67,11 +67,11 @@ public class EhProxySelector extends ProxySelector {
 
     @Override
     public List<Proxy> select(URI uri) {
-        int type = Settings.getProxyType();
+        int type = Settings.INSTANCE.getProxyType();
         if (type == TYPE_HTTP || type == TYPE_SOCKS) {
             try {
-                String ip = Settings.getProxyIp();
-                int port = Settings.getProxyPort();
+                String ip = Settings.INSTANCE.getProxyIp();
+                int port = Settings.INSTANCE.getProxyPort();
                 if (!TextUtils.isEmpty(ip) && InetValidator.isValidInetPort(port)) {
                     InetAddress inetAddress = InetAddress.getByName(ip);
                     SocketAddress socketAddress = new InetSocketAddress(inetAddress, port);

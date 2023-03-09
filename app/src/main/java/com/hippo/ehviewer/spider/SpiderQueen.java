@@ -162,8 +162,8 @@ public final class SpiderQueen implements Runnable {
         mGalleryInfo = galleryInfo;
         mSpiderDen = new SpiderDen(mGalleryInfo);
 
-        mWorkerMaxCount = MathUtils.clamp(Settings.getMultiThreadDownload(), 1, 10);
-        mPreloadNumber = MathUtils.clamp(Settings.getPreloadImage(), 0, 100);
+        mWorkerMaxCount = MathUtils.clamp(Settings.INSTANCE.getDownloadThreadCount(), 1, 10);
+        mPreloadNumber = MathUtils.clamp(Settings.INSTANCE.getPreloadImage(), 0, 100);
 
         for (int i = 0; i < DECODE_THREAD_NUM; i++) {
             mDecodeIndexArray[i] = GalleryPageView.INVALID_INDEX;
@@ -172,7 +172,7 @@ public final class SpiderQueen implements Runnable {
         mWorkerPoolExecutor = new ThreadPoolExecutor(mWorkerMaxCount, mWorkerMaxCount,
                 0, TimeUnit.SECONDS, new LinkedBlockingDeque<>(),
                 new PriorityThreadFactory(SpiderWorker.class.getSimpleName(), Process.THREAD_PRIORITY_BACKGROUND));
-        mDownloadDelay = Settings.getDownloadDelay();
+        mDownloadDelay = Settings.INSTANCE.getDownloadDelay();
     }
 
     @UiThread
@@ -1227,7 +1227,7 @@ public final class SpiderQueen implements Runnable {
 
                 String targetImageUrl;
                 String referer;
-                if (Settings.getDownloadOriginImage(mDownloadReference > 0) && !TextUtils.isEmpty(originImageUrl)) {
+                if (Settings.INSTANCE.getDownloadOriginImage(mDownloadReference > 0) && !TextUtils.isEmpty(originImageUrl)) {
                     targetImageUrl = originImageUrl;
                     referer = EhUrl.getPageUrl(gid, index, pToken);
                 } else {

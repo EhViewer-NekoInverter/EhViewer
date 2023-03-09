@@ -32,7 +32,7 @@ class PrivacyFragment : BasePreferenceFragment() {
     override fun onStart() {
         super.onStart()
         val patternProtection = findPreference<Preference>(KEY_PATTERN_PROTECTION)
-        patternProtection!!.summary = if (TextUtils.isEmpty(Settings.getSecurity())) {
+        patternProtection!!.summary = if (TextUtils.isEmpty(Settings.security)) {
             getString(R.string.settings_privacy_pattern_protection_not_set)
         } else {
             getString(R.string.settings_privacy_pattern_protection_set)

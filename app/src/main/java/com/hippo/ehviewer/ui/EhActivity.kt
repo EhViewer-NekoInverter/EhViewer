@@ -74,7 +74,7 @@ abstract class EhActivity : MaterialActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (Settings.getEnabledSecurity()) {
+        if (Settings.enabledSecurity) {
             window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         } else {
             window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
@@ -86,18 +86,16 @@ abstract class EhActivity : MaterialActivity() {
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun checkAndRequestNotificationPermission() {
-        if (Settings.getNotificationRequired() || ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS ) == PackageManager.PERMISSION_GRANTED) return
+        if (Settings.notificationRequired || ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS ) == PackageManager.PERMISSION_GRANTED) return
         requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
     }
 
     companion object {
         private const val THEME_DEFAULT = "DEFAULT"
         private const val THEME_BLACK = "BLACK"
-        private val isBlackNightTheme: Boolean
-            get() = Settings.getBoolean("black_dark_theme", false)
 
         fun getTheme(context: Context): String {
-            return if (isBlackNightTheme && isNightMode(context.resources.configuration)) THEME_BLACK else THEME_DEFAULT
+            return if (Settings.blackDarkTheme && isNightMode(context.resources.configuration)) THEME_BLACK else THEME_DEFAULT
         }
 
         private fun isNightMode(configuration: Configuration): Boolean {

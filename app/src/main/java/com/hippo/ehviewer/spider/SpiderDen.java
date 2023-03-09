@@ -61,11 +61,11 @@ public final class SpiderDen {
 
     public static void initialize(Context context) {
         sCache = new SimpleDiskCache(new File(context.getCacheDir(), "image"),
-                MathUtils.clamp(Settings.getReadCacheSize(), 40, 1280) * 1024 * 1024);
+                MathUtils.clamp(Settings.INSTANCE.getReadCacheSize(), 40, 1280) * 1024 * 1024);
     }
 
     public static UniFile getGalleryDownloadDir(long gid) {
-        UniFile dir = Settings.getDownloadLocation();
+        UniFile dir = Settings.INSTANCE.getDownloadLocation();
         // Read from DB
         String dirname = EhDB.getDownloadDirname(gid);
         if (dir != null && dirname != null) {
@@ -218,7 +218,7 @@ public final class SpiderDen {
         if (mMode == SpiderQueen.MODE_READ) {
             return containInCache(index) || containInDownloadDir(index);
         } else if (mMode == SpiderQueen.MODE_DOWNLOAD) {
-            return containInDownloadDir(index) || copyFromCacheToDownloadDir(index, Settings.getSkipCopyImage());
+            return containInDownloadDir(index) || copyFromCacheToDownloadDir(index, Settings.INSTANCE.getSkipCopyImage());
         } else {
             return false;
         }

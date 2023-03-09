@@ -137,7 +137,7 @@ class SearchBar @JvmOverloads constructor(
         EhTagDatabase.takeIf { it.isInitialized() }?.run {
             if (!TextUtils.isEmpty(text) && !text.endsWith(" ")) {
                 val keyword = text.substringAfterLast(" ")
-                val translate = Settings.getShowTagTranslations() && isTranslatable(context)
+                val translate = Settings.showTagTranslations && isTranslatable(context)
                 suggest(keyword, translate).forEach {
                     suggestions.add(TagSuggestion(it.first, it.second))
                 }

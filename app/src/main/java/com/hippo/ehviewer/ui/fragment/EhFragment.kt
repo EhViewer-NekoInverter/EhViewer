@@ -55,7 +55,7 @@ class EhFragment : BasePreferenceFragment() {
         showTagTranslations!!.onPreferenceChangeListener = this
 
         if (!EhTagDatabase.isTranslatable(requireActivity())) {
-            if (!Settings.getShowTagTranslations()) {
+            if (!Settings.showTagTranslations) {
                 preferenceScreen.removePreference(showTagTranslations)
             }
             preferenceScreen.removePreference(tagTranslationsSource!!)
@@ -66,7 +66,7 @@ class EhFragment : BasePreferenceFragment() {
                 preferenceScreen.removePreference(preference!!)
             }
         }
-        updateListPreference(Settings.getListMode())
+        updateListPreference(Settings.listMode)
     }
 
     override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {

@@ -407,7 +407,7 @@ class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListen
         mContentLayout.setFitPaddingTop(paddingTopSB)
         mAdapter = GalleryListAdapter(
             inflater, resources,
-            mRecyclerView!!, Settings.getListMode()
+            mRecyclerView!!, Settings.listMode
         )
         mRecyclerView!!.clipToPadding = false
         mRecyclerView!!.clipChildren = false
@@ -538,7 +538,7 @@ class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListen
             getSuitableTitleForUrlBuilder(context.resources, mUrlBuilder, false),
             getString(R.string.quick_search),
             getString(R.string.save_progress),
-            Settings.getQSSaveProgress()
+            Settings.qSSaveProgress
         )
         builder.setTitle(R.string.add_quick_search_dialog_title)
         builder.setPositiveButton(android.R.string.ok, null)

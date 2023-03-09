@@ -194,7 +194,7 @@ public class GalleryGuideView extends ViewGroup implements View.OnClickListener 
                 break;
             default:
             case 1:
-                Settings.putGuideGallery(false);
+                Settings.INSTANCE.putGuideGallery(false);
                 ViewUtils.removeFromParent(this);
                 break;
         }

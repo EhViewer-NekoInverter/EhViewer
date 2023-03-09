@@ -78,7 +78,7 @@ public class CleanRedundancyPreference extends TaskPreference {
 
         @Override
         protected Object doInBackground(Void... params) {
-            UniFile dir = Settings.getDownloadLocation();
+            UniFile dir = Settings.INSTANCE.getDownloadLocation();
             if (null == dir) {
                 return 0;
             }

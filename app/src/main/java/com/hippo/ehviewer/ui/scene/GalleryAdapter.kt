@@ -64,7 +64,7 @@ internal abstract class GalleryAdapter(
             val recyclerView = mRecyclerView
             when (type) {
                 TYPE_LIST -> {
-                    val columnWidth = Settings.getDetailSize()
+                    val columnWidth = Settings.detailSize
                     mLayoutManager.setColumnSize(columnWidth)
                     mLayoutManager.setStrategy(AutoStaggeredGridLayoutManager.STRATEGY_MIN_SIZE)
                     if (null != mGirdDecoration) {
@@ -86,7 +86,7 @@ internal abstract class GalleryAdapter(
                 }
 
                 TYPE_GRID -> {
-                    val columnWidth = Settings.getThumbSize()
+                    val columnWidth = Settings.thumbSize
                     mLayoutManager.setColumnSize(columnWidth)
                     mLayoutManager.setStrategy(AutoStaggeredGridLayoutManager.STRATEGY_SUITABLE_SIZE)
                     if (null != mListDecoration) {
@@ -145,7 +145,7 @@ internal abstract class GalleryAdapter(
                 holder.thumb.layoutParams = lp
             }
             TYPE_GRID -> {
-                val columnWidth = Settings.getThumbSize()
+                val columnWidth = Settings.thumbSize
                 val textSize = columnWidth / 14
                 val lp = holder.category.layoutParams
                 lp.width = columnWidth / 5
@@ -207,7 +207,7 @@ internal abstract class GalleryAdapter(
                     category.setBackgroundColor(EhUtils.getCategoryColor(gi.category))
                 }
                 holder.posted!!.text = gi.posted
-                if (gi.pages == 0 || !Settings.getShowGalleryPages()) {
+                if (gi.pages == 0 || !Settings.showGalleryPages) {
                     holder.pages.text = null
                     holder.pages.visibility = View.GONE
                 } else {
@@ -229,12 +229,12 @@ internal abstract class GalleryAdapter(
             TYPE_GRID -> {
                 (holder.thumb as TileThumb).setThumbSize(gi.thumbWidth, gi.thumbHeight)
                 holder.thumb.load(EhCacheKeyFactory.getThumbKey(gi.gid), gi.thumb!!)
-                if (Settings.getThumbShowTitle()) {
+                if (Settings.thumbShowTitle) {
                     holder.title.text = EhUtils.getSuitableTitle(gi)
                     holder.title.visibility = View.VISIBLE
                     holder.rating.rating = gi.rating
                     holder.rating.visibility = View.VISIBLE
-                    if (gi.pages == 0 || !Settings.getShowGalleryPages()) {
+                    if (gi.pages == 0 || !Settings.showGalleryPages) {
                         holder.pages.text = null
                         holder.pages.visibility = View.GONE
                     } else {

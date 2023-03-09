@@ -227,7 +227,7 @@ public class ArchiveGalleryProvider extends GalleryProvider2 {
 
             if (archiveAccessor.needPassword()) {
                 boolean need_request = true;
-                Set<String> set = Settings.getArchivePasswds();
+                Set<String> set = Settings.INSTANCE.getArchivePasswds();
                 if (set != null) {
                     for (String passwd : set) {
                         if (archiveAccessor.providePassword(passwd)) {
@@ -246,7 +246,7 @@ public class ArchiveGalleryProvider extends GalleryProvider2 {
                     if (!archiveAccessor.providePassword(passwd))
                         notifyError();
                     else {
-                        Settings.putPasswdToArchivePasswds(passwd);
+                        Settings.INSTANCE.putPasswdToArchivePasswds(passwd);
                         notifyDismiss();
                         break;
                     }

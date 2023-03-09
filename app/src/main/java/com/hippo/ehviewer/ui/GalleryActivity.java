@@ -284,7 +284,7 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
 
     @Override
     protected void attachBaseContext(@NonNull Context newBase) {
-        switch (Settings.getReadTheme()) {
+        switch (Settings.INSTANCE.getReadTheme()) {
             case 1:
                 getDayNightDelegate().setLocalNightMode(DayNightDelegate.MODE_NIGHT_YES, false);
                 break;
@@ -297,13 +297,13 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
 
     @Override
     public boolean respectDefaultNightMode() {
-        return Settings.getReadTheme() == 0;
+        return Settings.INSTANCE.getReadTheme() == 0;
     }
 
     @Override
     @SuppressWarnings({"WrongConstant"})
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        if (Settings.getReadingFullscreen()) {
+        if (Settings.INSTANCE.getReadingFullscreen()) {
             Window w = getWindow();
             w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
                     WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -345,13 +345,13 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
         Resources resources = getResources();
         mGalleryView = new GalleryView.Builder(this, mGalleryAdapter)
                 .setListener(this)
-                .setLayoutMode(Settings.getReadingDirection())
-                .setScaleMode(Settings.getPageScaling())
-                .setStartPosition(Settings.getStartPosition())
+                .setLayoutMode(Settings.INSTANCE.getReadingDirection())
+                .setScaleMode(Settings.INSTANCE.getPageScaling())
+                .setStartPosition(Settings.INSTANCE.getStartPosition())
                 .setStartPage(startPage)
                 .setBackgroundColor(ResourcesKt.resolveColor(getTheme(), android.R.attr.colorBackground))
-                .setPagerInterval(Settings.getShowPageInterval() ? resources.getDimensionPixelOffset(R.dimen.gallery_pager_interval) : 0)
-                .setScrollInterval(Settings.getShowPageInterval() ? resources.getDimensionPixelOffset(R.dimen.gallery_scroll_interval) : 0)
+                .setPagerInterval(Settings.INSTANCE.getShowPageInterval() ? resources.getDimensionPixelOffset(R.dimen.gallery_pager_interval) : 0)
+                .setScrollInterval(Settings.INSTANCE.getShowPageInterval() ? resources.getDimensionPixelOffset(R.dimen.gallery_scroll_interval) : 0)
                 .setPageMinHeight(resources.getDimensionPixelOffset(R.dimen.gallery_page_min_height))
                 .setPageInfoInterval(resources.getDimensionPixelOffset(R.dimen.gallery_page_info_interval))
                 .setProgressColor(ResourcesUtils.getAttrColor(this, androidx.appcompat.R.attr.colorPrimary))
@@ -372,7 +372,7 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         insetsController = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
         if (insetsController != null) {
-            if (Settings.getReadingFullscreen()) {
+            if (Settings.INSTANCE.getReadingFullscreen()) {
                 insetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
                 // This does not hide navigation bar sometimes on 31, framework bug???
                 insetsController.hide(WindowInsetsCompat.Type.systemBars());
@@ -415,9 +415,9 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
         mClock = ViewUtils.$$(this, R.id.clock);
         mProgress = (TextView) ViewUtils.$$(this, R.id.progress);
         mBattery = ViewUtils.$$(this, R.id.battery);
-        mClock.setVisibility(Settings.getShowClock() ? View.VISIBLE : View.GONE);
-        mProgress.setVisibility(Settings.getShowProgress() ? View.VISIBLE : View.GONE);
-        mBattery.setVisibility(Settings.getShowBattery() ? View.VISIBLE : View.GONE);
+        mClock.setVisibility(Settings.INSTANCE.getShowClock() ? View.VISIBLE : View.GONE);
+        mProgress.setVisibility(Settings.INSTANCE.getShowProgress() ? View.VISIBLE : View.GONE);
+        mBattery.setVisibility(Settings.INSTANCE.getShowBattery() ? View.VISIBLE : View.GONE);
 
         mSeekBarPanel = ViewUtils.$$(this, R.id.seek_bar_panel);
         mLeftText = (TextView) ViewUtils.$$(mSeekBarPanel, R.id.left);
@@ -433,7 +433,7 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
         updateSlider();
 
         // Update keep screen on
-        if (Settings.getKeepScreenOn()) {
+        if (Settings.INSTANCE.getKeepScreenOn()) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -441,7 +441,7 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
 
         // Orientation
         int orientation;
-        switch (Settings.getScreenRotation()) {
+        switch (Settings.INSTANCE.getScreenRotation()) {
             default:
             case 0:
                 orientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
@@ -459,7 +459,7 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
         setRequestedOrientation(orientation);
 
         // Screen lightness
-        setScreenLightness(Settings.getCustomScreenLightness(), Settings.getScreenLightness());
+        setScreenLightness(Settings.INSTANCE.getCustomScreenLightness(), Settings.INSTANCE.getScreenLightness());
 
         // Cutout
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -467,7 +467,7 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
         }
         GalleryHeader galleryHeader = findViewById(R.id.gallery_header);
         ViewCompat.setOnApplyWindowInsetsListener(galleryHeader, (v, insets) -> {
-            if (!Settings.getReadingFullscreen()) {
+            if (!Settings.INSTANCE.getReadingFullscreen()) {
                 galleryHeader.setTopInsets(insets.getInsets(WindowInsetsCompat.Type.statusBars()).top);
             } else {
                 galleryHeader.setDisplayCutout(insets.getDisplayCutout());
@@ -475,7 +475,7 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
             return WindowInsetsCompat.CONSUMED;
         });
 
-        if (Settings.getGuideGallery()) {
+        if (Settings.INSTANCE.getGuideGallery()) {
             FrameLayout mainLayout = (FrameLayout) ViewUtils.$$(this, R.id.main);
             mainLayout.addView(new GalleryGuideView(this));
         }
@@ -548,8 +548,8 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
         }
 
         // Check volume
-        if (Settings.getVolumePage()) {
-            if (Settings.getReverseVolumePage()) {
+        if (Settings.INSTANCE.getVolumePage()) {
+            if (Settings.INSTANCE.getReverseVolumePage()) {
                 if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
                     keyCode = KeyEvent.KEYCODE_VOLUME_DOWN;
                 } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
@@ -610,7 +610,7 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         // Check volume
-        if (Settings.getVolumePage()) {
+        if (Settings.INSTANCE.getVolumePage()) {
             if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN ||
                     keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
                 return true;
@@ -766,7 +766,7 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
         mSeekBarPanelAnimator.start();
 
         if (insetsController != null) {
-            if (Settings.getReadingFullscreen())
+            if (Settings.INSTANCE.getReadingFullscreen())
                 insetsController.show(WindowInsetsCompat.Type.systemBars());
         }
     }
@@ -785,7 +785,7 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
         mSeekBarPanelAnimator.start();
 
         if (insetsController != null) {
-            if (Settings.getReadingFullscreen())
+            if (Settings.INSTANCE.getReadingFullscreen())
                 insetsController.hide(WindowInsetsCompat.Type.systemBars());
         }
     }
@@ -1144,24 +1144,24 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
             mCustomScreenLightness = mView.findViewById(R.id.custom_screen_lightness);
             mScreenLightness = mView.findViewById(R.id.screen_lightness);
 
-            mScreenRotation.setSelection(Settings.getScreenRotation());
-            mReadingDirection.setSelection(Settings.getReadingDirection());
-            mScaleMode.setSelection(Settings.getPageScaling());
-            mStartPosition.setSelection(Settings.getStartPosition());
-            mReadTheme.setSelection(Settings.getReadTheme());
-            mKeepScreenOn.setChecked(Settings.getKeepScreenOn());
-            mShowClock.setChecked(Settings.getShowClock());
-            mShowProgress.setChecked(Settings.getShowProgress());
-            mShowBattery.setChecked(Settings.getShowBattery());
-            mShowPageInterval.setChecked(Settings.getShowPageInterval());
-            mVolumePage.setChecked(Settings.getVolumePage());
+            mScreenRotation.setSelection(Settings.INSTANCE.getScreenRotation());
+            mReadingDirection.setSelection(Settings.INSTANCE.getReadingDirection());
+            mScaleMode.setSelection(Settings.INSTANCE.getPageScaling());
+            mStartPosition.setSelection(Settings.INSTANCE.getStartPosition());
+            mReadTheme.setSelection(Settings.INSTANCE.getReadTheme());
+            mKeepScreenOn.setChecked(Settings.INSTANCE.getKeepScreenOn());
+            mShowClock.setChecked(Settings.INSTANCE.getShowClock());
+            mShowProgress.setChecked(Settings.INSTANCE.getShowProgress());
+            mShowBattery.setChecked(Settings.INSTANCE.getShowBattery());
+            mShowPageInterval.setChecked(Settings.INSTANCE.getShowPageInterval());
+            mVolumePage.setChecked(Settings.INSTANCE.getVolumePage());
             mVolumePage.setOnCheckedChangeListener((buttonView, isChecked) -> mReverseVolumePage.setEnabled(isChecked));
             mReverseVolumePage.setEnabled(mVolumePage.isChecked());
-            mReverseVolumePage.setChecked(Settings.getReverseVolumePage());
-            mReadingFullscreen.setChecked(Settings.getReadingFullscreen());
-            mCustomScreenLightness.setChecked(Settings.getCustomScreenLightness());
-            mScreenLightness.setProgress(Settings.getScreenLightness());
-            mScreenLightness.setEnabled(Settings.getCustomScreenLightness());
+            mReverseVolumePage.setChecked(Settings.INSTANCE.getReverseVolumePage());
+            mReadingFullscreen.setChecked(Settings.INSTANCE.getReadingFullscreen());
+            mCustomScreenLightness.setChecked(Settings.INSTANCE.getCustomScreenLightness());
+            mScreenLightness.setProgress(Settings.INSTANCE.getScreenLightness());
+            mScreenLightness.setEnabled(Settings.INSTANCE.getCustomScreenLightness());
 
             mCustomScreenLightness.setOnCheckedChangeListener((buttonView, isChecked) -> mScreenLightness.setEnabled(isChecked));
         }
@@ -1192,24 +1192,24 @@ public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChan
             boolean customScreenLightness = mCustomScreenLightness.isChecked();
             int screenLightness = mScreenLightness.getProgress();
 
-            boolean oldReadingFullscreen = Settings.getReadingFullscreen();
-            int oldReadTheme = Settings.getReadTheme();
+            boolean oldReadingFullscreen = Settings.INSTANCE.getReadingFullscreen();
+            int oldReadTheme = Settings.INSTANCE.getReadTheme();
 
-            Settings.putScreenRotation(screenRotation);
-            Settings.putReadingDirection(layoutMode);
-            Settings.putPageScaling(scaleMode);
-            Settings.putStartPosition(startPosition);
-            Settings.putReadTheme(readTheme);
-            Settings.putKeepScreenOn(keepScreenOn);
-            Settings.putShowClock(showClock);
-            Settings.putShowProgress(showProgress);
-            Settings.putShowBattery(showBattery);
-            Settings.putShowPageInterval(showPageInterval);
-            Settings.putVolumePage(volumePage);
-            Settings.putReverseVolumePage(reverseVolumePage);
-            Settings.putReadingFullscreen(readingFullscreen);
-            Settings.putCustomScreenLightness(customScreenLightness);
-            Settings.putScreenLightness(screenLightness);
+            Settings.INSTANCE.putScreenRotation(screenRotation);
+            Settings.INSTANCE.putReadingDirection(layoutMode);
+            Settings.INSTANCE.putPageScaling(scaleMode);
+            Settings.INSTANCE.putStartPosition(startPosition);
+            Settings.INSTANCE.putReadTheme(readTheme);
+            Settings.INSTANCE.putKeepScreenOn(keepScreenOn);
+            Settings.INSTANCE.putShowClock(showClock);
+            Settings.INSTANCE.putShowProgress(showProgress);
+            Settings.INSTANCE.putShowBattery(showBattery);
+            Settings.INSTANCE.putShowPageInterval(showPageInterval);
+            Settings.INSTANCE.putVolumePage(volumePage);
+            Settings.INSTANCE.putReverseVolumePage(reverseVolumePage);
+            Settings.INSTANCE.putReadingFullscreen(readingFullscreen);
+            Settings.INSTANCE.putCustomScreenLightness(customScreenLightness);
+            Settings.INSTANCE.putScreenLightness(screenLightness);
 
             int orientation;
             switch (screenRotation) {
