@@ -288,7 +288,7 @@ class EhApplication : SceneApplication() {
             builder.memoryCacheMaxSize = min(20 * 1024 * 1024, OSUtils.getAppMaxMemory().toInt())
             builder.hasDiskCache = true
             builder.diskCacheDir = File(application.cacheDir, "thumb")
-            builder.diskCacheMaxSize = 320 * 1024 * 1024
+            builder.diskCacheMaxSize = Settings.thumbCacheSize * 1024 * 1024
             builder.okHttpClient = nonCacheOkHttpClient
             builder.objectHelper = ImageBitmapHelper()
             builder.debug = DEBUG_CONACO
