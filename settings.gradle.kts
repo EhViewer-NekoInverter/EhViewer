@@ -5,15 +5,17 @@ pluginManagement {
         mavenCentral()
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
-        maven { url "https://jcenter.bintray.com" }
-        maven { url "https://jitpack.io" }
+        maven("https://jcenter.bintray.com")
+        maven("https://jitpack.io")
     }
 }
+
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 rootProject.name = "EhViewer"
-include ':app'
+include(":app")

@@ -68,12 +68,13 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 本项目受到了诸多开源项目的帮助
 
 - [AOSP & AndroidX](https://source.android.com/)
+- [Kotlin & KotlinX](https://kotlinlang.org/)
 - [material-components-android](https://github.com/material-components/material-components-android)
 - [FullDraggableDrawer](https://github.com/PureWriter/FullDraggableDrawer)
-- [GnuTLS](https://gnutls.org/)
-- [jsoup](https://github.com/jhy/jsoup)
+- [jsoup](https://jsoup.org/)
 - [libarchive](http://www.libarchive.org/)
-- [okhttp](https://github.com/square/okhttp)
+- [Nettle](https://github.com/gnutls/nettle)
+- [okhttp](https://square.github.io/okhttp/)
 - [RikkaX](https://github.com/RikkaApps/RikkaX)
 - [XZ Utils](https://tukaani.org/xz/)
 
