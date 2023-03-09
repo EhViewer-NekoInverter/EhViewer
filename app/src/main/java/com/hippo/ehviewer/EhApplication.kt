@@ -57,6 +57,7 @@ import javax.net.ssl.X509TrustManager
 import kotlin.math.min
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import okhttp3.Cache
 import okhttp3.OkHttpClient
 import rikka.material.app.DayNightDelegate
 import rikka.material.app.LocaleDelegate
@@ -241,7 +242,7 @@ class EhApplication : SceneApplication() {
         val ehProxySelector by lazy { EhProxySelector() }
 
         @JvmStatic
-        val okHttpClient by lazy {
+        val nonCacheOkHttpClient by lazy {
             val builder = OkHttpClient.Builder()
                 .cookieJar(ehCookieStore)
                 .dns(EhDns)
@@ -272,6 +273,14 @@ class EhApplication : SceneApplication() {
             builder.build()
         }
 
+        // Never use this okhttp client to download large blobs!!!
+        @JvmStatic
+        val okHttpClient by lazy {
+            nonCacheOkHttpClient.newBuilder()
+                .cache(Cache(File(application.cacheDir, "http_cache"), 20L * 1024L * 1024L))
+                .build()
+        }
+
         @JvmStatic
         val conaco by lazy {
             val builder = Conaco.Builder<ImageBitmap>()
@@ -280,7 +289,7 @@ class EhApplication : SceneApplication() {
             builder.hasDiskCache = true
             builder.diskCacheDir = File(application.cacheDir, "thumb")
             builder.diskCacheMaxSize = 320 * 1024 * 1024
-            builder.okHttpClient = okHttpClient
+            builder.okHttpClient = nonCacheOkHttpClient
             builder.objectHelper = ImageBitmapHelper()
             builder.debug = DEBUG_CONACO
             builder.build()

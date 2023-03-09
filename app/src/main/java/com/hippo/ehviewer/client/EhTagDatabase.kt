@@ -18,7 +18,7 @@ package com.hippo.ehviewer.client
 import android.content.Context
 import com.hippo.ehviewer.AppConfig
 import com.hippo.ehviewer.EhApplication
-import com.hippo.ehviewer.EhApplication.Companion.okHttpClient
+import com.hippo.ehviewer.EhApplication.Companion.nonCacheOkHttpClient
 import com.hippo.ehviewer.R
 import com.hippo.util.ExceptionUtils
 import com.hippo.util.HashCodeUtils
@@ -243,7 +243,7 @@ object EhTagDatabase {
                         FileUtils.delete(dataFile)
                     }
                 }
-                val client = okHttpClient
+                val client = nonCacheOkHttpClient
 
                 // Save new sha1
                 val tempSha1File = File(dir, "$sha1Name.tmp")
