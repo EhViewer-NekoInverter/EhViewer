@@ -129,7 +129,6 @@
     <rikka.preference.SimpleMenuPreference
         android:defaultValue="0"
         android:key="thumb_resolution"
-        android:summary="@string/settings_eh_thumb_resolution_summary"
         android:title="@string/settings_eh_thumb_resolution"
         app:entries="@array/thumb_resolution_entries"
         app:entryValues="@array/thumb_resolution_entry_values"

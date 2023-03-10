@@ -20,6 +20,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.preference.ListPreference
 import androidx.preference.Preference
 import com.hippo.ehviewer.AppConfig
 import com.hippo.ehviewer.R
@@ -55,13 +56,27 @@ class DownloadFragment : BasePreferenceFragment() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.download_settings)
+        mDownloadLocation = findPreference(Settings.KEY_DOWNLOAD_LOCATION)
         val mediaScan = findPreference<Preference>(Settings.KEY_MEDIA_SCAN)
-        mDownloadLocation = findPreference(KEY_DOWNLOAD_LOCATION)
-        onUpdateDownloadLocation()
+        val multiThreadDownload = findPreference<Preference>(Settings.KEY_MULTI_THREAD_DOWNLOAD)
+        val downloadDelay = findPreference<Preference>(Settings.KEY_DOWNLOAD_DELAY)
+        val preloadImage = findPreference<Preference>(Settings.KEY_PRELOAD_IMAGE)
+        val downloadOriginImage = findPreference<Preference>(Settings.KEY_DOWNLOAD_ORIGIN_IMAGE)
+        mDownloadLocation?.onPreferenceClickListener = this
         mediaScan!!.onPreferenceChangeListener = this
-        if (mDownloadLocation != null) {
-            mDownloadLocation!!.onPreferenceClickListener = this
+        multiThreadDownload!!.setSummaryProvider {
+            getString(R.string.settings_download_multi_thread_download_summary, (it as ListPreference).entry)
         }
+        downloadDelay!!.setSummaryProvider {
+            getString(R.string.settings_download_download_delay_summary, (it as ListPreference).entry)
+        }
+        preloadImage!!.setSummaryProvider {
+            getString(R.string.settings_download_preload_image_summary, (it as ListPreference).entry)
+        }
+        downloadOriginImage!!.setSummaryProvider {
+            getString(R.string.settings_download_download_origin_image_summary, (it as ListPreference).entry)
+        }
+        onUpdateDownloadLocation()
     }
 
     override fun onDestroy() {
@@ -82,7 +97,7 @@ class DownloadFragment : BasePreferenceFragment() {
 
     override fun onPreferenceClick(preference: Preference): Boolean {
         val key = preference.key
-        if (KEY_DOWNLOAD_LOCATION == key) {
+        if (Settings.KEY_DOWNLOAD_LOCATION == key) {
             val file = Settings.downloadLocation
             if (file != null && !UniFile.isFileUri(
                     Settings.downloadLocation!!.uri
@@ -140,8 +155,4 @@ class DownloadFragment : BasePreferenceFragment() {
 
     override val fragmentTitle: Int
         get() = R.string.settings_download
-
-    companion object {
-        const val KEY_DOWNLOAD_LOCATION = "download_location"
-    }
 }

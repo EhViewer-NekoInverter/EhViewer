@@ -33,7 +33,6 @@
     <rikka.preference.SimpleMenuPreference
         android:defaultValue="3"
         android:key="download_thread"
-        android:summary="@string/settings_download_multi_thread_download_summary"
         android:title="@string/settings_download_multi_thread_download"
         app:entries="@array/multi_thread_download_entries"
         app:entryValues="@array/multi_thread_download_entry_values"
@@ -42,7 +41,6 @@
     <rikka.preference.SimpleMenuPreference
         android:defaultValue="0"
         android:key="download_delay"
-        android:summary="@string/settings_download_download_delay_summary"
         android:title="@string/settings_download_download_delay"
         app:entries="@array/download_delay_entries"
         app:entryValues="@array/download_delay_entry_values"
@@ -51,7 +49,6 @@
     <rikka.preference.SimpleMenuPreference
         android:defaultValue="5"
         android:key="preload_image"
-        android:summary="@string/settings_download_preload_image_summary"
         android:title="@string/settings_download_preload_image"
         app:entries="@array/preload_image_entries"
         app:entryValues="@array/preload_image_entry_values"
@@ -60,7 +57,6 @@
     <rikka.preference.SimpleMenuPreference
         android:defaultValue="0"
         android:key="download_origin_image_"
-        android:summary="@string/settings_download_download_origin_image_summary"
         android:title="@string/settings_download_download_origin_image"
         app:entries="@array/download_origin_image_entries"
         app:entryValues="@array/download_origin_image_entry_values"

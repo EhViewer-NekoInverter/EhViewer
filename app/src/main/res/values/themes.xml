@@ -67,6 +67,9 @@
         <item name="android:colorBackground">@color/grey_850</item>
         <item name="android:windowSplashScreenIconBackgroundColor" tools:targetApi="s">@color/ic_launcher_background</item>
 
+        <!-- Non-overhead workaround for ROMs enable it by default, MIUI etc. -->
+        <item name="android:forceDarkAllowed" tools:targetApi="29">false</item>
+
         <item name="dividerColor">@color/divider</item>
         <item name="toolbarColor">?android:attr/colorBackground</item>
         <item name="textColorThemePrimary">?android:attr/textColorSecondary</item>
@@ -88,8 +91,7 @@
         <item name="tagBackgroundColor">@color/tag_background</item>
         <item name="galleryDetailHeaderTitleColor">?android:attr/textColorPrimary</item>
         <item name="galleryDetailHeaderBackgroundColor">?attr/contentColorThemePrimary</item>
-        <item name="galleryDetailButtonBackgroundColor">@color/gallery_detail_button_background
-        </item>
+        <item name="galleryDetailButtonBackgroundColor">@color/gallery_detail_button_background</item>
 
         <item name="toolbarPopupTheme">@style/ThemeOverlay.MaterialComponents.Dark</item>
         <item name="galleryDetailDivider">@drawable/divider_gallery_detail_dark</item>

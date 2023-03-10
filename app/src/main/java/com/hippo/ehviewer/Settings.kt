@@ -57,7 +57,7 @@ object Settings {
     private const val DEFAULT_THUMB_SIZE = 4
     const val KEY_THUMB_SHOW_TITLE = "thumb_show_title"
     private const val DEFAULT_THUMB_SHOW_TITLE = true
-    private const val KEY_THUMB_RESOLUTION = "thumb_resolution"
+    const val KEY_THUMB_RESOLUTION = "thumb_resolution"
     private const val DEFAULT_THUMB_RESOLUTION = 0
     private const val KEY_SHOW_JPN_TITLE = "show_jpn_title"
     private const val DEFAULT_SHOW_JPN_TITLE = false
@@ -124,6 +124,7 @@ object Settings {
     /********************
      ****** Download
      ********************/
+    const val KEY_DOWNLOAD_LOCATION = "download_location"
     private const val KEY_DOWNLOAD_SAVE_SCHEME = "image_scheme"
     private const val KEY_DOWNLOAD_SAVE_AUTHORITY = "image_authority"
     private const val KEY_DOWNLOAD_SAVE_PATH = "image_path"
@@ -131,13 +132,13 @@ object Settings {
     private const val KEY_DOWNLOAD_SAVE_FRAGMENT = "image_fragment"
     const val KEY_MEDIA_SCAN = "media_scan"
     private const val DEFAULT_MEDIA_SCAN = false
-    private const val KEY_MULTI_THREAD_DOWNLOAD = "download_thread"
+    const val KEY_MULTI_THREAD_DOWNLOAD = "download_thread"
     private const val DEFAULT_MULTI_THREAD_DOWNLOAD = 3
-    private const val KEY_DOWNLOAD_DELAY = "download_delay"
+    const val KEY_DOWNLOAD_DELAY = "download_delay"
     private const val DEFAULT_DOWNLOAD_DELAY = 0
-    private const val KEY_PRELOAD_IMAGE = "preload_image"
+    const val KEY_PRELOAD_IMAGE = "preload_image"
     private const val DEFAULT_PRELOAD_IMAGE = 5
-    private const val KEY_DOWNLOAD_ORIGIN_IMAGE = "download_origin_image_"
+    const val KEY_DOWNLOAD_ORIGIN_IMAGE = "download_origin_image_"
     private const val DEFAULT_DOWNLOAD_ORIGIN_IMAGE = 0
     /********************
      ****** Privacy and Security
