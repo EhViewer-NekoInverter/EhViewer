@@ -13,180 +13,158 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.ehviewer.widget
 
-package com.hippo.ehviewer.widget;
+import android.content.Context
+import android.os.Bundle
+import android.os.Parcelable
+import android.util.AttributeSet
+import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.widget.CheckBox
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.Spinner
+import android.widget.TextView
+import com.hippo.ehviewer.R
+import com.hippo.util.getParcelableCompat
+import com.hippo.yorozuya.NumberUtils
 
-import android.content.Context;
-import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
+class AdvanceSearchTable @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null
+) : LinearLayout(context, attrs) {
+    private var mSh: CheckBox
+    private var mSto: CheckBox
+    private var mSr: CheckBox
+    private var mMinRating: Spinner
+    private var mSp: CheckBox
+    private var mSpf: EditText
+    private var mSpt: EditText
+    private var mSfl: CheckBox
+    private var mSfu: CheckBox
+    private var mSft: CheckBox
 
-import com.hippo.ehviewer.R;
-import com.hippo.yorozuya.NumberUtils;
-
-public class AdvanceSearchTable extends LinearLayout {
-    public static final int SH = 0x1;
-    public static final int STO = 0x2;
-    public static final int SFL = 0x100;
-    public static final int SFU = 0x200;
-    public static final int SFT = 0x400;
-    private static final String STATE_KEY_SUPER = "super";
-    private static final String STATE_KEY_ADVANCE_SEARCH = "advance_search";
-    private static final String STATE_KEY_MIN_RATING = "min_rating";
-    private static final String STATE_KEY_PAGE_FROM = "page_from";
-    private static final String STATE_KEY_PAGE_TO = "page_to";
-    private CheckBox mSh;
-    private CheckBox mSto;
-    private CheckBox mSr;
-    private Spinner mMinRating;
-    private CheckBox mSp;
-    private EditText mSpf;
-    private EditText mSpt;
-    private CheckBox mSfl;
-    private CheckBox mSfu;
-    private CheckBox mSft;
-
-    public AdvanceSearchTable(Context context) {
-        super(context);
-        init(context);
+    init {
+        orientation = VERTICAL
+        val inflater = LayoutInflater.from(context)
+        inflater.inflate(R.layout.widget_advance_search_table, this)
+        val row0 = getChildAt(0) as ViewGroup
+        mSh = row0.getChildAt(0) as CheckBox
+        mSto = row0.getChildAt(1) as CheckBox
+        val row1 = getChildAt(1) as ViewGroup
+        mSr = row1.getChildAt(0) as CheckBox
+        mMinRating = row1.getChildAt(1) as Spinner
+        val row2 = getChildAt(2) as ViewGroup
+        mSp = row2.getChildAt(0) as CheckBox
+        mSpf = row2.getChildAt(1) as EditText
+        mSpt = row2.getChildAt(3) as EditText
+        val row4 = getChildAt(4) as ViewGroup
+        mSfl = row4.getChildAt(0) as CheckBox
+        mSfu = row4.getChildAt(1) as CheckBox
+        mSft = row4.getChildAt(2) as CheckBox
+        mSpt.setOnEditorActionListener { v: TextView, _: Int, _: KeyEvent? ->
+            val nextView = v.focusSearch(FOCUS_DOWN)
+            nextView?.requestFocus(FOCUS_DOWN)
+            true
+        }
     }
 
-    public AdvanceSearchTable(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
-    }
+    var advanceSearch: Int
+        get() {
+            var advanceSearch = 0
+            if (mSh.isChecked) advanceSearch = advanceSearch or SH
+            if (mSto.isChecked) advanceSearch = advanceSearch or STO
+            if (mSfl.isChecked) advanceSearch = advanceSearch or SFL
+            if (mSfu.isChecked) advanceSearch = advanceSearch or SFU
+            if (mSft.isChecked) advanceSearch = advanceSearch or SFT
+            return advanceSearch
+        }
+        set(advanceSearch) {
+            mSh.isChecked = NumberUtils.int2boolean(advanceSearch and SH)
+            mSto.isChecked = NumberUtils.int2boolean(advanceSearch and STO)
+            mSfl.isChecked = NumberUtils.int2boolean(advanceSearch and SFL)
+            mSfu.isChecked = NumberUtils.int2boolean(advanceSearch and SFU)
+            mSft.isChecked = NumberUtils.int2boolean(advanceSearch and SFT)
+        }
 
-    public void init(Context context) {
-        setOrientation(LinearLayout.VERTICAL);
-
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        inflater.inflate(R.layout.widget_advance_search_table, this);
-
-        ViewGroup row0 = (ViewGroup) getChildAt(0);
-        mSh = (CheckBox) row0.getChildAt(0);
-        mSto = (CheckBox) row0.getChildAt(1);
-
-        ViewGroup row1 = (ViewGroup) getChildAt(1);
-        mSr = (CheckBox) row1.getChildAt(0);
-        mMinRating = (Spinner) row1.getChildAt(1);
-
-        ViewGroup row2 = (ViewGroup) getChildAt(2);
-        mSp = (CheckBox) row2.getChildAt(0);
-        mSpf = (EditText) row2.getChildAt(1);
-        mSpt = (EditText) row2.getChildAt(3);
-
-        ViewGroup row4 = (ViewGroup) getChildAt(4);
-        mSfl = (CheckBox) row4.getChildAt(0);
-        mSfu = (CheckBox) row4.getChildAt(1);
-        mSft = (CheckBox) row4.getChildAt(2);
-
-        // Avoid java.lang.IllegalStateException: focus search returned a view that wasn't able to take focus!
-        mSpt.setOnEditorActionListener((v, actionId, event) -> {
-            View nextView = v.focusSearch(View.FOCUS_DOWN);
-            if (nextView != null) {
-                nextView.requestFocus(View.FOCUS_DOWN);
+    var minRating: Int
+        get() {
+            val position = mMinRating.selectedItemPosition
+            return if (mSr.isChecked && position >= 0) {
+                position + 2
+            } else {
+                -1
             }
-            return true;
-        });
+        }
+        set(minRating) {
+            if (minRating in 2..5) {
+                mSr.isChecked = true
+                mMinRating.setSelection(minRating - 2)
+            } else {
+                mSr.isChecked = false
+            }
+        }
+
+    var pageFrom: Int
+        get() = if (mSp.isChecked) {
+            NumberUtils.parseIntSafely(mSpf.text.toString(), -1)
+        } else -1
+        set(pageFrom) {
+            if (pageFrom > 0) {
+                mSpf.setText(pageFrom.toString())
+                mSp.isChecked = true
+            } else {
+                mSp.isChecked = false
+                mSpf.text = null
+            }
+        }
+
+    var pageTo: Int
+        get() = if (mSp.isChecked) {
+            NumberUtils.parseIntSafely(mSpt.text.toString(), -1)
+        } else -1
+        set(pageTo) {
+            if (pageTo > 0) {
+                mSpt.setText(pageTo.toString())
+                mSp.isChecked = true
+            } else {
+                mSp.isChecked = false
+            }
+        }
+
+    override fun onSaveInstanceState(): Parcelable {
+        val state = Bundle()
+        state.putParcelable(STATE_KEY_SUPER, super.onSaveInstanceState())
+        state.putInt(STATE_KEY_ADVANCE_SEARCH, advanceSearch)
+        state.putInt(STATE_KEY_MIN_RATING, minRating)
+        state.putInt(STATE_KEY_PAGE_FROM, pageFrom)
+        state.putInt(STATE_KEY_PAGE_TO, pageTo)
+        return state
     }
 
-    public int getAdvanceSearch() {
-        int advanceSearch = 0;
-        if (mSh.isChecked()) advanceSearch |= SH;
-        if (mSto.isChecked()) advanceSearch |= STO;
-        if (mSfl.isChecked()) advanceSearch |= SFL;
-        if (mSfu.isChecked()) advanceSearch |= SFU;
-        if (mSft.isChecked()) advanceSearch |= SFT;
-        return advanceSearch;
-    }
-
-    public void setAdvanceSearch(int advanceSearch) {
-        mSh.setChecked(NumberUtils.int2boolean(advanceSearch & SH));
-        mSto.setChecked(NumberUtils.int2boolean(advanceSearch & STO));
-        mSfl.setChecked(NumberUtils.int2boolean(advanceSearch & SFL));
-        mSfu.setChecked(NumberUtils.int2boolean(advanceSearch & SFU));
-        mSft.setChecked(NumberUtils.int2boolean(advanceSearch & SFT));
-    }
-
-    public int getMinRating() {
-        int position = mMinRating.getSelectedItemPosition();
-        if (mSr.isChecked() && position >= 0) {
-            return position + 2;
+    override fun onRestoreInstanceState(state: Parcelable) {
+        if (state is Bundle) {
+            super.onRestoreInstanceState(state.getParcelableCompat(STATE_KEY_SUPER))
+            advanceSearch = state.getInt(STATE_KEY_ADVANCE_SEARCH)
+            minRating = state.getInt(STATE_KEY_MIN_RATING)
+            pageFrom = state.getInt(STATE_KEY_PAGE_FROM)
+            pageTo = state.getInt(STATE_KEY_PAGE_TO)
         } else {
-            return -1;
+            super.onRestoreInstanceState(state)
         }
     }
 
-    public void setMinRating(int minRating) {
-        if (minRating >= 2 && minRating <= 5) {
-            mSr.setChecked(true);
-            mMinRating.setSelection(minRating - 2);
-        } else {
-            mSr.setChecked(false);
-        }
-    }
-
-    public int getPageFrom() {
-        if (mSp.isChecked()) {
-            return NumberUtils.parseIntSafely(mSpf.getText().toString(), -1);
-        }
-        return -1;
-    }
-
-    public void setPageFrom(int pageFrom) {
-        if (pageFrom > 0) {
-            mSpf.setText(Integer.toString(pageFrom));
-            mSp.setChecked(true);
-        } else {
-            mSp.setChecked(false);
-            mSpf.setText(null);
-        }
-    }
-
-    public int getPageTo() {
-        if (mSp.isChecked()) {
-            return NumberUtils.parseIntSafely(mSpt.getText().toString(), -1);
-        }
-        return -1;
-    }
-
-    public void setPageTo(int pageTo) {
-        if (pageTo > 0) {
-            mSpt.setText(Integer.toString(pageTo));
-            mSp.setChecked(true);
-        } else {
-            mSp.setChecked(false);
-            mSpt.setText(null);
-        }
-    }
-
-    @Override
-    public Parcelable onSaveInstanceState() {
-        final Bundle state = new Bundle();
-        state.putParcelable(STATE_KEY_SUPER, super.onSaveInstanceState());
-        state.putInt(STATE_KEY_ADVANCE_SEARCH, getAdvanceSearch());
-        state.putInt(STATE_KEY_MIN_RATING, getMinRating());
-        state.putInt(STATE_KEY_PAGE_FROM, getPageFrom());
-        state.putInt(STATE_KEY_PAGE_TO, getPageTo());
-        return state;
-    }
-
-    @Override
-    public void onRestoreInstanceState(Parcelable state) {
-        if (state instanceof Bundle) {
-            final Bundle savedState = (Bundle) state;
-            super.onRestoreInstanceState(savedState.getParcelable(STATE_KEY_SUPER));
-            setAdvanceSearch(savedState.getInt(STATE_KEY_ADVANCE_SEARCH));
-            setMinRating(savedState.getInt(STATE_KEY_MIN_RATING));
-            setPageFrom(savedState.getInt(STATE_KEY_PAGE_FROM));
-            setPageTo(savedState.getInt(STATE_KEY_PAGE_TO));
-        }
+    companion object {
+        const val SH = 0x1
+        const val STO = 0x2
+        const val SFL = 0x100
+        const val SFU = 0x200
+        const val SFT = 0x400
+        private const val STATE_KEY_SUPER = "super"
+        private const val STATE_KEY_ADVANCE_SEARCH = "advance_earch"
+        private const val STATE_KEY_MIN_RATING = "min_rating"
+        private const val STATE_KEY_PAGE_FROM = "page_from"
+        private const val STATE_KEY_PAGE_TO = "page_to"
     }
 }

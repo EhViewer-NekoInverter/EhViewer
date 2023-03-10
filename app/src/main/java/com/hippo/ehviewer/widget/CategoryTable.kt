@@ -29,8 +29,8 @@ import com.hippo.util.getParcelableCompat
 import com.hippo.widget.CheckTextView
 import com.hippo.yorozuya.NumberUtils
 
-class CategoryTable(
-    context: Context, attrs: AttributeSet
+class CategoryTable @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null
 ) : TableLayout(context, attrs), View.OnLongClickListener {
     private var mDoujinshi: CheckTextView
     private var mManga: CheckTextView
@@ -46,31 +46,24 @@ class CategoryTable(
 
     init {
         LayoutInflater.from(context).inflate(R.layout.widget_category_table, this)
-
         val row0 = getChildAt(0) as ViewGroup
         mDoujinshi = row0.getChildAt(0) as CheckTextView
         mManga = row0.getChildAt(1) as CheckTextView
-
         val row1 = getChildAt(1) as ViewGroup
         mArtistCG = row1.getChildAt(0) as CheckTextView
         mGameCG = row1.getChildAt(1) as CheckTextView
-
         val row2 = getChildAt(2) as ViewGroup
         mWestern = row2.getChildAt(0) as CheckTextView
         mNonH = row2.getChildAt(1) as CheckTextView
-
         val row3 = getChildAt(3) as ViewGroup
         mImageSets = row3.getChildAt(0) as CheckTextView
         mCosplay = row3.getChildAt(1) as CheckTextView
-
         val row4 = getChildAt(4) as ViewGroup
         mAsianPorn = row4.getChildAt(0) as CheckTextView
         mMisc = row4.getChildAt(1) as CheckTextView
-
         mOptions = arrayOf(
             mDoujinshi, mManga, mArtistCG, mGameCG, mWestern, mNonH, mImageSets, mCosplay, mAsianPorn, mMisc
         )
-
         for (option in mOptions) {
             option.setOnLongClickListener(this)
         }
@@ -88,55 +81,45 @@ class CategoryTable(
         return true
     }
 
-    /**
-     * Get category according to button.
-     *
-     * @return the category of this view
-     */
-    fun getCategory(): Int {
-        var category = 0
-        if (!mDoujinshi.isChecked) category = category or EhUtils.DOUJINSHI
-        if (!mManga.isChecked) category = category or EhUtils.MANGA
-        if (!mArtistCG.isChecked) category = category or EhUtils.ARTIST_CG
-        if (!mGameCG.isChecked) category = category or EhUtils.GAME_CG
-        if (!mWestern.isChecked) category = category or EhUtils.WESTERN
-        if (!mNonH.isChecked) category = category or EhUtils.NON_H
-        if (!mImageSets.isChecked) category = category or EhUtils.IMAGE_SET
-        if (!mCosplay.isChecked) category = category or EhUtils.COSPLAY
-        if (!mAsianPorn.isChecked) category = category or EhUtils.ASIAN_PORN
-        if (!mMisc.isChecked) category = category or EhUtils.MISC
-        return category
-    }
-
-    /**
-     * Set each button checked or not according to category.
-     *
-     * @param category target category
-     */
-    fun setCategory(category: Int) {
-        mDoujinshi.isChecked = !NumberUtils.int2boolean(category and EhUtils.DOUJINSHI)
-        mManga.isChecked = !NumberUtils.int2boolean(category and EhUtils.MANGA)
-        mArtistCG.isChecked = !NumberUtils.int2boolean(category and EhUtils.ARTIST_CG)
-        mGameCG.isChecked = !NumberUtils.int2boolean(category and EhUtils.GAME_CG)
-        mWestern.isChecked = !NumberUtils.int2boolean(category and EhUtils.WESTERN)
-        mNonH.isChecked = !NumberUtils.int2boolean(category and EhUtils.NON_H)
-        mImageSets.isChecked = !NumberUtils.int2boolean(category and EhUtils.IMAGE_SET)
-        mCosplay.isChecked = !NumberUtils.int2boolean(category and EhUtils.COSPLAY)
-        mAsianPorn.isChecked = !NumberUtils.int2boolean(category and EhUtils.ASIAN_PORN)
-        mMisc.isChecked = !NumberUtils.int2boolean(category and EhUtils.MISC)
-    }
+    var category: Int
+        get() {
+            var category = 0
+            if (!mDoujinshi.isChecked) category = category or EhUtils.DOUJINSHI
+            if (!mManga.isChecked) category = category or EhUtils.MANGA
+            if (!mArtistCG.isChecked) category = category or EhUtils.ARTIST_CG
+            if (!mGameCG.isChecked) category = category or EhUtils.GAME_CG
+            if (!mWestern.isChecked) category = category or EhUtils.WESTERN
+            if (!mNonH.isChecked) category = category or EhUtils.NON_H
+            if (!mImageSets.isChecked) category = category or EhUtils.IMAGE_SET
+            if (!mCosplay.isChecked) category = category or EhUtils.COSPLAY
+            if (!mAsianPorn.isChecked) category = category or EhUtils.ASIAN_PORN
+            if (!mMisc.isChecked) category = category or EhUtils.MISC
+            return category
+        }
+        set(category) {
+            mDoujinshi.isChecked = !NumberUtils.int2boolean(category and EhUtils.DOUJINSHI)
+            mManga.isChecked = !NumberUtils.int2boolean(category and EhUtils.MANGA)
+            mArtistCG.isChecked = !NumberUtils.int2boolean(category and EhUtils.ARTIST_CG)
+            mGameCG.isChecked = !NumberUtils.int2boolean(category and EhUtils.GAME_CG)
+            mWestern.isChecked = !NumberUtils.int2boolean(category and EhUtils.WESTERN)
+            mNonH.isChecked = !NumberUtils.int2boolean(category and EhUtils.NON_H)
+            mImageSets.isChecked = !NumberUtils.int2boolean(category and EhUtils.IMAGE_SET)
+            mCosplay.isChecked = !NumberUtils.int2boolean(category and EhUtils.COSPLAY)
+            mAsianPorn.isChecked = !NumberUtils.int2boolean(category and EhUtils.ASIAN_PORN)
+            mMisc.isChecked = !NumberUtils.int2boolean(category and EhUtils.MISC)
+        }
 
     override fun onSaveInstanceState(): Parcelable {
         val bundle = Bundle()
         bundle.putParcelable(STATE_KEY_SUPER, super.onSaveInstanceState())
-        bundle.putInt(STATE_KEY_CATEGORY, getCategory())
+        bundle.putInt(STATE_KEY_CATEGORY, category)
         return bundle
     }
 
     override fun onRestoreInstanceState(state: Parcelable) {
         if (state is Bundle) {
             super.onRestoreInstanceState(state.getParcelableCompat(STATE_KEY_SUPER))
-            setCategory(state.getInt(STATE_KEY_CATEGORY))
+            category = state.getInt(STATE_KEY_CATEGORY)
         }
     }
 
