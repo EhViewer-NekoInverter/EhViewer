@@ -166,7 +166,6 @@ dependencies {
     // https://github.com/RikkaApps/RikkaX
     implementation("dev.rikka.rikkax.appcompat:appcompat:1.5.0.1")
     implementation("dev.rikka.rikkax.core:core-ktx:1.4.1")
-    implementation("dev.rikka.rikkax.layoutinflater:layoutinflater:1.2.0")
     //noinspection GradleDependency
     implementation("dev.rikka.rikkax.material:material:1.6.6")
     implementation("dev.rikka.rikkax.preference:simplemenu-preference:1.0.3")

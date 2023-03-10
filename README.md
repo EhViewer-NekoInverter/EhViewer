@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="art/launcher_icon-web.webp" width="150">
+  <img src="https://github.com/EhViewer-NekoInverter/Arts/blob/main/launcher_icon-web.webp" width="150">
   <br>EhViewer-NekoInverter<br>
 </h1>
 
@@ -60,8 +60,8 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 # 截图
 
-![screenshot-01](art/screenshot-01.webp)
-![screenshot-02](art/screenshot-02.webp)
+![screenshot-01](https://github.com/EhViewer-NekoInverter/Arts/blob/main/screenshot-01.webp)
+![screenshot-02](https://github.com/EhViewer-NekoInverter/Arts/blob/main/screenshot-02.webp)
 
 # 感谢
 
@@ -73,7 +73,7 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 - [FullDraggableDrawer](https://github.com/PureWriter/FullDraggableDrawer)
 - [jsoup](https://jsoup.org/)
 - [libarchive](http://www.libarchive.org/)
-- [Nettle](https://github.com/gnutls/nettle)
+- [Nettle](https://www.lysator.liu.se/~nisse/nettle/)
 - [okhttp](https://square.github.io/okhttp/)
 - [RikkaX](https://github.com/RikkaApps/RikkaX)
 - [XZ Utils](https://tukaani.org/xz/)
