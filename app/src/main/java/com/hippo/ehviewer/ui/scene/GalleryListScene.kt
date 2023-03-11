@@ -407,7 +407,7 @@ class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListen
         val paddingBottomFab = resources.getDimensionPixelOffset(R.dimen.gallery_padding_bottom_fab)
         mViewTransition = BringOutTransition(mContentLayout, mSearchLayout)
         mHelper = GalleryListHelper()
-        mContentLayout.setHelper(mHelper)
+        mContentLayout.setHelper(mHelper!!)
         mContentLayout.fastScroller.setOnDragHandlerListener(this)
         mContentLayout.setFitPaddingTop(paddingTopSB)
         mAdapter = GalleryListAdapter(
@@ -1580,9 +1580,8 @@ class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListen
             }
         }
 
-        override fun getContext(): Context {
-            return requireContext()
-        }
+        override val context
+            get() = requireContext()
 
         @SuppressLint("NotifyDataSetChanged")
         override fun notifyDataSetChanged() {

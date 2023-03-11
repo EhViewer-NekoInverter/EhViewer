@@ -112,7 +112,7 @@ class GalleryPreviewsScene : ToolbarScene() {
         val decoration = MarginItemDecoration(padding, padding, padding, padding, padding)
         mRecyclerView!!.addItemDecoration(decoration)
         mHelper = GalleryPreviewHelper()
-        mContentLayout.setHelper(mHelper)
+        mContentLayout.setHelper(mHelper!!)
 
         // Only refresh for the first time
         if (!mHasFirstRefresh) {
@@ -202,7 +202,7 @@ class GalleryPreviewsScene : ToolbarScene() {
             }
             mHelper!!.onGetPageData(
                 taskId, result.second, 0, null, null,
-                list as List<GalleryPreview?>?
+                list as List<GalleryPreview>
             )
             if (mScrollTo != 0 && mScrollTo < size) {
                 mHelper!!.scrollTo(mScrollTo)
@@ -297,9 +297,8 @@ class GalleryPreviewsScene : ToolbarScene() {
             request.enqueue(this@GalleryPreviewsScene)
         }
 
-        override fun getContext(): Context {
-            return this@GalleryPreviewsScene.requireContext()
-        }
+        override val context
+            get() = this@GalleryPreviewsScene.requireContext()
 
         @SuppressLint("NotifyDataSetChanged")
         override fun notifyDataSetChanged() {
