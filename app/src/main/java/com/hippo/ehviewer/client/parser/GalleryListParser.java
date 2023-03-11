@@ -228,7 +228,7 @@ public class GalleryListParser {
             gi.setFavoriteSlot(parseFavoriteSlot(posted.attr("style")));
         }
         if (gi.getFavoriteSlot() == -2) {
-            gi.setFavoriteSlot(EhDB.containLocalFavorites(gi.getGid()) ? -1 : -2);
+            gi.setFavoriteSlot(EhDB.INSTANCE.containLocalFavorites(gi.getGid()) ? -1 : -2);
         }
 
         // Rating

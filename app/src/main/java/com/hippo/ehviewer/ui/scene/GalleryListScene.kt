@@ -617,7 +617,7 @@ class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListen
         recyclerView.adapter = qsDrawerAdapter
         lifecycleScope.launchIO {
             // DB Actions
-            mQuickSearchList = EhDB.getAllQuickSearch()
+            mQuickSearchList = EhDB.allQuickSearch.toMutableList()
             withUIContext {
                 updateDrawerView(false)
             }

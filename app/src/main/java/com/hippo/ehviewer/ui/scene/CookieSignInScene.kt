@@ -186,7 +186,6 @@ class CookieSignInScene : SolidScene(), OnEditorActionListener, View.OnClickList
         EhCookieStore.addCookie(newCookie(EhCookieStore.KEY_IPB_PASS_HASH, hash, EhUrl.DOMAIN_E))
         EhCookieStore.addCookie(newCookie(EhCookieStore.KEY_IPB_PASS_HASH, hash, EhUrl.DOMAIN_EX))
         if (igneous.isNotEmpty()) {
-            EhCookieStore.addCookie(newCookie(EhCookieStore.KEY_IGNEOUS, igneous, EhUrl.DOMAIN_E))
             EhCookieStore.addCookie(newCookie(EhCookieStore.KEY_IGNEOUS, igneous, EhUrl.DOMAIN_EX))
         }
     }

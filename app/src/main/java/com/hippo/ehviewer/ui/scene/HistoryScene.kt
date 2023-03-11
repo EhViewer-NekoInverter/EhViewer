@@ -151,7 +151,7 @@ class HistoryScene : ToolbarScene() {
             PagingConfig(20)
         ) {
             // DB Actions
-            EhDB.getHistoryLazyList()
+            EhDB.historyLazyList
         }.flow.cachedIn(viewLifecycleOwner.lifecycleScope)
         recyclerView.adapter = mAdapter
         val layoutManager = AutoStaggeredGridLayoutManager(

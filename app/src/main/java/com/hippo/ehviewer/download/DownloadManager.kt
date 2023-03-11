@@ -65,7 +65,7 @@ object DownloadManager : OnSpiderListener {
     init {
 
         // Get all labels
-        val labels = EhDB.getAllDownloadLabelList()
+        val labels = EhDB.allDownloadLabelList.toMutableList()
         mLabelList = labels
 
         // Create list for each label
@@ -79,7 +79,7 @@ object DownloadManager : OnSpiderListener {
         mDefaultInfoList = LinkedList()
 
         // Get all info
-        val allInfoList = EhDB.getAllDownloadInfo()
+        val allInfoList = EhDB.allDownloadInfo
         mAllInfoList = LinkedList(allInfoList)
 
         // Create all info map
@@ -100,7 +100,7 @@ object DownloadManager : OnSpiderListener {
                 map[label] = list
                 if (!containLabel(label)) {
                     // Add label to DB and list
-                    labels.add(EhDB.addDownloadLabel(label))
+                    labels.add(EhDB.addDownloadLabel(label!!))
                 }
             }
             list.add(info)

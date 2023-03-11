@@ -17,6 +17,9 @@
  */
 package com.hippo
 
+import android.os.ParcelFileDescriptor
+import android.system.Int64Ref
+import android.system.Os
 import java.io.FileDescriptor
 import java.nio.ByteBuffer
 
@@ -29,4 +32,19 @@ object Native {
     external fun getFd(fd: FileDescriptor?): Int
 
     external fun isGif(buffer: ByteBuffer): Boolean
+}
+
+private fun sendFileTotally(from: FileDescriptor, to: FileDescriptor) {
+    Os.sendfile(to, from, Int64Ref(0), Long.MAX_VALUE)
+}
+
+val FileDescriptor.fd
+    get() = Native.getFd(this)
+
+infix fun ParcelFileDescriptor.sendTo(fd: FileDescriptor) {
+    sendFileTotally(fileDescriptor, fd)
+}
+
+infix fun ParcelFileDescriptor.sendTo(fd: ParcelFileDescriptor) {
+    sendFileTotally(fileDescriptor, fd.fileDescriptor)
 }

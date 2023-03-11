@@ -777,9 +777,9 @@ class FavoritesScene : BaseScene(), OnDragHandlerListener, SearchBarMover.Helper
 
     private fun onGetFavoritesLocal(keyword: String?, taskId: Int) {
         if (mHelper != null && mHelper!!.isCurrentTask(taskId)) {
-            val list: List<GalleryInfo> = if (TextUtils.isEmpty(keyword)) {
+            val list: List<GalleryInfo> = if (keyword.isNullOrEmpty()) {
                 // DB Actions
-                EhDB.getAllLocalFavorites()
+                EhDB.allLocalFavorites
             } else {
                 // DB Actions
                 EhDB.searchLocalFavorites(keyword)

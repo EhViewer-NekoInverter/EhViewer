@@ -67,11 +67,11 @@ public final class SpiderDen {
     public static UniFile getGalleryDownloadDir(long gid) {
         UniFile dir = Settings.INSTANCE.getDownloadLocation();
         // Read from DB
-        String dirname = EhDB.getDownloadDirname(gid);
+        String dirname = EhDB.INSTANCE.getDownloadDirname(gid);
         if (dir != null && dirname != null) {
             // Some dirname may be invalid in some version
             dirname = FileUtils.sanitizeFilename(dirname);
-            EhDB.putDownloadDirname(gid, dirname);
+            EhDB.INSTANCE.putDownloadDirname(gid, dirname);
             return dir.subFile(dirname);
         } else {
             return null;
@@ -108,7 +108,7 @@ public final class SpiderDen {
     private boolean ensureDownloadDir() {
         if (mDownloadDir == null) {
             var dirname = FileUtils.sanitizeFilename(mGid + "-" + EhUtils.getSuitableTitle(mGalleryInfo));
-            EhDB.putDownloadDirname(mGid, dirname);
+            EhDB.INSTANCE.putDownloadDirname(mGid, dirname);
             mDownloadDir = getGalleryDownloadDir(mGid);
         }
         return mDownloadDir != null && mDownloadDir.ensureDir();
