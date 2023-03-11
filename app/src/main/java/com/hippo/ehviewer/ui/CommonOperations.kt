@@ -43,7 +43,7 @@ import java.io.InputStream
 object CommonOperations {
     private fun doAddToFavorites(
         activity: Activity, galleryInfo: GalleryInfo,
-        slot: Int, note: String, listener: EhClient.Callback<Void?>
+        slot: Int, note: String, listener: EhClient.Callback<Unit>
     ) {
         val request = EhRequest()
         request.setMethod(EhClient.METHOD_ADD_FAVORITES)
@@ -54,12 +54,12 @@ object CommonOperations {
 
     fun doAddToFavorites(
         activity: Activity, galleryInfo: GalleryInfo, slot: Int,
-        listener: EhClient.Callback<Void?>, foreEdit: Boolean
+        listener: EhClient.Callback<Unit>, foreEdit: Boolean
     ) {
         when (slot) {
             -1 -> {
                 EhDB.putLocalFavorites(galleryInfo)
-                listener.onSuccess(null)
+                listener.onSuccess(Unit)
             }
             in 0..9 -> {
                 if (!foreEdit && Settings.neverAddFavNotes) {
@@ -90,7 +90,7 @@ object CommonOperations {
 
     fun addToFavorites(
         activity: Activity, galleryInfo: GalleryInfo,
-        listener: EhClient.Callback<Void?>, foreSelect: Boolean = false
+        listener: EhClient.Callback<Unit>, foreSelect: Boolean = false
     ) {
         val slot = Settings.defaultFavSlot
         val localFav = activity.getString(R.string.local_favorites)
@@ -134,7 +134,7 @@ object CommonOperations {
 
     fun removeFromFavorites(
         activity: Activity?, galleryInfo: GalleryInfo,
-        listener: EhClient.Callback<Void?>
+        listener: EhClient.Callback<Unit>
     ) {
         EhDB.removeLocalFavorites(galleryInfo.gid)
         val request = EhRequest()
@@ -276,10 +276,10 @@ object CommonOperations {
     }
 
     private class DelegateFavoriteCallback(
-        private val delegate: EhClient.Callback<Void?>, private val info: GalleryInfo,
+        private val delegate: EhClient.Callback<Unit>, private val info: GalleryInfo,
         private val newFavoriteName: String?, private val slot: Int
-    ) : EhClient.Callback<Void?> {
-        override fun onSuccess(result: Void?) {
+    ) : EhClient.Callback<Unit> {
+        override fun onSuccess(result: Unit) {
             EhDB.updateHistoryFavSlot(info.gid, slot)
             info.favoriteName = newFavoriteName
             info.favoriteSlot = slot

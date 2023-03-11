@@ -22,7 +22,6 @@ import com.hippo.ehviewer.EhApplication.Companion.nonCacheOkHttpClient
 import com.hippo.ehviewer.R
 import com.hippo.util.ExceptionUtils
 import com.hippo.util.HashCodeUtils
-import com.hippo.util.launchIO
 import com.hippo.yorozuya.FileUtils
 import com.hippo.yorozuya.IOUtils
 import java.io.File
@@ -32,9 +31,11 @@ import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
-import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.executeAsync
 import okio.BufferedSource
 import okio.buffer
 import okio.source
@@ -48,6 +49,7 @@ object EhTagDatabase {
     private const val NAMESPACE_PREFIX = "n"
     private lateinit var tagGroups: TagGroups
     private lateinit var tagList: TagGroup
+    private val updateLock = Mutex()
 
     fun isInitialized(): Boolean {
         return this::tagGroups.isInitialized && this::tagList.isInitialized
@@ -184,11 +186,11 @@ object EhTagDatabase {
         return s1 == s2
     }
 
-    private fun save(client: OkHttpClient, url: String, file: File): Boolean {
+    private suspend fun save(client: OkHttpClient, url: String, file: File): Boolean {
         val request: Request = Request.Builder().url(url).build()
         val call = client.newCall(request)
         try {
-            call.execute().use { response ->
+            call.executeAsync().use { response ->
                 if (!response.isSuccessful) {
                     return false
                 }
@@ -205,16 +207,13 @@ object EhTagDatabase {
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
-    @JvmStatic
-    fun update() {
-        launchIO {
+    suspend fun update() {
+        updateLock.withLock {
             updateInternal()
         }
     }
 
-    @Synchronized
-    private fun updateInternal() {
+    private suspend fun updateInternal() {
         val urls = getMetadata(EhApplication.application)
         urls?.let {
             val sha1Name = urls[0]

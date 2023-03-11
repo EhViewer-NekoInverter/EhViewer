@@ -824,8 +824,8 @@ class FavoritesScene : BaseScene(), OnDragHandlerListener, SearchBarMover.Helper
         private val mBackup: List<GalleryInfo>,
         private val mGidArray: LongArray?,
         private val mSlot: Int
-    ) : EhCallback<FavoritesScene?, Void?>(context) {
-        override fun onSuccess(result: Void?) {
+    ) : EhCallback<FavoritesScene?, Unit>(context) {
+        override fun onSuccess(result: Unit) {
             val scene = this@FavoritesScene
             scene.updateHistoryFavSlot(mGidArray, mSlot)
             scene.onGetFavoritesLocal(mKeyword, mTaskId)

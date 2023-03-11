@@ -366,8 +366,8 @@ class HistoryScene : ToolbarScene() {
     }
 
     private class AddToFavoriteListener(context: Context) :
-        EhCallback<GalleryListScene?, Void?>(context) {
-        override fun onSuccess(result: Void?) {
+        EhCallback<GalleryListScene?, Unit>(context) {
+        override fun onSuccess(result: Unit) {
             showTip(R.string.add_to_favorite_success, LENGTH_SHORT)
         }
 
@@ -379,8 +379,8 @@ class HistoryScene : ToolbarScene() {
     }
 
     private class RemoveFromFavoriteListener(context: Context) :
-        EhCallback<GalleryListScene?, Void?>(context) {
-        override fun onSuccess(result: Void?) {
+        EhCallback<GalleryListScene?, Unit>(context) {
+        override fun onSuccess(result: Unit) {
             showTip(R.string.remove_from_favorite_success, LENGTH_SHORT)
         }
 

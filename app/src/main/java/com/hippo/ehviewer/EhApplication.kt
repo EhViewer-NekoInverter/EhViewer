@@ -97,12 +97,14 @@ class EhApplication : SceneApplication() {
         ReadableTime.initialize(this)
         AppConfig.initialize(this)
         SpiderDen.initialize(this)
-        EhTagDatabase.update()
         LocaleDelegate.defaultLocale = Settings.locale
         DayNightDelegate.setApplicationContext(this)
         DayNightDelegate.setDefaultNightMode(Settings.theme)
 
         launchIO {
+            launchIO {
+                EhTagDatabase.update()
+            }
             launchIO {
                 ehDatabase
             }
