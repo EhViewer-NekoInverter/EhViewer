@@ -23,6 +23,7 @@ import android.content.pm.verify.domain.DomainVerificationManager
 import android.content.pm.verify.domain.DomainVerificationUserState
 import android.content.res.Configuration
 import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
@@ -75,12 +76,10 @@ import com.hippo.ehviewer.ui.scene.SignInScene
 import com.hippo.ehviewer.ui.scene.SolidScene
 import com.hippo.ehviewer.ui.scene.WebViewSignInScene
 import com.hippo.ehviewer.widget.EhStageLayout
-import com.hippo.io.UniFileInputStreamPipe
+import com.hippo.image.Image
 import com.hippo.scene.Announcer
 import com.hippo.scene.SceneFragment
 import com.hippo.scene.StageActivity
-import com.hippo.unifile.UniFile
-import com.hippo.util.BitmapUtils
 import com.hippo.util.addTextToClipboard
 import com.hippo.util.getClipboardManager
 import com.hippo.util.getParcelableExtraCompat
@@ -168,25 +167,9 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
         return announcer
     }
 
-    private fun saveImageToTempFile(file: UniFile?): File? {
-        file ?: return null
-        var bitmap: Bitmap? = null
-        try {
-            bitmap = BitmapUtils.decodeStream(
-                UniFileInputStreamPipe(file),
-                -1,
-                -1,
-                500 * 500,
-                false,
-                false,
-                null
-            )
-        } catch (e: OutOfMemoryError) {
-            // Ignore
-        }
-        if (null == bitmap) {
-            return null
-        }
+    private fun saveImageToTempFile(uri: Uri): File? {
+        val src = ImageDecoder.createSource(contentResolver, uri)
+        val bitmap = runCatching { ImageDecoder.decodeBitmap(src, Image.imageSearchDecoderSampleListener) }.getOrNull() ?: return null
         val temp = AppConfig.createTempFile() ?: return null
         var os: OutputStream? = null
         return try {
@@ -222,8 +205,7 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
             } else if (type != null && type.startsWith("image/")) {
                 val uri = intent.getParcelableExtraCompat<Uri>(Intent.EXTRA_STREAM)
                 if (null != uri) {
-                    val file = UniFile.fromUri(this, uri)
-                    val temp = saveImageToTempFile(file)
+                    val temp = saveImageToTempFile(uri)
                     if (null != temp) {
                         val builder = ListUrlBuilder()
                         builder.mode = ListUrlBuilder.MODE_IMAGE_SEARCH

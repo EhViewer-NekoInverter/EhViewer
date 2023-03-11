@@ -33,6 +33,7 @@ import android.os.Build
 import androidx.core.graphics.drawable.toDrawable
 import coil.decode.FrameDelayRewritingSource
 import com.hippo.ehviewer.EhApplication
+import com.hippo.ehviewer.R
 import com.hippo.Native
 import okio.Buffer
 import okio.BufferedSource
@@ -63,10 +64,7 @@ class Image private constructor(
                         decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
                     }
                     decoder.setTargetSampleSize(
-                        min(
-                            info.size.width / (2 * screenWidth),
-                            info.size.height / (2 * screenHeight)
-                        ).coerceAtLeast(1)
+                        calculateSampleSize(info, 2 * screenHeight, 2 * screenWidth)
                     )
                 }
         }
@@ -146,6 +144,24 @@ class Image private constructor(
         }
 
     companion object {
+        fun calculateSampleSize(info: ImageInfo, targetHeight: Int, targetWeight: Int): Int {
+            return min(
+                info.size.width / targetWeight,
+                info.size.height / targetHeight
+            ).coerceAtLeast(1)
+        }
+
+        private val imageSearchMaxSize =
+            EhApplication.application.resources.getDimensionPixelOffset(R.dimen.image_search_max_size)
+
+        @JvmStatic
+        val imageSearchDecoderSampleListener =
+            ImageDecoder.OnHeaderDecodedListener { decoder, info, _ ->
+                decoder.setTargetSampleSize(
+                    calculateSampleSize(info, imageSearchMaxSize, imageSearchMaxSize)
+                )
+            }
+
         val screenWidth = EhApplication.application.resources.displayMetrics.widthPixels
         val screenHeight = EhApplication.application.resources.displayMetrics.heightPixels
 

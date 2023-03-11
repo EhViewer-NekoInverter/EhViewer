@@ -41,7 +41,6 @@ import com.hippo.ehviewer.ui.CommonOperations
 import com.hippo.ehviewer.ui.EhActivity
 import com.hippo.image.ImageBitmap
 import com.hippo.scene.SceneApplication
-import com.hippo.util.BitmapUtils
 import com.hippo.util.ExceptionUtils
 import com.hippo.util.ReadableTime
 import com.hippo.util.launchIO
@@ -98,7 +97,6 @@ class EhApplication : SceneApplication() {
         ReadableTime.initialize(this)
         AppConfig.initialize(this)
         SpiderDen.initialize(this)
-        BitmapUtils.initialize(this)
         EhTagDatabase.update()
         LocaleDelegate.defaultLocale = Settings.locale
         DayNightDelegate.setApplicationContext(this)
