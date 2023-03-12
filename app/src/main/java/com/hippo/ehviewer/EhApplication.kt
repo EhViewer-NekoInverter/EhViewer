@@ -279,7 +279,7 @@ class EhApplication : SceneApplication() {
         }
 
         @JvmStatic
-        val conaco by lazy {
+        val conaco: Conaco<ImageBitmap> by lazy {
             val builder = Conaco.Builder<ImageBitmap>()
             builder.hasMemoryCache = true
             builder.memoryCacheMaxSize = min(20 * 1024 * 1024, OSUtils.getAppMaxMemory().toInt())

@@ -91,7 +91,7 @@ class GalleryInfoScene : ToolbarScene() {
             mKeys.add(getString(R.string.key_rating_count))
             mValues.add(it.ratingCount.toString())
             mKeys.add(getString(R.string.key_rating))
-            mValues.add(it.rating.toString());
+            mValues.add(it.rating.toString())
             mKeys.add(getString(R.string.key_torrents))
             mValues.add(it.torrentCount.toString())
             mKeys.add(getString(R.string.key_torrent_url))
@@ -119,7 +119,7 @@ class GalleryInfoScene : ToolbarScene() {
         container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.scene_gallery_info, container, false)
-        val context = context!!
+        val context = requireContext()
         mRecyclerView = ViewUtils.`$$`(view, R.id.recycler_view) as EasyRecyclerView
         val adapter = InfoAdapter()
         mRecyclerView!!.adapter = adapter

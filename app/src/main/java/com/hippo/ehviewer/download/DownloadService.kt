@@ -407,7 +407,7 @@ class DownloadService : Service(), DownloadManager.DownloadListener {
 
     private fun checkStopSelf() {
         if (mDownloadManager == null || mDownloadManager!!.isIdle) {
-            stopForeground(STOP_FOREGROUND_REMOVE);
+            stopForeground(STOP_FOREGROUND_REMOVE)
             stopSelf()
         }
     }

@@ -17,6 +17,7 @@ package com.hippo.ehviewer.widget
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Rect
@@ -104,7 +105,7 @@ class SearchBar @JvmOverloads constructor(
 
         mSuggestionList = ArrayList()
         mSuggestionAdapter = SuggestionAdapter(LayoutInflater.from(context))
-        mListView!!.setAdapter(mSuggestionAdapter)
+        mListView!!.adapter = mSuggestionAdapter
         val decoration = LinearDividerItemDecoration(
             LinearDividerItemDecoration.VERTICAL,
             context.theme.resolveColor(R.attr.dividerColor),
@@ -112,7 +113,7 @@ class SearchBar @JvmOverloads constructor(
         )
         decoration.setShowLastDivider(false)
         mListView!!.addItemDecoration(decoration)
-        mListView!!.setLayoutManager(LinearLayoutManager(context))
+        mListView!!.layoutManager = LinearLayoutManager(context)
     }
 
     private fun addListHeader() {
@@ -123,6 +124,7 @@ class SearchBar @JvmOverloads constructor(
         mListHeader!!.visibility = View.GONE
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun updateSuggestions(scrollToTop: Boolean = true) {
         val suggestions = ArrayList<Suggestion>()
         val text = mEditText!!.text.toString()
@@ -175,10 +177,6 @@ class SearchBar @JvmOverloads constructor(
         mSuggestionProvider = suggestionProvider
     }
 
-    fun getText(): String {
-        return mEditText!!.text.toString()
-    }
-
     fun setText(text: String) {
         mEditText!!.setText(text)
     }
@@ -189,11 +187,6 @@ class SearchBar @JvmOverloads constructor(
 
     fun setTitle(title: String) {
         mTitleTextView!!.text = title
-    }
-
-    fun setSearch(search: String) {
-        mTitleTextView!!.text = search
-        mEditText!!.setText(search)
     }
 
     fun setLeftDrawable(drawable: Drawable) {
@@ -271,7 +264,7 @@ class SearchBar @JvmOverloads constructor(
         }
     }
 
-    fun showImeAndSuggestionsList(animation: Boolean) {
+    private fun showImeAndSuggestionsList(animation: Boolean) {
         // Show ime
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(mEditText, 0)
@@ -296,11 +289,11 @@ class SearchBar @JvmOverloads constructor(
             oa.start()
         } else {
             mListContainer!!.visibility = View.VISIBLE
-            setProgress(1f)
+            progress = 1f
         }
     }
 
-    fun hideImeAndSuggestionsList(animation: Boolean) {
+    private fun hideImeAndSuggestionsList(animation: Boolean) {
         // Hide ime
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(windowToken, 0)
@@ -322,12 +315,12 @@ class SearchBar @JvmOverloads constructor(
             oa.setAutoCancel(true)
             oa.start()
         } else {
-            setProgress(0f)
+            progress = 0f
             mListContainer!!.visibility = View.GONE
         }
     }
 
-    override protected fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
         if (mListContainer!!.visibility == View.VISIBLE && (!mInAnimation || mHeight == 0)) {
             mWidth = right - left
@@ -353,12 +346,12 @@ class SearchBar @JvmOverloads constructor(
             val state = canvas.save()
             val bottom = MathUtils.lerp(mBaseHeight, mHeight, mProgress)
             mRect.set(0, 0, mWidth, bottom)
-            setClipBounds(mRect)
+            clipBounds = mRect
             canvas.clipRect(mRect)
             super.draw(canvas)
             canvas.restoreToCount(state)
         } else {
-            setClipBounds(null)
+            clipBounds = null
             super.draw(canvas)
         }
     }
@@ -493,7 +486,7 @@ class SearchBar @JvmOverloads constructor(
     inner class TagSuggestion constructor(
         private var mHint: String?,
         private var mKeyword: String
-    ) : SearchBar.Suggestion() {
+    ) : Suggestion() {
         override fun getText(textView: TextView): CharSequence? {
             return if (textView.id == android.R.id.text1) {
                 mKeyword

@@ -36,7 +36,6 @@ import com.hippo.ehviewer.download.DownloadManager
 import com.hippo.sendTo
 
 object EhDB {
-    private const val CUR_DB_VER = 4
     private val db = ehDatabase
 
     // Fix state
@@ -94,12 +93,6 @@ object EhDB {
     fun removeDownloadDirname(gid: Long) {
         val dao = db.downloadDirnameDao()
         dao.deleteByKey(gid)
-    }
-
-    @Synchronized
-    fun clearDownloadDirname() {
-        val dao = db.downloadDirnameDao()
-        dao.deleteAll()
     }
 
     @get:Synchronized

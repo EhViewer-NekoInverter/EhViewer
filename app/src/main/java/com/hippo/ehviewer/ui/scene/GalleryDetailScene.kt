@@ -102,11 +102,9 @@ import com.hippo.ehviewer.gallery.GalleryProvider2
 import com.hippo.ehviewer.spider.SpiderDen
 import com.hippo.ehviewer.ui.CommonOperations
 import com.hippo.ehviewer.ui.GalleryActivity
-import com.hippo.ehviewer.ui.MainActivity
 import com.hippo.ehviewer.widget.GalleryRatingBar
 import com.hippo.ehviewer.widget.GalleryRatingBar.OnUserRateListener
 import com.hippo.scene.Announcer
-import com.hippo.scene.SceneFragment
 import com.hippo.scene.TransitionHelper
 import com.hippo.text.URLImageGetter
 import com.hippo.util.AppHelper
@@ -441,21 +439,14 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         val view = inflater.inflate(R.layout.scene_gallery_detail, container, false)
         val main = ViewUtils.`$$`(view, R.id.main) as ViewGroup
         val mainView = ViewUtils.`$$`(main, R.id.scroll_view) as ScrollView
-        mainView.setOnScrollChangeListener(
-            object : View.OnScrollChangeListener {
-                override fun onScrollChange(
-                    v: View, scrollX: Int, scrollY: Int,
-                    oldScrollX: Int, oldScrollY: Int
-                ) {
-                    if (mActionGroup != null && mHeader != null) {
-                        setLightStatusBar(
-                            (mActionGroup!!.getY() - mHeader!!.findViewById<View>(R.id.header_content)
-                                .getPaddingTop() / 2f).toInt() < scrollY
-                        )
-                    }
-                }
+        mainView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
+            if (mActionGroup != null && mHeader != null) {
+                setLightStatusBar(
+                    (mActionGroup!!.y - mHeader!!.findViewById<View>(R.id.header_content)
+                        .paddingTop / 2f).toInt() < scrollY
+                )
             }
-        )
+        }
         val progressView = ViewUtils.`$$`(main, R.id.progress_view)
         mTip = ViewUtils.`$$`(main, R.id.tip) as TextView
         mViewTransition = ViewTransition(mainView, progressView, mTip)
@@ -662,7 +653,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         }
         val w = mColorBg!!.width
         val h = mColorBg!!.height
-        if (ViewCompat.isAttachedToWindow(mColorBg!!) && w != 0 && h != 0) {
+        return if (ViewCompat.isAttachedToWindow(mColorBg!!) && w != 0 && h != 0) {
             val resources = context.resources
             val keylineMargin = resources.getDimensionPixelSize(R.dimen.keyline_margin)
             val thumbWidth = resources.getDimensionPixelSize(R.dimen.gallery_detail_thumb_width)
@@ -673,9 +664,9 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
             val radiusY = max(abs(y), abs(h - y)).toDouble()
             val radius = hypot(radiusX, radiusY).toFloat()
             ViewAnimationUtils.createCircularReveal(mColorBg!!, x, y, 0f, radius).setDuration(300).start()
-            return true
+            true
         } else {
-            return false
+            false
         }
     }
 
@@ -1189,7 +1180,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
             mPreviews -> {
                 val previewNum = Settings.previewNum
                 var scrollTo = 0
-                if (previewNum < galleryDetail.previewSet?.size() ?: 0) {
+                if (previewNum < (galleryDetail.previewSet?.size() ?: 0)) {
                     scrollTo = previewNum
                 } else if (galleryDetail.previewPages > 1) {
                     scrollTo = -1
@@ -1391,7 +1382,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
 
     override fun onBackPressed() {
         if (mViewTransition != null && mThumb != null &&
-            mViewTransition!!.getShownViewIndex() == 0 && mThumb!!.isShown) {
+            mViewTransition!!.shownViewIndex == 0 && mThumb!!.isShown) {
             val location = IntArray(2)
             mThumb!!.getLocationInWindow(location)
             // Only show transaction when thumb can be seen
@@ -1538,8 +1529,9 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
             context: Context, transaction: FragmentTransaction,
             exit: Fragment, enter: Fragment
         ): Boolean {
-            if (!(enter is GalleryListScene) && !(enter is DownloadsScene) &&
-                    !(enter is FavoritesScene) && !(enter is HistoryScene)) {
+            if (enter !is GalleryListScene && enter !is DownloadsScene &&
+                enter !is FavoritesScene && enter !is HistoryScene
+            ) {
                 return false
             }
             ViewCompat.getTransitionName(mThumb)?.let {
@@ -2007,7 +1999,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         const val KEY_GID = "gid"
         const val KEY_TOKEN = "token"
         const val KEY_PAGE = "page"
-        private const val REQUEST_CODE_COMMENT_GALLERY = 0;
+        private const val REQUEST_CODE_COMMENT_GALLERY = 0
         private const val STATE_INIT = -1
         private const val STATE_NORMAL = 0
         private const val STATE_REFRESH = 1

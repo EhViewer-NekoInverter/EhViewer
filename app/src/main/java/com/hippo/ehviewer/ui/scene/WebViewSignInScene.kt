@@ -91,7 +91,11 @@ class WebViewSignInScene : SolidScene() {
         }
 
         private fun addCookie(domain: String, cookie: Cookie) {
-            EhCookieStore.addCookie(EhCookieStore.newCookie(cookie, domain, true, true, true))
+            EhCookieStore.addCookie(EhCookieStore.newCookie(cookie, domain,
+                forcePersistent = true,
+                forceLongLive = true,
+                forceNotHostOnly = true
+            ))
         }
 
         override fun onPageFinished(view: WebView, url: String) {

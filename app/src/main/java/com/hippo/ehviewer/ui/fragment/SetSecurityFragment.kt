@@ -77,7 +77,8 @@ class SetSecurityFragment : BaseFragment(), View.OnClickListener {
                 }
                 Settings.putSecurity(security)
                 Settings.putEnableFingerprint(mFingerprint!!.visibility == View.VISIBLE &&
-                        mFingerprint!!.isChecked && !security.isEmpty())
+                        mFingerprint!!.isChecked && security.isNotEmpty()
+                )
             }
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }

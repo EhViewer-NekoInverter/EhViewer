@@ -116,7 +116,7 @@ class EhFragment : BasePreferenceFragment() {
     override val fragmentTitle: Int
         get() = R.string.settings_eh
 
-    fun updateListPreference(newValue: Int) {
+    private fun updateListPreference(newValue: Int) {
         val isDetailMode = newValue == 0
         findPreference<Preference>(Settings.KEY_DETAIL_SIZE)!!.isVisible = isDetailMode
         findPreference<Preference>(Settings.KEY_LIST_THUMB_SIZE)!!.isVisible = isDetailMode

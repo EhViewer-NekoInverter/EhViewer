@@ -19,8 +19,6 @@ import com.hippo.ehviewer.client.exception.NoHAtHClientException
 import org.jsoup.Jsoup
 
 object ArchiveParser {
-    private val PATTERN_ARCHIVE_URL =
-        Regex("<strong>(.*)</strong>.*<a href=\"([^\"]*)\">Click Here To Start Downloading</a>")
     private val PATTERN_CURRENT_FUNDS =
         Regex("<p>([\\d,]+) GP \\[[^]]*] &nbsp; ([\\d,]+) Credits \\[[^]]*]</p>")
     private val PATTERN_HATH_FORM =

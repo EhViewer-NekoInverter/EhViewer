@@ -96,7 +96,7 @@ private fun rethrowExactly(code: Int, headers: Headers, body: String, e: Throwab
 
     // Check 503
     if (body.contains("Backend fetch failed")) {
-        throw EhException("Error 503\nBackend fetch failed");
+        throw EhException("Error 503\nBackend fetch failed")
     }
 
     // Check Gallery Not Available

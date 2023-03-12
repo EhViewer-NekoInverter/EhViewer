@@ -165,7 +165,7 @@ object Settings {
     private const val KEY_PROXY_TYPE = "proxy_type"
     private const val DEFAULT_PROXY_TYPE = EhProxySelector.TYPE_SYSTEM
     private const val KEY_PROXY_IP = "proxy_ip"
-    private val DEFAULT_PROXY_IP: String? = null;
+    private val DEFAULT_PROXY_IP: String? = null
     private const val KEY_PROXY_PORT = "proxy_port"
     private const val DEFAULT_PROXY_PORT = -1
     private const val KEY_BUILT_IN_HOSTS = "built_in_hosts_2"
@@ -622,15 +622,9 @@ object Settings {
 
     val builtInHosts: Boolean
         get() = getBoolean(KEY_BUILT_IN_HOSTS, DEFAULT_BUILT_IN_HOSTS)
-    fun putBuiltInHosts(value: Boolean) {
-        putBoolean(KEY_BUILT_IN_HOSTS, value)
-    }
 
     val dF: Boolean
         get() = getBoolean(KEY_DOMAIN_FRONTING, DEFAULT_DOMAIN_FRONTING)
-    fun putDF(value: Boolean) {
-        putBoolean(KEY_DOMAIN_FRONTING, value)
-    }
 
     val bypassVpn: Boolean
         get() = getBoolean(KEY_BYPASS_VPN, DEFAULT_BYPASS_VPN)

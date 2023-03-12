@@ -15,7 +15,6 @@
  */
 package com.hippo.ehviewer.ui.scene
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -89,10 +88,6 @@ abstract class ToolbarScene : BaseScene() {
 
     fun setNavigationIcon(@DrawableRes resId: Int) {
         mToolbar?.setNavigationIcon(resId)
-    }
-
-    fun setNavigationIcon(icon: Drawable?) {
-        mToolbar?.setNavigationIcon(icon)
     }
 
     fun setTitle(@StringRes resId: Int) {

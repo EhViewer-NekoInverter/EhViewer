@@ -41,7 +41,7 @@ class SelectSiteScene : SolidScene(), View.OnClickListener {
     ): View {
         val view = inflater.inflate(R.layout.scene_select_site, container, false)
         mButtonGroup = ViewUtils.`$$`(view, R.id.button_group) as MaterialButtonToggleGroup
-        (ViewUtils.`$$`(view, if (EhUtils.isExHentai) R.id.site_ex else R.id.site_e) as MaterialButton).setChecked(true)
+        (ViewUtils.`$$`(view, if (EhUtils.isExHentai) R.id.site_ex else R.id.site_e) as MaterialButton).isChecked = true
         mOk = ViewUtils.`$$`(view, R.id.ok)
         mOk!!.setOnClickListener(this)
         return view
@@ -54,11 +54,11 @@ class SelectSiteScene : SolidScene(), View.OnClickListener {
     }
 
     override fun onClick(v: View) {
-        val id = mButtonGroup?.getCheckedButtonId() ?: return
+        val id = mButtonGroup?.checkedButtonId ?: return
         if (v == mOk) {
             Settings.putSelectSite(false)
             Settings.putGallerySite(if (id == R.id.site_ex) EhUrl.SITE_EX else EhUrl.SITE_E)
-            startSceneForCheckStep(CHECK_STEP_SELECT_SITE, getArguments())
+            startSceneForCheckStep(CHECK_STEP_SELECT_SITE, arguments)
             finish()
         }
     }

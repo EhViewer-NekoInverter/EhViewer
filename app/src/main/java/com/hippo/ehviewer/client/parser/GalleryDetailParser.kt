@@ -387,7 +387,7 @@ object GalleryDetailParser {
             }
             // Time
             val c3 = JsoupUtils.getElementByClass(element, "c3")
-            var temp = c3!!.ownText()
+            val temp = c3!!.ownText()
             val hasUserName = temp.endsWith(":")
             val time = if (hasUserName) temp.substring("Posted on ".length, temp.length - " by:".length) else temp.substring("Posted on ".length)
             comment.time = Instant.from(WEB_COMMENT_DATE_FORMAT.parse(time)).toEpochMilli()

@@ -67,7 +67,7 @@ object EhTagDatabase {
             val tmpTagList = mutableMapOf<String, String>()
             tagGroups.forEach { (prefix, tags) ->
                 tags.forEach { (tag, hint) ->
-                    tmpTagList.put(if (prefix == NAMESPACE_PREFIX) "$tag:" else "$prefix:$tag", hint)
+                    tmpTagList[if (prefix == NAMESPACE_PREFIX) "$tag:" else "$prefix:$tag"] = hint
                 }
             }
             tagList = tmpTagList

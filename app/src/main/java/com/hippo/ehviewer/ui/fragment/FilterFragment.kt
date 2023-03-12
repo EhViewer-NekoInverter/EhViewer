@@ -17,6 +17,7 @@
  */
 package com.hippo.ehviewer.ui.fragment
 
+import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.os.Bundle
 import android.text.TextUtils
@@ -144,6 +145,7 @@ class FilterFragment : BaseFragment() {
         AddFilterDialogHelper(dialog)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun showDeleteFilterDialog(filter: Filter) {
         val message = getString(R.string.delete_filter, filter.text)
         AlertDialog.Builder(requireActivity())
@@ -191,6 +193,7 @@ class FilterFragment : BaseFragment() {
             button?.setOnClickListener(this)
         }
 
+        @SuppressLint("NotifyDataSetChanged")
         override fun onClick(v: View) {
             val text = mEditText.text.toString().trim { it <= ' ' }
             if (TextUtils.isEmpty(text)) {

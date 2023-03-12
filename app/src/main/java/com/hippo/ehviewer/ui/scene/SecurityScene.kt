@@ -52,28 +52,16 @@ class SecurityScene : SolidScene(), OnPatternListener {
         mSensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
         mAccelerometer = mSensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
-        if (savedInstanceState == null) {
-            mRetryTimes = MAX_RETRY_TIMES
-        } else {
-            mRetryTimes = savedInstanceState.getInt(KEY_RETRY_TIMES)
-        }
+        mRetryTimes = savedInstanceState?.getInt(KEY_RETRY_TIMES) ?: MAX_RETRY_TIMES
 
         canAuthenticate = Settings.enableFingerprint &&
                 BiometricManager.from(context).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS
         biometricPrompt = BiometricPrompt(
             this, Executors.newSingleThreadExecutor(),
             object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                    super.onAuthenticationError(errorCode, errString)
-                }
-
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     startSceneForCheckStep(CHECK_STEP_SECURITY, arguments)
                     finish()
-                }
-
-                override fun onAuthenticationFailed() {
-                    super.onAuthenticationFailed()
                 }
             }
         )
@@ -99,10 +87,6 @@ class SecurityScene : SolidScene(), OnPatternListener {
 
     private fun startBiometricPrompt() {
         biometricPrompt!!.authenticate(promptInfo!!)
-    }
-
-    override fun onPause() {
-        super.onPause()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

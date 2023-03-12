@@ -21,7 +21,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.MotionEvent
@@ -75,7 +74,6 @@ import com.hippo.util.launchUI
 import com.hippo.view.ViewTransition
 import com.hippo.widget.FabLayout
 import com.hippo.widget.FabLayout.OnClickFabListener
-import com.hippo.widget.FabLayout.OnExpandListener
 import com.hippo.widget.LoadImageView
 import com.hippo.widget.recyclerview.AutoStaggeredGridLayoutManager
 import com.hippo.yorozuya.FileUtils
@@ -200,20 +198,18 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
         if (mSort == 1) {
             mList = ArrayList(mList!!.shuffled())
         } else {
-            mList!!.sortWith(object : Comparator<DownloadInfo> {
-                override fun compare (o1: DownloadInfo, o2: DownloadInfo) : Int {
-                    val title1 = EhUtils.getSuitableTitle(o1)
-                    val title2 = EhUtils.getSuitableTitle(o2)
-                    return when (mSort) {
-                        0 -> o2.time.compareTo(o1.time)
-                        2 -> title1.compareTo(title2, true)
-                        3 -> getAuthor(title1).compareTo(getAuthor(title2), true)
-                        4 -> getName(title1).compareTo(getName(title2), true)
-                        5 -> o1.category.compareTo(o2.category)
-                        else -> 0
-                    }
+            mList!!.sortWith { o1, o2 ->
+                val title1 = EhUtils.getSuitableTitle(o1)
+                val title2 = EhUtils.getSuitableTitle(o2)
+                when (mSort) {
+                    0 -> o2.time.compareTo(o1.time)
+                    2 -> title1.compareTo(title2, true)
+                    3 -> getAuthor(title1).compareTo(getAuthor(title2), true)
+                    4 -> getName(title1).compareTo(getName(title2), true)
+                    5 -> o1.category.compareTo(o2.category)
+                    else -> 0
                 }
-            })
+            }
         }
 
         mAdapter?.notifyDataSetChanged()
@@ -429,7 +425,7 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
         builder.setPositiveButton(android.R.string.ok, null)
         val dialog = builder.show()
         val button: View? = dialog.getButton(DialogInterface.BUTTON_POSITIVE)
-        button?.setOnClickListener(View.OnClickListener {
+        button?.setOnClickListener {
             val text = builder.text.trim { it <= ' ' }
             if (TextUtils.isEmpty(text)) {
                 builder.setError(getString(R.string.text_is_empty))
@@ -441,7 +437,7 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
                 updateForLabel()
                 updateView()
             }
-        })
+        }
     }
 
     fun updateView() {
@@ -811,6 +807,7 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
         holder.speed.text = FileUtils.humanReadableByteCount(speed, false) + "/S"
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private inner class DownloadLabelHolder(
         itemView: View
     ) : RecyclerView.ViewHolder(itemView), View.OnTouchListener {
@@ -895,6 +892,7 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
             return holder
         }
 
+        @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: DownloadLabelHolder, position: Int) {
             val index = holder.bindingAdapterPosition
             val label = mLabels[index]
@@ -1258,9 +1256,8 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
         const val KEY_GID = "gid"
         const val KEY_ACTION = "action"
         const val ACTION_CLEAR_DOWNLOAD_SERVICE = "clear_download_service"
-        private val TAG = DownloadsScene::class.java.simpleName
-        private val PATTERN_AUTHOR = Regex("^(?:\\([^\\[\\]\\(\\)]+\\))?\\s*\\[([^\\[\\]]+)\\]")
-        private val PATTERN_NAME = Regex("^(?:\\([^\\[\\]\\(\\)]+\\))?\\s*(?:\\[[^\\[\\]]+\\])?\\s*(.+)")
+        private val PATTERN_AUTHOR = Regex("^(?:\\([^\\[\\]()]+\\))?\\s*\\[([^\\[\\]]+)]")
+        private val PATTERN_NAME = Regex("^(?:\\([^\\[\\]()]+\\))?\\s*(?:\\[[^\\[\\]]+])?\\s*(.+)")
         private const val KEY_LABEL = "label"
         private const val LABEL_OFFSET = 2
 

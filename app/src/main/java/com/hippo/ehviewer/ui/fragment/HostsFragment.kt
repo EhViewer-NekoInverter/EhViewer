@@ -17,6 +17,7 @@
  */
 package com.hippo.ehviewer.ui.fragment
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
@@ -101,6 +102,7 @@ class HostsFragment : BaseFragment(), View.OnClickListener {
         AddHostDialogFragment().show(childFragmentManager, DIALOG_TAG_ADD_HOST)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun updateView(animation: Boolean) {
         if (null == mViewTransition) {
             return

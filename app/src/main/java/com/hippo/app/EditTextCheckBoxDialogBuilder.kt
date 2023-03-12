@@ -42,7 +42,7 @@ class EditTextCheckBoxDialogBuilder constructor(
     val isChecked: Boolean
         get() = mCheckBox.isChecked
     private val mTextInputLayout: TextInputLayout
-    val editText: EditText
+    private val editText: EditText
     private var mDialog: AlertDialog? = null
     val text: String
         get() = editText.text.toString()

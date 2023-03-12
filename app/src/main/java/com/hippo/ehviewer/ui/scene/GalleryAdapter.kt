@@ -56,6 +56,7 @@ internal abstract class GalleryAdapter(
 
     var type: Int
         get() = mType
+        @SuppressLint("NotifyDataSetChanged")
         set(type) {
             if (type == mType) {
                 return

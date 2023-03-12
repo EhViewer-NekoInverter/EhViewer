@@ -63,7 +63,6 @@ import com.hippo.ehviewer.ui.CommonOperations
 import com.hippo.ehviewer.widget.GalleryInfoContentHelper
 import com.hippo.ehviewer.widget.SearchBar
 import com.hippo.scene.Announcer
-import com.hippo.scene.SceneFragment
 import com.hippo.util.getParcelableCompat
 import com.hippo.widget.ContentLayout
 import com.hippo.widget.FabLayout
@@ -189,7 +188,7 @@ class FavoritesScene : BaseScene(), OnDragHandlerListener, SearchBarMover.Helper
         container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.scene_favorites, container, false)
-        val context = context!!
+        val context = requireContext()
         val mContentLayout = view.findViewById<ContentLayout>(R.id.content_layout)
         val activity = mainActivity!!
         mDrawerLayout = ViewUtils.`$$`(activity, R.id.draw_view) as DrawerLayout
@@ -340,7 +339,7 @@ class FavoritesScene : BaseScene(), OnDragHandlerListener, SearchBarMover.Helper
         container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.drawer_list_rv, container, false)
-        val context = context!!
+        val context = requireContext()
         val toolbar = ViewUtils.`$$`(view, R.id.toolbar) as Toolbar
         toolbar.setTitle(R.string.collections)
         toolbar.inflateMenu(R.menu.drawer_favorites)
@@ -392,7 +391,7 @@ class FavoritesScene : BaseScene(), OnDragHandlerListener, SearchBarMover.Helper
         } else if (mFabLayout != null && mFabLayout!!.isExpanded) {
             mFabLayout!!.toggle()
         } else if (mSearchMode) {
-            exitSearchMode(true)
+            exitSearchMode()
         } else {
             finish()
         }
@@ -428,7 +427,7 @@ class FavoritesScene : BaseScene(), OnDragHandlerListener, SearchBarMover.Helper
             if (mUrlBuilder!!.favCat == newFavCat) {
                 return true
             }
-            exitSearchMode(true)
+            exitSearchMode()
             mUrlBuilder!!.keyword = null
             mUrlBuilder!!.favCat = newFavCat
             updateSearchBar()
@@ -486,7 +485,7 @@ class FavoritesScene : BaseScene(), OnDragHandlerListener, SearchBarMover.Helper
     // SearchBar.Helper
     override fun onClickTitle() {
         // Skip if in search mode
-        if (mRecyclerView != null && mRecyclerView!!.isInCustomChoice()) {
+        if (mRecyclerView != null && mRecyclerView!!.isInCustomChoice) {
             return
         }
         if (!mSearchMode) {
@@ -497,11 +496,11 @@ class FavoritesScene : BaseScene(), OnDragHandlerListener, SearchBarMover.Helper
     // SearchBar.Helper
     override fun onClickLeftIcon() {
         // Skip if in search mode
-        if (mRecyclerView != null && mRecyclerView!!.isInCustomChoice()) {
+        if (mRecyclerView != null && mRecyclerView!!.isInCustomChoice) {
             return
         }
         if (mSearchMode) {
-            exitSearchMode(true)
+            exitSearchMode()
         } else {
             toggleDrawer(GravityCompat.START)
         }
@@ -510,14 +509,14 @@ class FavoritesScene : BaseScene(), OnDragHandlerListener, SearchBarMover.Helper
     // SearchBar.Helper
     override fun onClickRightIcon() {
         // Skip if in search mode
-        if (mRecyclerView != null && mRecyclerView!!.isInCustomChoice()) {
+        if (mRecyclerView != null && mRecyclerView!!.isInCustomChoice) {
             return
         }
         if (!mSearchMode) {
             enterSearchMode(true)
         } else if (mSearchBar != null) {
             if (mSearchBar!!.getEditText().length() == 0) {
-                exitSearchMode(true)
+                exitSearchMode()
             } else {
                 mSearchBar!!.applySearch()
             }
@@ -536,7 +535,7 @@ class FavoritesScene : BaseScene(), OnDragHandlerListener, SearchBarMover.Helper
         if (mUrlBuilder == null || mHelper == null) {
             return
         }
-        exitSearchMode(true)
+        exitSearchMode()
         mUrlBuilder!!.keyword = query
         updateSearchBar()
         mHelper!!.refresh()
@@ -740,12 +739,12 @@ class FavoritesScene : BaseScene(), OnDragHandlerListener, SearchBarMover.Helper
         mLeftDrawable!!.setArrow(ANIMATE_TIME)
     }
 
-    private fun exitSearchMode(animation: Boolean) {
+    private fun exitSearchMode() {
         if (!mSearchMode || mSearchBar == null || mSearchBarMover == null || mLeftDrawable == null) {
             return
         }
         mSearchMode = false
-        mSearchBar!!.setState(SearchBar.STATE_NORMAL, animation)
+        mSearchBar!!.setState(SearchBar.STATE_NORMAL, true)
         mSearchBarMover!!.returnSearchBarPosition()
         mLeftDrawable!!.setMenu(ANIMATE_TIME)
     }
@@ -756,13 +755,11 @@ class FavoritesScene : BaseScene(), OnDragHandlerListener, SearchBarMover.Helper
                 System.arraycopy(result.catArray, 0, mFavCatArray!!, 0, 10)
             }
             mFavCountArray = result.countArray
-            if (mFavCountArray != null) {
-                mFavCountSum = 0
-                for (i in 0..9) {
-                    mFavCountSum += mFavCountArray!![i]
-                }
-                Settings.putFavCloudCount(mFavCountSum)
+            mFavCountSum = 0
+            for (i in 0..9) {
+                mFavCountSum += mFavCountArray!![i]
             }
+            Settings.putFavCloudCount(mFavCountSum)
             updateSearchBar()
             mHelper!!.onGetPageData(taskId, 0, 0, result.prev, result.next, result.galleryInfoList)
             mDrawerAdapter?.notifyDataSetChanged()

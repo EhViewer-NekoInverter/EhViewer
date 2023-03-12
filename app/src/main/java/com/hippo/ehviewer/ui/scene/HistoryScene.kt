@@ -60,7 +60,6 @@ import com.hippo.ehviewer.ui.GalleryActivity
 import com.hippo.ehviewer.ui.dialog.SelectItemWithIconAdapter
 import com.hippo.ehviewer.widget.SimpleRatingView
 import com.hippo.scene.Announcer
-import com.hippo.scene.SceneFragment
 import com.hippo.util.launchIO
 import com.hippo.util.withUIContext
 import com.hippo.view.ViewTransition

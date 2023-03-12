@@ -41,7 +41,7 @@ abstract class BaseScene : SceneFragment() {
     private var insetsController: WindowInsetsControllerCompat? = null
     private var drawerView: View? = null
     private var drawerViewState: SparseArray<Parcelable?>? = null
-    private var needWhiteStatusBar = needWhiteStatusBar()
+    private var needWhiteStatusBar = true
 
     fun updateAvatar() {
         val activity = activity

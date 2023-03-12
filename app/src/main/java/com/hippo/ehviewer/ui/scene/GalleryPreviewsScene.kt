@@ -41,7 +41,6 @@ import com.hippo.ehviewer.client.data.GalleryPreview
 import com.hippo.ehviewer.client.data.PreviewSet
 import com.hippo.ehviewer.client.exception.EhException
 import com.hippo.ehviewer.ui.GalleryActivity
-import com.hippo.scene.SceneFragment
 import com.hippo.util.getParcelableCompat
 import com.hippo.widget.ContentLayout
 import com.hippo.widget.ContentLayout.ContentHelper
@@ -119,7 +118,7 @@ class GalleryPreviewsScene : ToolbarScene() {
             mHasFirstRefresh = true
             if (mScrollTo == -1) {
                 mHelper!!.goTo(1)
-                mScrollTo = 0;
+                mScrollTo = 0
             } else {
                 mHelper!!.firstRefresh()
             }
@@ -330,7 +329,7 @@ class GalleryPreviewsScene : ToolbarScene() {
                 String.format(Locale.US, "%d", mPages)
             mSlider = ViewUtils.`$$`(dialog, R.id.slider) as Slider
             mSlider!!.setRange(1, mPages)
-            mSlider!!.setProgress(mCurrentPage + 1)
+            mSlider!!.progress = mCurrentPage + 1
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(this)
             dialog.setOnDismissListener(this)
         }
@@ -339,7 +338,7 @@ class GalleryPreviewsScene : ToolbarScene() {
             if (null == mSlider) {
                 return
             }
-            val page = mSlider!!.getProgress() - 1
+            val page = mSlider!!.progress - 1
             if (page in 0 until mPages && mHelper != null) {
                 mHelper!!.goTo(page)
                 if (mDialog != null) {

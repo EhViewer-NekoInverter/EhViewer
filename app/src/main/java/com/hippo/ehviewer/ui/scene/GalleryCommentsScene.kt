@@ -75,7 +75,6 @@ import com.hippo.ehviewer.client.data.ListUrlBuilder
 import com.hippo.ehviewer.client.parser.VoteCommentParser
 import com.hippo.ehviewer.dao.Filter
 import com.hippo.ehviewer.ui.MainActivity
-import com.hippo.scene.SceneFragment
 import com.hippo.text.URLImageGetter
 import com.hippo.util.addTextToClipboard
 import com.hippo.util.toBBCode
@@ -344,6 +343,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
             .show()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun hideComment(position: Int) {
         if (mGalleryDetail == null || mGalleryDetail!!.comments == null || mGalleryDetail!!.comments!!.comments == null) {
             return
@@ -711,7 +711,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
 
         val re = Bundle()
         re.putParcelable(KEY_COMMENT_LIST, result)
-        setResult(SceneFragment.RESULT_OK, re)
+        setResult(RESULT_OK, re)
     }
 
     private fun onRefreshGalleryFailure() {
@@ -735,7 +735,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
         mAdapter!!.notifyDataSetChanged()
         val re = Bundle()
         re.putParcelable(KEY_COMMENT_LIST, result)
-        setResult(SceneFragment.RESULT_OK, re)
+        setResult(RESULT_OK, re)
 
         // Remove text
         if (mEditText != null) {
@@ -779,7 +779,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
         val re = Bundle()
         val comments = mGalleryDetail!!.comments
         re.putParcelable(KEY_COMMENT_LIST, comments)
-        setResult(SceneFragment.RESULT_OK, re)
+        setResult(RESULT_OK, re)
     }
 
     override fun onRefresh() {

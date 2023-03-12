@@ -90,7 +90,6 @@ import com.hippo.ehviewer.download.DownloadManager
 import com.hippo.ehviewer.download.DownloadManager.DownloadInfoListener
 import com.hippo.ehviewer.ui.CommonOperations
 import com.hippo.ehviewer.ui.GalleryActivity
-import com.hippo.ehviewer.ui.MainActivity
 import com.hippo.ehviewer.ui.dialog.SelectItemWithIconAdapter
 import com.hippo.ehviewer.widget.GalleryInfoContentHelper
 import com.hippo.ehviewer.widget.SearchBar
@@ -364,7 +363,7 @@ class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListen
         }
 
         // Update title
-        var title = getSuitableTitleForUrlBuilder(resources, mUrlBuilder, true) ?: resources.getString(R.string.search)
+        val title = getSuitableTitleForUrlBuilder(resources, mUrlBuilder, true) ?: resources.getString(R.string.search)
         mSearchBar?.setTitle(title)
 
         // Update nav checked item
@@ -385,8 +384,8 @@ class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListen
         savedInstanceState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.scene_gallery_list, container, false)
-        val context = context!!
-        mHideActionFabSlop = ViewConfiguration.get(requireContext()).scaledTouchSlop
+        val context = requireContext()
+        mHideActionFabSlop = ViewConfiguration.get(context).scaledTouchSlop
         mShowActionFab = true
         val mainLayout = ViewUtils.`$$`(view, R.id.main_layout)
         val mContentLayout = ViewUtils.`$$`(mainLayout, R.id.content_layout) as ContentLayout
@@ -508,7 +507,7 @@ class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListen
                 .setTitle(R.string.readme)
                 .setMessage(R.string.add_quick_search_tip)
                 .setPositiveButton(android.R.string.ok, null)
-                .show();
+                .show()
     }
 
     private fun showAddQuickSearchDialog(adapter: QsDrawerAdapter) {
@@ -636,7 +635,7 @@ class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListen
     }
 
     private fun checkDoubleClickExit(): Boolean {
-        if (getStackIndex() != 0) {
+        if (stackIndex != 0) {
             return false
         }
         val time = System.currentTimeMillis()
@@ -780,7 +779,7 @@ class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListen
                 return@setOnClickListener
             }
             builder.setError(null)
-            mHelper!!.goTo(goTo.toString(), goTo != 1);
+            mHelper!!.goTo(goTo.toString(), goTo != 1)
             dialog.dismiss()
         }
     }
@@ -1024,6 +1023,7 @@ class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListen
         setState(state, true)
     }
 
+    @SuppressLint("SwitchIntDef")
     private fun setState(@State state: Int, animation: Boolean) {
         if (null == mSearchBar || null == mSearchBarMover || null == mViewTransition || null == mSearchLayout) {
             return
@@ -1074,32 +1074,40 @@ class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListen
                     }
                 }
 
-                STATE_SEARCH -> if (state == STATE_NORMAL) {
-                    mViewTransition!!.showView(0, animation)
-                    mSearchBar!!.setState(SearchBar.STATE_NORMAL, animation)
-                    mSearchBarMover!!.returnSearchBarPosition()
-                    selectActionFab(animation);
-                } else if (state == STATE_SIMPLE_SEARCH) {
-                    mViewTransition!!.showView(0, animation)
-                    mSearchBar!!.setState(SearchBar.STATE_SEARCH_LIST, animation)
-                    mSearchBarMover!!.returnSearchBarPosition()
-                } else if (state == STATE_SEARCH_SHOW_LIST) {
-                    mSearchBar!!.setState(SearchBar.STATE_SEARCH_LIST, animation)
-                    mSearchBarMover!!.returnSearchBarPosition()
+                STATE_SEARCH -> when (state) {
+                    STATE_NORMAL -> {
+                        mViewTransition!!.showView(0, animation)
+                        mSearchBar!!.setState(SearchBar.STATE_NORMAL, animation)
+                        mSearchBarMover!!.returnSearchBarPosition()
+                        selectActionFab(animation)
+                    }
+                    STATE_SIMPLE_SEARCH -> {
+                        mViewTransition!!.showView(0, animation)
+                        mSearchBar!!.setState(SearchBar.STATE_SEARCH_LIST, animation)
+                        mSearchBarMover!!.returnSearchBarPosition()
+                    }
+                    STATE_SEARCH_SHOW_LIST -> {
+                        mSearchBar!!.setState(SearchBar.STATE_SEARCH_LIST, animation)
+                        mSearchBarMover!!.returnSearchBarPosition()
+                    }
                 }
 
-                STATE_SEARCH_SHOW_LIST -> if (state == STATE_NORMAL) {
-                    mViewTransition!!.showView(0, animation)
-                    mSearchBar!!.setState(SearchBar.STATE_NORMAL, animation)
-                    mSearchBarMover!!.returnSearchBarPosition()
-                    selectActionFab(animation)
-                } else if (state == STATE_SIMPLE_SEARCH) {
-                    mViewTransition!!.showView(0, animation)
-                    mSearchBar!!.setState(SearchBar.STATE_SEARCH_LIST, animation)
-                    mSearchBarMover!!.returnSearchBarPosition()
-                } else if (state == STATE_SEARCH) {
-                    mSearchBar!!.setState(SearchBar.STATE_SEARCH, animation)
-                    mSearchBarMover!!.returnSearchBarPosition()
+                STATE_SEARCH_SHOW_LIST -> when (state) {
+                    STATE_NORMAL -> {
+                        mViewTransition!!.showView(0, animation)
+                        mSearchBar!!.setState(SearchBar.STATE_NORMAL, animation)
+                        mSearchBarMover!!.returnSearchBarPosition()
+                        selectActionFab(animation)
+                    }
+                    STATE_SIMPLE_SEARCH -> {
+                        mViewTransition!!.showView(0, animation)
+                        mSearchBar!!.setState(SearchBar.STATE_SEARCH_LIST, animation)
+                        mSearchBarMover!!.returnSearchBarPosition()
+                    }
+                    STATE_SEARCH -> {
+                        mSearchBar!!.setState(SearchBar.STATE_SEARCH, animation)
+                        mSearchBarMover!!.returnSearchBarPosition()
+                    }
                 }
             }
         }
@@ -1335,6 +1343,7 @@ class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListen
         override fun onCancel() {}
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private inner class QsDrawerHolder(
         itemView: View
     ) : RecyclerView.ViewHolder(itemView), View.OnTouchListener {

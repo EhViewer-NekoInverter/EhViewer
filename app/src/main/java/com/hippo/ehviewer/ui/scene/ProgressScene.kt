@@ -26,7 +26,6 @@ import com.hippo.ehviewer.R
 import com.hippo.ehviewer.client.EhClient
 import com.hippo.ehviewer.client.EhRequest
 import com.hippo.scene.Announcer
-import com.hippo.scene.SceneFragment
 import com.hippo.util.ExceptionUtils
 import com.hippo.view.ViewTransition
 import com.hippo.yorozuya.ViewUtils

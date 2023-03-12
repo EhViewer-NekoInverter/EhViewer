@@ -47,7 +47,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.getSystemService
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.drawerlayout.widget.DrawerLayout.DrawerListener
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.hippo.app.EditTextDialogBuilder
@@ -280,7 +279,7 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
             mAvatar = ViewUtils.`$$`(headerLayout, R.id.avatar) as LoadImageView
             mDisplayName = ViewUtils.`$$`(headerLayout, R.id.display_name) as TextView
             ViewUtils.`$$`(headerLayout, R.id.night_mode).setOnClickListener {
-                val theme = if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES > 0) AppCompatDelegate.MODE_NIGHT_NO else AppCompatDelegate.MODE_NIGHT_YES
+                val theme = if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES > 0) DayNightDelegate.MODE_NIGHT_NO else DayNightDelegate.MODE_NIGHT_YES
                 DayNightDelegate.setDefaultNightMode(theme)
                 recreate()
                 if (Settings.theme != AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
