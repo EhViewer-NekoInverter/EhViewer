@@ -13,1354 +13,1208 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.ehviewer.ui
 
-package com.hippo.ehviewer.ui;
+import android.Manifest
+import android.animation.Animator
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator.AnimatorUpdateListener
+import android.annotation.SuppressLint
+import android.app.assist.AssistContent
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.ContentValues
+import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.Typeface
+import android.net.Uri
+import android.os.Build
+import android.os.Bundle
+import android.os.Environment
+import android.os.Looper
+import android.os.ParcelFileDescriptor
+import android.os.ParcelFileDescriptor.MODE_READ_ONLY
+import android.os.Handler
+import android.os.Message
+import android.provider.MediaStore
+import android.text.TextUtils
+import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.WindowManager
+import android.webkit.MimeTypeMap
+import android.widget.CompoundButton
+import android.widget.FrameLayout
+import android.widget.SeekBar
+import android.widget.SeekBar.OnSeekBarChangeListener
+import android.widget.Spinner
+import android.widget.Switch
+import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.CreateDocument
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.lifecycleScope
+import com.hippo.app.EditTextDialogBuilder
+import com.hippo.ehviewer.AppConfig
+import com.hippo.ehviewer.BuildConfig
+import com.hippo.ehviewer.R
+import com.hippo.ehviewer.Settings
+import com.hippo.ehviewer.client.EhUrl
+import com.hippo.ehviewer.client.data.GalleryInfo
+import com.hippo.ehviewer.gallery.ArchiveGalleryProvider
+import com.hippo.ehviewer.gallery.EhGalleryProvider
+import com.hippo.ehviewer.gallery.GalleryProvider2
+import com.hippo.ehviewer.widget.GalleryGuideView
+import com.hippo.ehviewer.widget.GalleryHeader
+import com.hippo.ehviewer.widget.ReversibleSeekBar
+import com.hippo.glgallery.GalleryProvider
+import com.hippo.glgallery.GalleryView
+import com.hippo.glgallery.SimpleAdapter
+import com.hippo.glview.view.GLRootView
+import com.hippo.sendTo
+import com.hippo.unifile.UniFile
+import com.hippo.util.ExceptionUtils
+import com.hippo.util.getParcelableExtraCompat
+import com.hippo.util.getParcelableCompat
+import com.hippo.util.launchIO
+import com.hippo.widget.ColorView
+import com.hippo.yorozuya.AnimationUtils
+import com.hippo.yorozuya.ConcurrentPool
+import com.hippo.yorozuya.FileUtils
+import com.hippo.yorozuya.MathUtils
+import com.hippo.yorozuya.ResourcesUtils
+import com.hippo.yorozuya.SimpleAnimatorListener
+import com.hippo.yorozuya.SimpleHandler
+import com.hippo.yorozuya.ViewUtils
+import java.io.File
+import java.io.IOException
+import java.lang.ref.WeakReference
+import rikka.core.res.isNight
+import rikka.core.res.resolveColor
+import rikka.material.app.DayNightDelegate
 
-import android.Manifest;
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
-import android.app.assist.AssistContent;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.graphics.Typeface;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
-import android.provider.MediaStore;
-import android.text.TextUtils;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.webkit.MimeTypeMap;
-import android.widget.FrameLayout;
-import android.widget.SeekBar;
-import android.widget.Spinner;
-import android.widget.Switch;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
-
-import com.hippo.app.EditTextDialogBuilder;
-import com.hippo.ehviewer.AppConfig;
-import com.hippo.ehviewer.BuildConfig;
-import com.hippo.ehviewer.R;
-import com.hippo.ehviewer.Settings;
-import com.hippo.ehviewer.client.EhUrl;
-import com.hippo.ehviewer.client.data.GalleryInfo;
-import com.hippo.ehviewer.gallery.ArchiveGalleryProvider;
-import com.hippo.ehviewer.gallery.EhGalleryProvider;
-import com.hippo.ehviewer.gallery.GalleryProvider2;
-import com.hippo.ehviewer.widget.GalleryGuideView;
-import com.hippo.ehviewer.widget.GalleryHeader;
-import com.hippo.ehviewer.widget.ReversibleSeekBar;
-import com.hippo.glgallery.GalleryProvider;
-import com.hippo.glgallery.GalleryView;
-import com.hippo.glgallery.SimpleAdapter;
-import com.hippo.glview.view.GLRootView;
-import com.hippo.unifile.UniFile;
-import com.hippo.util.ExceptionUtils;
-import com.hippo.util.IoThreadPoolExecutor;
-import com.hippo.widget.ColorView;
-import com.hippo.yorozuya.AnimationUtils;
-import com.hippo.yorozuya.ConcurrentPool;
-import com.hippo.yorozuya.FileUtils;
-import com.hippo.yorozuya.IOUtils;
-import com.hippo.yorozuya.MathUtils;
-import com.hippo.yorozuya.ResourcesUtils;
-import com.hippo.yorozuya.SimpleAnimatorListener;
-import com.hippo.yorozuya.SimpleHandler;
-import com.hippo.yorozuya.ViewUtils;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.ref.WeakReference;
-
-import rikka.core.res.ConfigurationKt;
-import rikka.core.res.ResourcesKt;
-import rikka.material.app.DayNightDelegate;
-
-public class GalleryActivity extends EhActivity implements SeekBar.OnSeekBarChangeListener,
-        GalleryView.Listener {
-    public static final String ACTION_EH = "eh";
-
-    public static final String KEY_ACTION = "action";
-    public static final String KEY_FILENAME = "filename";
-    public static final String KEY_URI = "uri";
-    public static final String KEY_GALLERY_INFO = "gallery_info";
-    public static final String KEY_PAGE = "page";
-    public static final String KEY_CURRENT_INDEX = "current_index";
-
-    private static final long SLIDER_ANIMATION_DURING = 150;
-    private static final long HIDE_SLIDER_DELAY = 3000;
-
-    private final ConcurrentPool<NotifyTask> mNotifyTaskPool = new ConcurrentPool<>(3);
-    private String mAction;
-    private String mFilename;
-    private Uri mUri;
-    private GalleryInfo mGalleryInfo;
-    private int mPage;
-    private String mCacheFileName;
-    ActivityResultLauncher<String> saveImageToLauncher = registerForActivityResult(
-            new ActivityResultContracts.CreateDocument(),
-            uri -> {
-                if (uri != null) {
-                    String filepath = AppConfig.getExternalTempDir() + File.separator + mCacheFileName;
-                    File cachefile = new File(filepath);
-
-                    ContentResolver resolver = getContentResolver();
-
-                    IoThreadPoolExecutor.getInstance().execute(() -> {
-                        InputStream is = null;
-                        OutputStream os = null;
-                        try {
-                            is = new FileInputStream(cachefile);
-                            os = resolver.openOutputStream(uri);
-                            IOUtils.copy(is, os);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } finally {
-                            IOUtils.closeQuietly(is);
-                            IOUtils.closeQuietly(os);
-                            runOnUiThread(() -> Toast.makeText(GalleryActivity.this, getString(R.string.image_saved, uri.getPath()), Toast.LENGTH_SHORT).show());
+class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Listener {
+    private val requestStoragePermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { result ->
+        if (result!! && mSavingPage != -1) {
+            saveImage(mSavingPage)
+        } else {
+            Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show()
+        }
+        mSavingPage = -1
+    }
+    private val saveImageToLauncher = registerForActivityResult(
+        CreateDocument("todo/todo")
+    ) { uri ->
+        if (uri != null) {
+            val filepath = AppConfig.getExternalTempDir().toString() + File.separator + mCacheFileName
+            val cacheFile = File(filepath)
+            lifecycleScope.launchIO {
+                try {
+                    ParcelFileDescriptor.open(cacheFile, MODE_READ_ONLY).use { from ->
+                        contentResolver.openFileDescriptor(uri, "w")!!.use {
+                            from sendTo it
                         }
-                        //noinspection ResultOfMethodCallIgnored
-                        cachefile.delete();
-                    });
+                    }
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                } finally {
+                    runOnUiThread {
+                        Toast.makeText(
+                            this@GalleryActivity,
+                            getString(R.string.image_saved, uri.path),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
-            });
-    @Nullable
-    private GLRootView mGLRootView;
-    @Nullable
-    private GalleryView mGalleryView;
-    @Nullable
-    private GalleryProvider2 mGalleryProvider;
-    @Nullable
-    private GalleryAdapter mGalleryAdapter;
-    @Nullable
-    private WindowInsetsControllerCompat insetsController;
-    @Nullable
-    private ColorView mMaskView;
-    @Nullable
-    private View mClock;
-    @Nullable
-    private TextView mProgress;
-    @Nullable
-    private View mBattery;
-    @Nullable
-    private View mSeekBarPanel;
-    private final ValueAnimator.AnimatorUpdateListener mUpdateSliderListener = new ValueAnimator.AnimatorUpdateListener() {
-        @Override
-        public void onAnimationUpdate(ValueAnimator animation) {
-            if (null != mSeekBarPanel) {
-                mSeekBarPanel.requestLayout();
+                cacheFile.delete()
             }
         }
-    };
-    @Nullable
-    private TextView mLeftText;
-    @Nullable
-    private TextView mRightText;
-    @Nullable
-    private ReversibleSeekBar mSeekBar;
-    private ObjectAnimator mSeekBarPanelAnimator;
-    private final SimpleAnimatorListener mShowSliderListener = new SimpleAnimatorListener() {
-        @Override
-        public void onAnimationEnd(Animator animation) {
-            mSeekBarPanelAnimator = null;
+    }
+    private val mHideSliderRunnable = Runnable {
+        mSeekBarPanel?.let { hideSlider(it) }
+    }
+    private val mHideSliderListener: SimpleAnimatorListener = object : SimpleAnimatorListener() {
+        override fun onAnimationEnd(animation: Animator) {
+            mSeekBarPanelAnimator = null
+            mSeekBarPanel?.visibility = View.INVISIBLE
         }
-    };
-    private final SimpleAnimatorListener mHideSliderListener = new SimpleAnimatorListener() {
-        @Override
-        public void onAnimationEnd(Animator animation) {
-            mSeekBarPanelAnimator = null;
-            if (mSeekBarPanel != null) {
-                mSeekBarPanel.setVisibility(View.INVISIBLE);
-            }
+    }
+    private val mUpdateSliderListener = AnimatorUpdateListener {
+        mSeekBarPanel?.requestLayout()
+    }
+    private val mShowSliderListener: SimpleAnimatorListener = object : SimpleAnimatorListener() {
+        override fun onAnimationEnd(animation: Animator) {
+            mSeekBarPanelAnimator = null
         }
-    };
-    private final Runnable mHideSliderRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mSeekBarPanel != null) {
-                hideSlider(mSeekBarPanel);
-            }
-        }
-    };
-    private int mLayoutMode;
-    private int mSize;
-    private int mCurrentIndex;
-    private int mSavingPage = -1;
-    private EditTextDialogBuilder builder;
-    private boolean dialogShown = false;
-    private AlertDialog dialog;
+    }
+    private val mNotifyTaskPool = ConcurrentPool<NotifyTask>(3)
+    private var mAction: String? = null
+    private var mFilename: String? = null
+    private var mUri: Uri? = null
+    private var mGalleryInfo: GalleryInfo? = null
+    private var mPage = 0
+    private var mCacheFileName: String? = null
+    private var mGLRootView: GLRootView? = null
+    private var mGalleryView: GalleryView? = null
+    private var mGalleryProvider: GalleryProvider2? = null
+    private var mGalleryAdapter: GalleryAdapter? = null
+    private var insetsController: WindowInsetsControllerCompat? = null
+    private var mMaskView: ColorView? = null
+    private var mClock: View? = null
+    private var mProgress: TextView? = null
+    private var mBattery: View? = null
+    private var mSeekBarPanel: View? = null
+    private var mLeftText: TextView? = null
+    private var mRightText: TextView? = null
+    private var mSeekBar: ReversibleSeekBar? = null
+    private var mSeekBarPanelAnimator: ObjectAnimator? = null
+    private var mLayoutMode = 0
+    private var mSize = 0
+    private var mCurrentIndex = 0
+    private var mSavingPage = -1
+    private var builder: EditTextDialogBuilder? = null
+    private var dialogShown = false
+    private var dialog: AlertDialog? = null
 
-    private void buildProvider() {
-        if (mGalleryProvider != null) {
-            return;
-        }
-
-        if (ACTION_EH.equals(mAction)) {
+    private val galleryDetailUrl: String?
+        get() {
+            val gid: Long
+            val token: String
             if (mGalleryInfo != null) {
-                mGalleryProvider = new EhGalleryProvider(mGalleryInfo);
+                gid = mGalleryInfo!!.gid
+                token = mGalleryInfo!!.token!!
+            } else {
+                return null
             }
-        } else if (Intent.ACTION_VIEW.equals(mAction)) {
+            return EhUrl.getGalleryDetailUrl(gid, token, 0, false)
+        }
+
+    private fun buildProvider() {
+        if (mGalleryProvider != null) {
+            return
+        }
+        if (ACTION_EH == mAction) {
+            mGalleryInfo?.let { mGalleryProvider = EhGalleryProvider(it) }
+        } else if (Intent.ACTION_VIEW == mAction) {
             if (mUri != null) {
                 try {
-                    grantUriPermission(BuildConfig.APPLICATION_ID, mUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                } catch (Exception e) {
-                    Toast.makeText(this, R.string.error_reading_failed, Toast.LENGTH_SHORT).show();
+                    grantUriPermission(
+                        BuildConfig.APPLICATION_ID,
+                        mUri,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    )
+                } catch (e: Exception) {
+                    Toast.makeText(this, R.string.error_reading_failed, Toast.LENGTH_SHORT).show()
                 }
-                mGalleryProvider = new ArchiveGalleryProvider(this, mUri);
+                mGalleryProvider = ArchiveGalleryProvider(this, mUri)
             }
         }
     }
 
-    private void onInit() {
-        Intent intent = getIntent();
-        if (intent == null) {
-            return;
-        }
-
-        mAction = intent.getAction();
-        mFilename = intent.getStringExtra(KEY_FILENAME);
-        mUri = intent.getData();
-        mGalleryInfo = intent.getParcelableExtra(KEY_GALLERY_INFO);
-        mPage = intent.getIntExtra(KEY_PAGE, -1);
-        buildProvider();
+    private fun handleIntent(intent: Intent?) {
+        intent ?: return
+        mAction = intent.action
+        mFilename = intent.getStringExtra(KEY_FILENAME)
+        mUri = intent.data
+        mGalleryInfo = intent.getParcelableExtraCompat(KEY_GALLERY_INFO)
+        mPage = intent.getIntExtra(KEY_PAGE, -1)
     }
 
-    private void onRestore(@NonNull Bundle savedInstanceState) {
-        mAction = savedInstanceState.getString(KEY_ACTION);
-        mFilename = savedInstanceState.getString(KEY_FILENAME);
-        mUri = savedInstanceState.getParcelable(KEY_URI);
-        mGalleryInfo = savedInstanceState.getParcelable(KEY_GALLERY_INFO);
-        mPage = savedInstanceState.getInt(KEY_PAGE, -1);
-        mCurrentIndex = savedInstanceState.getInt(KEY_CURRENT_INDEX);
-        buildProvider();
+    private fun onInit() {
+        handleIntent(intent)
+        buildProvider()
     }
 
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(KEY_ACTION, mAction);
-        outState.putString(KEY_FILENAME, mFilename);
-        outState.putParcelable(KEY_URI, mUri);
+    private fun onRestore(savedInstanceState: Bundle) {
+        mAction = savedInstanceState.getString(KEY_ACTION)
+        mFilename = savedInstanceState.getString(KEY_FILENAME)
+        mUri = savedInstanceState.getParcelableCompat(KEY_URI)
+        mGalleryInfo = savedInstanceState.getParcelableCompat(KEY_GALLERY_INFO)
+        mPage = savedInstanceState.getInt(KEY_PAGE, -1)
+        mCurrentIndex = savedInstanceState.getInt(KEY_CURRENT_INDEX)
+        buildProvider()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(KEY_ACTION, mAction)
+        outState.putString(KEY_FILENAME, mFilename)
+        outState.putParcelable(KEY_URI, mUri)
         if (mGalleryInfo != null) {
-            outState.putParcelable(KEY_GALLERY_INFO, mGalleryInfo);
+            outState.putParcelable(KEY_GALLERY_INFO, mGalleryInfo)
         }
-        outState.putInt(KEY_PAGE, mPage);
-        outState.putInt(KEY_CURRENT_INDEX, mCurrentIndex);
+        outState.putInt(KEY_PAGE, mPage)
+        outState.putInt(KEY_CURRENT_INDEX, mCurrentIndex)
     }
 
-    @Override
-    protected void attachBaseContext(@NonNull Context newBase) {
-        switch (Settings.INSTANCE.getReadTheme()) {
-            case 1:
-                getDayNightDelegate().setLocalNightMode(DayNightDelegate.MODE_NIGHT_YES, false);
-                break;
-            case 2:
-                getDayNightDelegate().setLocalNightMode(DayNightDelegate.MODE_NIGHT_NO, false);
-                break;
+    override fun attachBaseContext(newBase: Context) {
+        when (Settings.readTheme) {
+            1 -> dayNightDelegate.setLocalNightMode(DayNightDelegate.MODE_NIGHT_YES, false)
+            2 -> dayNightDelegate.setLocalNightMode(DayNightDelegate.MODE_NIGHT_NO, false)
         }
-        super.attachBaseContext(newBase);
+        super.attachBaseContext(newBase)
     }
 
-    @Override
-    public boolean respectDefaultNightMode() {
-        return Settings.INSTANCE.getReadTheme() == 0;
+    override fun respectDefaultNightMode(): Boolean {
+        return Settings.readTheme == 0
     }
 
-    @Override
-    @SuppressWarnings({"WrongConstant"})
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        if (Settings.INSTANCE.getReadingFullscreen()) {
-            Window w = getWindow();
-            w.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        if (Settings.readingFullscreen) {
+            window.statusBarColor = Color.TRANSPARENT
         }
-
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
-            onInit();
+            onInit()
         } else {
-            onRestore(savedInstanceState);
+            onRestore(savedInstanceState)
         }
-
-        builder = new EditTextDialogBuilder(this, null, getString(R.string.archive_passwd));
-        builder.setTitle(getString(R.string.archive_need_passwd));
-        builder.setPositiveButton(getString(android.R.string.ok), null);
-        dialog = builder.create();
-        dialog.setCanceledOnTouchOutside(false);
-
+        builder = EditTextDialogBuilder(this, null, getString(R.string.archive_passwd))
+        builder!!.setTitle(getString(R.string.archive_need_passwd))
+        builder!!.setPositiveButton(getString(android.R.string.ok), null)
+        dialog = builder!!.create()
+        dialog!!.setCanceledOnTouchOutside(false)
+        ArchiveGalleryProvider.showPasswd = ShowPasswdDialogHandler(this)
         if (mGalleryProvider == null) {
-            finish();
-            return;
+            finish()
+            return
         }
-
-        ArchiveGalleryProvider.showPasswd = new ShowPasswdDialogHandler(this);
-
-        mGalleryProvider.start();
+        mGalleryProvider!!.start()
 
         // Get start page
-        int startPage;
-        if (savedInstanceState == null) {
-            startPage = mPage >= 0 ? mPage : mGalleryProvider.getStartPage();
+        val startPage: Int = if (savedInstanceState == null) {
+            if (mPage >= 0) mPage else mGalleryProvider!!.startPage
         } else {
-            startPage = mCurrentIndex;
+            mCurrentIndex
         }
-
-        setContentView(R.layout.activity_gallery);
-        mGLRootView = (GLRootView) ViewUtils.$$(this, R.id.gl_root_view);
-        mGalleryAdapter = new GalleryAdapter(mGLRootView, mGalleryProvider);
-        Resources resources = getResources();
-        mGalleryView = new GalleryView.Builder(this, mGalleryAdapter)
-                .setListener(this)
-                .setLayoutMode(Settings.INSTANCE.getReadingDirection())
-                .setScaleMode(Settings.INSTANCE.getPageScaling())
-                .setStartPosition(Settings.INSTANCE.getStartPosition())
-                .setStartPage(startPage)
-                .setBackgroundColor(ResourcesKt.resolveColor(getTheme(), android.R.attr.colorBackground))
-                .setPagerInterval(Settings.INSTANCE.getShowPageInterval() ? resources.getDimensionPixelOffset(R.dimen.gallery_pager_interval) : 0)
-                .setScrollInterval(Settings.INSTANCE.getShowPageInterval() ? resources.getDimensionPixelOffset(R.dimen.gallery_scroll_interval) : 0)
-                .setPageMinHeight(resources.getDimensionPixelOffset(R.dimen.gallery_page_min_height))
-                .setPageInfoInterval(resources.getDimensionPixelOffset(R.dimen.gallery_page_info_interval))
-                .setProgressColor(ResourcesUtils.getAttrColor(this, androidx.appcompat.R.attr.colorPrimary))
-                .setProgressSize(resources.getDimensionPixelOffset(R.dimen.gallery_progress_size))
-                .setPageTextColor(ResourcesKt.resolveColor(getTheme(), android.R.attr.textColorSecondary))
-                .setPageTextSize(resources.getDimensionPixelOffset(R.dimen.gallery_page_text_size))
-                .setPageTextTypeface(Typeface.DEFAULT)
-                .setErrorTextColor(resources.getColor(R.color.red_500))
-                .setErrorTextSize(resources.getDimensionPixelOffset(R.dimen.gallery_error_text_size))
-                .setDefaultErrorString(resources.getString(R.string.error_unknown))
-                .setEmptyString(resources.getString(R.string.error_empty))
-                .build();
-
-        mGLRootView.setContentPane(mGalleryView);
-        mGalleryProvider.setListener(mGalleryAdapter);
-        mGalleryProvider.setGLRoot(mGLRootView);
-
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        insetsController = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
-        if (insetsController != null) {
-            if (Settings.INSTANCE.getReadingFullscreen()) {
-                insetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-                // This does not hide navigation bar sometimes on 31, framework bug???
-                insetsController.hide(WindowInsetsCompat.Type.systemBars());
-            } else {
-                insetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_BARS_BY_TOUCH);
-                insetsController.show(WindowInsetsCompat.Type.systemBars());
-            }
-            boolean night = ConfigurationKt.isNight(getResources().getConfiguration());
-            insetsController.setAppearanceLightStatusBars(!night);
-            insetsController.setAppearanceLightNavigationBars(!night);
+        setContentView(R.layout.activity_gallery)
+        mGLRootView = ViewUtils.`$$`(this, R.id.gl_root_view) as GLRootView
+        mGalleryAdapter = GalleryAdapter(mGLRootView!!, mGalleryProvider!!)
+        val resources = resources
+        mGalleryView = GalleryView.Builder(this, mGalleryAdapter!!)
+            .setListener(this)
+            .setLayoutMode(Settings.readingDirection)
+            .setScaleMode(Settings.pageScaling)
+            .setStartPosition(Settings.startPosition)
+            .setStartPage(startPage)
+            .setBackgroundColor(theme.resolveColor(android.R.attr.colorBackground))
+            .setPagerInterval(if (Settings.showPageInterval) resources.getDimensionPixelOffset(R.dimen.gallery_pager_interval) else 0)
+            .setScrollInterval(if (Settings.showPageInterval) resources.getDimensionPixelOffset(R.dimen.gallery_scroll_interval) else 0)
+            .setPageMinHeight(resources.getDimensionPixelOffset(R.dimen.gallery_page_min_height))
+            .setPageInfoInterval(resources.getDimensionPixelOffset(R.dimen.gallery_page_info_interval))
+            .setProgressColor(ResourcesUtils.getAttrColor(this, androidx.appcompat.R.attr.colorPrimary))
+            .setProgressSize(resources.getDimensionPixelOffset(R.dimen.gallery_progress_size))
+            .setPageTextColor(theme.resolveColor(android.R.attr.textColorSecondary))
+            .setPageTextSize(resources.getDimensionPixelOffset(R.dimen.gallery_page_text_size))
+            .setPageTextTypeface(Typeface.DEFAULT)
+            .setErrorTextColor(this@GalleryActivity.getColor(R.color.red_500))
+            .setErrorTextSize(resources.getDimensionPixelOffset(R.dimen.gallery_error_text_size))
+            .setDefaultErrorString(resources.getString(R.string.error_unknown))
+            .setEmptyString(resources.getString(R.string.error_empty))
+            .build()
+        mGLRootView!!.setContentPane(mGalleryView)
+        mGalleryProvider!!.setListener(mGalleryAdapter)
+        mGalleryProvider!!.setGLRoot(mGLRootView)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        insetsController = WindowCompat.getInsetsController(window, window.decorView)
+        if (Settings.readingFullscreen) {
+            insetsController!!.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            // This does not hide navigation bar sometimes on 31, framework bug???
+            insetsController!!.hide(WindowInsetsCompat.Type.systemBars())
+        } else {
+            insetsController!!.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
+            insetsController!!.show(WindowInsetsCompat.Type.systemBars())
         }
-
-        mMaskView = (ColorView) ViewUtils.$$(this, R.id.mask);
-        mMaskView.setOnGenericMotionListener((view, event) -> {
+        val night = resources.configuration.isNight()
+        insetsController!!.isAppearanceLightStatusBars = !night
+        insetsController!!.isAppearanceLightNavigationBars = !night
+        mMaskView = ViewUtils.`$$`(this, R.id.mask) as ColorView
+        mMaskView!!.setOnGenericMotionListener { _: View?, event: MotionEvent ->
             if (mGalleryView == null) {
-                return false;
+                return@setOnGenericMotionListener false
             }
-            if (event.getAction() == MotionEvent.ACTION_SCROLL) {
-                float scroll = event.getAxisValue(MotionEvent.AXIS_VSCROLL) * 300;
+            if (event.action == MotionEvent.ACTION_SCROLL) {
+                val scroll = event.getAxisValue(MotionEvent.AXIS_VSCROLL) * 300
                 if (scroll < 0.0f) {
-                    if (mLayoutMode == GalleryView.LAYOUT_RIGHT_TO_LEFT) {
-                        mGalleryView.pageLeft();
-                    } else if (mLayoutMode == GalleryView.LAYOUT_LEFT_TO_RIGHT) {
-                        mGalleryView.pageRight();
-                    } else if (mLayoutMode == GalleryView.LAYOUT_TOP_TO_BOTTOM) {
-                        mGalleryView.onScroll(0, -scroll, 0, -scroll, 0, -scroll);
+                    when (mLayoutMode) {
+                        GalleryView.LAYOUT_RIGHT_TO_LEFT -> {
+                            mGalleryView!!.pageLeft()
+                        }
+                        GalleryView.LAYOUT_LEFT_TO_RIGHT -> {
+                            mGalleryView!!.pageRight()
+                        }
+                        GalleryView.LAYOUT_TOP_TO_BOTTOM -> {
+                            mGalleryView!!.onScroll(0f, -scroll, 0f, -scroll, 0f, -scroll)
+                        }
                     }
                 } else {
-                    if (mLayoutMode == GalleryView.LAYOUT_RIGHT_TO_LEFT) {
-                        mGalleryView.pageRight();
-                    } else if (mLayoutMode == GalleryView.LAYOUT_LEFT_TO_RIGHT) {
-                        mGalleryView.pageLeft();
-                    } else if (mLayoutMode == GalleryView.LAYOUT_TOP_TO_BOTTOM) {
-                        mGalleryView.onScroll(0, -scroll, 0, -scroll, 0, -scroll);
+                    when (mLayoutMode) {
+                        GalleryView.LAYOUT_RIGHT_TO_LEFT -> {
+                            mGalleryView!!.pageRight()
+                        }
+                        GalleryView.LAYOUT_LEFT_TO_RIGHT -> {
+                            mGalleryView!!.pageLeft()
+                        }
+                        GalleryView.LAYOUT_TOP_TO_BOTTOM -> {
+                            mGalleryView!!.onScroll(0f, -scroll, 0f, -scroll, 0f, -scroll)
+                        }
                     }
                 }
             }
-            return false;
-        });
-        mClock = ViewUtils.$$(this, R.id.clock);
-        mProgress = (TextView) ViewUtils.$$(this, R.id.progress);
-        mBattery = ViewUtils.$$(this, R.id.battery);
-        mClock.setVisibility(Settings.INSTANCE.getShowClock() ? View.VISIBLE : View.GONE);
-        mProgress.setVisibility(Settings.INSTANCE.getShowProgress() ? View.VISIBLE : View.GONE);
-        mBattery.setVisibility(Settings.INSTANCE.getShowBattery() ? View.VISIBLE : View.GONE);
-
-        mSeekBarPanel = ViewUtils.$$(this, R.id.seek_bar_panel);
-        mLeftText = (TextView) ViewUtils.$$(mSeekBarPanel, R.id.left);
-        mRightText = (TextView) ViewUtils.$$(mSeekBarPanel, R.id.right);
-        mSeekBar = (ReversibleSeekBar) ViewUtils.$$(mSeekBarPanel, R.id.seek_bar);
-        mSeekBar.setOnSeekBarChangeListener(this);
-
-        mSize = mGalleryProvider.size();
-        mCurrentIndex = startPage;
-        if (mGalleryView != null) {
-            mLayoutMode = mGalleryView.getLayoutMode();
+            false
         }
-        updateSlider();
+        mClock = ViewUtils.`$$`(this, R.id.clock)
+        mProgress = ViewUtils.`$$`(this, R.id.progress) as TextView
+        mBattery = ViewUtils.`$$`(this, R.id.battery)
+        mClock!!.visibility = if (Settings.showClock) View.VISIBLE else View.GONE
+        mProgress!!.visibility = if (Settings.showProgress) View.VISIBLE else View.GONE
+        mBattery!!.visibility = if (Settings.showBattery) View.VISIBLE else View.GONE
+        mSeekBarPanel = ViewUtils.`$$`(this, R.id.seek_bar_panel)
+        mLeftText = ViewUtils.`$$`(mSeekBarPanel, R.id.left) as TextView
+        mRightText = ViewUtils.`$$`(mSeekBarPanel, R.id.right) as TextView
+        mSeekBar = ViewUtils.`$$`(mSeekBarPanel, R.id.seek_bar) as ReversibleSeekBar
+        mSeekBar!!.setOnSeekBarChangeListener(this)
+        mSize = mGalleryProvider!!.size()
+        mCurrentIndex = startPage
+        if (mGalleryView != null) {
+            mLayoutMode = mGalleryView!!.layoutMode
+        }
+        updateSlider()
 
         // Update keep screen on
-        if (Settings.INSTANCE.getKeepScreenOn()) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        if (Settings.keepScreenOn) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         } else {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
 
         // Orientation
-        int orientation;
-        switch (Settings.INSTANCE.getScreenRotation()) {
-            default:
-            case 0:
-                orientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
-                break;
-            case 1:
-                orientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT;
-                break;
-            case 2:
-                orientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE;
-                break;
-            case 3:
-                orientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR;
-                break;
+        requestedOrientation = when (Settings.screenRotation) {
+            0 -> ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            1 -> ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+            2 -> ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+            3 -> ActivityInfo.SCREEN_ORIENTATION_SENSOR
+            else -> ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         }
-        setRequestedOrientation(orientation);
 
         // Screen lightness
-        setScreenLightness(Settings.INSTANCE.getCustomScreenLightness(), Settings.INSTANCE.getScreenLightness());
+        setScreenLightness(Settings.customScreenLightness, Settings.screenLightness)
 
         // Cutout
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            getWindow().getAttributes().layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
-        }
-        GalleryHeader galleryHeader = findViewById(R.id.gallery_header);
-        ViewCompat.setOnApplyWindowInsetsListener(galleryHeader, (v, insets) -> {
-            if (!Settings.INSTANCE.getReadingFullscreen()) {
-                galleryHeader.setTopInsets(insets.getInsets(WindowInsetsCompat.Type.statusBars()).top);
+        window.attributes.layoutInDisplayCutoutMode =
+            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        val galleryHeader = findViewById<GalleryHeader>(R.id.gallery_header)
+        ViewCompat.setOnApplyWindowInsetsListener(galleryHeader) { _: View?, insets: WindowInsetsCompat ->
+            if (!Settings.readingFullscreen) {
+                galleryHeader.setTopInsets(insets.getInsets(WindowInsetsCompat.Type.statusBars()).top)
             } else {
-                galleryHeader.setDisplayCutout(insets.getDisplayCutout());
+                galleryHeader.setDisplayCutout(insets.displayCutout)
             }
-            return WindowInsetsCompat.CONSUMED;
-        });
-
-        if (Settings.INSTANCE.getGuideGallery()) {
-            FrameLayout mainLayout = (FrameLayout) ViewUtils.$$(this, R.id.main);
-            mainLayout.addView(new GalleryGuideView(this));
+            WindowInsetsCompat.CONSUMED
+        }
+        if (Settings.guideGallery) {
+            val mainLayout = ViewUtils.`$$`(this, R.id.main) as FrameLayout
+            mainLayout.addView(GalleryGuideView(this))
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mGLRootView = null;
-        mGalleryView = null;
+    override fun onDestroy() {
+        super.onDestroy()
+        mGLRootView = null
+        mGalleryView = null
         if (mGalleryAdapter != null) {
-            mGalleryAdapter.clearUploader();
-            mGalleryAdapter = null;
+            mGalleryAdapter!!.clearUploader()
+            mGalleryAdapter = null
         }
         if (mGalleryProvider != null) {
-            mGalleryProvider.setListener(null);
-            mGalleryProvider.stop();
-            mGalleryProvider = null;
+            mGalleryProvider!!.setListener(null)
+            mGalleryProvider!!.stop()
+            mGalleryProvider = null
         }
-
-        mMaskView = null;
-        mClock = null;
-        mProgress = null;
-        mBattery = null;
-        mSeekBarPanel = null;
-        mLeftText = null;
-        mRightText = null;
-        mSeekBar = null;
-
-        SimpleHandler.getInstance().removeCallbacks(mHideSliderRunnable);
-    }    ActivityResultLauncher<String> requestStoragePermissionLauncher = registerForActivityResult(
-            new ActivityResultContracts.RequestPermission(),
-            result -> {
-                if (result && mSavingPage != -1) {
-                    saveImage(mSavingPage);
-                } else {
-                    Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show();
-                }
-                mSavingPage = -1;
-            });
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        if (mGLRootView != null) {
-            mGLRootView.onPause();
-        }
+        mMaskView = null
+        mClock = null
+        mProgress = null
+        mBattery = null
+        mSeekBarPanel = null
+        mLeftText = null
+        mRightText = null
+        mSeekBar = null
+        SimpleHandler.getInstance().removeCallbacks(mHideSliderRunnable)
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (mGLRootView != null) {
-            mGLRootView.onResume();
-        }
+    override fun onPause() {
+        super.onPause()
+        mGLRootView?.onPause()
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-
+    override fun onResume() {
+        super.onResume()
+        mGLRootView?.onResume()
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        var mKeyCode = keyCode
         if (mGalleryView == null) {
-            return super.onKeyDown(keyCode, event);
+            return super.onKeyDown(mKeyCode, event)
         }
 
         // Check volume
-        if (Settings.INSTANCE.getVolumePage()) {
-            if (Settings.INSTANCE.getReverseVolumePage()) {
-                if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-                    keyCode = KeyEvent.KEYCODE_VOLUME_DOWN;
-                } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-                    keyCode = KeyEvent.KEYCODE_VOLUME_UP;
+        if (Settings.volumePage) {
+            if (Settings.reverseVolumePage) {
+                if (mKeyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+                    mKeyCode = KeyEvent.KEYCODE_VOLUME_DOWN
+                } else if (mKeyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                    mKeyCode = KeyEvent.KEYCODE_VOLUME_UP
                 }
             }
-            if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            if (mKeyCode == KeyEvent.KEYCODE_VOLUME_UP) {
                 if (mLayoutMode == GalleryView.LAYOUT_RIGHT_TO_LEFT) {
-                    mGalleryView.pageRight();
+                    mGalleryView!!.pageRight()
                 } else {
-                    mGalleryView.pageLeft();
+                    mGalleryView!!.pageLeft()
                 }
-                return true;
-            } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                return true
+            } else if (mKeyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
                 if (mLayoutMode == GalleryView.LAYOUT_RIGHT_TO_LEFT) {
-                    mGalleryView.pageLeft();
+                    mGalleryView!!.pageLeft()
                 } else {
-                    mGalleryView.pageRight();
+                    mGalleryView!!.pageRight()
                 }
-                return true;
+                return true
             }
         }
+        when (mKeyCode) {
+            KeyEvent.KEYCODE_PAGE_UP, KeyEvent.KEYCODE_DPAD_UP -> {
+                if (mLayoutMode == GalleryView.LAYOUT_RIGHT_TO_LEFT) {
+                    mGalleryView!!.pageRight()
+                } else {
+                    mGalleryView!!.pageLeft()
+                }
+                return true
+            }
 
-        // Check keyboard and Dpad
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_PAGE_UP:
-            case KeyEvent.KEYCODE_DPAD_UP:
+            KeyEvent.KEYCODE_DPAD_LEFT -> {
+                mGalleryView!!.pageLeft()
+                return true
+            }
+
+            KeyEvent.KEYCODE_PAGE_DOWN, KeyEvent.KEYCODE_DPAD_DOWN -> {
                 if (mLayoutMode == GalleryView.LAYOUT_RIGHT_TO_LEFT) {
-                    mGalleryView.pageRight();
+                    mGalleryView!!.pageLeft()
                 } else {
-                    mGalleryView.pageLeft();
+                    mGalleryView!!.pageRight()
                 }
-                return true;
-            case KeyEvent.KEYCODE_DPAD_LEFT:
-                mGalleryView.pageLeft();
-                return true;
-            case KeyEvent.KEYCODE_PAGE_DOWN:
-            case KeyEvent.KEYCODE_DPAD_DOWN:
-                if (mLayoutMode == GalleryView.LAYOUT_RIGHT_TO_LEFT) {
-                    mGalleryView.pageLeft();
-                } else {
-                    mGalleryView.pageRight();
-                }
-                return true;
-            case KeyEvent.KEYCODE_DPAD_RIGHT:
-                mGalleryView.pageRight();
-                return true;
-            case KeyEvent.KEYCODE_DPAD_CENTER:
-            case KeyEvent.KEYCODE_SPACE:
-            case KeyEvent.KEYCODE_MENU:
-                onTapMenuArea();
-                return true;
+                return true
+            }
+
+            KeyEvent.KEYCODE_DPAD_RIGHT -> {
+                mGalleryView!!.pageRight()
+                return true
+            }
+
+            KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_SPACE, KeyEvent.KEYCODE_MENU -> {
+                onTapMenuArea()
+                return true
+            }
         }
-
-        return super.onKeyDown(keyCode, event);
+        return super.onKeyDown(mKeyCode, event)
     }
 
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
+    override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
         // Check volume
-        if (Settings.INSTANCE.getVolumePage()) {
+        if (Settings.volumePage) {
             if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN ||
-                    keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-                return true;
+                keyCode == KeyEvent.KEYCODE_VOLUME_UP
+            ) {
+                return true
             }
         }
 
         // Check keyboard and Dpad
-        if (keyCode == KeyEvent.KEYCODE_PAGE_UP ||
-                keyCode == KeyEvent.KEYCODE_PAGE_DOWN ||
-                keyCode == KeyEvent.KEYCODE_DPAD_LEFT ||
-                keyCode == KeyEvent.KEYCODE_DPAD_UP ||
-                keyCode == KeyEvent.KEYCODE_DPAD_RIGHT ||
-                keyCode == KeyEvent.KEYCODE_DPAD_DOWN ||
-                keyCode == KeyEvent.KEYCODE_DPAD_CENTER ||
-                keyCode == KeyEvent.KEYCODE_SPACE ||
-                keyCode == KeyEvent.KEYCODE_MENU) {
-            return true;
-        }
-
-        return super.onKeyUp(keyCode, event);
+        return if (keyCode == KeyEvent.KEYCODE_PAGE_UP ||
+                    keyCode == KeyEvent.KEYCODE_PAGE_DOWN ||
+                    keyCode == KeyEvent.KEYCODE_DPAD_LEFT ||
+                    keyCode == KeyEvent.KEYCODE_DPAD_UP ||
+                    keyCode == KeyEvent.KEYCODE_DPAD_RIGHT ||
+                    keyCode == KeyEvent.KEYCODE_DPAD_DOWN ||
+                    keyCode == KeyEvent.KEYCODE_DPAD_CENTER ||
+                    keyCode == KeyEvent.KEYCODE_SPACE ||
+                    keyCode == KeyEvent.KEYCODE_MENU
+        ) {
+            true
+        } else super.onKeyUp(keyCode, event)
     }
 
     @SuppressLint("SetTextI18n")
-    private void updateProgress() {
-        if (mProgress == null) {
-            return;
-        }
-        if (mSize <= 0 || mCurrentIndex < 0) {
-            mProgress.setText(null);
-        } else {
-            mProgress.setText((mCurrentIndex + 1) + "/" + mSize);
-        }
+    private fun updateProgress() {
+        mProgress?.text =
+            if (mSize <= 0 || mCurrentIndex < 0) null else (mCurrentIndex + 1).toString() + "/" + mSize
     }
 
     @SuppressLint("SetTextI18n")
-    private void updateSlider() {
+    private fun updateSlider() {
         if (mSeekBar == null || mRightText == null || mLeftText == null || mSize <= 0 || mCurrentIndex < 0) {
-            return;
+            return
         }
-
-        TextView start;
-        TextView end;
+        val start: TextView
+        val end: TextView
         if (mLayoutMode == GalleryView.LAYOUT_RIGHT_TO_LEFT) {
-            start = mRightText;
-            end = mLeftText;
-            mSeekBar.setReverse(true);
+            start = mRightText!!
+            end = mLeftText!!
+            mSeekBar!!.setReverse(true)
         } else {
-            start = mLeftText;
-            end = mRightText;
-            mSeekBar.setReverse(false);
+            start = mLeftText!!
+            end = mRightText!!
+            mSeekBar!!.setReverse(false)
         }
-        start.setText(Integer.toString(mCurrentIndex + 1));
-        end.setText(Integer.toString(mSize));
-        mSeekBar.setMax(mSize - 1);
-        mSeekBar.setProgress(mCurrentIndex);
+        start.text = (mCurrentIndex + 1).toString()
+        end.text = mSize.toString()
+        mSeekBar!!.max = mSize - 1
+        mSeekBar!!.progress = mCurrentIndex
     }
 
-    @Override
     @SuppressLint("SetTextI18n")
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        TextView start;
-        if (mLayoutMode == GalleryView.LAYOUT_RIGHT_TO_LEFT) {
-            start = mRightText;
+    override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+        val start = if (mLayoutMode == GalleryView.LAYOUT_RIGHT_TO_LEFT) {
+            mRightText
         } else {
-            start = mLeftText;
+            mLeftText
         }
         if (fromUser && null != start) {
-            start.setText(Integer.toString(progress + 1));
+            start.text = (progress + 1).toString()
         }
         if (fromUser && null != mGalleryView) {
-            mGalleryView.setCurrentPage(progress);
+            mGalleryView!!.setCurrentPage(progress)
         }
     }
 
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
-        SimpleHandler.getInstance().removeCallbacks(mHideSliderRunnable);
+    override fun onStartTrackingTouch(seekBar: SeekBar) {
+        SimpleHandler.getInstance().removeCallbacks(mHideSliderRunnable)
     }
 
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
-        SimpleHandler.getInstance().postDelayed(mHideSliderRunnable, HIDE_SLIDER_DELAY);
+    override fun onStopTrackingTouch(seekBar: SeekBar) {
+        SimpleHandler.getInstance().postDelayed(mHideSliderRunnable, HIDE_SLIDER_DELAY)
     }
 
-    @Override
-    public void onUpdateCurrentIndex(int index) {
-        if (null != mGalleryProvider) {
-            mGalleryProvider.putStartPage(index);
-        }
-
-        NotifyTask task = mNotifyTaskPool.pop();
-        if (task == null) {
-            task = new NotifyTask();
-        }
-        task.setData(NotifyTask.KEY_CURRENT_INDEX, index);
-        SimpleHandler.getInstance().post(task);
+    override fun onUpdateCurrentIndex(index: Int) {
+        mGalleryProvider?.putStartPage(index)
+        val task = mNotifyTaskPool.pop() ?: NotifyTask()
+        task.setData(NOTIFY_KEY_CURRENT_INDEX, index)
+        SimpleHandler.getInstance().post(task)
     }
 
-    @Override
-    public void onTapSliderArea() {
-        NotifyTask task = mNotifyTaskPool.pop();
-        if (task == null) {
-            task = new NotifyTask();
-        }
-        task.setData(NotifyTask.KEY_TAP_SLIDER_AREA, 0);
-        SimpleHandler.getInstance().post(task);
+    override fun onTapSliderArea() {
+        val task = mNotifyTaskPool.pop() ?: NotifyTask()
+        task.setData(NOTIFY_KEY_TAP_SLIDER_AREA, 0)
+        SimpleHandler.getInstance().post(task)
     }
 
-    @Override
-    public void onTapMenuArea() {
-        NotifyTask task = mNotifyTaskPool.pop();
-        if (task == null) {
-            task = new NotifyTask();
-        }
-        task.setData(NotifyTask.KEY_TAP_MENU_AREA, 0);
-        SimpleHandler.getInstance().post(task);
+    override fun onTapMenuArea() {
+        val task = mNotifyTaskPool.pop() ?: NotifyTask()
+        task.setData(NOTIFY_KEY_TAP_MENU_AREA, 0)
+        SimpleHandler.getInstance().post(task)
     }
 
-    @Override
-    public void onTapErrorText(int index) {
-        NotifyTask task = mNotifyTaskPool.pop();
-        if (task == null) {
-            task = new NotifyTask();
-        }
-        task.setData(NotifyTask.KEY_TAP_ERROR_TEXT, index);
-        SimpleHandler.getInstance().post(task);
+    override fun onTapErrorText(index: Int) {
+        val task = mNotifyTaskPool.pop() ?: NotifyTask()
+        task.setData(NOTIFY_KEY_TAP_ERROR_TEXT, index)
+        SimpleHandler.getInstance().post(task)
     }
 
-    @Override
-    public void onLongPressPage(int index) {
-        NotifyTask task = mNotifyTaskPool.pop();
-        if (task == null) {
-            task = new NotifyTask();
-        }
-        task.setData(NotifyTask.KEY_LONG_PRESS_PAGE, index);
-        SimpleHandler.getInstance().post(task);
+    override fun onLongPressPage(index: Int) {
+        val task = mNotifyTaskPool.pop() ?: NotifyTask()
+        task.setData(NOTIFY_KEY_LONG_PRESS_PAGE, index)
+        SimpleHandler.getInstance().post(task)
     }
 
-    private void showSlider(View sliderPanel) {
+    private fun showSlider(sliderPanel: View) {
         if (null != mSeekBarPanelAnimator) {
-            mSeekBarPanelAnimator.cancel();
-            mSeekBarPanelAnimator = null;
+            mSeekBarPanelAnimator!!.cancel()
+            mSeekBarPanelAnimator = null
         }
-
-        sliderPanel.setTranslationY(sliderPanel.getHeight());
-        sliderPanel.setVisibility(View.VISIBLE);
-
-        mSeekBarPanelAnimator = ObjectAnimator.ofFloat(sliderPanel, "translationY", 0.0f);
-        mSeekBarPanelAnimator.setDuration(SLIDER_ANIMATION_DURING);
-        mSeekBarPanelAnimator.setInterpolator(AnimationUtils.FAST_SLOW_INTERPOLATOR);
-        mSeekBarPanelAnimator.addUpdateListener(mUpdateSliderListener);
-        mSeekBarPanelAnimator.addListener(mShowSliderListener);
-        mSeekBarPanelAnimator.start();
-
-        if (insetsController != null) {
-            if (Settings.INSTANCE.getReadingFullscreen())
-                insetsController.show(WindowInsetsCompat.Type.systemBars());
-        }
+        sliderPanel.translationY = sliderPanel.height.toFloat()
+        sliderPanel.visibility = View.VISIBLE
+        mSeekBarPanelAnimator = ObjectAnimator.ofFloat(sliderPanel, "translationY", 0.0f)
+        mSeekBarPanelAnimator!!.duration = SLIDER_ANIMATION_DURING
+        mSeekBarPanelAnimator!!.interpolator = AnimationUtils.FAST_SLOW_INTERPOLATOR
+        mSeekBarPanelAnimator!!.addUpdateListener(mUpdateSliderListener)
+        mSeekBarPanelAnimator!!.addListener(mShowSliderListener)
+        mSeekBarPanelAnimator!!.start()
+        if (Settings.readingFullscreen) insetsController?.show(WindowInsetsCompat.Type.systemBars())
     }
 
-    private void hideSlider(View sliderPanel) {
+    private fun hideSlider(sliderPanel: View) {
         if (null != mSeekBarPanelAnimator) {
-            mSeekBarPanelAnimator.cancel();
-            mSeekBarPanelAnimator = null;
+            mSeekBarPanelAnimator!!.cancel()
+            mSeekBarPanelAnimator = null
         }
-
-        mSeekBarPanelAnimator = ObjectAnimator.ofFloat(sliderPanel, "translationY", sliderPanel.getHeight());
-        mSeekBarPanelAnimator.setDuration(SLIDER_ANIMATION_DURING);
-        mSeekBarPanelAnimator.setInterpolator(AnimationUtils.SLOW_FAST_INTERPOLATOR);
-        mSeekBarPanelAnimator.addUpdateListener(mUpdateSliderListener);
-        mSeekBarPanelAnimator.addListener(mHideSliderListener);
-        mSeekBarPanelAnimator.start();
-
-        if (insetsController != null) {
-            if (Settings.INSTANCE.getReadingFullscreen())
-                insetsController.hide(WindowInsetsCompat.Type.systemBars());
-        }
+        mSeekBarPanelAnimator =
+            ObjectAnimator.ofFloat(sliderPanel, "translationY", sliderPanel.height.toFloat())
+        mSeekBarPanelAnimator!!.duration = SLIDER_ANIMATION_DURING
+        mSeekBarPanelAnimator!!.interpolator = AnimationUtils.SLOW_FAST_INTERPOLATOR
+        mSeekBarPanelAnimator!!.addUpdateListener(mUpdateSliderListener)
+        mSeekBarPanelAnimator!!.addListener(mHideSliderListener)
+        mSeekBarPanelAnimator!!.start()
+        if (Settings.readingFullscreen) insetsController?.hide(WindowInsetsCompat.Type.systemBars())
     }
 
     /**
      * @param lightness 0 - 200
      */
-    private void setScreenLightness(boolean enable, int lightness) {
+    private fun setScreenLightness(enable: Boolean, lightness: Int) {
+        var mLightness = lightness
         if (null == mMaskView) {
-            return;
+            return
         }
-
-        Window w = getWindow();
-        WindowManager.LayoutParams lp = w.getAttributes();
+        val w = window
+        val lp = w.attributes
         if (enable) {
-            lightness = MathUtils.clamp(lightness, 0, 200);
-            if (lightness > 100) {
-                mMaskView.setColor(0);
+            mLightness = MathUtils.clamp(mLightness, 0, 200)
+            if (mLightness > 100) {
+                mMaskView!!.setColor(0)
                 // Avoid BRIGHTNESS_OVERRIDE_OFF,
                 // screen may be off when lp.screenBrightness is 0.0f
-                lp.screenBrightness = Math.max((lightness - 100) / 100.0f, 0.01f);
+                lp.screenBrightness = ((mLightness - 100) / 100.0f).coerceAtLeast(0.01f)
             } else {
-                mMaskView.setColor(MathUtils.lerp(0xde, 0x00, lightness / 100.0f) << 24);
-                lp.screenBrightness = 0.01f;
+                mMaskView!!.setColor(MathUtils.lerp(0xde, 0x00, mLightness / 100.0f) shl 24)
+                lp.screenBrightness = 0.01f
             }
         } else {
-            mMaskView.setColor(0);
-            lp.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE;
+            mMaskView!!.setColor(0)
+            lp.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
         }
-        w.setAttributes(lp);
+        w.attributes = lp
     }
 
-    private void shareImage(int page) {
+    private fun shareImage(page: Int) {
         if (null == mGalleryProvider) {
-            return;
+            return
         }
-
-        File dir = AppConfig.getExternalTempDir();
+        val dir = AppConfig.getExternalTempDir()
         if (null == dir) {
-            Toast.makeText(this, R.string.error_cant_create_temp_file, Toast.LENGTH_SHORT).show();
-            return;
+            Toast.makeText(this, R.string.error_cant_create_temp_file, Toast.LENGTH_SHORT).show()
+            return
         }
-        UniFile file;
-        if (null == (file = mGalleryProvider.save(page, UniFile.fromFile(dir), mGalleryProvider.getImageFilename(page)))) {
-            Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show();
-            return;
+        val file = mGalleryProvider!!.save(
+            page,
+            UniFile.fromFile(dir)!!,
+            mGalleryProvider!!.getImageFilename(page)
+        )
+        if (file == null) {
+            Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show()
+            return
         }
-        String filename = file.getName();
+        val filename = file.name
         if (filename == null) {
-            Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show();
-            return;
+            Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show()
+            return
         }
-
-        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-                MimeTypeMap.getFileExtensionFromUrl(filename));
+        var mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+            MimeTypeMap.getFileExtensionFromUrl(filename)
+        )
         if (TextUtils.isEmpty(mimeType)) {
-            mimeType = "image/jpeg";
+            mimeType = "image/jpeg"
         }
-
-        Uri uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".fileprovider", new File(dir, filename));
-
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_SEND);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        val uri = FileProvider.getUriForFile(
+            this,
+            BuildConfig.APPLICATION_ID + ".fileprovider",
+            File(dir, filename)
+        )
+        val intent = Intent()
+        intent.action = Intent.ACTION_SEND
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intent.putExtra(Intent.EXTRA_STREAM, uri)
         if (mGalleryInfo != null)
-            intent.putExtra(Intent.EXTRA_TEXT, EhUrl.INSTANCE.getGalleryDetailUrl(mGalleryInfo.getGid(), mGalleryInfo.getToken()));
-        intent.setDataAndType(uri, mimeType);
-
+            intent.putExtra(
+                Intent.EXTRA_TEXT,
+                EhUrl.getGalleryDetailUrl(mGalleryInfo!!.gid, mGalleryInfo!!.token)
+            )
+        intent.setDataAndType(uri, mimeType)
         try {
-            startActivity(Intent.createChooser(intent, getString(R.string.share_image)));
-        } catch (Throwable e) {
-            ExceptionUtils.throwIfFatal(e);
-            Toast.makeText(this, R.string.error_cant_find_activity, Toast.LENGTH_SHORT).show();
+            startActivity(Intent.createChooser(intent, getString(R.string.share_image)))
+        } catch (e: Throwable) {
+            ExceptionUtils.throwIfFatal(e)
+            Toast.makeText(this, R.string.error_cant_find_activity, Toast.LENGTH_SHORT).show()
         }
     }
 
-    private void copyImage(int page) {
+    private fun copyImage(page: Int) {
         if (null == mGalleryProvider) {
-            return;
+            return
         }
-
-        File dir = AppConfig.getExternalCopyTempDir();
+        val dir = AppConfig.getExternalCopyTempDir()
         if (null == dir) {
-            Toast.makeText(this, R.string.error_cant_create_temp_file, Toast.LENGTH_SHORT).show();
-            return;
+            Toast.makeText(this, R.string.error_cant_create_temp_file, Toast.LENGTH_SHORT).show()
+            return
         }
-        UniFile file;
-        if (null == (file = mGalleryProvider.save(page, UniFile.fromFile(dir), mGalleryProvider.getImageFilename(page)))) {
-            Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show();
-            return;
+        val file = mGalleryProvider!!.save(
+            page,
+            UniFile.fromFile(dir)!!,
+            mGalleryProvider!!.getImageFilename(page)
+        )
+        if (file == null) {
+            Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show()
+            return
         }
-        String filename = file.getName();
+        val filename = file.name
         if (filename == null) {
-            Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show();
-            return;
+            Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show()
+            return
         }
-
-        Uri uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID + ".fileprovider", new File(dir, filename));
-
-        var clipboardManager = getSystemService(ClipboardManager.class);
+        val uri = FileProvider.getUriForFile(
+            this,
+            BuildConfig.APPLICATION_ID + ".fileprovider",
+            File(dir, filename)
+        )
+        val clipboardManager = getSystemService(ClipboardManager::class.java)
         if (clipboardManager != null) {
-            var clipData = ClipData.newUri(getContentResolver(), "ehviewer", uri);
-            clipboardManager.setPrimaryClip(clipData);
-            Toast.makeText(this, getString(R.string.copied_to_clipboard), Toast.LENGTH_SHORT).show();
+            val clipData = ClipData.newUri(contentResolver, "ehviewer", uri)
+            clipboardManager.setPrimaryClip(clipData)
+            Toast.makeText(this, getString(R.string.copied_to_clipboard), Toast.LENGTH_SHORT).show()
         }
     }
 
-    private void saveImage(int page) {
+    private fun saveImage(page: Int) {
         if (null == mGalleryProvider) {
-            return;
+            return
         }
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            mSavingPage = page;
-            requestStoragePermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            return;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q &&ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            mSavingPage = page
+            requestStoragePermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            return
         }
-
-        String filename = mGalleryProvider.getImageFilenameWithExtension(page);
-        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-                MimeTypeMap.getFileExtensionFromUrl(filename));
+        val filename = mGalleryProvider!!.getImageFilenameWithExtension(page)
+        var mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+            MimeTypeMap.getFileExtensionFromUrl(filename)
+        )
         if (TextUtils.isEmpty(mimeType)) {
-            mimeType = "image/jpeg";
+            mimeType = "image/jpeg"
         }
-
-        String realPath;
-        ContentResolver resolver = getContentResolver();
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.MediaColumns.DISPLAY_NAME, filename);
-        values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis());
-        values.put(MediaStore.MediaColumns.MIME_TYPE, mimeType);
+        val realPath: String
+        val resolver = contentResolver
+        val values = ContentValues()
+        values.put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+        values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis())
+        values.put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + File.separator + AppConfig.APP_DIRNAME);
-            values.put(MediaStore.MediaColumns.IS_PENDING, 1);
-            realPath = Environment.DIRECTORY_PICTURES + File.separator + AppConfig.APP_DIRNAME;
+            values.put(
+                MediaStore.MediaColumns.RELATIVE_PATH,
+                Environment.DIRECTORY_PICTURES + File.separator + AppConfig.APP_DIRNAME
+            )
+            values.put(MediaStore.MediaColumns.IS_PENDING, 1)
+            realPath = Environment.DIRECTORY_PICTURES + File.separator + AppConfig.APP_DIRNAME
         } else {
-            File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), AppConfig.APP_DIRNAME);
-            realPath = path.toString();
+            val path = File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                AppConfig.APP_DIRNAME
+            )
+            realPath = path.toString()
             if (!FileUtils.ensureDirectory(path)) {
-                Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show();
-                return;
+                Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show()
+                return
             }
-            values.put(MediaStore.MediaColumns.DATA, path + File.separator + filename);
+            values.put(MediaStore.MediaColumns.DATA, path.toString() + File.separator + filename)
         }
-        Uri imageUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        val imageUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
         if (imageUri == null) {
-            Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show();
-            return;
+            Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show()
+            return
         }
-        if (!mGalleryProvider.save(page, UniFile.fromMediaUri(this, imageUri))) {
+        if (!mGalleryProvider!!.save(page, UniFile.fromMediaUri(this, imageUri))) {
             try {
-                resolver.delete(imageUri, null, null);
-            } catch (Exception e) {
-                e.printStackTrace();
+                resolver.delete(imageUri, null, null)
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-            Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show();
-            return;
+            Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show()
+            return
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(MediaStore.MediaColumns.IS_PENDING, 0);
-            resolver.update(imageUri, contentValues, null, null);
+            val contentValues = ContentValues()
+            contentValues.put(MediaStore.MediaColumns.IS_PENDING, 0)
+            resolver.update(imageUri, contentValues, null, null)
         }
-
-        Toast.makeText(this, getString(R.string.image_saved, realPath + File.separator + filename), Toast.LENGTH_SHORT).show();
+        Toast.makeText(
+            this,
+            getString(R.string.image_saved, realPath + File.separator + filename),
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
-    private void saveImageTo(int page) {
+    private fun saveImageTo(page: Int) {
         if (null == mGalleryProvider) {
-            return;
+            return
         }
-        File dir = AppConfig.getExternalTempDir();
+        val dir = AppConfig.getExternalTempDir()
         if (null == dir) {
-            Toast.makeText(this, R.string.error_cant_create_temp_file, Toast.LENGTH_SHORT).show();
-            return;
+            Toast.makeText(this, R.string.error_cant_create_temp_file, Toast.LENGTH_SHORT).show()
+            return
         }
-        UniFile file;
-        if (null == (file = mGalleryProvider.save(page, UniFile.fromFile(dir), mGalleryProvider.getImageFilename(page)))) {
-            Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show();
-            return;
+        val file = mGalleryProvider!!.save(
+            page,
+            UniFile.fromFile(dir)!!,
+            mGalleryProvider!!.getImageFilename(page)
+        )
+        if (file == null) {
+            Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show()
+            return
         }
-        String filename = file.getName();
+        val filename = file.name
         if (filename == null) {
-            Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show();
-            return;
+            Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show()
+            return
         }
-        mCacheFileName = filename;
+        mCacheFileName = filename
         try {
-            saveImageToLauncher.launch(filename);
-        } catch (Throwable e) {
-            ExceptionUtils.throwIfFatal(e);
-            Toast.makeText(this, R.string.error_cant_find_activity, Toast.LENGTH_SHORT).show();
+            saveImageToLauncher.launch(filename)
+        } catch (e: Throwable) {
+            ExceptionUtils.throwIfFatal(e)
+            Toast.makeText(this, R.string.error_cant_find_activity, Toast.LENGTH_SHORT).show()
         }
     }
 
-    private void showPageDialog(final int page) {
-        Resources resources = GalleryActivity.this.getResources();
-        AlertDialog.Builder builder = new AlertDialog.Builder(GalleryActivity.this);
-        builder.setTitle(resources.getString(R.string.page_menu_title, page + 1));
-
-        final CharSequence[] items;
-        items = new CharSequence[]{
-                getString(R.string.page_menu_refresh),
-                getString(R.string.page_menu_share),
-                getString(android.R.string.copy),
-                getString(R.string.page_menu_save),
-                getString(R.string.page_menu_save_to)};
-        pageDialogListener(builder, items, page);
-        builder.show();
+    private fun showPageDialog(page: Int) {
+        val resources = this@GalleryActivity.resources
+        val builder = AlertDialog.Builder(this@GalleryActivity)
+        builder.setTitle(resources.getString(R.string.page_menu_title, page + 1))
+        val items = arrayOf<CharSequence>(
+            getString(R.string.page_menu_refresh),
+            getString(R.string.page_menu_share),
+            getString(android.R.string.copy),
+            getString(R.string.page_menu_save),
+            getString(R.string.page_menu_save_to)
+        )
+        pageDialogListener(builder, items, page)
+        builder.show()
     }
 
-    private void pageDialogListener(AlertDialog.Builder builder, CharSequence[] items, int page) {
-        builder.setItems(items, (dialog, which) -> {
+    private fun pageDialogListener(
+        builder: AlertDialog.Builder,
+        items: Array<CharSequence>,
+        page: Int
+    ) {
+        builder.setItems(items) { _: DialogInterface?, which: Int ->
             if (mGalleryProvider == null) {
-                return;
+                return@setItems
             }
-
-            switch (which) {
-                case 0: // Refresh
-                    mGalleryProvider.removeCache(page);
-                    mGalleryProvider.forceRequest(page);
-                    break;
-                case 1: // Share
-                    shareImage(page);
-                    break;
-                case 2: // Copy
-                    copyImage(page);
-                    break;
-                case 3: // Save
-                    saveImage(page);
-                    break;
-                case 4: // Save to
-                    saveImageTo(page);
-                    break;
+            when (which) {
+                0 -> {
+                    mGalleryProvider!!.removeCache(page)
+                    mGalleryProvider!!.forceRequest(page)
+                }
+                1 -> shareImage(page)
+                2 -> copyImage(page)
+                3 -> saveImage(page)
+                4 -> saveImageTo(page)
             }
-        });
-    }
-
-    @Nullable
-    private String getGalleryDetailUrl() {
-        long gid;
-        String token;
-        if (mGalleryInfo != null) {
-            gid = mGalleryInfo.getGid();
-            token = mGalleryInfo.getToken();
-        } else {
-            return null;
-        }
-        return EhUrl.getGalleryDetailUrl(gid, token, 0, false);
-    }
-
-    @Override
-    public void onProvideAssistContent(AssistContent outContent) {
-        super.onProvideAssistContent(outContent);
-
-        String url = getGalleryDetailUrl();
-        if (url != null) {
-            outContent.setWebUri(Uri.parse(url));
         }
     }
 
-    private void showPasswdDialog() {
+    override fun onProvideAssistContent(outContent: AssistContent) {
+        super.onProvideAssistContent(outContent)
+        galleryDetailUrl?.let {
+            outContent.webUri = Uri.parse(it)
+        }
+    }
+
+    private fun showPasswdDialog() {
         if (!dialogShown) {
-            dialogShown = true;
-            dialog.show();
-            if (dialog.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
-                    GalleryActivity.this.onProvidePasswd();
-                });
+            dialogShown = true
+            dialog!!.show()
+            if (dialog!!.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
+                dialog!!.getButton(AlertDialog.BUTTON_POSITIVE)
+                    .setOnClickListener { onProvidePasswd() }
             }
-            dialog.setOnCancelListener(v -> finish());
+            dialog!!.setOnCancelListener { finish() }
         }
     }
 
-    private void onProvidePasswd() {
-        String passwd = builder.getText();
-        if (passwd.isEmpty())
-            builder.setError(getString(R.string.passwd_cannot_be_empty));
-        else {
-            ArchiveGalleryProvider.passwd = passwd;
-            ArchiveGalleryProvider.pv.v();
+    private fun onProvidePasswd() {
+        val passwd = builder!!.text
+        if (passwd.isEmpty()) builder!!.setError(getString(R.string.passwd_cannot_be_empty)) else {
+            ArchiveGalleryProvider.passwd = passwd
+            ArchiveGalleryProvider.pv.v()
         }
     }
 
-    private void onPasswdWrong() {
-        builder.setError(getString(R.string.passwd_wrong));
+    private fun onPasswdWrong() {
+        builder!!.setError(getString(R.string.passwd_wrong))
     }
 
-    private void onPasswdCorrect() {
-        dialog.dismiss();
+    private fun onPasswdCorrect() {
+        dialog!!.dismiss()
     }
 
-    private static class ShowPasswdDialogHandler extends Handler {
+    private class ShowPasswdDialogHandler(activity: GalleryActivity?) : Handler(Looper.getMainLooper()) {
         //弱引用持有HandlerActivity , GC 回收时会被回收掉
-        private final WeakReference<GalleryActivity> weakReference;
+        private val weakReference: WeakReference<GalleryActivity?>
 
-        public ShowPasswdDialogHandler(GalleryActivity activity) {
-            this.weakReference = new WeakReference(activity);
+        init {
+            weakReference = WeakReference(activity)
         }
 
-        @Override
-        public void handleMessage(Message msg) {
-            GalleryActivity activity = weakReference.get();
-            super.handleMessage(msg);
+        override fun handleMessage(msg: Message) {
+            val activity = weakReference.get()
+            super.handleMessage(msg)
             if (null != activity) {
-                switch (msg.what) {
-                    case 0:
-                        activity.showPasswdDialog();
-                        break;
-                    case 1:
-                        activity.onPasswdWrong();
-                        break;
-                    case 2:
-                        activity.onPasswdCorrect();
-                        break;
+                when (msg.what) {
+                    0 -> activity.showPasswdDialog()
+                    1 -> activity.onPasswdWrong()
+                    2 -> activity.onPasswdCorrect()
                 }
             }
         }
     }
 
-    private class GalleryMenuHelper implements DialogInterface.OnClickListener {
-        private final View mView;
-        private final Spinner mScreenRotation;
-        private final Spinner mReadingDirection;
-        private final Spinner mScaleMode;
-        private final Spinner mStartPosition;
-        private final Spinner mReadTheme;
-        private final Switch mKeepScreenOn;
-        private final Switch mShowClock;
-        private final Switch mShowProgress;
-        private final Switch mShowBattery;
-        private final Switch mShowPageInterval;
-        private final Switch mVolumePage;
-        private final Switch mReverseVolumePage;
-        private final Switch mReadingFullscreen;
-        private final Switch mCustomScreenLightness;
-        private final SeekBar mScreenLightness;
+    private inner class GalleryMenuHelper @SuppressLint("InflateParams") constructor(context: Context?) :
+        DialogInterface.OnClickListener {
+        val view: View
+        private val mScreenRotation: Spinner
+        private val mReadingDirection: Spinner
+        private val mScaleMode: Spinner
+        private val mStartPosition: Spinner
+        private val mReadTheme: Spinner
+        private val mKeepScreenOn: Switch
+        private val mShowClock: Switch
+        private val mShowProgress: Switch
+        private val mShowBattery: Switch
+        private val mShowPageInterval: Switch
+        private val mVolumePage: Switch
+        private val mReverseVolumePage: Switch
+        private val mReadingFullscreen: Switch
+        private val mCustomScreenLightness: Switch
+        private val mScreenLightness: SeekBar
 
-        @SuppressLint("InflateParams")
-        public GalleryMenuHelper(Context context) {
-            mView = LayoutInflater.from(context).inflate(R.layout.dialog_gallery_menu, null);
-            mScreenRotation = mView.findViewById(R.id.screen_rotation);
-            mReadingDirection = mView.findViewById(R.id.reading_direction);
-            mScaleMode = mView.findViewById(R.id.page_scaling);
-            mStartPosition = mView.findViewById(R.id.start_position);
-            mReadTheme = mView.findViewById(R.id.read_theme);
-            mKeepScreenOn = mView.findViewById(R.id.keep_screen_on);
-            mShowClock = mView.findViewById(R.id.show_clock);
-            mShowProgress = mView.findViewById(R.id.show_progress);
-            mShowBattery = mView.findViewById(R.id.show_battery);
-            mShowPageInterval = mView.findViewById(R.id.show_page_interval);
-            mVolumePage = mView.findViewById(R.id.volume_page);
-            mReverseVolumePage = mView.findViewById(R.id.reverse_volume_page);
-            mReadingFullscreen = mView.findViewById(R.id.reading_fullscreen);
-            mCustomScreenLightness = mView.findViewById(R.id.custom_screen_lightness);
-            mScreenLightness = mView.findViewById(R.id.screen_lightness);
-
-            mScreenRotation.setSelection(Settings.INSTANCE.getScreenRotation());
-            mReadingDirection.setSelection(Settings.INSTANCE.getReadingDirection());
-            mScaleMode.setSelection(Settings.INSTANCE.getPageScaling());
-            mStartPosition.setSelection(Settings.INSTANCE.getStartPosition());
-            mReadTheme.setSelection(Settings.INSTANCE.getReadTheme());
-            mKeepScreenOn.setChecked(Settings.INSTANCE.getKeepScreenOn());
-            mShowClock.setChecked(Settings.INSTANCE.getShowClock());
-            mShowProgress.setChecked(Settings.INSTANCE.getShowProgress());
-            mShowBattery.setChecked(Settings.INSTANCE.getShowBattery());
-            mShowPageInterval.setChecked(Settings.INSTANCE.getShowPageInterval());
-            mVolumePage.setChecked(Settings.INSTANCE.getVolumePage());
-            mVolumePage.setOnCheckedChangeListener((buttonView, isChecked) -> mReverseVolumePage.setEnabled(isChecked));
-            mReverseVolumePage.setEnabled(mVolumePage.isChecked());
-            mReverseVolumePage.setChecked(Settings.INSTANCE.getReverseVolumePage());
-            mReadingFullscreen.setChecked(Settings.INSTANCE.getReadingFullscreen());
-            mCustomScreenLightness.setChecked(Settings.INSTANCE.getCustomScreenLightness());
-            mScreenLightness.setProgress(Settings.INSTANCE.getScreenLightness());
-            mScreenLightness.setEnabled(Settings.INSTANCE.getCustomScreenLightness());
-
-            mCustomScreenLightness.setOnCheckedChangeListener((buttonView, isChecked) -> mScreenLightness.setEnabled(isChecked));
+        init {
+            view = LayoutInflater.from(context).inflate(R.layout.dialog_gallery_menu, null)
+            mScreenRotation = view.findViewById(R.id.screen_rotation)
+            mReadingDirection = view.findViewById(R.id.reading_direction)
+            mScaleMode = view.findViewById(R.id.page_scaling)
+            mStartPosition = view.findViewById(R.id.start_position)
+            mReadTheme = view.findViewById(R.id.read_theme)
+            mKeepScreenOn = view.findViewById(R.id.keep_screen_on)
+            mShowClock = view.findViewById(R.id.show_clock)
+            mShowProgress = view.findViewById(R.id.show_progress)
+            mShowBattery = view.findViewById(R.id.show_battery)
+            mShowPageInterval = view.findViewById(R.id.show_page_interval)
+            mVolumePage = view.findViewById(R.id.volume_page)
+            mReverseVolumePage = view.findViewById(R.id.reverse_volume_page)
+            mReadingFullscreen = view.findViewById(R.id.reading_fullscreen)
+            mCustomScreenLightness = view.findViewById(R.id.custom_screen_lightness)
+            mScreenLightness = view.findViewById(R.id.screen_lightness)
+            mScreenRotation.setSelection(Settings.screenRotation)
+            mReadingDirection.setSelection(Settings.readingDirection)
+            mScaleMode.setSelection(Settings.pageScaling)
+            mStartPosition.setSelection(Settings.startPosition)
+            mReadTheme.setSelection(Settings.readTheme)
+            mKeepScreenOn.isChecked = Settings.keepScreenOn
+            mShowClock.isChecked = Settings.showClock
+            mShowProgress.isChecked = Settings.showProgress
+            mShowBattery.isChecked = Settings.showBattery
+            mShowPageInterval.isChecked = Settings.showPageInterval
+            mVolumePage.isChecked = Settings.volumePage
+            mVolumePage.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+                mReverseVolumePage.isEnabled = isChecked
+            }
+            mReverseVolumePage.isEnabled = mVolumePage.isChecked
+            mReverseVolumePage.isChecked = Settings.reverseVolumePage
+            mReadingFullscreen.isChecked = Settings.readingFullscreen
+            mCustomScreenLightness.isChecked = Settings.customScreenLightness
+            mScreenLightness.progress = Settings.screenLightness
+            mScreenLightness.isEnabled = Settings.customScreenLightness
+            mCustomScreenLightness.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+                mScreenLightness.isEnabled = isChecked
+            }
         }
 
-        public View getView() {
-            return mView;
-        }
-
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
+        override fun onClick(dialog: DialogInterface, which: Int) {
             if (mGalleryView == null) {
-                return;
+                return
             }
-
-            int screenRotation = mScreenRotation.getSelectedItemPosition();
-            int layoutMode = GalleryView.sanitizeLayoutMode(mReadingDirection.getSelectedItemPosition());
-            int scaleMode = GalleryView.sanitizeScaleMode(mScaleMode.getSelectedItemPosition());
-            int startPosition = GalleryView.sanitizeStartPosition(mStartPosition.getSelectedItemPosition());
-            int readTheme = mReadTheme.getSelectedItemPosition();
-            boolean keepScreenOn = mKeepScreenOn.isChecked();
-            boolean showClock = mShowClock.isChecked();
-            boolean showProgress = mShowProgress.isChecked();
-            boolean showBattery = mShowBattery.isChecked();
-            boolean showPageInterval = mShowPageInterval.isChecked();
-            boolean volumePage = mVolumePage.isChecked();
-            boolean reverseVolumePage = mReverseVolumePage.isChecked();
-            boolean readingFullscreen = mReadingFullscreen.isChecked();
-            boolean customScreenLightness = mCustomScreenLightness.isChecked();
-            int screenLightness = mScreenLightness.getProgress();
-
-            boolean oldReadingFullscreen = Settings.INSTANCE.getReadingFullscreen();
-            int oldReadTheme = Settings.INSTANCE.getReadTheme();
-
-            Settings.INSTANCE.putScreenRotation(screenRotation);
-            Settings.INSTANCE.putReadingDirection(layoutMode);
-            Settings.INSTANCE.putPageScaling(scaleMode);
-            Settings.INSTANCE.putStartPosition(startPosition);
-            Settings.INSTANCE.putReadTheme(readTheme);
-            Settings.INSTANCE.putKeepScreenOn(keepScreenOn);
-            Settings.INSTANCE.putShowClock(showClock);
-            Settings.INSTANCE.putShowProgress(showProgress);
-            Settings.INSTANCE.putShowBattery(showBattery);
-            Settings.INSTANCE.putShowPageInterval(showPageInterval);
-            Settings.INSTANCE.putVolumePage(volumePage);
-            Settings.INSTANCE.putReverseVolumePage(reverseVolumePage);
-            Settings.INSTANCE.putReadingFullscreen(readingFullscreen);
-            Settings.INSTANCE.putCustomScreenLightness(customScreenLightness);
-            Settings.INSTANCE.putScreenLightness(screenLightness);
-
-            int orientation;
-            switch (screenRotation) {
-                default:
-                case 0:
-                    orientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
-                    break;
-                case 1:
-                    orientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT;
-                    break;
-                case 2:
-                    orientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE;
-                    break;
-                case 3:
-                    orientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR;
-                    break;
+            val screenRotation = mScreenRotation.selectedItemPosition
+            val layoutMode = GalleryView.sanitizeLayoutMode(mReadingDirection.selectedItemPosition)
+            val scaleMode = GalleryView.sanitizeScaleMode(mScaleMode.selectedItemPosition)
+            val startPosition =
+                GalleryView.sanitizeStartPosition(mStartPosition.selectedItemPosition)
+            val readTheme = mReadTheme.selectedItemPosition
+            val keepScreenOn = mKeepScreenOn.isChecked
+            val showClock = mShowClock.isChecked
+            val showProgress = mShowProgress.isChecked
+            val showBattery = mShowBattery.isChecked
+            val showPageInterval = mShowPageInterval.isChecked
+            val volumePage = mVolumePage.isChecked
+            val reverseVolumePage = mReverseVolumePage.isChecked
+            val readingFullscreen = mReadingFullscreen.isChecked
+            val customScreenLightness = mCustomScreenLightness.isChecked
+            val screenLightness = mScreenLightness.progress
+            val oldReadingFullscreen = Settings.readingFullscreen
+            val oldReadTheme = Settings.readTheme
+            Settings.putScreenRotation(screenRotation)
+            Settings.putReadingDirection(layoutMode)
+            Settings.putPageScaling(scaleMode)
+            Settings.putStartPosition(startPosition)
+            Settings.putReadTheme(readTheme)
+            Settings.putKeepScreenOn(keepScreenOn)
+            Settings.putShowClock(showClock)
+            Settings.putShowProgress(showProgress)
+            Settings.putShowBattery(showBattery)
+            Settings.putShowPageInterval(showPageInterval)
+            Settings.putVolumePage(volumePage)
+            Settings.putReverseVolumePage(reverseVolumePage)
+            Settings.putReadingFullscreen(readingFullscreen)
+            Settings.putCustomScreenLightness(customScreenLightness)
+            Settings.putScreenLightness(screenLightness)
+            requestedOrientation = when (screenRotation) {
+                0 -> ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                1 -> ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+                2 -> ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                3 -> ActivityInfo.SCREEN_ORIENTATION_SENSOR
+                else -> ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
             }
-            setRequestedOrientation(orientation);
-            mGalleryView.setLayoutMode(layoutMode);
-            mGalleryView.setScaleMode(scaleMode);
-            mGalleryView.setStartPosition(startPosition);
+            mGalleryView!!.layoutMode = layoutMode
+            mGalleryView!!.setScaleMode(scaleMode)
+            mGalleryView!!.setStartPosition(startPosition)
             if (keepScreenOn) {
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             } else {
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             }
-            if (mClock != null) {
-                mClock.setVisibility(showClock ? View.VISIBLE : View.GONE);
-            }
-            if (mProgress != null) {
-                mProgress.setVisibility(showProgress ? View.VISIBLE : View.GONE);
-            }
-            if (mBattery != null) {
-                mBattery.setVisibility(showBattery ? View.VISIBLE : View.GONE);
-            }
-            mGalleryView.setPagerInterval(showPageInterval ? getResources().getDimensionPixelOffset(R.dimen.gallery_pager_interval) : 0);
-            mGalleryView.setScrollInterval(showPageInterval ? getResources().getDimensionPixelOffset(R.dimen.gallery_scroll_interval) : 0);
-            setScreenLightness(customScreenLightness, screenLightness);
-
+            mClock?.visibility = if (showClock) View.VISIBLE else View.GONE
+            mProgress?.visibility = if (showProgress) View.VISIBLE else View.GONE
+            mBattery?.visibility = if (showBattery) View.VISIBLE else View.GONE
+            mGalleryView!!.setPagerInterval(
+                if (showPageInterval) resources.getDimensionPixelOffset(
+                    R.dimen.gallery_pager_interval
+                ) else 0
+            )
+            mGalleryView!!.setScrollInterval(
+                if (showPageInterval) resources.getDimensionPixelOffset(
+                    R.dimen.gallery_scroll_interval
+                ) else 0
+            )
+            setScreenLightness(customScreenLightness, screenLightness)
             // Update slider
-            mLayoutMode = layoutMode;
-            updateSlider();
-
+            mLayoutMode = layoutMode
+            updateSlider()
             if (oldReadingFullscreen != readingFullscreen || oldReadTheme != readTheme) {
-                recreate();
+                recreate()
             }
         }
     }
 
-    private class NotifyTask implements Runnable {
-        public static final int KEY_LAYOUT_MODE = 0;
-        public static final int KEY_SIZE = 1;
-        public static final int KEY_CURRENT_INDEX = 2;
-        public static final int KEY_TAP_SLIDER_AREA = 3;
-        public static final int KEY_TAP_MENU_AREA = 4;
-        public static final int KEY_TAP_ERROR_TEXT = 5;
-        public static final int KEY_LONG_PRESS_PAGE = 6;
+    private inner class NotifyTask : Runnable {
+        private var mKey = 0
+        private var mValue = 0
 
-        private int mKey;
-        private int mValue;
-
-        public void setData(int key, int value) {
-            mKey = key;
-            mValue = value;
+        fun setData(key: Int, value: Int) {
+            mKey = key
+            mValue = value
         }
 
-        private void onTapMenuArea() {
-            AlertDialog.Builder builder = new AlertDialog.Builder(GalleryActivity.this);
-            GalleryMenuHelper helper = new GalleryMenuHelper(builder.getContext());
+        private fun onTapMenuArea() {
+            val builder = AlertDialog.Builder(this@GalleryActivity)
+            val helper = GalleryMenuHelper(builder.context)
             builder.setTitle(R.string.gallery_menu_title)
-                    .setView(helper.getView())
-                    .setPositiveButton(android.R.string.ok, helper).show();
+                .setView(helper.view)
+                .setPositiveButton(android.R.string.ok, helper).show()
         }
 
-        private void onTapSliderArea() {
+        private fun onTapSliderArea() {
             if (mSeekBarPanel == null || mSize <= 0 || mCurrentIndex < 0) {
-                return;
+                return
             }
-
-            SimpleHandler.getInstance().removeCallbacks(mHideSliderRunnable);
-
-            if (mSeekBarPanel.getVisibility() == View.VISIBLE) {
-                hideSlider(mSeekBarPanel);
+            SimpleHandler.getInstance().removeCallbacks(mHideSliderRunnable)
+            if (mSeekBarPanel!!.visibility == View.VISIBLE) {
+                hideSlider(mSeekBarPanel!!)
             } else {
-                showSlider(mSeekBarPanel);
-                SimpleHandler.getInstance().postDelayed(mHideSliderRunnable, HIDE_SLIDER_DELAY);
+                showSlider(mSeekBarPanel!!)
+                SimpleHandler.getInstance().postDelayed(mHideSliderRunnable, HIDE_SLIDER_DELAY)
             }
         }
 
-        private void onTapErrorText(int index) {
+        private fun onTapErrorText(index: Int) {
             if (mGalleryProvider != null) {
-                mGalleryProvider.forceRequest(index);
+                mGalleryProvider!!.forceRequest(index)
             }
         }
 
-        private void onLongPressPage(final int index) {
-            showPageDialog(index);
+        private fun onLongPressPage(index: Int) {
+            showPageDialog(index)
         }
 
-        @Override
-        public void run() {
-            switch (mKey) {
-                case KEY_LAYOUT_MODE:
-                    GalleryActivity.this.mLayoutMode = mValue;
-                    updateSlider();
-                    break;
-                case KEY_SIZE:
-                    GalleryActivity.this.mSize = mValue;
-                    updateSlider();
-                    updateProgress();
-                    break;
-                case KEY_CURRENT_INDEX:
-                    GalleryActivity.this.mCurrentIndex = mValue;
-                    updateSlider();
-                    updateProgress();
-                    break;
-                case KEY_TAP_MENU_AREA:
-                    onTapMenuArea();
-                    break;
-                case KEY_TAP_SLIDER_AREA:
-                    onTapSliderArea();
-                    break;
-                case KEY_TAP_ERROR_TEXT:
-                    onTapErrorText(mValue);
-                    break;
-                case KEY_LONG_PRESS_PAGE:
-                    onLongPressPage(mValue);
-                    break;
+        override fun run() {
+            when (mKey) {
+                NOTIFY_KEY_LAYOUT_MODE -> {
+                    mLayoutMode = mValue
+                    updateSlider()
+                }
+                NOTIFY_KEY_SIZE -> {
+                    mSize = mValue
+                    updateSlider()
+                    updateProgress()
+                }
+                NOTIFY_KEY_CURRENT_INDEX -> {
+                    mCurrentIndex = mValue
+                    updateSlider()
+                    updateProgress()
+                }
+                NOTIFY_KEY_TAP_MENU_AREA -> onTapMenuArea()
+                NOTIFY_KEY_TAP_SLIDER_AREA -> onTapSliderArea()
+                NOTIFY_KEY_TAP_ERROR_TEXT -> onTapErrorText(mValue)
+                NOTIFY_KEY_LONG_PRESS_PAGE -> onLongPressPage(mValue)
             }
-            mNotifyTaskPool.push(this);
+            mNotifyTaskPool.push(this)
         }
     }
 
-    private class GalleryAdapter extends SimpleAdapter {
-        public GalleryAdapter(@NonNull GLRootView glRootView, @NonNull GalleryProvider provider) {
-            super(glRootView, provider);
-        }
-
-        @Override
-        public void onDataChanged() {
-            super.onDataChanged();
-
+    private inner class GalleryAdapter(glRootView: GLRootView, provider: GalleryProvider) :
+        SimpleAdapter(glRootView, provider) {
+        override fun onDataChanged() {
+            super.onDataChanged()
             if (mGalleryProvider != null) {
-                int size = mGalleryProvider.size();
-                NotifyTask task = mNotifyTaskPool.pop();
-                if (task == null) {
-                    task = new NotifyTask();
-                }
-                task.setData(NotifyTask.KEY_SIZE, size);
-                SimpleHandler.getInstance().post(task);
+                val size = mGalleryProvider!!.size()
+                val task = mNotifyTaskPool.pop() ?: NotifyTask()
+                task.setData(NOTIFY_KEY_SIZE, size)
+                SimpleHandler.getInstance().post(task)
             }
         }
+    }
+
+    companion object {
+        const val ACTION_EH = "eh"
+        const val KEY_ACTION = "action"
+        const val KEY_FILENAME = "filename"
+        const val KEY_URI = "uri"
+        const val KEY_GALLERY_INFO = "gallery_info"
+        const val KEY_PAGE = "page"
+        const val KEY_CURRENT_INDEX = "current_index"
+        private const val SLIDER_ANIMATION_DURING: Long = 150
+        private const val HIDE_SLIDER_DELAY: Long = 3000
+        private const val NOTIFY_KEY_LAYOUT_MODE = 0
+        private const val NOTIFY_KEY_SIZE = 1
+        private const val NOTIFY_KEY_CURRENT_INDEX = 2
+        private const val NOTIFY_KEY_TAP_SLIDER_AREA = 3
+        private const val NOTIFY_KEY_TAP_MENU_AREA = 4
+        private const val NOTIFY_KEY_TAP_ERROR_TEXT = 5
+        private const val NOTIFY_KEY_LONG_PRESS_PAGE = 6
     }
 }

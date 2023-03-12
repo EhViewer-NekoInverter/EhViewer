@@ -322,7 +322,7 @@ class AdvancedFragment : BasePreferenceFragment() {
                             BaseScene.LENGTH_SHORT
                         )
                     } else {
-                        if (favTotal == 0 && result.countArray != null) {
+                        if (favTotal == 0) {
                             var totalFav = 0
                             for (i in 0..9) {
                                 totalFav += result.countArray[i]

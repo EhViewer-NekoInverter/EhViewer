@@ -13,64 +13,66 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.ehviewer.ui.scene
 
-package com.hippo.ehviewer.ui.scene;
-
-import android.os.Bundle;
-import android.util.Log;
-
-import com.hippo.ehviewer.Settings;
-import com.hippo.ehviewer.client.EhUtils;
-import com.hippo.scene.Announcer;
+import android.os.Bundle
+import android.util.Log
+import com.hippo.ehviewer.Settings
+import com.hippo.ehviewer.client.EhUtils
+import com.hippo.scene.Announcer
 
 /**
  * Scene for safety, can't be covered
  */
-public class SolidScene extends BaseScene {
-    public static final int CHECK_STEP_SECURITY = 0;
-    public static final int CHECK_STEP_SIGN_IN = 1;
-    public static final int CHECK_STEP_SELECT_SITE = 2;
-    public static final String KEY_TARGET_SCENE = "target_scene";
-    public static final String KEY_TARGET_ARGS = "target_args";
-    private static final String TAG = SolidScene.class.getSimpleName();
-
-    public void startSceneForCheckStep(int checkStep, Bundle args) {
-        switch (checkStep) {
-            case CHECK_STEP_SECURITY:
-                if (EhUtils.INSTANCE.needSignedIn()) {
-                    startScene(new Announcer(SignInScene.class).setArgs(args), true);
-                    break;
+open class SolidScene : BaseScene() {
+    fun startSceneForCheckStep(checkStep: Int, args: Bundle?) {
+        when (checkStep) {
+            CHECK_STEP_SECURITY -> {
+                if (EhUtils.needSignedIn()) {
+                    startScene(Announcer(SignInScene::class.java).setArgs(args), true)
+                } else {
+                    startSceneForCheckStep(CHECK_STEP_SIGN_IN, args)
                 }
-            case CHECK_STEP_SIGN_IN:
-                if (Settings.INSTANCE.getSelectSite()) {
-                    startScene(new Announcer(SelectSiteScene.class).setArgs(args), true);
-                    break;
+            }
+            CHECK_STEP_SIGN_IN -> {
+                if (Settings.selectSite) {
+                    startScene(Announcer(SelectSiteScene::class.java).setArgs(args), true)
+                } else {
+                    startSceneForCheckStep(CHECK_STEP_SELECT_SITE, args)
                 }
-            case CHECK_STEP_SELECT_SITE:
-                String targetScene = null;
-                Bundle targetArgs = null;
+            }
+            CHECK_STEP_SELECT_SITE -> {
+                var targetScene: String? = null
+                var targetArgs: Bundle? = null
                 if (null != args) {
-                    targetScene = args.getString(KEY_TARGET_SCENE);
-                    targetArgs = args.getBundle(KEY_TARGET_ARGS);
+                    targetScene = args.getString(KEY_TARGET_SCENE)
+                    targetArgs = args.getBundle(KEY_TARGET_ARGS)
                 }
-
-                Class<?> clazz = null;
+                var clazz: Class<*>? = null
                 if (targetScene != null) {
                     try {
-                        clazz = Class.forName(targetScene);
-                    } catch (ClassNotFoundException e) {
-                        Log.e(TAG, "Can't find class with name: " + targetScene);
+                        clazz = Class.forName(targetScene)
+                    } catch (e: ClassNotFoundException) {
+                        Log.e(TAG, "Can't find class with name: $targetScene")
                     }
                 }
-
                 if (clazz != null) {
-                    startScene(new Announcer(clazz).setArgs(targetArgs));
+                    startScene(Announcer(clazz).setArgs(targetArgs))
                 } else {
-                    Bundle newArgs = new Bundle();
-                    newArgs.putString(GalleryListScene.KEY_ACTION, Settings.INSTANCE.getLaunchPageGalleryListSceneAction());
-                    startScene(new Announcer(GalleryListScene.class).setArgs(newArgs));
+                    val newArgs = Bundle()
+                    newArgs.putString(GalleryListScene.KEY_ACTION, Settings.launchPageGalleryListSceneAction)
+                    startScene(Announcer(GalleryListScene::class.java).setArgs(newArgs))
                 }
-                break;
+            }
         }
+    }
+
+    companion object {
+        const val CHECK_STEP_SECURITY = 0
+        const val CHECK_STEP_SIGN_IN = 1
+        const val CHECK_STEP_SELECT_SITE = 2
+        const val KEY_TARGET_SCENE = "target_scene"
+        const val KEY_TARGET_ARGS = "target_args"
+        private val TAG = SolidScene::class.java.simpleName
     }
 }

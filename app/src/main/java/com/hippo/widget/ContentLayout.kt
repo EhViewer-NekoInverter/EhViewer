@@ -83,12 +83,11 @@ class ContentLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout
             R.color.loading_indicator_green,
             R.color.loading_indicator_yellow
         )
-        val resources = resources
         mBottomProgress.setIndicatorColor(
-            resources.getColor(R.color.loading_indicator_red),
-            resources.getColor(R.color.loading_indicator_blue),
-            resources.getColor(R.color.loading_indicator_green),
-            resources.getColor(R.color.loading_indicator_orange)
+            context.getColor(R.color.loading_indicator_red),
+            context.getColor(R.color.loading_indicator_blue),
+            context.getColor(R.color.loading_indicator_green),
+            context.getColor(R.color.loading_indicator_orange)
         )
         mBottomProgress.setIndeterminateAnimationType(LinearProgressIndicator.INDETERMINATE_ANIMATION_TYPE_CONTIGUOUS)
         mRecyclerViewOriginBottom = mRecyclerView.paddingBottom
@@ -835,6 +834,7 @@ class ContentLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout
             return bundle
         }
 
+        @Suppress("UNCHECKED_CAST")
         open fun restoreInstanceState(state: Parcelable): Parcelable? {
             return if (state is Bundle) {
                 mViewTransition!!.showView(state.getInt(KEY_SHOWN_VIEW), false)

@@ -331,7 +331,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         mGalleryInfo?.let {
             // Other Actions
             try {
-                val galleryProvider: GalleryProvider2 = EhGalleryProvider(mGalleryInfo)
+                val galleryProvider: GalleryProvider2 = EhGalleryProvider(mGalleryInfo!!)
                 galleryProvider.start()
                 val startPage = galleryProvider.startPage
                 galleryProvider.stop()

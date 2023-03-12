@@ -13,209 +13,203 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.ehviewer.gallery
 
-package com.hippo.ehviewer.gallery;
+import com.hippo.ehviewer.client.data.GalleryInfo
+import com.hippo.ehviewer.spider.SpiderQueen
+import com.hippo.ehviewer.spider.SpiderQueen.OnSpiderListener
+import com.hippo.image.Image
+import com.hippo.unifile.UniFile
+import com.hippo.yorozuya.SimpleHandler
+import java.util.Locale
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.hippo.ehviewer.client.data.GalleryInfo;
-import com.hippo.ehviewer.spider.SpiderQueen;
-import com.hippo.glgallery.GalleryProvider;
-import com.hippo.image.Image;
-import com.hippo.unifile.UniFile;
-import com.hippo.yorozuya.SimpleHandler;
-
-import java.util.Locale;
-
-public class EhGalleryProvider extends GalleryProvider2 implements SpiderQueen.OnSpiderListener {
-    private final GalleryInfo mGalleryInfo;
-    @Nullable
-    private SpiderQueen mSpiderQueen;
-
-    public EhGalleryProvider(GalleryInfo galleryInfo) {
-        mGalleryInfo = galleryInfo;
+class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) : GalleryProvider2(),
+    OnSpiderListener {
+    private var mSpiderQueen: SpiderQueen? = null
+    override fun start() {
+        super.start()
+        mSpiderQueen = SpiderQueen.obtainSpiderQueen(mGalleryInfo, SpiderQueen.MODE_READ)
+        mSpiderQueen!!.addOnSpiderListener(this)
     }
 
-    @Override
-    public void start() {
-        super.start();
-
-        mSpiderQueen = SpiderQueen.obtainSpiderQueen(mGalleryInfo, SpiderQueen.MODE_READ);
-        mSpiderQueen.addOnSpiderListener(this);
-    }
-
-    @Override
-    public void stop() {
-        super.stop();
-
+    override fun stop() {
+        super.stop()
         if (mSpiderQueen != null) {
-            mSpiderQueen.removeOnSpiderListener(this);
+            mSpiderQueen!!.removeOnSpiderListener(this)
             // Activity recreate may called, so wait 3000s
-            SimpleHandler.getInstance().postDelayed(new ReleaseTask(mSpiderQueen), 3000);
-            mSpiderQueen = null;
+            SimpleHandler.getInstance().postDelayed(ReleaseTask(mSpiderQueen), 3000)
+            mSpiderQueen = null
         }
     }
 
-    @Override
-    public int getStartPage() {
-        if (mSpiderQueen != null) {
-            return mSpiderQueen.getStartPage();
+    override fun getStartPage(): Int {
+        return if (mSpiderQueen != null) {
+            mSpiderQueen!!.startPage
         } else {
-            return super.getStartPage();
+            super.getStartPage()
         }
     }
 
-    @NonNull
-    @Override
-    public String getImageFilename(int index) {
-        return String.format(Locale.US, "%d-%s-%08d", mGalleryInfo.getGid(), mGalleryInfo.getToken(), index + 1);
+    override fun getImageFilename(index: Int): String {
+        return String.format(
+            Locale.US,
+            "%d-%s-%08d",
+            mGalleryInfo.gid,
+            mGalleryInfo.token,
+            index + 1
+        )
     }
 
-    @NonNull
-    @Override
-    public String getImageFilenameWithExtension(int index) {
+    override fun getImageFilenameWithExtension(index: Int): String {
         if (null != mSpiderQueen) {
-            String extension = mSpiderQueen.getExtension(index);
+            val extension = mSpiderQueen!!.getExtension(index)
             if (extension != null) {
-                return String.format(Locale.US, "%d-%s-%08d.%s", mGalleryInfo.getGid(), mGalleryInfo.getToken(), index + 1, extension);
+                return String.format(
+                    Locale.US,
+                    "%d-%s-%08d.%s",
+                    mGalleryInfo.gid,
+                    mGalleryInfo.token,
+                    index + 1,
+                    extension
+                )
             }
         }
-        return String.format(Locale.US, "%d-%s-%08d", mGalleryInfo.getGid(), mGalleryInfo.getToken(), index + 1);
+        return String.format(
+            Locale.US,
+            "%d-%s-%08d",
+            mGalleryInfo.gid,
+            mGalleryInfo.token,
+            index + 1
+        )
     }
 
-    @Override
-    public boolean save(int index, @NonNull UniFile file) {
-        if (null != mSpiderQueen) {
-            return mSpiderQueen.save(index, file);
+    override fun save(index: Int, file: UniFile): Boolean {
+        return if (null != mSpiderQueen) {
+            mSpiderQueen!!.save(index, file)
         } else {
-            return false;
+            false
         }
     }
 
-    @Nullable
-    @Override
-    public UniFile save(int index, @NonNull UniFile dir, @NonNull String filename) {
-        if (null != mSpiderQueen) {
-            return mSpiderQueen.save(index, dir, filename);
+    override fun save(index: Int, dir: UniFile, filename: String): UniFile? {
+        return if (null != mSpiderQueen) {
+            mSpiderQueen!!.save(index, dir, filename)
         } else {
-            return null;
+            null
         }
     }
 
-    @Override
-    public void putStartPage(int page) {
+    override fun putStartPage(page: Int) {
         if (mSpiderQueen != null) {
-            mSpiderQueen.putStartPage(page);
+            mSpiderQueen!!.putStartPage(page)
         }
     }
 
-    @Override
-    public int size() {
-        if (mSpiderQueen != null) {
-            return mSpiderQueen.size();
+    override fun size(): Int {
+        return if (mSpiderQueen != null) {
+            mSpiderQueen!!.size()
         } else {
-            return GalleryProvider.STATE_ERROR;
+            STATE_ERROR
         }
     }
 
-    @Override
-    protected void onRequest(int index) {
+    override fun onRequest(index: Int) {
         if (mSpiderQueen != null) {
-            Object object = mSpiderQueen.request(index);
-            if (object instanceof Float) {
-                notifyPagePercent(index, (Float) object);
-            } else if (object instanceof String) {
-                notifyPageFailed(index, (String) object);
-            } else if (object == null) {
-                notifyPageWait(index);
+            when (val `object` = mSpiderQueen!!.request(index)) {
+                is Float -> {
+                    notifyPagePercent(index, `object`)
+                }
+
+                is String -> {
+                    notifyPageFailed(index, `object`)
+                }
+
+                null -> {
+                    notifyPageWait(index)
+                }
             }
         }
     }
 
-    @Override
-    protected void onForceRequest(int index) {
+    override fun onForceRequest(index: Int) {
         if (mSpiderQueen != null) {
-            Object object = mSpiderQueen.forceRequest(index);
-            if (object instanceof Float) {
-                notifyPagePercent(index, (Float) object);
-            } else if (object instanceof String) {
-                notifyPageFailed(index, (String) object);
-            } else if (object == null) {
-                notifyPageWait(index);
+            when (val `object` = mSpiderQueen!!.forceRequest(index)) {
+                is Float -> {
+                    notifyPagePercent(index, `object`)
+                }
+
+                is String -> {
+                    notifyPageFailed(index, `object`)
+                }
+
+                null -> {
+                    notifyPageWait(index)
+                }
             }
         }
     }
 
-    @Override
-    protected void onCancelRequest(int index) {
+    override fun onCancelRequest(index: Int) {
         if (mSpiderQueen != null) {
-            mSpiderQueen.cancelRequest(index);
+            mSpiderQueen!!.cancelRequest(index)
         }
     }
 
-    @Override
-    public String getError() {
-        if (mSpiderQueen != null) {
-            return mSpiderQueen.getError();
+    override fun getError(): String {
+        return if (mSpiderQueen != null) {
+            mSpiderQueen!!.error
         } else {
-            return "Error"; // TODO
+            "Error" // TODO
         }
     }
 
-    @Override
-    public void onGetPages(int pages) {
-        notifyDataChanged();
+    override fun onGetPages(pages: Int) {
+        notifyDataChanged()
     }
 
-    @Override
-    public void onGet509(int index) {
+    override fun onGet509(index: Int) {
         // TODO
     }
 
-    @Override
-    public void onPageDownload(int index, long contentLength, long receivedSize, int bytesRead) {
+    override fun onPageDownload(
+        index: Int,
+        contentLength: Long,
+        receivedSize: Long,
+        bytesRead: Int
+    ) {
         if (contentLength > 0) {
-            notifyPagePercent(index, (float) receivedSize / contentLength);
+            notifyPagePercent(index, receivedSize.toFloat() / contentLength)
         }
     }
 
-    @Override
-    public void onPageSuccess(int index, int finished, int downloaded, int total) {
-        notifyDataChanged(index);
+    override fun onPageSuccess(index: Int, finished: Int, downloaded: Int, total: Int) {
+        notifyDataChanged(index)
     }
 
-    @Override
-    public void onPageFailure(int index, String error, int finished, int downloaded, int total) {
-        notifyPageFailed(index, error);
+    override fun onPageFailure(
+        index: Int,
+        error: String,
+        finished: Int,
+        downloaded: Int,
+        total: Int
+    ) {
+        notifyPageFailed(index, error)
     }
 
-    @Override
-    public void onFinish(int finished, int downloaded, int total) {
+    override fun onFinish(finished: Int, downloaded: Int, total: Int) {}
+    override fun onGetImageSuccess(index: Int, image: Image) {
+        notifyPageSucceed(index, image)
     }
 
-    @Override
-    public void onGetImageSuccess(int index, Image image) {
-        notifyPageSucceed(index, image);
+    override fun onGetImageFailure(index: Int, error: String) {
+        notifyPageFailed(index, error)
     }
 
-    @Override
-    public void onGetImageFailure(int index, String error) {
-        notifyPageFailed(index, error);
-    }
-
-    private static class ReleaseTask implements Runnable {
-        private SpiderQueen mSpiderQueen;
-
-        public ReleaseTask(SpiderQueen spiderQueen) {
-            mSpiderQueen = spiderQueen;
-        }
-
-        @Override
-        public void run() {
+    private class ReleaseTask(private var mSpiderQueen: SpiderQueen?) : Runnable {
+        override fun run() {
             if (null != mSpiderQueen) {
-                SpiderQueen.releaseSpiderQueen(mSpiderQueen, SpiderQueen.MODE_READ);
-                mSpiderQueen = null;
+                SpiderQueen.releaseSpiderQueen(mSpiderQueen!!, SpiderQueen.MODE_READ)
+                mSpiderQueen = null
             }
         }
     }
