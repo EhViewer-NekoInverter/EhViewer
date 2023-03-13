@@ -41,7 +41,7 @@ abstract class BaseScene : SceneFragment() {
     private var insetsController: WindowInsetsControllerCompat? = null
     private var drawerView: View? = null
     private var drawerViewState: SparseArray<Parcelable?>? = null
-    private var needWhiteStatusBar = true
+    open var needWhiteStatusBar = true
 
     fun updateAvatar() {
         val activity = activity
@@ -107,10 +107,6 @@ abstract class BaseScene : SceneFragment() {
     }
 
     open fun needShowLeftDrawer(): Boolean {
-        return true
-    }
-
-    open fun needWhiteStatusBar(): Boolean {
         return true
     }
 

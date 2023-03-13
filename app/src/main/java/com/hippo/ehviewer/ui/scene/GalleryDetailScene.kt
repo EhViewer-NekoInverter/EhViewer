@@ -314,6 +314,8 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
             null
         }
 
+    override var needWhiteStatusBar = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
@@ -538,10 +540,6 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         }
         mDownloadManager.addDownloadInfoListener(this)
         return view
-    }
-
-    override fun needWhiteStatusBar(): Boolean {
-        return false
     }
 
     override fun onDestroyView() {

@@ -37,6 +37,8 @@ abstract class ToolbarScene : BaseScene() {
         return null
     }
 
+    override var needWhiteStatusBar = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?, savedInstanceState: Bundle?
@@ -70,10 +72,6 @@ abstract class ToolbarScene : BaseScene() {
             }
             setNavigationOnClickListener { onNavigationClick() }
         }
-    }
-
-    override fun needWhiteStatusBar(): Boolean {
-        return false
     }
 
     open fun getMenuResId(): Int {
