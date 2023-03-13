@@ -13,67 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.ehviewer.ui.dialog
 
-package com.hippo.ehviewer.ui.dialog;
+import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.BaseAdapter
+import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
+import com.hippo.ehviewer.R
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.TextView;
+class SelectItemWithIconAdapter(
+    private val context: Context,
+    private val texts: Array<CharSequence>,
+    private val icons: IntArray
+) : BaseAdapter() {
+    private val inflater: LayoutInflater
 
-import androidx.appcompat.content.res.AppCompatResources;
-
-import com.hippo.ehviewer.R;
-
-public class SelectItemWithIconAdapter extends BaseAdapter {
-    private final Context context;
-    private final LayoutInflater inflater;
-
-    private final CharSequence[] texts;
-    private final int[] icons;
-
-    public SelectItemWithIconAdapter(Context context, CharSequence[] texts, int[] icons) {
-        int count = texts.length;
-        if (count != icons.length) {
-            throw new IllegalArgumentException("Length conflict");
-        }
-        this.context = context;
-        this.inflater = LayoutInflater.from(context);
-        this.texts = texts;
-        this.icons = icons;
+    init {
+        require(texts.size == icons.size) { "Length conflict" }
+        inflater = LayoutInflater.from(context)
     }
 
-    @Override
-    public int getCount() {
-        return texts.length;
+    override fun getCount(): Int {
+        return texts.size
     }
 
-    @Override
-    public Object getItem(int position) {
-        return texts[position];
+    override fun getItem(position: Int): Any {
+        return texts[position]
     }
 
-    @Override
-    public long getItemId(int position) {
-        return position;
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
     }
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            convertView = inflater.inflate(R.layout.dialog_item_select_with_icon, parent, false);
-        }
-        TextView view = (TextView) convertView;
-
-        view.setText(texts[position]);
-
-        Drawable icon = AppCompatResources.getDrawable(context, icons[position]);
-        icon.setBounds(0, 0, icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
-        view.setCompoundDrawables(icon, null, null, null);
-
-        return view;
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+        val mConvertView = convertView ?: inflater.inflate(R.layout.dialog_item_select_with_icon, parent, false)
+        val view = mConvertView as TextView
+        view.text = texts[position]
+        val icon = AppCompatResources.getDrawable(context, icons[position])
+        icon!!.setBounds(0, 0, icon.intrinsicWidth, icon.intrinsicHeight)
+        view.setCompoundDrawables(icon, null, null, null)
+        return view
     }
 }

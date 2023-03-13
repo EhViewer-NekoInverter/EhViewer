@@ -79,7 +79,7 @@ public final class UrlOpener {
                     }
                 }
             }
-            Announcer announcer = EhUrlOpener.parseUrl(url);
+            Announcer announcer = EhUrlOpener.INSTANCE.parseUrl(url);
             if (null != announcer) {
                 intent = new Intent(context, MainActivity.class);
                 intent.setAction(StageActivity.ACTION_START_SCENE);

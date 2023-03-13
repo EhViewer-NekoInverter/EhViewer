@@ -15,98 +15,89 @@
  * You should have received a copy of the GNU General Public License along with EhViewer.
  * If not, see <https://www.gnu.org/licenses/>.
  */
+package com.hippo.ehviewer.ui.fragment
 
-package com.hippo.ehviewer.ui.fragment;
+import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.webkit.CookieManager
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import com.google.android.material.progressindicator.CircularProgressIndicator
+import com.hippo.ehviewer.R
+import com.hippo.ehviewer.client.EhCookieStore
+import com.hippo.ehviewer.client.EhUrl
+import com.hippo.ehviewer.widget.DialogWebChromeClient
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import rikka.core.res.resolveColor
 
-import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.CookieManager;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.google.android.material.progressindicator.CircularProgressIndicator;
-import com.hippo.ehviewer.R;
-import com.hippo.ehviewer.client.EhCookieStore;
-import com.hippo.ehviewer.client.EhUrl;
-import com.hippo.ehviewer.widget.DialogWebChromeClient;
-
-import okhttp3.Cookie;
-import okhttp3.HttpUrl;
-import rikka.core.res.ResourcesKt;
-
-public class MyTagsFragment extends BaseFragment {
-    private WebView webView;
-    private CircularProgressIndicator progress;
-    private String url;
+class MyTagsFragment : BaseFragment() {
+    private val url = EhUrl.myTagsUrl
+    private var webView: WebView? = null
+    private var progress: CircularProgressIndicator? = null
 
     @SuppressLint("SetJavaScriptEnabled")
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_webview, container, false);
-        webView = view.findViewById(R.id.webview);
-        webView.setBackgroundColor(ResourcesKt.resolveColor(requireActivity().getTheme(), android.R.attr.colorBackground));
-        webView.getSettings().setBuiltInZoomControls(true);
-        webView.getSettings().setDisplayZoomControls(false);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setWebViewClient(new MyTagsWebViewClient());
-        webView.setWebChromeClient(new DialogWebChromeClient(requireContext()));
-        progress = view.findViewById(R.id.progress);
-        return view;
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val view = inflater.inflate(R.layout.activity_webview, container, false)
+        webView = view.findViewById(R.id.webview)
+        webView!!.run {
+            setBackgroundColor(requireActivity().theme.resolveColor(android.R.attr.colorBackground))
+            settings.builtInZoomControls = true
+            settings.displayZoomControls = false
+            settings.javaScriptEnabled = true
+            webViewClient = MyTagsWebViewClient()
+            webChromeClient = DialogWebChromeClient(requireContext())
+        }
+        progress = view.findViewById(R.id.progress)
+        return view
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        progress.setVisibility(View.VISIBLE);
-        webView.loadUrl(url);
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        progress!!.visibility = View.VISIBLE
+        webView!!.loadUrl(url)
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
         // http://stackoverflow.com/questions/32284642/how-to-handle-an-uncatched-exception
-        CookieManager cookieManager = CookieManager.getInstance();
-        cookieManager.flush();
-        cookieManager.removeAllCookies(null);
-        cookieManager.removeSessionCookies(null);
+        val cookieManager = CookieManager.getInstance()
+        cookieManager.flush()
+        cookieManager.removeAllCookies(null)
+        cookieManager.removeSessionCookies(null)
 
         // Copy cookies from okhttp cookie store to CookieManager
-        url = EhUrl.getMyTagsUrl();
-        EhCookieStore store = EhCookieStore.INSTANCE;
-        for (Cookie cookie : store.getCookies(HttpUrl.parse(url))) {
-            cookieManager.setCookie(url, cookie.toString());
+        val store = EhCookieStore
+        for (cookie in store.getCookies(url.toHttpUrl())) {
+            cookieManager.setCookie(url, cookie.toString())
         }
     }
 
-    @Override
-    public int getFragmentTitle() {
-        return R.string.my_tags;
+    override fun getFragmentTitle(): Int {
+        return R.string.my_tags
     }
 
-    private class MyTagsWebViewClient extends WebViewClient {
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+    private inner class MyTagsWebViewClient : WebViewClient() {
+        override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
             // Never load other urls
-            return !url.equals(MyTagsFragment.this.url);
+            return request.url.toString() != this@MyTagsFragment.url
         }
 
-        @Override
-        public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            progress.setVisibility(View.VISIBLE);
+        override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
+            progress!!.visibility = View.VISIBLE
         }
 
-        @Override
-        public void onPageFinished(WebView view, String url) {
-            progress.setVisibility(View.GONE);
+        override fun onPageFinished(view: WebView, url: String) {
+            progress!!.visibility = View.GONE
         }
     }
 }
