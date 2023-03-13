@@ -24,7 +24,7 @@ android {
                 include("arm64-v8a", "x86_64", "armeabi-v7a", "x86")
                 isUniversalApk = true
             } else {
-                include("arm64-v8a")
+                include("arm64-v8a", "x86_64")
             }
         }
     }
@@ -68,6 +68,7 @@ android {
                 "ja",
             )
         )
+        buildConfigField("String", "VERSION_CODE", "\"${defaultConfig.versionCode}\"")
         buildConfigField("String", "COMMIT_SHA", "\"$commitSha\"")
         buildConfigField("String", "BUILD_TIME", "\"$buildTime\"")
     }

@@ -64,7 +64,6 @@ object Crash {
         fw.write(topActivityClazzName ?: "null")
         fw.write("\r\n")
         fw.write("\r\n")
-        fw.write("\r\n")
 
         // Device info
         fw.write("======== DeviceInfo ========\r\n")
