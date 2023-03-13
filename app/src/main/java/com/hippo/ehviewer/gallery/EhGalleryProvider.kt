@@ -155,7 +155,7 @@ class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) : GalleryProvider
         }
     }
 
-    override fun getError(): String {
+    override fun getError(): String? {
         return if (mSpiderQueen != null) {
             mSpiderQueen!!.error
         } else {
