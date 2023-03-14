@@ -18,11 +18,9 @@ package com.hippo.ehviewer.spider;
 
 import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
-import android.os.AsyncTask;
 import android.os.Process;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.SparseArray;
 import android.webkit.MimeTypeMap;
 
 import androidx.annotation.IntDef;
@@ -31,7 +29,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.collection.LongSparseArray;
 
-import com.hippo.beerbelly.SimpleDiskCache;
 import com.hippo.ehviewer.EhApplication;
 import com.hippo.ehviewer.GetText;
 import com.hippo.ehviewer.R;
@@ -48,7 +45,6 @@ import com.hippo.ehviewer.client.parser.GalleryMultiPageViewerPTokenParser;
 import com.hippo.ehviewer.client.parser.GalleryPageApiParser;
 import com.hippo.ehviewer.client.parser.GalleryPageParser;
 import com.hippo.ehviewer.client.parser.GalleryPageUrlParser;
-import com.hippo.ehviewer.gallery.GalleryProvider2;
 import com.hippo.glgallery.GalleryPageView;
 import com.hippo.glgallery.GalleryProvider;
 import com.hippo.image.Image;
@@ -56,7 +52,6 @@ import com.hippo.streampipe.InputStreamPipe;
 import com.hippo.streampipe.OutputStreamPipe;
 import com.hippo.unifile.UniFile;
 import com.hippo.util.ExceptionUtils;
-import com.hippo.util.IoThreadPoolExecutor;
 import com.hippo.yorozuya.IOUtils;
 import com.hippo.yorozuya.MathUtils;
 import com.hippo.yorozuya.OSUtils;
@@ -113,8 +108,6 @@ public final class SpiderQueen implements Runnable {
     @NonNull
     private final OkHttpClient mHttpClient;
     @NonNull
-    private final SimpleDiskCache mSpiderInfoCache;
-    @NonNull
     private final GalleryInfo mGalleryInfo;
     @NonNull
     private final SpiderDen mSpiderDen;
@@ -158,7 +151,6 @@ public final class SpiderQueen implements Runnable {
 
     private SpiderQueen(@NonNull GalleryInfo galleryInfo) {
         mHttpClient = EhApplication.getNonCacheOkHttpClient();
-        mSpiderInfoCache = EhApplication.getSpiderInfoCache();
         mGalleryInfo = galleryInfo;
         mSpiderDen = new SpiderDen(mGalleryInfo);
 
@@ -364,7 +356,6 @@ public final class SpiderQueen implements Runnable {
         }
 
         updateMode();
-        writeSpiderInfoToLocal();
     }
 
     private void clearMode(@Mode int mode) {
@@ -526,7 +517,7 @@ public final class SpiderQueen implements Runnable {
                 synchronized (mDecodeRequestQueue) {
                     if (!contain(mDecodeIndexArray, index) && !mDecodeRequestQueue.contains(index)) {
                         mDecodeRequestQueue.add(index);
-                        mDecodeRequestQueue.notifyAll();
+                        mDecodeRequestQueue.notify();
                     }
                 }
                 result = null;
@@ -648,27 +639,33 @@ public final class SpiderQueen implements Runnable {
         }
     }
 
-    public int getStartPage() {
-        SpiderInfo spiderInfo = readSpiderInfoFromLocal();
-        if (spiderInfo != null) {
-            mSpiderInfo.lazySet(spiderInfo);
-            return spiderInfo.startPage;
-        } else {
-            return 0;
+    // Mark as suspend fun when kotlinize, need IO
+    public static int getStartPage(long gid) {
+        var queen = sQueenMap.get(gid);
+        SpiderInfo spiderInfo = null;
+        // Fast Path: read existing queen
+        if (queen != null) {
+            spiderInfo = queen.mSpiderInfo.get();
         }
+        // Slow path, read diskcache
+        if (spiderInfo == null) {
+            spiderInfo = SpiderInfo.readFromCache(gid);
+        }
+        if (spiderInfo == null) return 0;
+        return spiderInfo.getStartPage();
+    }
+
+    public int getStartPage() {
+        SpiderInfo spiderInfo = mSpiderInfo.get();
+        if (spiderInfo == null) spiderInfo = readSpiderInfoFromLocal();
+        if (spiderInfo == null) return 0;
+        return spiderInfo.getStartPage();
     }
 
     public void putStartPage(int page) {
         final SpiderInfo spiderInfo = mSpiderInfo.get();
         if (spiderInfo != null) {
-            spiderInfo.startPage = page;
-            new AsyncTask<Void, Void, Void>() {
-                @Override
-                protected Void doInBackground(Void... params) {
-                    writeSpiderInfoToLocal(spiderInfo);
-                    return null;
-                }
-            }.executeOnExecutor(IoThreadPoolExecutor.getInstance());
+            spiderInfo.setStartPage(page);
         }
     }
 
@@ -682,44 +679,33 @@ public final class SpiderQueen implements Runnable {
         UniFile downloadDir = mSpiderDen.getDownloadDir();
         if (downloadDir != null) {
             UniFile file = downloadDir.findFile(SPIDER_INFO_FILENAME);
-            spiderInfo = SpiderInfo.read(file);
-            if (spiderInfo != null && spiderInfo.gid == mGalleryInfo.getGid() &&
-                    spiderInfo.token.equals(mGalleryInfo.getToken())) {
-                return spiderInfo;
+            if (file != null) {
+                spiderInfo = SpiderInfo.readCompatFromUniFile(file);
+                if (spiderInfo != null && spiderInfo.getGid() == mGalleryInfo.getGid() &&
+                        spiderInfo.getToken().equals(mGalleryInfo.getToken())) {
+                    return spiderInfo;
+                }
             }
         }
 
         // Read from cache
-        InputStreamPipe pipe = mSpiderInfoCache.getInputStreamPipe(Long.toString(mGalleryInfo.getGid()));
-        if (null != pipe) {
-            try {
-                pipe.obtain();
-                spiderInfo = SpiderInfo.read(pipe.open());
-                if (spiderInfo != null && spiderInfo.gid == mGalleryInfo.getGid() &&
-                        spiderInfo.token.equals(mGalleryInfo.getToken())) {
-                    return spiderInfo;
-                }
-            } catch (IOException e) {
-                // Ignore
-            } finally {
-                pipe.close();
-                pipe.release();
-            }
+        spiderInfo = SpiderInfo.readFromCache(mGalleryInfo.getGid());
+        if (spiderInfo != null && spiderInfo.getGid() == mGalleryInfo.getGid() &&
+                spiderInfo.getToken().equals(mGalleryInfo.getToken())) {
+            return spiderInfo;
         }
-
         return null;
     }
 
     private void readPreviews(String body, int index, SpiderInfo spiderInfo) throws ParseException {
-        spiderInfo.pages = GalleryDetailParser.parsePages(body);
-        spiderInfo.previewPages = GalleryDetailParser.parsePreviewPages(body);
+        spiderInfo.setPreviewPages(GalleryDetailParser.parsePreviewPages(body));
         PreviewSet previewSet = GalleryDetailParser.parsePreviewSet(body);
 
         if (previewSet.size() > 0) {
             if (index == 0) {
-                spiderInfo.previewPerPage = previewSet.size();
+                spiderInfo.setPreviewPerPage(previewSet.size());
             } else {
-                spiderInfo.previewPerPage = previewSet.getPosition(0) / index;
+                spiderInfo.setPreviewPerPage(previewSet.getPosition(0) / index);
             }
         }
 
@@ -727,24 +713,21 @@ public final class SpiderQueen implements Runnable {
             GalleryPageUrlParser.Result result = GalleryPageUrlParser.parse(previewSet.getPageUrlAt(i));
             if (result != null) {
                 synchronized (mPTokenLock) {
-                    spiderInfo.pTokenMap.put(result.page, result.pToken);
+                    spiderInfo.getPTokenMap().put(result.page, result.pToken);
                 }
             }
         }
     }
 
     private SpiderInfo readSpiderInfoFromInternet() {
-        SpiderInfo spiderInfo = new SpiderInfo();
-        spiderInfo.gid = mGalleryInfo.getGid();
-        spiderInfo.token = mGalleryInfo.getToken();
-
         Request request = new EhRequestBuilder(EhUrl.getGalleryDetailUrl(
                 mGalleryInfo.getGid(), mGalleryInfo.getToken(), 0, false), EhUrl.getReferer()).build();
         try (Response response = mHttpClient.newCall(request).execute()) {
             String body = response.body().string();
 
-            spiderInfo.pages = GalleryDetailParser.parsePages(body);
-            spiderInfo.pTokenMap = new SparseArray<>(spiderInfo.pages);
+            var pages = GalleryDetailParser.parsePages(body);
+            SpiderInfo spiderInfo = new SpiderInfo(mGalleryInfo.getGid(), pages);
+            spiderInfo.setToken(mGalleryInfo.getToken());
             readPreviews(body, 0, spiderInfo);
             return spiderInfo;
         } catch (Throwable e) {
@@ -773,13 +756,13 @@ public final class SpiderQueen implements Runnable {
 
             for (int i = 0; i < list.size(); i++) {
                 synchronized (mPTokenLock) {
-                    spiderInfo.pTokenMap.put(i, list.get(i));
+                    spiderInfo.getPTokenMap().put(i, list.get(i));
                 }
             }
 
             String pToken;
             synchronized (mPTokenLock) {
-                pToken = spiderInfo.pTokenMap.get(index);
+                pToken = spiderInfo.getPTokenMap().get(index);
             }
             return pToken;
         } catch (Throwable e) {
@@ -796,13 +779,13 @@ public final class SpiderQueen implements Runnable {
 
         // Check previewIndex
         int previewIndex;
-        if (spiderInfo.previewPerPage >= 0) {
-            previewIndex = index / spiderInfo.previewPerPage;
+        if (spiderInfo.getPreviewPerPage() >= 0) {
+            previewIndex = index / spiderInfo.getPreviewPerPage();
         } else {
             previewIndex = 0;
         }
-        if (spiderInfo.previewPages > 0) {
-            previewIndex = Math.min(previewIndex, spiderInfo.previewPages - 1);
+        if (spiderInfo.getPreviewPages() > 0) {
+            previewIndex = Math.min(previewIndex, spiderInfo.getPreviewPages() - 1);
         }
 
         String url = EhUrl.getGalleryDetailUrl(
@@ -810,19 +793,16 @@ public final class SpiderQueen implements Runnable {
         String referer = EhUrl.getReferer();
         if (DEBUG_PTOKEN) {
             Log.d(TAG, "index " + index + ", previewIndex " + previewIndex +
-                    ", previewPerPage " + spiderInfo.previewPerPage + ", url " + url);
+                    ", previewPerPage " + spiderInfo.getPreviewPerPage() + ", url " + url);
         }
         Request request = new EhRequestBuilder(url, referer).build();
         try (Response response = mHttpClient.newCall(request).execute()) {
             String body = response.body().string();
             readPreviews(body, previewIndex, spiderInfo);
 
-            // Save to local
-            writeSpiderInfoToLocal(spiderInfo);
-
             String pToken;
             synchronized (mPTokenLock) {
-                pToken = spiderInfo.pTokenMap.get(index);
+                pToken = spiderInfo.getPTokenMap().get(index);
             }
             return pToken;
         } catch (Throwable e) {
@@ -831,36 +811,15 @@ public final class SpiderQueen implements Runnable {
         }
     }
 
-    private void writeSpiderInfoToLocal() {
+    private synchronized void writeSpiderInfoToLocal() {
         var spiderInfo = mSpiderInfo.get();
         if (spiderInfo != null) {
-            writeSpiderInfoToLocal(spiderInfo);
-        }
-    }
-
-    private synchronized void writeSpiderInfoToLocal(@NonNull SpiderInfo spiderInfo) {
-        // Write to download dir
-        UniFile downloadDir = mSpiderDen.getDownloadDir();
-        if (downloadDir != null) {
-            UniFile file = downloadDir.createFile(SPIDER_INFO_FILENAME);
-            try {
-                spiderInfo.write(file.openOutputStream());
-            } catch (IOException e) {
-                ExceptionUtils.throwIfFatal(e);
-                // Ignore
+            UniFile downloadDir = mSpiderDen.getDownloadDir();
+            if (downloadDir != null) {
+                UniFile file = downloadDir.createFile(SPIDER_INFO_FILENAME);
+                spiderInfo.write(file);
             }
-        }
-
-        // Write to cache
-        OutputStreamPipe pipe = mSpiderInfoCache.getOutputStreamPipe(Long.toString(mGalleryInfo.getGid()));
-        try {
-            pipe.obtain();
-            spiderInfo.write(pipe.open());
-        } catch (IOException e) {
-            // Ignore
-        } finally {
-            pipe.close();
-            pipe.release();
+            spiderInfo.saveToCache();
         }
     }
 
@@ -882,15 +841,7 @@ public final class SpiderQueen implements Runnable {
         if (spiderInfo == null) {
             return;
         }
-        mSpiderInfo.lazySet(spiderInfo);
-
-        // Check interrupted
-        if (Thread.currentThread().isInterrupted()) {
-            return;
-        }
-
-        // Write spider info to file
-        writeSpiderInfoToLocal(spiderInfo);
+        mSpiderInfo.set(spiderInfo);
 
         // Check interrupted
         if (Thread.currentThread().isInterrupted()) {
@@ -899,11 +850,11 @@ public final class SpiderQueen implements Runnable {
 
         // Setup page state
         synchronized (mPageStateLock) {
-            mPageStateArray = new int[spiderInfo.pages];
+            mPageStateArray = new int[spiderInfo.getPages()];
         }
 
         // Notify get pages
-        notifyGetPages(spiderInfo.pages);
+        notifyGetPages(spiderInfo.getPages());
 
         // Ensure worker
         tryToEnsureWorkers();
@@ -935,7 +886,7 @@ public final class SpiderQueen implements Runnable {
             // Check it in spider info
             String pToken;
             synchronized (mPTokenLock) {
-                pToken = spiderInfo.pTokenMap.get(index);
+                pToken = spiderInfo.getPTokenMap().get(index);
             }
             if (pToken != null) {
                 // Get pToken from spider info, notify worker
@@ -960,7 +911,7 @@ public final class SpiderQueen implements Runnable {
             if (null == pToken) {
                 // If failed, set the pToken "failed"
                 synchronized (mPTokenLock) {
-                    spiderInfo.pTokenMap.put(index, SpiderInfo.TOKEN_FAILED);
+                    spiderInfo.getPTokenMap().put(index, SpiderInfo.TOKEN_FAILED);
                 }
             }
 
@@ -969,6 +920,7 @@ public final class SpiderQueen implements Runnable {
                 mWorkerLock.notifyAll();
             }
         }
+        writeSpiderInfoToLocal();
     }
 
     @Override
@@ -1461,12 +1413,9 @@ public final class SpiderQueen implements Runnable {
             // Clear TOKEN_FAILED for force request
             if (force) {
                 synchronized (mPTokenLock) {
-                    int i = spiderInfo.pTokenMap.indexOfKey(index);
-                    if (i >= 0) {
-                        String pToken = spiderInfo.pTokenMap.valueAt(i);
-                        if (SpiderInfo.TOKEN_FAILED.equals(pToken)) {
-                            spiderInfo.pTokenMap.remove(i);
-                        }
+                    String pToken = spiderInfo.getPTokenMap().get(index);
+                    if (SpiderInfo.TOKEN_FAILED.equals(pToken)) {
+                        spiderInfo.getPTokenMap().remove(index);
                     }
                 }
             }
@@ -1475,7 +1424,7 @@ public final class SpiderQueen implements Runnable {
             // Get token
             while (!Thread.currentThread().isInterrupted()) {
                 synchronized (mPTokenLock) {
-                    pToken = spiderInfo.pTokenMap.get(index);
+                    pToken = spiderInfo.getPTokenMap().get(index);
                 }
                 if (pToken == null) {
                     mRequestPTokenQueue.add(index);
@@ -1512,7 +1461,7 @@ public final class SpiderQueen implements Runnable {
             // Get token
             while (previousIndex >= 0 && !Thread.currentThread().isInterrupted()) {
                 synchronized (mPTokenLock) {
-                    previousPToken = spiderInfo.pTokenMap.get(previousIndex);
+                    previousPToken = spiderInfo.getPTokenMap().get(previousIndex);
                 }
                 if (previousPToken == null) {
                     mRequestPTokenQueue.add(previousIndex);

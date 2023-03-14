@@ -25,7 +25,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.collection.LruCache
 import com.hippo.Native
-import com.hippo.beerbelly.SimpleDiskCache
 import com.hippo.conaco.Conaco
 import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.EhDns
@@ -55,7 +54,6 @@ import javax.net.ssl.TrustManagerFactory
 import javax.net.ssl.X509TrustManager
 import kotlin.math.min
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import rikka.material.app.DayNightDelegate
@@ -299,14 +297,6 @@ class EhApplication : SceneApplication() {
                     it[gid]?.favoriteSlot = slot
                 }
             }
-        }
-
-        @JvmStatic
-        val spiderInfoCache by lazy {
-            SimpleDiskCache(
-                File(application.cacheDir, "spider_info"),
-                20 * 1024 * 1024
-            )
         }
 
         @JvmStatic

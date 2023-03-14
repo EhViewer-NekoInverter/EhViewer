@@ -578,9 +578,9 @@ object DownloadManager : OnSpiderListener {
     private fun resetReadingProgress(gid: Long) {
         val downloadDir = SpiderDen.getGalleryDownloadDir(gid) ?: return
         val file = downloadDir.findFile(SpiderQueen.SPIDER_INFO_FILENAME) ?: return
-        val spiderInfo = SpiderInfo.read(file) ?: return
+        val spiderInfo = SpiderInfo.readCompatFromUniFile(file) ?: return
         spiderInfo.startPage = 0
-        spiderInfo.write(file.openOutputStream())
+        spiderInfo.write(file)
     }
 
     // Update in DB

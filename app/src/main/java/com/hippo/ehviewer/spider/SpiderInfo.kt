@@ -13,194 +13,167 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.ehviewer.spider
 
-package com.hippo.ehviewer.spider;
+import com.hippo.beerbelly.SimpleDiskCache
+import com.hippo.ehviewer.EhApplication
+import com.hippo.unifile.UniFile
+import com.hippo.yorozuya.IOUtils
+import com.hippo.yorozuya.NumberUtils
+import java.io.File
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
+import java.io.OutputStreamWriter
 
-import android.text.TextUtils;
-import android.util.Log;
-import android.util.SparseArray;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.hippo.unifile.UniFile;
-import com.hippo.yorozuya.IOUtils;
-import com.hippo.yorozuya.NumberUtils;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-
-public class SpiderInfo {
-    static final String TOKEN_FAILED = "failed";
-    private static final String TAG = SpiderInfo.class.getSimpleName();
-    private static final String VERSION_STR = "VERSION";
-    private static final int VERSION = 2;
-    public int startPage = 0;
-    public long gid = -1;
-    public String token = null;
-    public int pages = -1;
-    public int previewPages = -1;
-    public int previewPerPage = -1;
-    public SparseArray<String> pTokenMap = null;
-
-    public static SpiderInfo read(@Nullable UniFile file) {
-        if (file == null) {
-            return null;
-        }
-
-        InputStream is = null;
-        try {
-            is = file.openInputStream();
-            return read(is);
-        } catch (IOException e) {
-            return null;
-        } finally {
-            IOUtils.closeQuietly(is);
-        }
-    }
-
-    private static int getStartPage(String str) {
-        if (null == str) {
-            return 0;
-        }
-
-        int startPage = 0;
-        for (int i = 0, n = str.length(); i < n; i++) {
-            startPage *= 16;
-            char ch = str.charAt(i);
-            if (ch >= '0' && ch <= '9') {
-                startPage += ch - '0';
-            } else if (ch >= 'a' && ch <= 'f') {
-                startPage += ch - 'a' + 10;
+class SpiderInfo @JvmOverloads constructor(
+    val gid: Long,
+    val pages: Int,
+    val pTokenMap: MutableMap<Int, String> = hashMapOf(),
+    var startPage: Int = 0,
+    var token: String? = null,
+    var previewPages: Int = -1,
+    var previewPerPage: Int = -1
+) {
+    private fun write(outputStream: OutputStream) {
+        OutputStreamWriter(outputStream).use {
+            it.write("$VERSION_STR$VERSION\n")
+            it.write("${String.format("%08x", startPage.coerceAtLeast(0))}\n")
+            it.write("$gid\n")
+            it.write("$token\n")
+            it.write("1\n")
+            it.write("$previewPages\n")
+            it.write("$previewPerPage\n")
+            it.write("$pages\n")
+            for ((key, value) in pTokenMap) {
+                if (TOKEN_FAILED == value || value.isEmpty()) {
+                    continue
+                }
+                it.write("$key $value\n")
             }
-        }
-
-        return Math.max(startPage, 0);
-    }
-
-    private static int getVersion(String str) {
-        if (null == str) {
-            return -1;
-        }
-        if (str.startsWith(VERSION_STR)) {
-            return NumberUtils.parseIntSafely(str.substring(VERSION_STR.length()), -1);
-        } else {
-            return 1;
+            it.flush()
         }
     }
 
-    @Nullable
-    @SuppressWarnings("InfiniteLoopStatement")
-    public static SpiderInfo read(@Nullable InputStream is) {
-        if (null == is) {
-            return null;
+    fun write(file: UniFile) {
+        file.openOutputStream().use {
+            write(it)
+        }
+    }
+
+    fun saveToCache() {
+        spiderInfoCache.getOutputStreamPipe(gid.toString()).let {
+            try {
+                it.obtain()
+                write(it.open())
+            } catch (e: IOException) {
+                e.printStackTrace()
+            } finally {
+                it.close()
+                it.release()
+            }
+
+        }
+    }
+
+    companion object {
+        const val TOKEN_FAILED = "failed"
+        private const val VERSION_STR = "VERSION"
+        private const val VERSION = 2
+
+        private val spiderInfoCache by lazy {
+            SimpleDiskCache(
+                File(EhApplication.application.cacheDir, "spider_info"),
+                20 * 1024 * 1024
+            )
         }
 
-        SpiderInfo spiderInfo = null;
-        try {
-            spiderInfo = new SpiderInfo();
-            // Get version
-            String line = IOUtils.readAsciiLine(is);
-            int version = getVersion(line);
-            if (version == VERSION) {
-                // Read next line
-                line = IOUtils.readAsciiLine(is);
-            } else if (version == 1) {
-                // pass
+        private fun getVersion(str: String): Int {
+            return if (str.startsWith(VERSION_STR)) {
+                NumberUtils.parseIntSafely(
+                    str.substring(VERSION_STR.length),
+                    -1
+                )
             } else {
-                // Invalid version
-                return null;
+                1
             }
-            // Start page
-            spiderInfo.startPage = getStartPage(line);
-            // Gid
-            spiderInfo.gid = Long.parseLong(IOUtils.readAsciiLine(is));
-            // Token
-            spiderInfo.token = IOUtils.readAsciiLine(is);
-            // Deprecated, mode, skip it
-            IOUtils.readAsciiLine(is);
-            // Preview pages
-            spiderInfo.previewPages = Integer.parseInt(IOUtils.readAsciiLine(is));
-            // Preview pre page
-            line = IOUtils.readAsciiLine(is);
-            if (version == 1) {
-                // Skip it
-            } else {
-                spiderInfo.previewPerPage = Integer.parseInt(line);
+        }
+
+        private fun read(inputStream: InputStream): SpiderInfo? {
+            fun read(): String {
+                return IOUtils.readAsciiLine(inputStream)
             }
-            // Pages
-            spiderInfo.pages = Integer.parseInt(IOUtils.readAsciiLine(is));
-            // Check pages
-            if (spiderInfo.pages <= 0) {
-                return null;
+            fun readInt(): Int {
+                return read().toInt()
             }
-            // PToken
-            spiderInfo.pTokenMap = new SparseArray<>(spiderInfo.pages);
-            while (true) { // EOFException will raise
-                line = IOUtils.readAsciiLine(is);
-                int pos = line.indexOf(" ");
-                if (pos > 0) {
-                    int index = Integer.parseInt(line.substring(0, pos));
-                    String pToken = line.substring(pos + 1);
-                    if (!TextUtils.isEmpty(pToken)) {
-                        spiderInfo.pTokenMap.put(index, pToken);
+            fun readLong(): Long {
+                return read().toLong()
+            }
+            val version = getVersion(read())
+            var startPage = 0
+            when (version) {
+                VERSION -> {
+                    // Read next line
+                    startPage = read().toInt(16).coerceAtLeast(0)
+                }
+                1 -> {
+                    // pass
+                }
+                else -> {
+                    // Invalid version
+                    return null
+                }
+            }
+            val gid = readLong()
+            val token = read()
+            read() // Deprecated, mode, skip it
+            val previewPages = readInt()
+            val previewPerPage = if (version == 1) 0 else readInt()
+            val pages = read().toInt()
+            if (gid == -1L || pages <= 0) {
+                return null
+            }
+            val pTokenMap = hashMapOf<Int, String>()
+            runCatching {
+                while (true) {
+                    val line = read()
+                    val pos = line.indexOf(" ")
+                    if (pos > 0) {
+                        val index = line.substring(0, pos).toInt()
+                        val pToken = line.substring(pos + 1)
+                        if (pToken.isNotEmpty()) {
+                            pTokenMap[index] = pToken
+                        }
                     }
-                } else {
-                    Log.e(TAG, "Can't parse index and pToken, index = " + pos);
                 }
             }
-        } catch (IOException | NumberFormatException e) {
-            // Ignore
+            return SpiderInfo(gid, pages, pTokenMap, startPage, token, previewPages, previewPerPage)
         }
 
-        if (spiderInfo == null || spiderInfo.gid == -1 || spiderInfo.token == null ||
-                spiderInfo.pages == -1 || spiderInfo.pTokenMap == null) {
-            return null;
-        } else {
-            return spiderInfo;
-        }
-    }
-
-    public void write(@NonNull OutputStream os) {
-        OutputStreamWriter writer = null;
-        try {
-            writer = new OutputStreamWriter(os);
-            writer.write(VERSION_STR);
-            writer.write(Integer.toString(VERSION));
-            writer.write("\n");
-            writer.write(String.format("%08x", Math.max(startPage, 0))); // Avoid negative
-            writer.write("\n");
-            writer.write(Long.toString(gid));
-            writer.write("\n");
-            writer.write(token);
-            writer.write("\n");
-            writer.write("1");
-            writer.write("\n");
-            writer.write(Integer.toString(previewPages));
-            writer.write("\n");
-            writer.write(Integer.toString(previewPerPage));
-            writer.write("\n");
-            writer.write(Integer.toString(pages));
-            writer.write("\n");
-            for (int i = 0; i < pTokenMap.size(); i++) {
-                Integer key = pTokenMap.keyAt(i);
-                String value = pTokenMap.valueAt(i);
-                if (TOKEN_FAILED.equals(value) || TextUtils.isEmpty(value)) {
-                    continue;
+        @JvmStatic
+        fun readCompatFromUniFile(file: UniFile): SpiderInfo? {
+            return runCatching {
+                file.openInputStream().use {
+                    read(it)
                 }
-                writer.write(Integer.toString(key));
-                writer.write(" ");
-                writer.write(value);
-                writer.write("\n");
+            }.getOrNull()
+        }
+
+        @JvmStatic
+        fun readFromCache(gid: Long): SpiderInfo? {
+            var spiderInfo: SpiderInfo? = null
+            spiderInfoCache.getInputStreamPipe(gid.toString())?.let {
+                try {
+                    it.obtain()
+                    spiderInfo = read(it.open())
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                } finally {
+                    it.close()
+                    it.release()
+                }
             }
-            writer.flush();
-        } catch (IOException e) {
-            // Ignore
-        } finally {
-            IOUtils.closeQuietly(writer);
-            IOUtils.closeQuietly(os);
+            return spiderInfo
         }
     }
 }
