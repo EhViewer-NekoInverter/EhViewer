@@ -33,7 +33,7 @@ object Settings {
     /********************
      ****** Eh
      ********************/
-    private const val KEY_IDENTITY_COOKIE = "identity_cookie"
+    const val KEY_ACCOUNT = "account"
     const val KEY_GALLERY_SITE = "gallery_site"
     private const val DEFAULT_GALLERY_SITE = 0
     private const val KEY_IMAGE_LIMITS = "image_limits"
@@ -79,7 +79,6 @@ object Settings {
     private const val KEY_HIDE_HV_EVENTS = "hide_hv_events"
     private const val DEFAULT_HIDE_HV_EVENTS = false
     val SIGN_IN_REQUIRED = arrayOf(
-            KEY_IDENTITY_COOKIE,
             KEY_GALLERY_SITE,
             KEY_IMAGE_LIMITS,
             KEY_U_CONFIG,

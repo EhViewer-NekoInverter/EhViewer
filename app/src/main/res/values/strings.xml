@@ -397,16 +397,12 @@
 
     <!-- Settings -->
     <string name="settings_eh">EH</string>
-    <string name="settings_eh_sign_out">Sign out</string>
-    <string name="settings_eh_sign_out_summary">Restart the application to sign in</string>
-    <string name="settings_eh_sign_out_warning">Do you really want to sign out?</string>
-    <string name="settings_eh_sign_out_yes">@android:string/ok</string>
-    <string name="settings_eh_sign_out_tip">You have signed out. Restart the application to sign in again</string>
-    <string name="settings_eh_identity_cookies">Identity cookies</string>
-    <string name="settings_eh_identity_cookies_summary">Cookies can be used to sign in</string>
-    <string name="settings_eh_identity_cookies_signed">Identity cookies can be used to sign in to this account.&lt;br&gt;&lt;b&gt;KEEP IT SAFE&lt;/b&gt;&lt;br&gt;&lt;br&gt;%s</string>
-    <string name="settings_eh_identity_cookies_tourist">Not signed in.</string>
-    <string name="settings_eh_identity_cookies_copy">Copy</string>
+    <string name="settings_eh_account_name">Account</string>
+    <string name="settings_eh_account_name_tourist">Not signed in.</string>
+    <string name="settings_eh_account_sign_out">Sign out</string>
+    <string name="settings_eh_account_sign_out_tip">You have signed out. Restart the application to sign in again</string>
+    <string name="settings_eh_account_identity_cookies">Identity cookies can be used to sign in to this account.&lt;br&gt;&lt;b&gt;KEEP IT SAFE&lt;/b&gt;&lt;br&gt;&lt;br&gt;%s</string>
+    <string name="settings_eh_account_identity_cookies_copy">Copy</string>
     <string name="settings_eh_gallery_site">Gallery site</string>
     <string name="settings_eh_image_limits">Image Limits</string>
     <string name="settings_eh_image_limits_summary">Loading...</string>
@@ -555,8 +551,6 @@
     <string name="settings_advanced_import_data_summary">Load data which were previously saved</string>
     <string name="settings_advanced_import_data_successfully">Data imported</string>
     <string name="settings_advanced_import_data_cant_read">Can\'t read the file</string>
-    <string name="settings_advanced_import_data_version_too_low">Database version too low</string>
-    <string name="settings_advanced_import_data_version_too_high">Database version too high</string>
     <string name="settings_advanced_open_by_default">Open by default</string>
     <string name="settings_about">About</string>
     <string name="settings_about_declaration" translatable="false">EhViewer</string>

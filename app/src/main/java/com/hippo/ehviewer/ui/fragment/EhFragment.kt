@@ -34,6 +34,7 @@ import rikka.material.app.DayNightDelegate
 class EhFragment : BasePreferenceFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.eh_settings)
+        val account = findPreference<Preference>(Settings.KEY_ACCOUNT)
         val theme = findPreference<Preference>(Settings.KEY_THEME)
         val blackDarkTheme = findPreference<Preference>(Settings.KEY_BLACK_DARK_THEME)
         val gallerySite = findPreference<Preference>(Settings.KEY_GALLERY_SITE)
@@ -55,10 +56,10 @@ class EhFragment : BasePreferenceFragment() {
         thumbSize!!.onPreferenceChangeListener = this
         thumbShowTitle!!.onPreferenceChangeListener = this
         showTagTranslations!!.onPreferenceChangeListener = this
+        Settings.displayName?.let { account?.summary = it }
         thumbResolution!!.setSummaryProvider {
             getString(R.string.settings_eh_thumb_resolution_summary, (it as ListPreference).entry)
         }
-
         if (!EhTagDatabase.isTranslatable(requireActivity())) {
             if (!Settings.showTagTranslations) {
                 preferenceScreen.removePreference(showTagTranslations)

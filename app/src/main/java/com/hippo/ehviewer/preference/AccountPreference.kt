@@ -23,14 +23,16 @@ import androidx.appcompat.app.AlertDialog
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.EhUrl
+import com.hippo.ehviewer.client.EhUtils
 import com.hippo.ehviewer.ui.SettingsActivity
+import com.hippo.ehviewer.ui.scene.BaseScene
 import com.hippo.preference.MessagePreference
 import com.hippo.util.addTextToClipboard
 import okhttp3.Cookie
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import java.util.LinkedList
 
-class IdentityCookiePreference @JvmOverloads constructor(
+class AccountPreference @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : MessagePreference(context, attrs) {
     private val mActivity = context as SettingsActivity
@@ -46,7 +48,8 @@ class IdentityCookiePreference @JvmOverloads constructor(
         var ipbPassHash: String? = null
         var igneous: String? = null
         var i = 0
-        while (i < cookies.size) {
+        val n = cookies.size
+        while (i < n) {
             val cookie = cookies[i]
             when (cookie.name) {
                 EhCookieStore.KEY_IPB_MEMBER_ID -> ipbMemberId = cookie.value
@@ -62,27 +65,28 @@ class IdentityCookiePreference @JvmOverloads constructor(
             setDialogMessage(
                 Html.fromHtml(
                     context.getString(
-                        R.string.settings_eh_identity_cookies_signed,
+                        R.string.settings_eh_account_identity_cookies,
                         message
                     ), Html.FROM_HTML_MODE_LEGACY
                 )
             )
             message = message!!.replace("<br>", "\n")
         } else {
-            setDialogMessage(context.getString(R.string.settings_eh_identity_cookies_tourist))
+            setDialogMessage(context.getString(R.string.settings_eh_account_name_tourist))
         }
     }
 
     override fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
         super.onPrepareDialogBuilder(builder)
         if (message != null) {
-            builder.setPositiveButton(R.string.settings_eh_identity_cookies_copy) { dialog: DialogInterface?, which: Int ->
+            builder.setNeutralButton(R.string.settings_eh_account_identity_cookies_copy) { dialog: DialogInterface?, which: Int ->
                 mActivity.addTextToClipboard(message, true)
-                this@IdentityCookiePreference.onClick(dialog, which)
+                this@AccountPreference.onClick(dialog, which)
             }
-            builder.setNegativeButton(android.R.string.cancel, null)
-        } else {
-            builder.setPositiveButton(android.R.string.ok, null)
+        }
+        builder.setPositiveButton(R.string.settings_eh_account_sign_out) { _: DialogInterface?, _: Int ->
+            EhUtils.signOut()
+            mActivity.showTip(R.string.settings_eh_account_sign_out_tip, BaseScene.LENGTH_SHORT)
         }
     }
 }

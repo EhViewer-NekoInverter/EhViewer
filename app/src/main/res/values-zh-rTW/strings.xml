@@ -371,16 +371,12 @@
 
     <!-- Settings -->
     <string name="settings_eh">EH</string>
-    <string name="settings_eh_sign_out">登出</string>
-    <string name="settings_eh_sign_out_summary">退出登入後重新啟動程式以便再次登入</string>
-    <string name="settings_eh_sign_out_warning">天哪，我的老夥計，你要退出登入嗎？我是說，你真的要退出登入嗎？</string>
-    <string name="settings_eh_sign_out_yes">是的，我是說，真的</string>
-    <string name="settings_eh_sign_out_tip">已登出，重新啟動程式以再次登入</string>
-    <string name="settings_eh_identity_cookies">身份 Cookie</string>
-    <string name="settings_eh_identity_cookies_summary">可用於登入</string>
-    <string name="settings_eh_identity_cookies_signed">身份 Cookie 可用於登入該帳號。&lt;br&gt;&lt;b&gt;請注意資料安全&lt;/b&gt;&lt;br&gt;&lt;br&gt;%s</string>
-    <string name="settings_eh_identity_cookies_tourist">訪客模式</string>
-    <string name="settings_eh_identity_cookies_copy">複製</string>
+    <string name="settings_eh_account_name">帳號</string>
+    <string name="settings_eh_account_name_tourist">訪客模式</string>
+    <string name="settings_eh_account_sign_out">登出</string>
+    <string name="settings_eh_account_sign_out_tip">已登出，重新啟動程式以再次登入</string>
+    <string name="settings_eh_account_identity_cookies">身份 Cookie 可用於登入該帳號。&lt;br&gt;&lt;b&gt;請注意資料安全&lt;/b&gt;&lt;br&gt;&lt;br&gt;%s</string>
+    <string name="settings_eh_account_identity_cookies_copy">複製</string>
     <string name="settings_eh_gallery_site">圖庫站台</string>
     <string name="settings_eh_image_limits">圖片配額</string>
     <string name="settings_eh_image_limits_summary">載入中...</string>
@@ -527,8 +523,6 @@
     <string name="settings_advanced_import_data_summary">從之前儲存的檔案匯入</string>
     <string name="settings_advanced_import_data_successfully">成功將資料匯入</string>
     <string name="settings_advanced_import_data_cant_read">無法讀取檔案</string>
-    <string name="settings_advanced_import_data_version_too_low">數據庫版本過低</string>
-    <string name="settings_advanced_import_data_version_too_high">數據庫版本過高</string>
     <string name="settings_advanced_open_by_default">預設打開</string>
     <string name="settings_about">關於</string>
     <string name="settings_about_declaration_summary">EhViewer 與 E-Hentai.org 無任何聯繫</string>
