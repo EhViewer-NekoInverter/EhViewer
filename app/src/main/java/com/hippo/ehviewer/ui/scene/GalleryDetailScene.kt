@@ -750,7 +750,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         if (mPage != 0) {
             Snackbar.make(
                 requireActivity().findViewById(R.id.snackbar),
-                getString(R.string.read_from, mPage),
+                getString(R.string.read_from, mPage + 1),
                 Snackbar.LENGTH_LONG
             )
                 .setAction(R.string.read) {

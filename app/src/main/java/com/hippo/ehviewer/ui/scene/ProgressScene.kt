@@ -72,7 +72,7 @@ class ProgressScene : BaseScene(), View.OnClickListener {
                 .setCallback(
                     GetGalleryTokenListener(context)
                 )
-            request.enqueue(this)
+            request.enqueue()
             return true
         }
         return false
