@@ -67,7 +67,7 @@ class SetSecurityFragment : BaseFragment(), View.OnClickListener {
 
     override fun onClick(v: View) {
         if (v == mCancel) {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
+            requireActivity().onBackPressed()
         } else if (v == mSet) {
             if (null != mPatternView && null != mFingerprint) {
                 val security = if (mPatternView!!.cellSize <= 1) {
@@ -80,7 +80,7 @@ class SetSecurityFragment : BaseFragment(), View.OnClickListener {
                         mFingerprint!!.isChecked && security.isNotEmpty()
                 )
             }
-            requireActivity().onBackPressedDispatcher.onBackPressed()
+            requireActivity().onBackPressed()
         }
     }
 

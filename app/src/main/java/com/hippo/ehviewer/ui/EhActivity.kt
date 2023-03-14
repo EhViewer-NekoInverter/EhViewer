@@ -95,11 +95,7 @@ abstract class EhActivity : MaterialActivity() {
         private const val THEME_BLACK = "BLACK"
 
         fun getTheme(context: Context): String {
-            return if (Settings.blackDarkTheme && isNightMode(context.resources.configuration)) THEME_BLACK else THEME_DEFAULT
-        }
-
-        private fun isNightMode(configuration: Configuration): Boolean {
-            return configuration.uiMode and Configuration.UI_MODE_NIGHT_YES > 0
+            return if (Settings.blackDarkTheme && (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES > 0)) THEME_BLACK else THEME_DEFAULT
         }
     }
 }

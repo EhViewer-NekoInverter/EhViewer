@@ -155,13 +155,7 @@ class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) : GalleryProvider
         }
     }
 
-    override fun getError(): String? {
-        return if (mSpiderQueen != null) {
-            mSpiderQueen!!.error
-        } else {
-            "Error" // TODO
-        }
-    }
+    override val error = mSpiderQueen?.error ?: "Error"
 
     override fun onGetPages(pages: Int) {
         notifyDataChanged()

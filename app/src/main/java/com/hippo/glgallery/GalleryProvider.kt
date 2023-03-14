@@ -13,249 +13,234 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.glgallery
 
-package com.hippo.glgallery;
+import android.util.LruCache
+import androidx.annotation.IntDef
+import androidx.annotation.UiThread
+import com.hippo.glview.glrenderer.GLCanvas
+import com.hippo.glview.image.ImageWrapper
+import com.hippo.glview.view.GLRoot
+import com.hippo.glview.view.GLRoot.OnGLIdleListener
+import com.hippo.image.Image
+import com.hippo.yorozuya.ConcurrentPool
+import com.hippo.yorozuya.MathUtils
+import com.hippo.yorozuya.OSUtils
 
-import android.util.LruCache;
-
-import androidx.annotation.IntDef;
-import androidx.annotation.UiThread;
-
-import com.hippo.glview.glrenderer.GLCanvas;
-import com.hippo.glview.image.ImageWrapper;
-import com.hippo.glview.view.GLRoot;
-import com.hippo.image.Image;
-import com.hippo.yorozuya.ConcurrentPool;
-import com.hippo.yorozuya.MathUtils;
-import com.hippo.yorozuya.OSUtils;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
-public abstract class GalleryProvider {
-    public static final int STATE_WAIT = -1;
-    public static final int STATE_ERROR = -2;
-
-    private final ConcurrentPool<NotifyTask> mNotifyTaskPool = new ConcurrentPool<>(5);
-    private final ImageCache mImageCache = new ImageCache();
-    private volatile Listener mListener;
-    private volatile GLRoot mGLRoot;
-    private boolean mStarted = false;
+abstract class GalleryProvider {
+    private val mNotifyTaskPool = ConcurrentPool<NotifyTask>(5)
+    private val mImageCache = ImageCache()
+    @Volatile
+    private var mListener: Listener? = null
+    @Volatile
+    private var mGLRoot: GLRoot? = null
+    private var mStarted = false
 
     @UiThread
-    public void start() {
-        OSUtils.checkMainLoop();
-
-        if (mStarted) {
-            throw new IllegalStateException("Can't start it twice");
-        }
-        mStarted = true;
+    open fun start() {
+        OSUtils.checkMainLoop()
+        check(!mStarted) { "Can't start it twice" }
+        mStarted = true
     }
 
     @UiThread
-    public void stop() {
-        OSUtils.checkMainLoop();
-        mImageCache.evictAll();
+    open fun stop() {
+        OSUtils.checkMainLoop()
+        mImageCache.evictAll()
     }
 
-    public void setGLRoot(GLRoot glRoot) {
-        mGLRoot = glRoot;
+    fun setGLRoot(glRoot: GLRoot?) {
+        mGLRoot = glRoot
     }
 
     /**
-     * @return {@link #STATE_WAIT} for wait,
-     * {@link #STATE_ERROR} for error, {@link #getError()} to get error message,
+     * @return [.STATE_WAIT] for wait,
+     * [.STATE_ERROR] for error, [.getError] to get error message,
      * 0 for empty
      */
-    public abstract int size();
+    abstract fun size(): Int
 
-    public final void request(int index) {
-        ImageWrapper imageWrapper = mImageCache.get(index);
+    fun request(index: Int) {
+        val imageWrapper = mImageCache[index]
         if (imageWrapper != null) {
-            notifyPageSucceed(index, imageWrapper);
+            notifyPageSucceed(index, imageWrapper)
         } else {
-            onRequest(index);
+            onRequest(index)
         }
     }
 
-    public final void forceRequest(int index) {
-        onForceRequest(index);
+    fun forceRequest(index: Int) {
+        onForceRequest(index)
     }
 
-    public void removeCache(int index) {
-        mImageCache.remove(index);
+    fun removeCache(index: Int) {
+        mImageCache.remove(index)
     }
 
-    protected abstract void onRequest(int index);
+    protected abstract fun onRequest(index: Int)
 
-    protected abstract void onForceRequest(int index);
+    protected abstract fun onForceRequest(index: Int)
 
-    public final void cancelRequest(int index) {
-        onCancelRequest(index);
+    fun cancelRequest(index: Int) {
+        onCancelRequest(index)
     }
 
-    protected abstract void onCancelRequest(int index);
+    protected abstract fun onCancelRequest(index: Int)
 
-    public abstract String getError();
+    abstract val error: String?
 
-    public void setListener(Listener listener) {
-        mListener = listener;
+    fun setListener(listener: Listener?) {
+        mListener = listener
     }
 
-    public void notifyDataChanged() {
-        notify(NotifyTask.TYPE_DATA_CHANGED, -1, 0.0f, null, null);
+    fun notifyDataChanged() {
+        notify(NotifyTask.TYPE_DATA_CHANGED, -1, 0.0f, null, null)
     }
 
-    public void notifyDataChanged(int index) {
-        notify(NotifyTask.TYPE_DATA_CHANGED, index, 0.0f, null, null);
+    fun notifyDataChanged(index: Int) {
+        notify(NotifyTask.TYPE_DATA_CHANGED, index, 0.0f, null, null)
     }
 
-    public void notifyPageWait(int index) {
-        notify(NotifyTask.TYPE_WAIT, index, 0.0f, null, null);
+    fun notifyPageWait(index: Int) {
+        notify(NotifyTask.TYPE_WAIT, index, 0.0f, null, null)
     }
 
-    public void notifyPagePercent(int index, float percent) {
-        notify(NotifyTask.TYPE_PERCENT, index, percent, null, null);
+    fun notifyPagePercent(index: Int, percent: Float) {
+        notify(NotifyTask.TYPE_PERCENT, index, percent, null, null)
     }
 
-    public void notifyPageSucceed(int index, Image image) {
-        ImageWrapper imageWrapper = new ImageWrapper(image);
-        mImageCache.add(index, imageWrapper);
-        notifyPageSucceed(index, imageWrapper);
+    fun notifyPageSucceed(index: Int, image: Image?) {
+        val imageWrapper = ImageWrapper(image!!)
+        mImageCache.add(index, imageWrapper)
+        notifyPageSucceed(index, imageWrapper)
     }
 
-    public void notifyPageSucceed(int index, ImageWrapper image) {
-        notify(NotifyTask.TYPE_SUCCEED, index, 0.0f, image, null);
+    private fun notifyPageSucceed(index: Int, image: ImageWrapper?) {
+        notify(NotifyTask.TYPE_SUCCEED, index, 0.0f, image, null)
     }
 
-    public void notifyPageFailed(int index, String error) {
-        notify(NotifyTask.TYPE_FAILED, index, 0.0f, null, error);
+    fun notifyPageFailed(index: Int, error: String?) {
+        notify(NotifyTask.TYPE_FAILED, index, 0.0f, null, error)
     }
 
-    private void notify(@NotifyTask.Type int type, int index, float percent, ImageWrapper image, String error) {
-        Listener listener = mListener;
-        if (listener == null) {
-            return;
-        }
-
-        GLRoot glRoot = mGLRoot;
-        if (glRoot == null) {
-            return;
-        }
-
-        NotifyTask task = mNotifyTaskPool.pop();
-        if (task == null) {
-            task = new NotifyTask(listener, mNotifyTaskPool);
-        }
-        task.setData(type, index, percent, image, error);
-        glRoot.addOnGLIdleListener(task);
+    private fun notify(
+        @NotifyTask.Type type: Int,
+        index: Int,
+        percent: Float,
+        image: ImageWrapper?,
+        error: String?
+    ) {
+        val listener = mListener ?: return
+        val glRoot = mGLRoot ?: return
+        val task = mNotifyTaskPool.pop() ?: NotifyTask(listener, mNotifyTaskPool)
+        task.setData(type, index, percent, image, error)
+        glRoot.addOnGLIdleListener(task)
     }
 
-    public interface Listener {
-        void onDataChanged();
-
-        void onPageWait(int index);
-
-        void onPagePercent(int index, float percent);
-
-        void onPageSucceed(int index, ImageWrapper image);
-
-        void onPageFailed(int index, String error);
-
-        void onDataChanged(int index);
+    interface Listener {
+        fun onDataChanged()
+        fun onPageWait(index: Int)
+        fun onPagePercent(index: Int, percent: Float)
+        fun onPageSucceed(index: Int, image: ImageWrapper?)
+        fun onPageFailed(index: Int, error: String?)
+        fun onDataChanged(index: Int)
     }
 
-    private static class NotifyTask implements GLRoot.OnGLIdleListener {
-        public static final int TYPE_DATA_CHANGED = 0;
-        public static final int TYPE_WAIT = 1;
-        public static final int TYPE_PERCENT = 2;
-        public static final int TYPE_SUCCEED = 3;
-        public static final int TYPE_FAILED = 4;
-        private final Listener mListener;
-        private final ConcurrentPool<NotifyTask> mPool;
+    private class NotifyTask(
+        private val mListener: Listener,
+        private val mPool: ConcurrentPool<NotifyTask>
+    ) : OnGLIdleListener {
         @Type
-        private int mType;
-        private int mIndex;
-        private float mPercent;
-        private ImageWrapper mImage;
-        private String mError;
-
-        public NotifyTask(Listener listener, ConcurrentPool<NotifyTask> pool) {
-            mListener = listener;
-            mPool = pool;
+        private var mType = 0
+        private var mIndex = 0
+        private var mPercent = 0f
+        private var mImage: ImageWrapper? = null
+        private var mError: String? = null
+        fun setData(
+            @Type type: Int,
+            index: Int,
+            percent: Float,
+            image: ImageWrapper?,
+            error: String?
+        ) {
+            mType = type
+            mIndex = index
+            mPercent = percent
+            mImage = image
+            mError = error
         }
 
-        public void setData(@Type int type, int index, float percent, ImageWrapper image, String error) {
-            mType = type;
-            mIndex = index;
-            mPercent = percent;
-            mImage = image;
-            mError = error;
-        }
+        override fun onGLIdle(canvas: GLCanvas, renderRequested: Boolean): Boolean {
+            when (mType) {
+                TYPE_DATA_CHANGED -> if (mIndex < 0) {
+                    mListener.onDataChanged()
+                } else {
+                    mListener.onDataChanged(mIndex)
+                }
 
-        @Override
-        public boolean onGLIdle(GLCanvas canvas, boolean renderRequested) {
-            switch (mType) {
-                case TYPE_DATA_CHANGED:
-                    if (mIndex < 0) {
-                        mListener.onDataChanged();
-                    } else {
-                        mListener.onDataChanged(mIndex);
-                    }
-                    break;
-                case TYPE_WAIT:
-                    mListener.onPageWait(mIndex);
-                    break;
-                case TYPE_PERCENT:
-                    mListener.onPagePercent(mIndex, mPercent);
-                    break;
-                case TYPE_SUCCEED:
-                    mListener.onPageSucceed(mIndex, mImage);
-                    break;
-                case TYPE_FAILED:
-                    mListener.onPageFailed(mIndex, mError);
-                    break;
+                TYPE_WAIT -> mListener.onPageWait(mIndex)
+                TYPE_PERCENT -> mListener.onPagePercent(mIndex, mPercent)
+                TYPE_SUCCEED -> mListener.onPageSucceed(mIndex, mImage)
+                TYPE_FAILED -> mListener.onPageFailed(mIndex, mError)
             }
 
             // Clean data
-            mImage = null;
-            mError = null;
+            mImage = null
+            mError = null
             // Push back
-            mPool.push(this);
-
-            return false;
+            mPool.push(this)
+            return false
         }
 
-        @IntDef({TYPE_DATA_CHANGED, NotifyTask.TYPE_WAIT, TYPE_PERCENT, TYPE_SUCCEED, TYPE_FAILED})
-        @Retention(RetentionPolicy.SOURCE)
-        public @interface Type {
+        @IntDef(TYPE_DATA_CHANGED, TYPE_WAIT, TYPE_PERCENT, TYPE_SUCCEED, TYPE_FAILED)
+        @Retention(
+            AnnotationRetention.SOURCE
+        )
+        annotation class Type
+        companion object {
+            const val TYPE_DATA_CHANGED = 0
+            const val TYPE_WAIT = 1
+            const val TYPE_PERCENT = 2
+            const val TYPE_SUCCEED = 3
+            const val TYPE_FAILED = 4
         }
     }
 
-    private static class ImageCache extends LruCache<Integer, ImageWrapper> {
-        private static final long MAX_CACHE_SIZE = 512 * 1024 * 1024;
-        private static final long MIN_CACHE_SIZE = 256 * 1024 * 1024;
-
-        public ImageCache() {
-            super((int) MathUtils.clamp(OSUtils.getTotalMemory() / 12, MIN_CACHE_SIZE, MAX_CACHE_SIZE));
+    private class ImageCache : LruCache<Int?, ImageWrapper?>(
+        MathUtils.clamp(
+            OSUtils.getTotalMemory() / 12,
+            MIN_CACHE_SIZE,
+            MAX_CACHE_SIZE
+        ).toInt()
+    ) {
+        fun add(key: Int?, value: ImageWrapper) {
+            if (!value.animated && value.obtain()) put(key, value)
         }
 
-        public void add(Integer key, ImageWrapper value) {
-            if (!value.getAnimated())
-                if (value.obtain())
-                    put(key, value);
-        }
-
-        @Override
-        protected int sizeOf(Integer key, ImageWrapper value) {
-            return value.getWidth() * value.getHeight() * (value.getAnimated() ? 15 : 4);
-        }
-
-        @Override
-        protected void entryRemoved(boolean evicted, Integer key, ImageWrapper oldValue, ImageWrapper newValue) {
-            if (oldValue != null) {
-                oldValue.release();
+        override fun sizeOf(key: Int?, value: ImageWrapper?): Int {
+            value?.let{
+                return it.width * it.height * if (it.animated) 15 else 4
             }
+            return 0
         }
+
+        override fun entryRemoved(
+            evicted: Boolean,
+            key: Int?,
+            oldValue: ImageWrapper?,
+            newValue: ImageWrapper?
+        ) {
+            oldValue?.release()
+        }
+
+        companion object {
+            private const val MAX_CACHE_SIZE = (512 * 1024 * 1024).toLong()
+            private const val MIN_CACHE_SIZE = (256 * 1024 * 1024).toLong()
+        }
+    }
+
+    companion object {
+        const val STATE_WAIT = -1
+        const val STATE_ERROR = -2
     }
 }
