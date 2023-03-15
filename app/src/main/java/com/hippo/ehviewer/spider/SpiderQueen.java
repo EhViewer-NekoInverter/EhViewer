@@ -17,7 +17,6 @@
 package com.hippo.ehviewer.spider;
 
 import android.graphics.BitmapFactory;
-import android.graphics.ImageDecoder;
 import android.os.Process;
 import android.text.TextUtils;
 import android.util.Log;
@@ -60,7 +59,7 @@ import com.hippo.yorozuya.thread.PriorityThread;
 import com.hippo.yorozuya.thread.PriorityThreadFactory;
 
 import java.io.BufferedInputStream;
-import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -1172,7 +1171,6 @@ public final class SpiderQueen implements Runnable {
                 }
 
                 // Download image
-                InputStream is = null;
                 try {
                     if (DEBUG_LOG) {
                         Log.d(TAG, "Start download image " + index);
@@ -1209,28 +1207,44 @@ public final class SpiderQueen implements Runnable {
                         }
 
                         long contentLength = responseBody.contentLength();
-                        is = responseBody.byteStream();
-                        OutputStream os = osPipe.open();
-
-                        final byte[] data = new byte[1024 * 4];
                         long receivedSize = 0;
 
-                        while (!mStoped) {
-                            int bytesRead = is.read(data);
-                            if (bytesRead == -1) {
-                                response.close();
-                                break;
+                        OutputStream os = osPipe.open();
+                        if (os instanceof FileOutputStream fileOutputStream) {
+                            try (var channel = fileOutputStream.getChannel(); var source = responseBody.source(); responseBody; response) {
+                                while (!mStoped) {
+                                    // Is 40k a good size ?
+                                    long bytesRead = channel.transferFrom(source, receivedSize, 40960);
+                                    if (bytesRead == 0) {
+                                        break;
+                                    }
+                                    receivedSize += bytesRead;
+                                    if (contentLength > 0) {
+                                        mPagePercentMap.put(index, (float) receivedSize / contentLength);
+                                    }
+                                    notifyPageDownload(index, contentLength, receivedSize, (int) bytesRead);
+                                }
                             }
-                            os.write(data, 0, bytesRead);
-                            receivedSize += bytesRead;
-                            // Update page percent
-                            if (contentLength > 0) {
-                                mPagePercentMap.put(index, (float) receivedSize / contentLength);
+                        } else {
+                            final byte[] data = new byte[1024 * 4];
+                            try (var is = responseBody.byteStream(); responseBody; response) {
+                                while (!mStoped) {
+                                    int bytesRead = is.read(data);
+                                    if (bytesRead == -1) {
+                                        break;
+                                    }
+                                    os.write(data, 0, bytesRead);
+                                    receivedSize += bytesRead;
+                                    // Update page percent
+                                    if (contentLength > 0) {
+                                        mPagePercentMap.put(index, (float) receivedSize / contentLength);
+                                    }
+                                    // Notify listener
+                                    notifyPageDownload(index, contentLength, receivedSize, bytesRead);
+                                }
+                                os.flush();
                             }
-                            // Notify listener
-                            notifyPageDownload(index, contentLength, receivedSize, bytesRead);
                         }
-                        os.flush();
 
                         // check download size
                         if (contentLength >= 0) {
@@ -1314,8 +1328,6 @@ public final class SpiderQueen implements Runnable {
                     error = GetText.getString(R.string.error_socket);
                     forceHtml = true;
                 } finally {
-                    IOUtils.closeQuietly(is);
-
                     if (DEBUG_LOG) {
                         Log.d(TAG, "End download image " + index);
                     }
@@ -1546,8 +1558,8 @@ public final class SpiderQueen implements Runnable {
                     continue;
                 }
 
-                InputStreamPipe pipe = mSpiderDen.openInputStreamPipe(index);
-                if (pipe == null) {
+                Image.ByteBufferSource src = mSpiderDen.getImageSource(index);
+                if (src == null) {
                     resetDecodeIndex();
                     // Can't find the file, it might be removed from cache,
                     // Reset it state and request it
@@ -1556,35 +1568,10 @@ public final class SpiderQueen implements Runnable {
                     continue;
                 }
 
-                Image image = null;
+                Image image = Image.decode(src);
                 String error = null;
-                InputStream is;
-
-                try {
-                    is = pipe.open();
-                } catch (IOException e) {
-                    // Can't open pipe
-                    error = GetText.getString(R.string.error_reading_failed);
-                    is = null;
-                    pipe.close();
-                    pipe.release();
-                }
-
-                if (is != null) {
-                    try {
-                        image = Image.decode(((FileInputStream) is));
-                    } catch (ImageDecoder.DecodeException e) {
-                        e.printStackTrace();
-                    } finally {
-                        try {
-                            is.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    if (image == null) {
-                        error = GetText.getString(R.string.error_decoding_failed);
-                    }
+                if (image == null) {
+                    error = GetText.getString(R.string.error_decoding_failed);
                 }
 
                 // Notify

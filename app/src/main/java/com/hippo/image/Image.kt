@@ -23,31 +23,22 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ImageDecoder
 import android.graphics.ImageDecoder.ALLOCATOR_SOFTWARE
-import android.graphics.ImageDecoder.DecodeException
 import android.graphics.ImageDecoder.ImageInfo
 import android.graphics.ImageDecoder.Source
 import android.graphics.PorterDuff
 import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.os.Build
 import androidx.core.graphics.drawable.toDrawable
-import coil.decode.FrameDelayRewritingSource
 import com.hippo.ehviewer.EhApplication
 import com.hippo.ehviewer.R
-import com.hippo.Native
-import okio.Buffer
-import okio.BufferedSource
-import okio.buffer
-import okio.source
-import java.io.FileInputStream
 import java.nio.ByteBuffer
-import java.nio.channels.FileChannel
 import kotlin.math.min
 
 class Image private constructor(
-    source: Source?, drawable: Drawable? = null,
-    val release: () -> Unit? = {}
+    source: Source? = null,
+    private var src: ByteBufferSource? = null,
+    drawable: Drawable? = null
 ) {
     private var mObtainedDrawable: Drawable?
     private var mBitmap: Bitmap? = null
@@ -62,13 +53,16 @@ class Image private constructor(
                     decoder.setTargetSampleSize(
                         calculateSampleSize(info, 2 * screenHeight, 2 * screenWidth)
                     )
+                }.also {
+                    (it as? BitmapDrawable)?.run {
+                        src?.close()
+                        src = null
+                    }
                 }
         }
         if (mObtainedDrawable == null) {
             mObtainedDrawable = drawable!!
         }
-        if (mObtainedDrawable is BitmapDrawable)
-            release()
     }
 
     val animated = mObtainedDrawable is AnimatedImageDrawable
@@ -83,12 +77,12 @@ class Image private constructor(
         (mObtainedDrawable as? AnimatedImageDrawable)?.stop()
         (mObtainedDrawable as? BitmapDrawable)?.bitmap?.recycle()
         mObtainedDrawable?.callback = null
-        if (mObtainedDrawable is AnimatedImageDrawable)
-            release()
         mObtainedDrawable = null
         mCanvas = null
         mBitmap?.recycle()
         mBitmap = null
+        src?.close()
+        src = null
     }
 
     private fun prepareBitmap() {
@@ -160,50 +154,22 @@ class Image private constructor(
         val screenWidth = EhApplication.application.resources.displayMetrics.widthPixels
         val screenHeight = EhApplication.application.resources.displayMetrics.heightPixels
 
-        @Throws(DecodeException::class)
         @JvmStatic
-        fun decode(stream: FileInputStream): Image {
-            val buffer = stream.channel.map(
-                FileChannel.MapMode.READ_ONLY, 0,
-                stream.available().toLong()
-            )
-            val source = if (checkIsGif(buffer)) {
-                rewriteSource(stream.source().buffer())
-            } else {
-                buffer
-            }
-            return Image(ImageDecoder.createSource(source))
-        }
-
-        @Throws(DecodeException::class)
-        @JvmStatic
-        fun decode(buffer: ByteBuffer, release: () -> Unit? = {}): Image {
-            return if (checkIsGif(buffer)) {
-                val rewritten = rewriteSource(Buffer().apply {
-                    write(buffer)
-                    release()
-                })
-                Image(ImageDecoder.createSource(rewritten))
-            } else {
-                Image(ImageDecoder.createSource(buffer)) {
-                    release()
-                }
-            }
+        fun decode(src: ByteBufferSource): Image? {
+            val directBuffer = src.getByteBuffer()
+            check(directBuffer.isDirect)
+            rewriteGifSource(directBuffer)
+            return runCatching {
+                Image(ImageDecoder.createSource(directBuffer), src)
+            }.onFailure {
+                src.close()
+                it.printStackTrace()
+            }.getOrNull()
         }
 
         @JvmStatic
         fun create(bitmap: Bitmap): Image {
-            return Image(null, bitmap.toDrawable(Resources.getSystem()))
-        }
-
-        private fun rewriteSource(source: BufferedSource): ByteBuffer {
-            val bufferedSource = FrameDelayRewritingSource(source).buffer()
-            return ByteBuffer.wrap(bufferedSource.use { it.readByteArray() })
-        }
-
-        private fun checkIsGif(buffer: ByteBuffer): Boolean {
-            check(buffer.isDirect)
-            return Native.isGif(buffer)
+            return Image(drawable = bitmap.toDrawable(Resources.getSystem()))
         }
 
         @JvmStatic
@@ -215,5 +181,13 @@ class Image private constructor(
             width: Int,
             height: Int
         )
+
+        @JvmStatic
+        private external fun rewriteGifSource(buffer: ByteBuffer)
+    }
+
+    interface ByteBufferSource : AutoCloseable {
+        // A read-write direct bytebuffer, it may in native heap or file mapping
+        fun getByteBuffer(): ByteBuffer
     }
 }

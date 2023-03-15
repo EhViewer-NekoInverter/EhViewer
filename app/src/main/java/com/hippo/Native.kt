@@ -31,7 +31,11 @@ object Native {
     @JvmStatic
     external fun getFd(fd: FileDescriptor?): Int
 
-    external fun isGif(buffer: ByteBuffer): Boolean
+    @JvmStatic
+    external fun mapFd(fd: Int, capability: Long): ByteBuffer?
+
+    @JvmStatic
+    external fun unmapDirectByteBuffer(buffer: ByteBuffer)
 }
 
 private fun sendFileTotally(from: FileDescriptor, to: FileDescriptor) {
