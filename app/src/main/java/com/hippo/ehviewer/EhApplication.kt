@@ -37,7 +37,6 @@ import com.hippo.ehviewer.client.data.GalleryDetail
 import com.hippo.ehviewer.coil.MergeInterceptor
 import com.hippo.ehviewer.dao.buildMainDB
 import com.hippo.ehviewer.download.DownloadManager
-import com.hippo.ehviewer.spider.SpiderDen
 import com.hippo.ehviewer.ui.CommonOperations
 import com.hippo.ehviewer.ui.EhActivity
 import com.hippo.scene.SceneApplication
@@ -92,7 +91,6 @@ class EhApplication : SceneApplication(), ImageLoaderFactory {
         Settings.initialize()
         ReadableTime.initialize(this)
         AppConfig.initialize(this)
-        SpiderDen.initialize(this)
         LocaleDelegate.defaultLocale = Settings.locale
         DayNightDelegate.setApplicationContext(this)
         DayNightDelegate.setDefaultNightMode(Settings.theme)

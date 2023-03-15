@@ -13,468 +13,385 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.ehviewer.spider
 
-package com.hippo.ehviewer.spider;
+import android.webkit.MimeTypeMap
+import coil.disk.DiskCache
+import com.hippo.Native.mapFd
+import com.hippo.Native.unmapDirectByteBuffer
+import com.hippo.ehviewer.EhApplication.Companion.application
+import com.hippo.ehviewer.EhDB
+import com.hippo.ehviewer.Settings
+import com.hippo.ehviewer.client.EhCacheKeyFactory
+import com.hippo.ehviewer.client.EhUtils.getSuitableTitle
+import com.hippo.ehviewer.client.data.GalleryInfo
+import com.hippo.ehviewer.coil.edit
+import com.hippo.ehviewer.gallery.GalleryProvider2
+import com.hippo.image.Image.ByteBufferSource
+import com.hippo.unifile.RawFile
+import com.hippo.unifile.UniFile
+import com.hippo.yorozuya.FileUtils
+import com.hippo.yorozuya.MathUtils
+import com.hippo.yorozuya.Utilities
+import okhttp3.ResponseBody
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.RandomAccessFile
+import java.nio.ByteBuffer
+import java.nio.channels.FileChannel
+import java.util.Locale
+import kotlin.io.path.readText
 
-import android.content.Context;
+class SpiderDen(private val mGalleryInfo: GalleryInfo) {
+    private val mGid: Long = mGalleryInfo.gid
+    private var mDownloadDir: UniFile? = getGalleryDownloadDir(mGid)
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+    @Volatile
+    private var mMode = SpiderQueen.MODE_READ
 
-import com.hippo.Native;
-import com.hippo.ehviewer.EhApplication;
-import com.hippo.ehviewer.EhDB;
-import com.hippo.ehviewer.Settings;
-import com.hippo.ehviewer.client.EhCacheKeyFactory;
-import com.hippo.ehviewer.client.EhUtils;
-import com.hippo.ehviewer.client.data.GalleryInfo;
-import com.hippo.ehviewer.gallery.GalleryProvider2;
-import com.hippo.image.Image;
-import com.hippo.io.UniFileInputStreamPipe;
-import com.hippo.io.UniFileOutputStreamPipe;
-import com.hippo.streampipe.InputStreamPipe;
-import com.hippo.streampipe.OutputStreamPipe;
-import com.hippo.unifile.RawFile;
-import com.hippo.unifile.UniFile;
-import com.hippo.yorozuya.FileUtils;
-import com.hippo.yorozuya.IOUtils;
-import com.hippo.yorozuya.MathUtils;
-import com.hippo.yorozuya.Utilities;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
-import java.util.Locale;
-
-import coil.disk.DiskCache;
-import okio.BufferedSource;
-import okio.Okio;
-
-public final class SpiderDen {
-    @Nullable
-    private static DiskCache sCache;
-    @Nullable
-    private UniFile mDownloadDir;
-    private final GalleryInfo mGalleryInfo;
-    private final long mGid;
-    private volatile int mMode = SpiderQueen.MODE_READ;
-
-    public SpiderDen(GalleryInfo galleryInfo) {
-        mGalleryInfo = galleryInfo;
-        mGid = galleryInfo.getGid();
-        mDownloadDir = getGalleryDownloadDir(galleryInfo.getGid());
-    }
-
-    public static void initialize(Context context) {
-        sCache = new DiskCache.Builder()
-                .directory(new File(context.getCacheDir(), "image"))
-                .maxSizeBytes((long) MathUtils.clamp(Settings.INSTANCE.getReadCacheSize(), 40, 1280) * 1024 * 1024)
-                .build();
-    }
-
-    public static UniFile getGalleryDownloadDir(long gid) {
-        UniFile dir = Settings.INSTANCE.getDownloadLocation();
-        // Read from DB
-        String dirname = EhDB.INSTANCE.getDownloadDirname(gid);
-        if (dir != null && dirname != null) {
-            // Some dirname may be invalid in some version
-            dirname = FileUtils.sanitizeFilename(dirname);
-            EhDB.INSTANCE.putDownloadDirname(gid, dirname);
-            return dir.subFile(dirname);
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * @param extension with dot
-     */
-    public static String generateImageFilename(int index, String extension) {
-        return String.format(Locale.US, "%08d%s", index + 1, extension);
-    }
-
-    @Nullable
-    private static UniFile findImageFile(UniFile dir, int index) {
-        for (String extension : GalleryProvider2.SUPPORT_IMAGE_EXTENSIONS) {
-            String filename = generateImageFilename(index, extension);
-            UniFile file = dir.findFile(filename);
-            if (file != null) {
-                return file;
-            }
-        }
-        return null;
-    }
-
-    public void setMode(@SpiderQueen.Mode int mode) {
-        mMode = mode;
-
+    fun setMode(@SpiderQueen.Mode mode: Int) {
+        mMode = mode
         if (mode == SpiderQueen.MODE_DOWNLOAD) {
-            ensureDownloadDir();
+            ensureDownloadDir()
         }
     }
 
-    private boolean ensureDownloadDir() {
-        if (mDownloadDir == null) {
-            var dirname = FileUtils.sanitizeFilename(mGid + "-" + EhUtils.getSuitableTitle(mGalleryInfo));
-            EhDB.INSTANCE.putDownloadDirname(mGid, dirname);
-            mDownloadDir = getGalleryDownloadDir(mGid);
-        }
-        return mDownloadDir != null && mDownloadDir.ensureDir();
+    private fun ensureDownloadDir(): Boolean {
+        mDownloadDir?.let { return it.ensureDir() }
+        val title = getSuitableTitle(mGalleryInfo)
+        val dirname = FileUtils.sanitizeFilename("$mGid-$title")
+        EhDB.putDownloadDirname(mGid, dirname)
+        mDownloadDir = getGalleryDownloadDir(mGid)
+        return mDownloadDir?.ensureDir() ?: false
     }
 
-    public boolean isReady() {
-        return switch (mMode) {
-            case SpiderQueen.MODE_READ -> sCache != null;
-            case SpiderQueen.MODE_DOWNLOAD -> mDownloadDir != null && mDownloadDir.isDirectory();
-            default -> false;
-        };
-    }
-
-    @Nullable
-    public UniFile getDownloadDir() {
-        if (mDownloadDir == null) {
-            mDownloadDir = getGalleryDownloadDir(mGid);
+    val isReady: Boolean
+        get() = when (mMode) {
+            SpiderQueen.MODE_READ -> true
+            SpiderQueen.MODE_DOWNLOAD -> mDownloadDir?.isDirectory ?: false
+            else -> false
         }
-        return mDownloadDir != null && mDownloadDir.isDirectory() ? mDownloadDir : null;
-    }
-
-    private boolean containInCache(int index) {
-        if (sCache == null) {
-            return false;
+    val downloadDir: UniFile?
+        get() {
+            if (mDownloadDir == null) {
+                mDownloadDir = getGalleryDownloadDir(mGid)
+            }
+            return mDownloadDir?.takeIf { it.isDirectory }
         }
 
-        String key = EhCacheKeyFactory.INSTANCE.getImageKey(mGid, index);
-        var snapshot = sCache.get(key);
-        var exist = snapshot != null;
-        if (exist) snapshot.close();
-        return exist;
+    private fun containInCache(index: Int): Boolean {
+        val key = EhCacheKeyFactory.getImageKey(mGid, index)
+        return sCache[key]?.apply { close() } != null
     }
 
-    private boolean containInDownloadDir(int index) {
-        UniFile dir = getDownloadDir();
-        if (dir == null) {
-            return false;
-        }
-
-        // Find image file in download dir
-        return findImageFile(dir, index) != null;
+    private fun containInDownloadDir(index: Int): Boolean {
+        val dir = downloadDir ?: return false
+        return findImageFile(dir, index) != null
     }
 
     /**
      * @param extension with dot
      */
-    private String fixExtension(String extension) {
-        if (Utilities.contain(GalleryProvider2.SUPPORT_IMAGE_EXTENSIONS, extension)) {
-            return extension;
+    private fun fixExtension(extension: String): String {
+        return if (Utilities.contain(
+                GalleryProvider2.SUPPORT_IMAGE_EXTENSIONS,
+                extension
+            )
+        ) {
+            extension
         } else {
-            return GalleryProvider2.SUPPORT_IMAGE_EXTENSIONS[0];
+            GalleryProvider2.SUPPORT_IMAGE_EXTENSIONS[0]
         }
     }
 
-    private boolean copyFromCacheToDownloadDir(int index, boolean skip) {
-        if (sCache == null) {
-            return false;
-        }
-        UniFile dir = getDownloadDir();
-        if (dir == null) {
-            return false;
-        }
-
+    private fun copyFromCacheToDownloadDir(index: Int, skip: Boolean): Boolean {
+        val dir = downloadDir ?: return false
         // Find image file in cache
-        String key = EhCacheKeyFactory.INSTANCE.getImageKey(mGid, index);
-        var snapshot = sCache.get(key);
-        if (snapshot == null) {
-            return false;
-        }
-
-        OutputStream os = null;
-        try (snapshot; FileInputStream is = new FileInputStream(snapshot.getData().toFile()); BufferedSource buf = Okio.buffer(Okio.source(snapshot.getMetadata().toFile()))) {
-            // Get extension
-            String extension = fixExtension("." + buf.readUtf8Line());
-            // Don't copy from cache if `download original image` enabled, ignore gif
-            if (skip && !extension.equals(GalleryProvider2.SUPPORT_IMAGE_EXTENSIONS[3])) {
-                return false;
-            }
-            // Copy from cache to download dir
-            UniFile file = dir.createFile(generateImageFilename(index, extension));
-            if (file == null) {
-                return false;
-            }
-            os = file.openOutputStream();
-            IOUtils.copy(is, os);
-            return true;
-        } catch (IOException e) {
-            return false;
-        } finally {
-            IOUtils.closeQuietly(os);
-        }
-    }
-
-    public boolean contain(int index) {
-        if (mMode == SpiderQueen.MODE_READ) {
-            return containInCache(index) || containInDownloadDir(index);
-        } else if (mMode == SpiderQueen.MODE_DOWNLOAD) {
-            return containInDownloadDir(index) || copyFromCacheToDownloadDir(index, Settings.INSTANCE.getSkipCopyImage());
-        } else {
-            return false;
-        }
-    }
-
-    private boolean removeFromCache(int index) {
-        if (sCache == null) {
-            return false;
-        }
-
-        String key = EhCacheKeyFactory.INSTANCE.getImageKey(mGid, index);
-        return sCache.remove(key);
-    }
-
-    private boolean removeFromDownloadDir(int index) {
-        UniFile dir = getDownloadDir();
-        if (dir == null) {
-            return false;
-        }
-
-        boolean result = false;
-        for (int i = 0, n = GalleryProvider2.SUPPORT_IMAGE_EXTENSIONS.length; i < n; i++) {
-            String filename = generateImageFilename(index, GalleryProvider2.SUPPORT_IMAGE_EXTENSIONS[i]);
-            UniFile file = dir.subFile(filename);
-            if (file != null) {
-                result |= file.delete();
-            }
-        }
-        return result;
-    }
-
-    public boolean remove(int index) {
-        boolean result = removeFromCache(index);
-        result |= removeFromDownloadDir(index);
-        return result;
-    }
-
-    @Nullable
-    private OutputStreamPipe openCacheOutputStreamPipe(int index, @Nullable String extension) {
-        if (sCache == null) {
-            return null;
-        }
-
-        String key = EhCacheKeyFactory.INSTANCE.getImageKey(mGid, index);
-        var editor = sCache.edit(key);
-        if (editor == null) return null;
-        try (var sink = Okio.buffer(Okio.sink(editor.getMetadata().toFile()))) {
-            sink.writeUtf8(extension);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return new OutputStreamPipe() {
-            private OutputStream os = null;
-            @Override
-            public void release() {
-                editor.commit();
-            }
-            @NonNull
-            @Override
-            public OutputStream open() throws IOException {
-                if (os != null) IOUtils.closeQuietly(os);
-                os = new FileOutputStream(editor.getData().toFile());
-                return os;
-            }
-            @Override
-            public void close() {
-                if (os != null) IOUtils.closeQuietly(os);
-            }
-        };
-    }
-
-    /**
-     * @param extension without dot
-     */
-    @Nullable
-    private OutputStreamPipe openDownloadOutputStreamPipe(int index, @Nullable String extension) {
-        UniFile dir = getDownloadDir();
-        if (dir == null) {
-            return null;
-        }
-
-        extension = fixExtension('.' + extension);
-        UniFile file = dir.createFile(generateImageFilename(index, extension));
-        if (file != null) {
-            return new UniFileOutputStreamPipe(file);
-        } else {
-            return null;
-        }
-    }
-
-    @Nullable
-    public OutputStreamPipe openOutputStreamPipe(int index, @Nullable String extension) {
-        if (mMode == SpiderQueen.MODE_READ) {
-            // Return the download pipe is the gallery has been downloaded
-            OutputStreamPipe pipe = openDownloadOutputStreamPipe(index, extension);
-            if (pipe == null) {
-                pipe = openCacheOutputStreamPipe(index, extension);
-            }
-            return pipe;
-        } else if (mMode == SpiderQueen.MODE_DOWNLOAD) {
-            return openDownloadOutputStreamPipe(index, extension);
-        } else {
-            return null;
-        }
-    }
-
-    @Nullable
-    private InputStreamPipe openCacheInputStreamPipe(int index) {
-        if (sCache == null) {
-            return null;
-        }
-
-        String key = EhCacheKeyFactory.INSTANCE.getImageKey(mGid, index);
-        var snapshot = sCache.get(key);
-        if (snapshot == null) return null;
-        return new InputStreamPipe() {
-            private InputStream is = null;
-            @Override
-            public void release() {
-                snapshot.close();
-            }
-            @NonNull
-            @Override
-            public InputStream open() throws IOException {
-                if (is != null) IOUtils.closeQuietly(is);
-                is = new FileInputStream(snapshot.getData().toFile());
-                return is;
-            }
-            @Override
-            public void close() {
-                if (is != null) IOUtils.closeQuietly(is);
-            }
-        };
-    }
-
-    @Nullable
-    public InputStreamPipe openDownloadInputStreamPipe(int index) {
-        UniFile dir = getDownloadDir();
-        if (dir == null) {
-            return null;
-        }
-
-        for (int i = 0; i < 2; i++) {
-            UniFile file = findImageFile(dir, index);
-            if (file != null) {
-                return new UniFileInputStreamPipe(file);
-            } else if (!copyFromCacheToDownloadDir(index, false)) {
-                return null;
-            }
-        }
-
-        return null;
-    }
-
-    @Nullable
-    public InputStreamPipe openInputStreamPipe(int index) {
-        if (mMode == SpiderQueen.MODE_READ) {
-            InputStreamPipe pipe = openCacheInputStreamPipe(index);
-            if (pipe == null) {
-                pipe = openDownloadInputStreamPipe(index);
-            }
-            return pipe;
-        } else if (mMode == SpiderQueen.MODE_DOWNLOAD) {
-            return openDownloadInputStreamPipe(index);
-        } else {
-            return null;
-        }
-    }
-
-    @Nullable
-    public Image.ByteBufferSource getImageSource(int index) {
-        if (mMode == SpiderQueen.MODE_READ) {
-            String key = EhCacheKeyFactory.INSTANCE.getImageKey(mGid, index);
-            if (sCache != null) {
-                var snapshot = sCache.get(key);
-                if (snapshot != null) {
-                    try {
-                        var file = new RandomAccessFile(snapshot.getData().toFile(), "rw");
-                        var chan = file.getChannel();
-                        var map = chan.map(FileChannel.MapMode.PRIVATE, 0, file.length());
-                        return new Image.ByteBufferSource() {
-                            @NonNull
-                            @Override
-                            public ByteBuffer getByteBuffer() {
-                                return map;
+        val key = EhCacheKeyFactory.getImageKey(mGid, index)
+        runCatching {
+            (sCache[key] ?: return false).use { snapshot ->
+                // Get extension
+                val extension = fixExtension("." + snapshot.metadata.toFile().readText())
+                // Don't copy from cache if `download original image` enabled, ignore gif
+                if (skip && extension != GalleryProvider2.SUPPORT_IMAGE_EXTENSIONS[3]) {
+                    return false
+                }
+                // Copy from cache to download dir
+                val file = dir.createFile(generateImageFilename(index, extension)) ?: return false
+                (file.openOutputStream() as FileOutputStream).use { outputStream ->
+                    outputStream.channel.use { outChannel ->
+                        snapshot.data.toFile().inputStream().use { inputStream ->
+                            inputStream.channel.use {
+                                outChannel.transferFrom(it, 0, it.size())
                             }
-                            @Override
-                            public void close() throws Exception {
-                                chan.close();
-                                file.close();
-                                snapshot.close();
-                            }
-                        };
-                    } catch (Throwable e) {
-                        e.printStackTrace();
+                        }
                     }
                 }
             }
+            return true
         }
-        UniFile dir = getDownloadDir();
-        if (dir == null) {
-            return null;
+        return false
+    }
+
+    fun contain(index: Int): Boolean {
+        return when (mMode) {
+            SpiderQueen.MODE_READ -> {
+                containInCache(index) || containInDownloadDir(index)
+            }
+
+            SpiderQueen.MODE_DOWNLOAD -> {
+                containInDownloadDir(index) || copyFromCacheToDownloadDir(index, Settings.skipCopyImage)
+            }
+
+            else -> {
+                false
+            }
         }
-        UniFile file = findImageFile(dir, index);
+    }
+
+    private fun removeFromCache(index: Int): Boolean {
+        val key = EhCacheKeyFactory.getImageKey(mGid, index)
+        return sCache.remove(key)
+    }
+
+    private fun removeFromDownloadDir(index: Int): Boolean {
+        val dir = downloadDir ?: return false
+        var result = false
+        var i = 0
+        val n = GalleryProvider2.SUPPORT_IMAGE_EXTENSIONS.size
+        while (i < n) {
+            val filename = generateImageFilename(index, GalleryProvider2.SUPPORT_IMAGE_EXTENSIONS[i])
+            val file = dir.subFile(filename)
+            if (file != null) {
+                result = result or file.delete()
+            }
+            i++
+        }
+        return result
+    }
+
+    fun remove(index: Int): Boolean {
+        return removeFromCache(index) or removeFromDownloadDir(index)
+    }
+
+    private fun findDownloadFileForIndex(index: Int, extension: String): UniFile? {
+        val dir = downloadDir ?: return null
+        val ext = fixExtension(".$extension")
+        return dir.createFile(generateImageFilename(index, ext))
+    }
+
+    // TODO: Support cancellation after spiderqueen coroutinize
+    fun saveFromBufferedSource(index: Int, body: ResponseBody, notifyProgress: (Long, Long, Int) -> Unit): Long {
+        val extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(body.contentType().toString()) ?: "jpg"
+        fun doSave(outChannel: FileChannel): Long {
+            var receivedSize: Long = 0
+            body.source().use { source ->
+                while (true) {
+                    val bytesRead = outChannel.transferFrom(source, receivedSize, TRANSFER_BLOCK)
+                    receivedSize += bytesRead
+                    notifyProgress(body.contentLength(), receivedSize, bytesRead.toInt())
+                    if (bytesRead.toInt() == 0) break
+                }
+            }
+            return receivedSize
+        }
+        findDownloadFileForIndex(index, extension)?.runCatching {
+            openOutputStream().use { outputStream ->
+                (outputStream as FileOutputStream).channel.use { return doSave(it) }
+            }
+        }?.onFailure {
+            it.printStackTrace()
+            return -1
+        }
+        // Read Mode, allow save to cache
+        if (mMode == SpiderQueen.MODE_READ) {
+            val key = EhCacheKeyFactory.getImageKey(mGid, index)
+            var received: Long = 0
+            runCatching {
+                sCache.edit(key) {
+                    metadata.toFile().writeText(extension)
+                    data.toFile().outputStream().use { outputStream ->
+                        outputStream.channel.use { received = doSave(it) }
+                    }
+                }
+            }.onFailure {
+                it.printStackTrace()
+            }.onSuccess {
+                return received
+            }
+        }
+        return -1
+    }
+
+    fun saveToUniFile(index: Int, file: UniFile): Boolean {
+        (file.openOutputStream() as FileOutputStream).use { outputStream ->
+            outputStream.channel.use { outChannel ->
+                val key = EhCacheKeyFactory.getImageKey(mGid, index)
+                fun copy(inputStream: FileInputStream) {
+                    inputStream.channel.use {
+                        outChannel.transferFrom(it, 0, it.size())
+                    }
+                }
+                // Read from diskCache first
+                sCache[key]?.use { snapshot ->
+                    runCatching {
+                        snapshot.data.toFile().inputStream().use { copy(it) }
+                    }.onSuccess {
+                        return true
+                    }.onFailure {
+                        it.printStackTrace()
+                        return false
+                    }
+                }
+                downloadDir?.let { uniFile ->
+                    runCatching {
+                        findImageFile(uniFile, index)?.openInputStream()?.use {
+                            copy(it as FileInputStream)
+                        }
+                    }.onFailure {
+                        it.printStackTrace()
+                        return false
+                    }.onSuccess {
+                        return true
+                    }
+                }
+                return false
+            }
+        }
+    }
+
+    fun checkPlainText(): Boolean {
+        // TODO
+        return false
+    }
+
+    fun getExtension(index: Int): String? {
+        val key = EhCacheKeyFactory.getImageKey(mGid, index)
+        return sCache[key]?.use { it.metadata.toNioPath().readText() }
+            ?: downloadDir?.let { findImageFile(it, index) }?.name.let { FileUtils.getExtensionFromFilename(it) }
+    }
+
+    fun getImageSource(index: Int): ByteBufferSource? {
+        if (mMode == SpiderQueen.MODE_READ) {
+            val key = EhCacheKeyFactory.getImageKey(mGid, index)
+            val snapshot: DiskCache.Snapshot? = sCache[key]
+            if (snapshot != null) {
+                try {
+                    val file = RandomAccessFile(snapshot.data.toFile(), "rw")
+                    val chan = file.channel
+                    val map = chan.map(FileChannel.MapMode.PRIVATE, 0, file.length())
+                    return object : ByteBufferSource {
+                        override fun getByteBuffer(): ByteBuffer {
+                            return map
+                        }
+
+                        @Throws(Exception::class)
+                        override fun close() {
+                            chan.close()
+                            file.close()
+                            snapshot.close()
+                        }
+                    }
+                } catch (e: Throwable) {
+                    e.printStackTrace()
+                }
+            }
+        }
+        val dir = downloadDir ?: return null
+        var file = findImageFile(dir, index)
         if (file != null && mMode == SpiderQueen.MODE_DOWNLOAD) {
             if (copyFromCacheToDownloadDir(index, false)) {
-                file = findImageFile(dir, index);
+                file = findImageFile(dir, index)
             }
         }
-        if (file instanceof RawFile rawFile) {
+        if (file is RawFile) {
             try {
-                var file2 = new RandomAccessFile(rawFile.mFile, "rw");
-                var chan = file2.getChannel();
-                var map = chan.map(FileChannel.MapMode.PRIVATE, 0, file2.length());
-                return new Image.ByteBufferSource() {
-                    @NonNull
-                    @Override
-                    public ByteBuffer getByteBuffer() {
-                        return map;
+                val file2 = RandomAccessFile(file.mFile, "rw")
+                val chan = file2.channel
+                val map = chan.map(FileChannel.MapMode.PRIVATE, 0, file2.length())
+                return object : ByteBufferSource {
+                    override fun getByteBuffer(): ByteBuffer {
+                        return map
                     }
-                    @Override
-                    public void close() throws Exception {
-                        chan.close();
-                        file2.close();
+
+                    @Throws(Exception::class)
+                    override fun close() {
+                        chan.close()
+                        file2.close()
                     }
-                };
-            } catch (Throwable e) {
-                e.printStackTrace();
+                }
+            } catch (e: Throwable) {
+                e.printStackTrace()
             }
         }
         if (file != null) {
             try {
-                var pfd = EhApplication.getApplication().getContentResolver().openFileDescriptor(file.getUri(), "rw");
-                var map = Native.mapFd(pfd.getFd(), pfd.getStatSize());
+                val pfd = application.contentResolver.openFileDescriptor(file.uri, "rw")
+                val map = mapFd(pfd!!.fd, pfd.statSize)
                 if (map != null) {
-                    return new Image.ByteBufferSource() {
-                        @NonNull
-                        @Override
-                        public ByteBuffer getByteBuffer() {
-                            return map;
+                    return object : ByteBufferSource {
+                        override fun getByteBuffer(): ByteBuffer {
+                            return map
                         }
-                        @Override
-                        public void close() throws Exception {
-                            Native.unmapDirectByteBuffer(map);
-                            pfd.close();
+
+                        @Throws(Exception::class)
+                        override fun close() {
+                            unmapDirectByteBuffer(map)
+                            pfd.close()
                         }
-                    };
+                    }
                 } else {
-                    pfd.close();
+                    pfd.close()
                 }
-            } catch (Throwable e) {
-                e.printStackTrace();
+            } catch (e: Throwable) {
+                e.printStackTrace()
             }
         }
-        return null;
+        return null
+    }
+
+    companion object {
+        private const val TRANSFER_BLOCK: Long = 8192
+
+        // We use data to store image file, and metadata for image type
+        private val sCache by lazy {
+            DiskCache.Builder()
+                .directory(File(application.cacheDir, "image"))
+                .maxSizeBytes(MathUtils.clamp(Settings.readCacheSize, 40, 1280).toLong() * 1024 * 1024)
+                .build()
+        }
+
+        fun getGalleryDownloadDir(gid: Long): UniFile? {
+            val dir = Settings.downloadLocation
+            // Read from DB
+            var dirname = EhDB.getDownloadDirname(gid)
+            return if (dir != null && dirname != null) {
+                // Some dirname may be invalid in some version
+                dirname = FileUtils.sanitizeFilename(dirname)
+                EhDB.putDownloadDirname(gid, dirname)
+                dir.subFile(dirname)
+            } else {
+                null
+            }
+        }
+
+        /**
+         * @param extension with dot
+         */
+        fun generateImageFilename(index: Int, extension: String?): String {
+            return String.format(Locale.US, "%08d%s", index + 1, extension)
+        }
+
+        private fun findImageFile(dir: UniFile, index: Int): UniFile? {
+            for (extension in GalleryProvider2.SUPPORT_IMAGE_EXTENSIONS) {
+                val filename = generateImageFilename(index, extension)
+                val file = dir.findFile(filename)
+                if (file != null) {
+                    return file
+                }
+            }
+            return null
+        }
     }
 }

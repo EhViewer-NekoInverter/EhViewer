@@ -17,6 +17,7 @@ package com.hippo.ehviewer.spider
 
 import coil.disk.DiskCache
 import com.hippo.ehviewer.EhApplication
+import com.hippo.ehviewer.coil.edit
 import com.hippo.unifile.UniFile
 import com.hippo.yorozuya.IOUtils
 import com.hippo.yorozuya.NumberUtils
@@ -61,16 +62,14 @@ class SpiderInfo @JvmOverloads constructor(
     }
 
     fun saveToCache() {
-        val entry = spiderInfoCache.edit(gid.toString()) ?: return
         runCatching {
-            entry.data.toFile().outputStream().use{
-                write(it)
+            spiderInfoCache.edit(gid.toString()) {
+                data.toFile().outputStream().use { outputStream ->
+                    write(outputStream)
+                }
             }
         }.onFailure {
             it.printStackTrace()
-            entry.abort()
-        }.onSuccess {
-            entry.commit()
         }
     }
 

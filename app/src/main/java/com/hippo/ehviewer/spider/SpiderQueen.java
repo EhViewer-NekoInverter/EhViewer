@@ -16,11 +16,9 @@
 
 package com.hippo.ehviewer.spider;
 
-import android.graphics.BitmapFactory;
 import android.os.Process;
 import android.text.TextUtils;
 import android.util.Log;
-import android.webkit.MimeTypeMap;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
@@ -47,28 +45,22 @@ import com.hippo.ehviewer.client.parser.GalleryPageUrlParser;
 import com.hippo.glgallery.GalleryPageView;
 import com.hippo.glgallery.GalleryProvider;
 import com.hippo.image.Image;
-import com.hippo.streampipe.InputStreamPipe;
-import com.hippo.streampipe.OutputStreamPipe;
 import com.hippo.unifile.UniFile;
 import com.hippo.util.ExceptionUtils;
-import com.hippo.yorozuya.IOUtils;
 import com.hippo.yorozuya.MathUtils;
 import com.hippo.yorozuya.OSUtils;
 import com.hippo.yorozuya.StringUtils;
 import com.hippo.yorozuya.thread.PriorityThread;
 import com.hippo.yorozuya.thread.PriorityThreadFactory;
 
-import java.io.BufferedInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -78,11 +70,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import okhttp3.Call;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 public final class SpiderQueen implements Runnable {
     public static final int MODE_READ = 0;
@@ -384,7 +374,7 @@ public final class SpiderQueen implements Runnable {
             mQueenLock.notifyAll();
         }
         synchronized (mDecodeRequestQueue) {
-            mDecodeRequestQueue.notifyAll();
+            mDecodeRequestQueue.notify();
         }
         synchronized (mWorkerLock) {
             mWorkerLock.notifyAll();
@@ -554,23 +544,7 @@ public final class SpiderQueen implements Runnable {
             return false;
         }
 
-        InputStreamPipe pipe = mSpiderDen.openInputStreamPipe(index);
-        if (null == pipe) {
-            return false;
-        }
-
-        OutputStream os = null;
-        try {
-            os = file.openOutputStream();
-            IOUtils.copy(pipe.open(), os);
-            return true;
-        } catch (IOException e) {
-            return false;
-        } finally {
-            pipe.close();
-            pipe.release();
-            IOUtils.closeQuietly(os);
-        }
+        return mSpiderDen.saveToUniFile(index, file);
     }
 
     @Nullable
@@ -580,35 +554,14 @@ public final class SpiderQueen implements Runnable {
             return null;
         }
 
-        InputStreamPipe pipe = mSpiderDen.openInputStreamPipe(index);
-        if (null == pipe) {
+        var ext = mSpiderDen.getExtension(index);
+        UniFile dst = dir.subFile(null != ext ? filename + "." + ext : filename);
+        if (null == dst) {
             return null;
         }
 
-        OutputStream os = null;
-        try {
-            // Get dst file
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(pipe.open(), null, options);
-            pipe.close();
-            String extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(options.outMimeType);
-            UniFile dst = dir.subFile(null != extension ? filename + "." + extension : filename);
-            if (null == dst) {
-                return null;
-            }
-
-            // Copy
-            os = dst.openOutputStream();
-            IOUtils.copy(pipe.open(), os);
-            return dst;
-        } catch (IOException e) {
-            return null;
-        } finally {
-            pipe.close();
-            pipe.release();
-            IOUtils.closeQuietly(os);
-        }
+        if (!mSpiderDen.saveToUniFile(index, dst)) return null;
+        return dst;
     }
 
     @Nullable
@@ -618,25 +571,7 @@ public final class SpiderQueen implements Runnable {
             return null;
         }
 
-        InputStreamPipe pipe = mSpiderDen.openInputStreamPipe(index);
-        if (null == pipe) {
-            return null;
-        }
-
-        try {
-            // Get dst file
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(pipe.open(), null, options);
-            pipe.close();
-
-            return MimeTypeMap.getSingleton().getExtensionFromMimeType(options.outMimeType);
-        } catch (IOException e) {
-            return null;
-        } finally {
-            pipe.close();
-            pipe.release();
-        }
+        return mSpiderDen.getExtension(index);
     }
 
     public int getStartPage() {
@@ -1178,7 +1113,6 @@ public final class SpiderQueen implements Runnable {
 
                     Call call = mHttpClient.newCall(new EhRequestBuilder(targetImageUrl, referer).build());
                     Response response = call.execute();
-                    ResponseBody responseBody = response.body();
 
                     if (response.code() >= 400) {
                         // Maybe 404
@@ -1188,121 +1122,37 @@ public final class SpiderQueen implements Runnable {
                         continue;
                     }
 
-                    // Get extension
-                    String extension = null;
-                    MediaType mediaType = responseBody.contentType();
-                    if (mediaType != null) {
-                        extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mediaType.toString());
+                    var body = response.body();
+                    var received = mSpiderDen.saveFromBufferedSource(index, body , (contentLength, receivedSize, bytesRead) -> {
+                        if (mStoped) throw new CancellationException();
+                        mPagePercentMap.put(index, (float) receivedSize / contentLength);
+                        notifyPageDownload(index, contentLength, receivedSize, bytesRead);
+                        return null;
+                    });
+                    var contentLength = body.contentLength();
+                    body.close();
+                    response.close();
+                    if (received == -1) {
+                        error = GetText.getString(R.string.error_write_failed);
+                        response.close();
+                        break;
                     }
-
-                    OutputStreamPipe osPipe = null;
-                    try {
-                        // Get out put pipe
-                        osPipe = mSpiderDen.openOutputStreamPipe(index, extension);
-                        if (osPipe == null) {
-                            // Can't get pipe
-                            error = GetText.getString(R.string.error_write_failed);
-                            response.close();
-                            break;
-                        }
-
-                        long contentLength = responseBody.contentLength();
-                        long receivedSize = 0;
-
-                        OutputStream os = osPipe.open();
-                        if (os instanceof FileOutputStream fileOutputStream) {
-                            try (var channel = fileOutputStream.getChannel(); var source = responseBody.source(); responseBody; response) {
-                                while (!mStoped) {
-                                    // Is 40k a good size ?
-                                    long bytesRead = channel.transferFrom(source, receivedSize, 40960);
-                                    if (bytesRead == 0) {
-                                        break;
-                                    }
-                                    receivedSize += bytesRead;
-                                    if (contentLength > 0) {
-                                        mPagePercentMap.put(index, (float) receivedSize / contentLength);
-                                    }
-                                    notifyPageDownload(index, contentLength, receivedSize, (int) bytesRead);
-                                }
-                            }
-                        } else {
-                            final byte[] data = new byte[1024 * 4];
-                            try (var is = responseBody.byteStream(); responseBody; response) {
-                                while (!mStoped) {
-                                    int bytesRead = is.read(data);
-                                    if (bytesRead == -1) {
-                                        break;
-                                    }
-                                    os.write(data, 0, bytesRead);
-                                    receivedSize += bytesRead;
-                                    // Update page percent
-                                    if (contentLength > 0) {
-                                        mPagePercentMap.put(index, (float) receivedSize / contentLength);
-                                    }
-                                    // Notify listener
-                                    notifyPageDownload(index, contentLength, receivedSize, bytesRead);
-                                }
-                                os.flush();
-                            }
-                        }
-
-                        // check download size
-                        if (contentLength >= 0) {
-                            if (receivedSize < contentLength) {
-                                Log.e(TAG, "Can't download all of image data");
-                                error = "Incomplete";
-                                forceHtml = true;
-                                continue;
-                            } else if (receivedSize > contentLength) {
-                                Log.w(TAG, "Received data is more than contentLength");
-                            }
-                        }
-                    } finally {
-                        if (osPipe != null) {
-                            osPipe.close();
-                            osPipe.release();
-                        }
-                    }
-
-                    InputStreamPipe isPipe = null;
-                    try {
-                        // Get InputStreamPipe
-                        isPipe = mSpiderDen.openInputStreamPipe(index);
-                        if (isPipe == null) {
-                            // Can't get pipe
-                            error = GetText.getString(R.string.error_reading_failed);
-                            break;
-                        }
-
-                        // Check plain txt
-                        InputStream inputStream = new BufferedInputStream(isPipe.open());
-                        boolean isPlainTxt = true;
-                        int j = 0;
-                        for (; ; ) {
-                            int b = inputStream.read();
-                            if (b == -1) {
-                                break;
-                            }
-                            // Skip first three bytes
-                            if (j < 3) {
-                                j++;
-                                continue;
-                            }
-                            if (b > 126) {
-                                isPlainTxt = false;
-                                break;
-                            }
-                        }
-                        if (isPlainTxt) {
-                            error = GetText.getString(R.string.error_reading_failed);
+                    // check download size
+                    if (contentLength >= 0) {
+                        if (received < contentLength) {
+                            Log.e(TAG, "Can't download all of image data");
+                            error = "Incomplete";
                             forceHtml = true;
                             continue;
+                        } else if (received > contentLength) {
+                            Log.w(TAG, "Received data is more than contentLength");
                         }
-                    } finally {
-                        if (isPipe != null) {
-                            isPipe.close();
-                            isPipe.release();
-                        }
+                    }
+
+                    if (mSpiderDen.checkPlainText()) {
+                        error = GetText.getString(R.string.error_reading_failed);
+                        forceHtml = true;
+                        continue;
                     }
 
                     // Check Stopped
