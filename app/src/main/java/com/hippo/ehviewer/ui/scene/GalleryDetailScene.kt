@@ -97,8 +97,9 @@ import com.hippo.ehviewer.dao.DownloadInfo
 import com.hippo.ehviewer.dao.Filter
 import com.hippo.ehviewer.download.DownloadManager
 import com.hippo.ehviewer.download.DownloadManager.DownloadInfoListener
+import com.hippo.ehviewer.gallery.EhGalleryProvider
+import com.hippo.ehviewer.gallery.GalleryProvider2
 import com.hippo.ehviewer.spider.SpiderDen
-import com.hippo.ehviewer.spider.SpiderQueen
 import com.hippo.ehviewer.ui.CommonOperations
 import com.hippo.ehviewer.ui.GalleryActivity
 import com.hippo.ehviewer.widget.GalleryRatingBar
@@ -112,7 +113,6 @@ import com.hippo.util.ReadableTime
 import com.hippo.util.addTextToClipboard
 import com.hippo.util.getParcelableCompat
 import com.hippo.util.launchIO
-import com.hippo.util.withUIContext
 import com.hippo.view.ViewTransition
 import com.hippo.widget.AutoWrapLayout
 import com.hippo.widget.LoadImageView
@@ -330,17 +330,15 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         mRead ?: return
         mGalleryInfo?.let {
             // Other Actions
-            viewLifecycleOwner.lifecycleScope.launchIO {
-                runCatching {
-                    val startPage = SpiderQueen.getStartPage(it.gid)
-                    if (startPage != 0) {
-                        withUIContext {
-                            mRead!!.text = getString(R.string.read_from, startPage + 1)
-                        }
-                    }
-                }.onFailure {
-                    it.printStackTrace()
+            try {
+                val galleryProvider: GalleryProvider2 = EhGalleryProvider(mGalleryInfo!!)
+                galleryProvider.start()
+                val startPage = galleryProvider.startPage
+                galleryProvider.stop()
+                if (startPage != 0) {
+                    mRead!!.text = getString(R.string.read_from, startPage + 1)
                 }
+            } catch (ignore: Exception) {
             }
         }
     }
