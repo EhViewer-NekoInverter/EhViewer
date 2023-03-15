@@ -335,8 +335,10 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                 galleryProvider.start()
                 val startPage = galleryProvider.startPage
                 galleryProvider.stop()
-                if (startPage != 0) {
-                    mRead!!.text = getString(R.string.read_from, startPage + 1)
+                mRead!!.text = if (startPage == 0) {
+                    getString(R.string.read)
+                } else {
+                    getString(R.string.read_from, startPage + 1)
                 }
             } catch (ignore: Exception) {
             }
