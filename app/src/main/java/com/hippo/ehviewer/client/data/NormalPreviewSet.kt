@@ -81,6 +81,6 @@ class NormalPreviewSet(
             mOffsetXList[index], mOffsetYList[index],
             mClipWidthList[index], mClipHeightList[index]
         )
-        view.load(mImageKeyList[index], mImageUrlList[index], true, true)
+        view.load(mImageKeyList[index], mImageUrlList[index])
     }
 }

@@ -59,11 +59,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.transition.TransitionInflater
 import androidx.lifecycle.lifecycleScope
+import coil.Coil.imageLoader
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.snackbar.Snackbar
 import com.hippo.app.CheckBoxDialogBuilder
 import com.hippo.app.EditTextDialogBuilder
-import com.hippo.ehviewer.AppConfig
 import com.hippo.ehviewer.EhApplication
 import com.hippo.ehviewer.EhApplication.Companion.galleryDetailCache
 import com.hippo.ehviewer.EhDB
@@ -119,14 +119,10 @@ import com.hippo.widget.LoadImageView
 import com.hippo.widget.ObservedTextView
 import com.hippo.widget.SimpleGridAutoSpanLayout
 import com.hippo.yorozuya.FileUtils
-import com.hippo.yorozuya.IOUtils
 import com.hippo.yorozuya.IntIdGenerator
 import com.hippo.yorozuya.SimpleHandler
 import com.hippo.yorozuya.ViewUtils
 import com.hippo.yorozuya.collect.IntList
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
-import java.io.OutputStream
 import kotlin.math.abs
 import kotlin.math.hypot
 import kotlin.math.max
@@ -916,13 +912,13 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         val size = previewNum.coerceAtMost(previewSet.size())
         for (i in 0 until size) {
             val view = inflater.inflate(R.layout.item_gallery_preview, mGridLayout, false)
-            mGridLayout!!.addView(view)
             val image = view.findViewById<LoadImageView>(R.id.image)
-            previewSet.load(image, gd.gid, i)
+            mGridLayout!!.addView(view)
             image.setTag(R.id.index, i)
             image.setOnClickListener(this)
             val text = view.findViewById<TextView>(R.id.text)
             text.text = (previewSet.getPosition(i) + 1).toString()
+            previewSet.load(image, gd.gid, i)
         }
     }
 
@@ -973,26 +969,21 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
     }
 
     private fun showCoverGalleryList() {
+        val context = context ?: return
         val gid = gid
         if (-1L == gid) {
             return
         }
-        val temp = AppConfig.createTempFile() ?: return
-        val beerBelly = EhApplication.conaco.beerBelly
-        var os: OutputStream? = null
         try {
-            os = FileOutputStream(temp)
-            if (beerBelly.pullFromDiskCache(EhCacheKeyFactory.getThumbKey(gid), os)) {
-                val lub = ListUrlBuilder()
-                lub.mode = ListUrlBuilder.MODE_IMAGE_SEARCH
-                lub.imagePath = temp.path
-                lub.isUseSimilarityScan = true
-                GalleryListScene.startScene(this, lub)
-            }
-        } catch (e: FileNotFoundException) {
-            // Ignore
-        } finally {
-            IOUtils.closeQuietly(os)
+            val key = EhCacheKeyFactory.getThumbKey(gid)
+            val path = imageLoader(context).diskCache!![key]!!.use { it.data }
+            val lub = ListUrlBuilder()
+            lub.mode = ListUrlBuilder.MODE_IMAGE_SEARCH
+            lub.imagePath = path.toString()
+            lub.isUseSimilarityScan = true
+            GalleryListScene.startScene(this, lub)
+        } catch (e: Throwable) {
+            e.printStackTrace()
         }
     }
 

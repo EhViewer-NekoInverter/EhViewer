@@ -525,7 +525,7 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
         if (TextUtils.isEmpty(avatarUrl)) {
             mAvatar!!.load(R.drawable.default_avatar)
         } else {
-            mAvatar!!.load(avatarUrl, avatarUrl)
+            mAvatar!!.load(avatarUrl!!, avatarUrl)
         }
         val displayName = Settings.displayName
         if (TextUtils.isEmpty(displayName)) {

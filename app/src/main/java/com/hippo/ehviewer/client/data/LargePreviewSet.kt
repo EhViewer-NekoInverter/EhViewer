@@ -55,9 +55,7 @@ class LargePreviewSet(
         view.resetClip()
         view.load(
             EhCacheKeyFactory.getLargePreviewKey(gid, mPositionList[index]),
-            mImageUrlList[index],
-            true,
-            true
+            mImageUrlList[index]
         )
     }
 }

@@ -90,6 +90,7 @@ android {
             // https://kotlinlang.org/docs/compiler-reference.html#progressive
             "-progressive",
 
+            "-opt-in=coil.annotation.ExperimentalCoilApi",
             "-opt-in=kotlin.contracts.ExperimentalContracts",
             "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
             "-opt-in=kotlinx.coroutines.FlowPreview",
@@ -143,7 +144,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.10.0-rc01")
 
     implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
-    implementation("androidx.fragment:fragment-ktx:1.6.0-alpha04")
+    implementation("androidx.fragment:fragment-ktx:1.6.0-alpha07")
     // https://developer.android.com/jetpack/androidx/releases/lifecycle
     implementation("androidx.lifecycle:lifecycle-process:2.6.0")
 
@@ -165,12 +166,18 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp-bom:5.0.0-alpha.11")
     implementation("com.squareup.okhttp3:okhttp-coroutines")
 
+    implementation("com.squareup.okio:okio-jvm:3.3.0")
+
     // https://github.com/RikkaApps/RikkaX
-    implementation("dev.rikka.rikkax.appcompat:appcompat:1.5.0.1")
+    implementation("dev.rikka.rikkax.appcompat:appcompat:1.6.1")
     implementation("dev.rikka.rikkax.core:core-ktx:1.4.1")
     //noinspection GradleDependency
     implementation("dev.rikka.rikkax.material:material:1.6.6")
     implementation("dev.rikka.rikkax.preference:simplemenu-preference:1.0.3")
+
+    // https://coil-kt.github.io/coil/changelog/
+    implementation("io.coil-kt:coil:2.3.0-SNAPSHOT")
+
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation("org.jsoup:jsoup:1.15.4")
 }

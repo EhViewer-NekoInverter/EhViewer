@@ -22,6 +22,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ImageDecoder
+import android.graphics.ImageDecoder.ALLOCATOR_SOFTWARE
 import android.graphics.ImageDecoder.DecodeException
 import android.graphics.ImageDecoder.ImageInfo
 import android.graphics.ImageDecoder.Source
@@ -46,10 +47,9 @@ import kotlin.math.min
 
 class Image private constructor(
     source: Source?, drawable: Drawable? = null,
-    val hardware: Boolean = true,
     val release: () -> Unit? = {}
 ) {
-    internal var mObtainedDrawable: Drawable?
+    private var mObtainedDrawable: Drawable?
     private var mBitmap: Bitmap? = null
     private var mCanvas: Canvas? = null
 
@@ -58,11 +58,7 @@ class Image private constructor(
         source?.let {
             mObtainedDrawable =
                 ImageDecoder.decodeDrawable(source) { decoder: ImageDecoder, info: ImageInfo, _: Source ->
-                    if (!hardware || Build.VERSION.SDK_INT == Build.VERSION_CODES.P) {
-                        // Sadly we must use software memory in glgallery since we need copy it to tile buffer
-                        // Allocating hardware bitmap may cause a crash on framework versions prior to Android Q
-                        decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
-                    }
+                    decoder.allocator = ALLOCATOR_SOFTWARE
                     decoder.setTargetSampleSize(
                         calculateSampleSize(info, 2 * screenHeight, 2 * screenWidth)
                     )
@@ -108,7 +104,6 @@ class Image private constructor(
     }
 
     fun texImage(init: Boolean, offsetX: Int, offsetY: Int, width: Int, height: Int) {
-        check(!hardware) { "Hardware buffer cannot be used in glgallery" }
         val bitmap: Bitmap? = if (animated) {
             updateBitmap()
             mBitmap
@@ -167,7 +162,7 @@ class Image private constructor(
 
         @Throws(DecodeException::class)
         @JvmStatic
-        fun decode(stream: FileInputStream, hardware: Boolean): Image {
+        fun decode(stream: FileInputStream): Image {
             val buffer = stream.channel.map(
                 FileChannel.MapMode.READ_ONLY, 0,
                 stream.available().toLong()
@@ -177,20 +172,20 @@ class Image private constructor(
             } else {
                 buffer
             }
-            return Image(ImageDecoder.createSource(source), hardware = hardware)
+            return Image(ImageDecoder.createSource(source))
         }
 
         @Throws(DecodeException::class)
         @JvmStatic
-        fun decode(buffer: ByteBuffer, hardware: Boolean, release: () -> Unit? = {}): Image {
+        fun decode(buffer: ByteBuffer, release: () -> Unit? = {}): Image {
             return if (checkIsGif(buffer)) {
                 val rewritten = rewriteSource(Buffer().apply {
                     write(buffer)
                     release()
                 })
-                Image(ImageDecoder.createSource(rewritten), hardware = hardware)
+                Image(ImageDecoder.createSource(rewritten))
             } else {
-                Image(ImageDecoder.createSource(buffer), hardware = hardware) {
+                Image(ImageDecoder.createSource(buffer)) {
                     release()
                 }
             }
@@ -198,7 +193,7 @@ class Image private constructor(
 
         @JvmStatic
         fun create(bitmap: Bitmap): Image {
-            return Image(null, bitmap.toDrawable(Resources.getSystem()), false)
+            return Image(null, bitmap.toDrawable(Resources.getSystem()))
         }
 
         private fun rewriteSource(source: BufferedSource): ByteBuffer {

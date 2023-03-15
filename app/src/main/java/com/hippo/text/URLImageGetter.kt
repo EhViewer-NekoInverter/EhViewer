@@ -18,14 +18,12 @@ package com.hippo.text
 import android.graphics.drawable.Drawable
 import android.text.Html.ImageGetter
 import com.hippo.drawable.UnikeryDrawable
-import com.hippo.ehviewer.EhApplication.Companion.conaco
-import com.hippo.image.ImageBitmap
 import com.hippo.widget.ObservedTextView
 
 class URLImageGetter(
     private val mTextView: ObservedTextView
 ) : ImageGetter {
     override fun getDrawable(source: String): Drawable {
-        return UnikeryDrawable(mTextView, conaco).apply { load(source) }
+        return UnikeryDrawable(mTextView).apply { load(source) }
     }
 }

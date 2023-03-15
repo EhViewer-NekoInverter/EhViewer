@@ -40,6 +40,6 @@ class GalleryPreview(
 ) : Parcelable {
     fun load(view: LoadImageView) {
         view.setClip(offsetX, offsetY, clipWidth, clipHeight)
-        view.load(imageKey!!, imageUrl!!, true, true)
+        view.load(imageKey!!, imageUrl!!)
     }
 }

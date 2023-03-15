@@ -15,7 +15,6 @@
  */
 package com.hippo.ehviewer
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ComponentCallbacks2
 import android.text.Html
@@ -24,8 +23,10 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.collection.LruCache
+import coil.ImageLoader
+import coil.ImageLoaderFactory
+import coil.disk.DiskCache
 import com.hippo.Native
-import com.hippo.conaco.Conaco
 import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.EhDns
 import com.hippo.ehviewer.client.EhEngine
@@ -33,33 +34,31 @@ import com.hippo.ehviewer.client.EhSSLSocketFactory
 import com.hippo.ehviewer.client.EhTagDatabase
 import com.hippo.ehviewer.client.EhX509TrustManager
 import com.hippo.ehviewer.client.data.GalleryDetail
+import com.hippo.ehviewer.coil.MergeInterceptor
 import com.hippo.ehviewer.dao.buildMainDB
 import com.hippo.ehviewer.download.DownloadManager
 import com.hippo.ehviewer.spider.SpiderDen
 import com.hippo.ehviewer.ui.CommonOperations
 import com.hippo.ehviewer.ui.EhActivity
-import com.hippo.image.ImageBitmap
 import com.hippo.scene.SceneApplication
 import com.hippo.util.ExceptionUtils
 import com.hippo.util.ReadableTime
 import com.hippo.util.launchIO
 import com.hippo.yorozuya.FileUtils
 import com.hippo.yorozuya.IntIdGenerator
-import com.hippo.yorozuya.OSUtils
 import java.io.File
 import java.net.Proxy
 import java.security.KeyStore
 import java.util.Arrays
 import javax.net.ssl.TrustManagerFactory
 import javax.net.ssl.X509TrustManager
-import kotlin.math.min
 import kotlinx.coroutines.DelicateCoroutinesApi
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import rikka.material.app.DayNightDelegate
 import rikka.material.app.LocaleDelegate
 
-class EhApplication : SceneApplication() {
+class EhApplication : SceneApplication(), ImageLoaderFactory {
     private val mIdGenerator = IntIdGenerator()
     private val mGlobalStuffMap = HashMap<Int, Any>()
     private val mActivityList = ArrayList<Activity>()
@@ -75,7 +74,6 @@ class EhApplication : SceneApplication() {
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    @SuppressLint("StaticFieldLeak")
     override fun onCreate() {
         application = this
         val handler = Thread.getDefaultUncaughtExceptionHandler()
@@ -189,7 +187,6 @@ class EhApplication : SceneApplication() {
     override fun onTrimMemory(level: Int) {
         super.onTrimMemory(level)
         if (level >= ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW) {
-            conaco.beerBelly.clearMemory()
             galleryDetailCache.evictAll()
         }
     }
@@ -225,9 +222,17 @@ class EhApplication : SceneApplication() {
         mActivityList.remove(activity)
     }
 
+    override fun newImageLoader(): ImageLoader {
+        return ImageLoader.Builder(this).apply {
+            okHttpClient(nonCacheOkHttpClient)
+            components { add(MergeInterceptor) }
+            crossfade(false)
+            diskCache(thumbCache)
+        }.build()
+    }
+
     companion object {
         private const val KEY_GLOBAL_STUFF_NEXT_ID = "global_stuff_next_id"
-        private const val DEBUG_CONACO = false
 
         @JvmStatic
         lateinit var application: EhApplication
@@ -277,20 +282,6 @@ class EhApplication : SceneApplication() {
         }
 
         @JvmStatic
-        val conaco: Conaco<ImageBitmap> by lazy {
-            val builder = Conaco.Builder<ImageBitmap>()
-            builder.hasMemoryCache = true
-            builder.memoryCacheMaxSize = min(20 * 1024 * 1024, OSUtils.getAppMaxMemory().toInt())
-            builder.hasDiskCache = true
-            builder.diskCacheDir = File(application.cacheDir, "thumb")
-            builder.diskCacheMaxSize = Settings.thumbCacheSize * 1024 * 1024
-            builder.okHttpClient = nonCacheOkHttpClient
-            builder.objectHelper = ImageBitmapHelper()
-            builder.debug = DEBUG_CONACO
-            builder.build()
-        }
-
-        @JvmStatic
         val galleryDetailCache by lazy {
             LruCache<Long, GalleryDetail>(25).also {
                 favouriteStatusRouter.addListener { gid, slot ->
@@ -307,5 +298,12 @@ class EhApplication : SceneApplication() {
 
         @JvmStatic
         val ehDatabase by lazy { buildMainDB(application) }
+
+        val thumbCache by lazy {
+            DiskCache.Builder()
+                .directory(File(application.cacheDir, "thumb"))
+                .maxSizeBytes(Settings.thumbCacheSize.toLong() * 1024 * 1024)
+                .build()
+        }
     }
 }
