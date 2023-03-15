@@ -34,11 +34,6 @@ public class UniFileInputStreamPipe implements InputStreamPipe {
     }
 
     @Override
-    public void obtain() {
-        // Empty
-    }
-
-    @Override
     public void release() {
         // Empty
     }

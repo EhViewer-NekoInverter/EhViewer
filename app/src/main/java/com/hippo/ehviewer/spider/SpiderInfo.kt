@@ -15,13 +15,12 @@
  */
 package com.hippo.ehviewer.spider
 
-import com.hippo.beerbelly.SimpleDiskCache
+import coil.disk.DiskCache
 import com.hippo.ehviewer.EhApplication
 import com.hippo.unifile.UniFile
 import com.hippo.yorozuya.IOUtils
 import com.hippo.yorozuya.NumberUtils
 import java.io.File
-import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.io.OutputStreamWriter
@@ -62,17 +61,16 @@ class SpiderInfo @JvmOverloads constructor(
     }
 
     fun saveToCache() {
-        spiderInfoCache.getOutputStreamPipe(gid.toString()).let {
-            try {
-                it.obtain()
-                write(it.open())
-            } catch (e: IOException) {
-                e.printStackTrace()
-            } finally {
-                it.close()
-                it.release()
+        val entry = spiderInfoCache.edit(gid.toString()) ?: return
+        runCatching {
+            entry.data.toFile().outputStream().use{
+                write(it)
             }
-
+        }.onFailure {
+            it.printStackTrace()
+            entry.abort()
+        }.onSuccess {
+            entry.commit()
         }
     }
 
@@ -82,21 +80,10 @@ class SpiderInfo @JvmOverloads constructor(
         private const val VERSION = 2
 
         private val spiderInfoCache by lazy {
-            SimpleDiskCache(
-                File(EhApplication.application.cacheDir, "spider_info"),
-                20 * 1024 * 1024
-            )
-        }
-
-        private fun getVersion(str: String): Int {
-            return if (str.startsWith(VERSION_STR)) {
-                NumberUtils.parseIntSafely(
-                    str.substring(VERSION_STR.length),
-                    -1
-                )
-            } else {
-                1
-            }
+            DiskCache.Builder()
+                .directory(File(EhApplication.application.cacheDir, "spider_info"))
+                .maxSizeBytes(20 * 1024 * 1024)
+                .build()
         }
 
         private fun read(inputStream: InputStream): SpiderInfo? {
@@ -108,6 +95,16 @@ class SpiderInfo @JvmOverloads constructor(
             }
             fun readLong(): Long {
                 return read().toLong()
+            }
+            fun getVersion(str: String): Int {
+                return if (str.startsWith(VERSION_STR)) {
+                    NumberUtils.parseIntSafely(
+                        str.substring(VERSION_STR.length),
+                        -1
+                    )
+                } else {
+                    1
+                }
             }
             val version = getVersion(read())
             var startPage = 0
@@ -129,7 +126,7 @@ class SpiderInfo @JvmOverloads constructor(
             read() // Deprecated, mode, skip it
             val previewPages = readInt()
             val previewPerPage = if (version == 1) 0 else readInt()
-            val pages = read().toInt()
+            val pages = readInt()
             if (gid == -1L || pages <= 0) {
                 return null
             }
@@ -161,19 +158,16 @@ class SpiderInfo @JvmOverloads constructor(
 
         @JvmStatic
         fun readFromCache(gid: Long): SpiderInfo? {
-            var spiderInfo: SpiderInfo? = null
-            spiderInfoCache.getInputStreamPipe(gid.toString())?.let {
-                try {
-                    it.obtain()
-                    spiderInfo = read(it.open())
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                } finally {
-                    it.close()
-                    it.release()
+            val snapshot = spiderInfoCache[gid.toString()] ?: return null
+            return runCatching {
+                snapshot.use { snapShot ->
+                    return snapShot.data.toFile().inputStream().use { inputStream ->
+                        read(inputStream)
+                    }
                 }
-            }
-            return spiderInfo
+            }.onFailure {
+                it.printStackTrace()
+            }.getOrNull()
         }
     }
 }
