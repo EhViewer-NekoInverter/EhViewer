@@ -6,6 +6,8 @@
     native <methods>;
 }
 
+-dontwarn androidx.appcompat.graphics.drawable.DrawableWrapper
+
 -keepattributes LineNumberTable,SourceFile
 -renamesourcefileattribute SourceFile
 -repackageclasses

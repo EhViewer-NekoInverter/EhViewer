@@ -169,7 +169,7 @@ dependencies {
     implementation("com.squareup.okio:okio-jvm:3.3.0")
 
     // https://github.com/RikkaApps/RikkaX
-    implementation("dev.rikka.rikkax.appcompat:appcompat:1.6.1")
+    implementation("dev.rikka.rikkax.appcompat:appcompat:1.5.0.1")
     implementation("dev.rikka.rikkax.core:core-ktx:1.4.1")
     //noinspection GradleDependency
     implementation("dev.rikka.rikkax.material:material:1.6.6")
