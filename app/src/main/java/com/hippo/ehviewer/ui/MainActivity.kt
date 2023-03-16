@@ -92,7 +92,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
-import rikka.material.app.DayNightDelegate
 
 class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedListener {
     private val settingsLauncher =
@@ -279,12 +278,11 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
             mAvatar = ViewUtils.`$$`(headerLayout, R.id.avatar) as LoadImageView
             mDisplayName = ViewUtils.`$$`(headerLayout, R.id.display_name) as TextView
             ViewUtils.`$$`(headerLayout, R.id.night_mode).setOnClickListener {
-                val theme = if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES > 0) DayNightDelegate.MODE_NIGHT_NO else DayNightDelegate.MODE_NIGHT_YES
-                DayNightDelegate.setDefaultNightMode(theme)
+                val theme = if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES > 0) 
+                        AppCompatDelegate.MODE_NIGHT_NO else AppCompatDelegate.MODE_NIGHT_YES
+                AppCompatDelegate.setDefaultNightMode(theme)
+                Settings.putTheme(theme)
                 recreate()
-                if (Settings.theme != AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
-                    Settings.putTheme(theme)
-                }
             }
             updateProfile()
             mNavView!!.setNavigationItemSelectedListener(this)

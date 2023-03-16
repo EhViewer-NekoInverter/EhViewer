@@ -22,6 +22,7 @@ import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.collection.LruCache
 import coil.ImageLoader
 import coil.ImageLoaderFactory
@@ -54,8 +55,6 @@ import javax.net.ssl.X509TrustManager
 import kotlinx.coroutines.DelicateCoroutinesApi
 import okhttp3.Cache
 import okhttp3.OkHttpClient
-import rikka.material.app.DayNightDelegate
-import rikka.material.app.LocaleDelegate
 
 class EhApplication : SceneApplication(), ImageLoaderFactory {
     private val mIdGenerator = IntIdGenerator()
@@ -91,9 +90,7 @@ class EhApplication : SceneApplication(), ImageLoaderFactory {
         Settings.initialize()
         ReadableTime.initialize(this)
         AppConfig.initialize(this)
-        LocaleDelegate.defaultLocale = Settings.locale
-        DayNightDelegate.setApplicationContext(this)
-        DayNightDelegate.setDefaultNightMode(Settings.theme)
+        AppCompatDelegate.setDefaultNightMode(Settings.theme)
 
         launchIO {
             launchIO {

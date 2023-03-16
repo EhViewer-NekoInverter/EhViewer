@@ -42,6 +42,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia.ImageOnly
 import androidx.annotation.IntDef
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
@@ -1472,7 +1473,7 @@ class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListen
         override fun getText(textView: TextView): CharSequence? {
             return if (textView.id == android.R.id.text1) {
                 val bookImage =
-                    textView.context.getDrawable(R.drawable.v_book_open_x24)
+                    AppCompatResources.getDrawable(textView.context, R.drawable.v_book_open_x24)
                 val ssb = SpannableStringBuilder("    ")
                 ssb.append(getString(R.string.gallery_list_search_bar_open_gallery))
                 val imageSize = (textView.textSize * 1.25).toInt()

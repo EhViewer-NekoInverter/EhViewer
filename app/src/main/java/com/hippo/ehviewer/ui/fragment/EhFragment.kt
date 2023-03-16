@@ -19,6 +19,7 @@ import android.app.Activity
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -29,7 +30,6 @@ import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.EhEngine
 import com.hippo.ehviewer.client.EhTagDatabase
 import com.hippo.util.launchNonCancellable
-import rikka.material.app.DayNightDelegate
 
 class EhFragment : BasePreferenceFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -78,7 +78,7 @@ class EhFragment : BasePreferenceFragment() {
     override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {
         val key = preference.key
         if (Settings.KEY_THEME == key) {
-            DayNightDelegate.setDefaultNightMode((newValue as String).toInt())
+            AppCompatDelegate.setDefaultNightMode((newValue as String).toInt())
             requireActivity().recreate()
         } else if (Settings.KEY_BLACK_DARK_THEME == key) {
             if (requireActivity().resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES > 0) {

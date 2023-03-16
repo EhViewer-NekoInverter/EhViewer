@@ -16,10 +16,9 @@
 package com.hippo.ehviewer.ui
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.content.res.Resources
+import android.content.res.Resources.Theme
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -27,36 +26,34 @@ import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.annotation.StyleRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.hippo.ehviewer.EhApplication
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
 import rikka.core.res.resolveColor
-import rikka.material.app.MaterialActivity
+import rikka.insets.WindowInsetsHelper
+import rikka.layoutinflater.view.LayoutInflaterFactory
 
-abstract class EhActivity : MaterialActivity() {
-    override fun onApplyUserThemeResource(theme: Resources.Theme, isDecorView: Boolean) {
-        theme.applyStyle(getThemeStyleRes(this), true)
-    }
-
-    override fun computeUserThemeKey(): String {
-        return getTheme(this)
-    }
-
+abstract class EhActivity : AppCompatActivity() {
     @StyleRes
-    fun getThemeStyleRes(context: Context): Int {
-        return if (THEME_BLACK == getTheme(context)) {
-            R.style.ThemeOverlay_Black
-        } else R.style.ThemeOverlay
+    fun getThemeStyleRes(): Int {
+        return if (Settings.blackDarkTheme && (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES > 0)) R.style.ThemeOverlay_Black else R.style.ThemeOverlay
+    }
+
+    override fun onApplyThemeResource(theme: Theme, resid: Int, first: Boolean) {
+        theme.applyStyle(resid, true)
+        theme.applyStyle(getThemeStyleRes(), true)
+    }
+
+    override fun onNightModeChanged(mode: Int) {
+        theme.applyStyle(getThemeStyleRes(), true)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        layoutInflater.factory2 =
+            LayoutInflaterFactory(delegate).addOnViewCreatedListener(WindowInsetsHelper.LISTENER)
         super.onCreate(savedInstanceState)
-        (application as EhApplication).registerActivity(this)
-    }
-
-    override fun onApplyTranslucentSystemBars() {
-        super.onApplyTranslucentSystemBars()
         window.statusBarColor = Color.TRANSPARENT
         window.decorView.post {
             window.navigationBarColor =
@@ -65,6 +62,7 @@ abstract class EhActivity : MaterialActivity() {
                 window.isNavigationBarContrastEnforced = false
             }
         }
+        (application as EhApplication).registerActivity(this)
     }
 
     override fun onDestroy() {
@@ -88,14 +86,5 @@ abstract class EhActivity : MaterialActivity() {
     fun checkAndRequestNotificationPermission() {
         if (Settings.notificationRequired || ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS ) == PackageManager.PERMISSION_GRANTED) return
         requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-    }
-
-    companion object {
-        private const val THEME_DEFAULT = "DEFAULT"
-        private const val THEME_BLACK = "BLACK"
-
-        fun getTheme(context: Context): String {
-            return if (Settings.blackDarkTheme && (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES > 0)) THEME_BLACK else THEME_DEFAULT
-        }
     }
 }

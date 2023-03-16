@@ -137,6 +137,7 @@ android {
 dependencies {
     // https://developer.android.com/jetpack/androidx/releases/activity
     implementation("androidx.activity:activity-ktx:1.6.1")
+    implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.biometric:biometric-ktx:1.2.0-alpha05")
     implementation("androidx.browser:browser:1.5.0")
     implementation("androidx.collection:collection-ktx:1.3.0-alpha02")
@@ -169,8 +170,9 @@ dependencies {
     implementation("com.squareup.okio:okio-jvm:3.3.0")
 
     // https://github.com/RikkaApps/RikkaX
-    implementation("dev.rikka.rikkax.appcompat:appcompat:1.5.0.1")
     implementation("dev.rikka.rikkax.core:core-ktx:1.4.1")
+    implementation("dev.rikka.rikkax.insets:insets:1.3.0")
+    implementation("dev.rikka.rikkax.layoutinflater:layoutinflater:1.3.0")
     //noinspection GradleDependency
     implementation("dev.rikka.rikkax.material:material:1.6.6")
     implementation("dev.rikka.rikkax.preference:simplemenu-preference:1.0.3")
@@ -183,7 +185,7 @@ dependencies {
 }
 
 configurations.all {
-    exclude("androidx.appcompat", "appcompat")
+    exclude("dev.rikka.rikkax.appcompat", "appcompat")
     exclude("org.jetbrains.kotlin", "kotlin-android-extensions-runtime")
     exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk7")
     exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk8")

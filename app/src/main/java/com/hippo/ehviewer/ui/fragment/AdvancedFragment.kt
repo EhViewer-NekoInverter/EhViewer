@@ -24,6 +24,8 @@ import android.provider.Settings
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
@@ -49,14 +51,12 @@ import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.util.Locale
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 import kotlin.math.ceil
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import rikka.material.app.LocaleDelegate
 
 class AdvancedFragment : BasePreferenceFragment() {
     private var exportLauncher = registerForActivityResult<String, Uri>(
@@ -385,9 +385,9 @@ class AdvancedFragment : BasePreferenceFragment() {
         val key = preference.key
         if (AppSettings.KEY_APP_LANGUAGE == key) {
             if ("system" == newValue) {
-                LocaleDelegate.defaultLocale = LocaleDelegate.systemLocale
+                AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList())
             } else {
-                LocaleDelegate.defaultLocale = Locale.forLanguageTag(newValue as String)
+                AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(newValue as String))
             }
             requireActivity().recreate()
             return true

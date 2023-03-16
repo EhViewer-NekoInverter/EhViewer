@@ -59,6 +59,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.CreateDocument
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
@@ -103,7 +104,6 @@ import java.io.IOException
 import java.lang.ref.WeakReference
 import rikka.core.res.isNight
 import rikka.core.res.resolveColor
-import rikka.material.app.DayNightDelegate
 
 class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Listener {
     private val requestStoragePermissionLauncher = registerForActivityResult(
@@ -262,15 +262,12 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
     }
 
     override fun attachBaseContext(newBase: Context) {
-        when (Settings.readTheme) {
-            1 -> dayNightDelegate.setLocalNightMode(DayNightDelegate.MODE_NIGHT_YES, false)
-            2 -> dayNightDelegate.setLocalNightMode(DayNightDelegate.MODE_NIGHT_NO, false)
+        delegate.localNightMode = when (Settings.readTheme) {
+            1 -> AppCompatDelegate.MODE_NIGHT_YES
+            2 -> AppCompatDelegate.MODE_NIGHT_NO
+            else -> Settings.theme
         }
         super.attachBaseContext(newBase)
-    }
-
-    override fun respectDefaultNightMode(): Boolean {
-        return Settings.readTheme == 0
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
