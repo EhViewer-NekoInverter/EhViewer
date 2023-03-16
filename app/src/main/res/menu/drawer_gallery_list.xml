@@ -21,12 +21,12 @@
         android:id="@+id/action_help"
         android:icon="@drawable/v_help_circle_x24"
         android:title="@string/readme"
-        android:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/action_add"
         android:icon="@drawable/v_plus_dark_x24"
         android:title="@string/add"
-        android:showAsAction="always" />
+        app:showAsAction="always" />
 
 </menu>
