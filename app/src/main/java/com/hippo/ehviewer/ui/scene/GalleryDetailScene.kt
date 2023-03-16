@@ -764,7 +764,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
             return
         }
         val resources = resources
-        mThumb!!.load(EhCacheKeyFactory.getThumbKey(gd.gid), gd.thumb!!)
+        mThumb!!.load(EhCacheKeyFactory.getThumbKey(gd.gid), gd.thumb!!, false)
         mTitle!!.text = EhUtils.getSuitableTitle(gd)
         mUploader!!.text = gd.uploader
         mUploader!!.alpha = if (gd.disowned) .5f else 1f

@@ -136,7 +136,7 @@ open class LoadImageView @JvmOverloads constructor(
         mClipHeight = Int.MIN_VALUE
     }
 
-    fun load(key: String, url: String) {
+    fun load(key: String, url: String, crossfade: Boolean = true) {
         if ((mRequest?.data as? String?) == url) return
         clearRetry()
         task?.dispose()
@@ -148,7 +148,7 @@ open class LoadImageView @JvmOverloads constructor(
                 .target(
                     { onWait() },
                     { onFailure() },
-                    { onGetValue(it) }
+                    { onGetValue(it, crossfade) }
                 ).build().also { load(it) }
     }
 
@@ -174,14 +174,14 @@ open class LoadImageView @JvmOverloads constructor(
         clearDrawable()
     }
 
-    private fun onGetValue(drawable: Drawable) {
+    private fun onGetValue(drawable: Drawable, crossfade: Boolean) {
         var mDrawable = drawable
         clearDrawable()
         if (Int.MIN_VALUE != mOffsetX) {
             mDrawable = PreciselyClipDrawable(mDrawable, mOffsetX, mOffsetY, mClipWidth, mClipHeight)
         }
         onPreSetImageDrawable(mDrawable, true)
-        if (isShown) {
+        if (isShown && crossfade) {
             val layers = arrayOfNulls<Drawable>(2)
             layers[0] = ColorDrawable(Color.TRANSPARENT)
             layers[1] = mDrawable
