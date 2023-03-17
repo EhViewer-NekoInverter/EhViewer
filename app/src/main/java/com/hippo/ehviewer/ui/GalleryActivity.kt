@@ -29,7 +29,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
@@ -270,9 +269,10 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         super.attachBaseContext(newBase)
     }
 
+    @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         if (Settings.readingFullscreen) {
-            window.statusBarColor = Color.TRANSPARENT
+            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         }
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
@@ -982,6 +982,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         }
     }
 
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     private inner class GalleryMenuHelper @SuppressLint("InflateParams") constructor(context: Context?) :
         DialogInterface.OnClickListener {
         val view: View
