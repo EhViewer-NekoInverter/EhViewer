@@ -20,13 +20,11 @@ import com.hippo.ehviewer.AppConfig
 import com.hippo.ehviewer.EhApplication
 import com.hippo.ehviewer.EhApplication.Companion.nonCacheOkHttpClient
 import com.hippo.ehviewer.R
-import com.hippo.util.ExceptionUtils
 import com.hippo.util.HashCodeUtils
 import com.hippo.yorozuya.FileUtils
-import com.hippo.yorozuya.IOUtils
+import com.hippo.yorozuya.copyToFile
 import java.io.File
 import java.io.FileInputStream
-import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
@@ -189,22 +187,21 @@ object EhTagDatabase {
     private suspend fun save(client: OkHttpClient, url: String, file: File): Boolean {
         val request: Request = Request.Builder().url(url).build()
         val call = client.newCall(request)
-        try {
+        runCatching {
             call.executeAsync().use { response ->
                 if (!response.isSuccessful) {
                     return false
                 }
-                val body = response.body
-                body.byteStream()
-                    .use { ins -> FileOutputStream(file).use { os -> IOUtils.copy(ins, os) } }
+                response.body.use {
+                    it.copyToFile(file)
+                }
                 return true
             }
-        } catch (t: Throwable) {
-            FileUtils.delete(file)
-            t.printStackTrace()
-            ExceptionUtils.throwIfFatal(t)
-            return false
+        }.onFailure {
+            file.delete()
+            it.printStackTrace()
         }
+        return false
     }
 
     suspend fun update() {

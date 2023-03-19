@@ -29,6 +29,7 @@ import com.hippo.ehviewer.client.EhRequestBuilder
 import com.hippo.ehviewer.client.EhUtils.getSuitableTitle
 import com.hippo.ehviewer.client.data.GalleryInfo
 import com.hippo.ehviewer.coil.edit
+import com.hippo.ehviewer.coil.read
 import com.hippo.ehviewer.gallery.GalleryProvider2
 import com.hippo.image.Image.CloseableSource
 import com.hippo.unifile.RawFile
@@ -111,10 +112,10 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
         val dir = downloadDir ?: return false
         // Find image file in cache
         val key = EhCacheKeyFactory.getImageKey(mGid, index)
-        runCatching {
-            (sCache[key] ?: return false).use { snapshot ->
+        return runCatching {
+            sCache.read(key) {
                 // Get extension
-                val extension = fixExtension("." + snapshot.metadata.toFile().readText())
+                val extension = fixExtension("." + metadata.toFile().readText())
                 // Don't copy from cache if `download original image` enabled, ignore gif
                 if (skip && extension != GalleryProvider2.SUPPORT_IMAGE_EXTENSIONS[2]) {
                     return false
@@ -123,7 +124,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
                 val file = dir.createFile(generateImageFilename(index, extension)) ?: return false
                 (file.openOutputStream() as FileOutputStream).use { outputStream ->
                     outputStream.channel.use { outChannel ->
-                        snapshot.data.toFile().inputStream().use { inputStream ->
+                        data.toFile().inputStream().use { inputStream ->
                             inputStream.channel.use {
                                 outChannel.transferFrom(it, 0, it.size())
                             }
@@ -131,9 +132,10 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
                     }
                 }
             }
-            return true
+        }.getOrElse {
+            it.printStackTrace()
+            false
         }
-        return false
     }
 
     operator fun contains(index: Int): Boolean {

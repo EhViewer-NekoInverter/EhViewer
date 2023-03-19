@@ -15,24 +15,22 @@
  * You should have received a copy of the GNU General Public License along with EhViewer.
  * If not, see <https://www.gnu.org/licenses/>.
  */
-package com.hippo.ehviewer.coil
+package com.hippo.yorozuya
 
-import coil.disk.DiskCache
+import okhttp3.ResponseBody
+import java.io.File
 
-inline fun DiskCache.edit(key: String, block: DiskCache.Editor.() -> Unit): Boolean {
-    val editor = edit(key) ?: return false
-    editor.runCatching {
-        block(this)
-    }.onFailure {
-        editor.abort()
-        throw it
-    }.onSuccess {
-        editor.commit()
+fun ResponseBody.copyToFile(file: File) {
+    val os = file.outputStream()
+    val channel = os.channel
+    val source = source()
+    try {
+        channel.transferFrom(source, 0, Long.MAX_VALUE)
+    } catch (e: Throwable) {
+        throw e
+    } finally {
+        source.close()
+        channel.close()
+        os.close()
     }
-    return true
-}
-
-inline fun DiskCache.read(key: String, block: DiskCache.Snapshot.() -> Unit): Boolean {
-    (get(key) ?: return false).use { block(it) }
-    return true
 }
