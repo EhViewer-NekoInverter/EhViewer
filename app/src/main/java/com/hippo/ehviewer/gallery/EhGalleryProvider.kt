@@ -107,7 +107,7 @@ class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) : GalleryProvider
 
     override fun size(): Int {
         return if (mSpiderQueen != null) {
-            mSpiderQueen!!.size()
+            mSpiderQueen!!.size
         } else {
             STATE_ERROR
         }
@@ -156,7 +156,7 @@ class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) : GalleryProvider
 
     override fun onPageFailure(
         index: Int,
-        error: String,
+        error: String?,
         finished: Int,
         downloaded: Int,
         total: Int
@@ -165,11 +165,11 @@ class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) : GalleryProvider
     }
 
     override fun onFinish(finished: Int, downloaded: Int, total: Int) {}
-    override fun onGetImageSuccess(index: Int, image: Image) {
+    override fun onGetImageSuccess(index: Int, image: Image?) {
         notifyPageSucceed(index, image)
     }
 
-    override fun onGetImageFailure(index: Int, error: String) {
+    override fun onGetImageFailure(index: Int, error: String?) {
         notifyPageFailed(index, error)
     }
 
