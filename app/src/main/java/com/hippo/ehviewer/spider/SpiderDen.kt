@@ -33,6 +33,7 @@ import com.hippo.ehviewer.gallery.GalleryProvider2
 import com.hippo.image.Image.CloseableSource
 import com.hippo.unifile.RawFile
 import com.hippo.unifile.UniFile
+import com.hippo.util.runSuspendCatching
 import com.hippo.yorozuya.FileUtils
 import com.hippo.yorozuya.MathUtils
 import kotlinx.coroutines.currentCoroutineContext
@@ -201,7 +202,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
                 }
                 return receivedSize
             }
-            findDownloadFileForIndex(index, extension)?.runCatching {
+            findDownloadFileForIndex(index, extension)?.runSuspendCatching {
                 openOutputStream().use { outputStream ->
                     (outputStream as FileOutputStream).channel.use { return doSave(it) == length }
                 }
@@ -213,7 +214,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
             if (mMode == SpiderQueen.MODE_READ) {
                 val key = EhCacheKeyFactory.getImageKey(mGid, index)
                 var received: Long = 0
-                runCatching {
+                runSuspendCatching {
                     sCache.edit(key) {
                         metadata.toFile().writeText(extension)
                         data.toFile().outputStream().use { outputStream ->
@@ -265,11 +266,6 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
                 return false
             }
         }
-    }
-
-    fun checkPlainText(): Boolean {
-        // TODO
-        return false
     }
 
     fun getExtension(index: Int): String? {
