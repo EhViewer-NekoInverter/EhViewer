@@ -1117,11 +1117,6 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
 
         public abstract void onUnbind(GalleryPageView view, int index);
 
-        /**
-         * @return Null for no error
-         */
-        public abstract String getError();
-
         public abstract int size();
     }
 

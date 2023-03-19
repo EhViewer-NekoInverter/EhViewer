@@ -89,6 +89,7 @@ import com.hippo.util.ExceptionUtils
 import com.hippo.util.getParcelableExtraCompat
 import com.hippo.util.getParcelableCompat
 import com.hippo.util.launchIO
+import com.hippo.util.launchUI
 import com.hippo.widget.ColorView
 import com.hippo.yorozuya.AnimationUtils
 import com.hippo.yorozuya.ConcurrentPool
@@ -292,12 +293,15 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         }
         mGalleryProvider!!.start()
 
-        // Get start page
-        val startPage: Int = if (savedInstanceState == null) {
-            if (mPage >= 0) mPage else mGalleryProvider!!.startPage
-        } else {
-            mCurrentIndex
+        lifecycleScope.launchUI {
+            if (mGalleryProvider!!.awaitReady()) setGallery()
         }
+    }
+
+    private fun setGallery() {
+        // Get start page
+        if (mCurrentIndex == 0) mCurrentIndex = if (mPage >= 0) mPage else mGalleryProvider!!.startPage
+        mSize = mGalleryProvider!!.size
         setContentView(R.layout.activity_gallery)
         mGLRootView = ViewUtils.`$$`(this, R.id.gl_root_view) as GLRootView
         mGalleryAdapter = GalleryAdapter(mGLRootView!!, mGalleryProvider!!)
@@ -307,7 +311,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
             .setLayoutMode(Settings.readingDirection)
             .setScaleMode(Settings.pageScaling)
             .setStartPosition(Settings.startPosition)
-            .setStartPage(startPage)
+            .setStartPage(mCurrentIndex)
             .setBackgroundColor(theme.resolveColor(android.R.attr.colorBackground))
             .setPagerInterval(if (Settings.showPageInterval) resources.getDimensionPixelOffset(R.dimen.gallery_pager_interval) else 0)
             .setScrollInterval(if (Settings.showPageInterval) resources.getDimensionPixelOffset(R.dimen.gallery_scroll_interval) else 0)
@@ -387,8 +391,6 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         mRightText = ViewUtils.`$$`(mSeekBarPanel, R.id.right) as TextView
         mSeekBar = ViewUtils.`$$`(mSeekBarPanel, R.id.seek_bar) as ReversibleSeekBar
         mSeekBar!!.setOnSeekBarChangeListener(this)
-        mSize = mGalleryProvider!!.size()
-        mCurrentIndex = startPage
         if (mGalleryView != null) {
             mLayoutMode = mGalleryView!!.layoutMode
         }
@@ -1189,7 +1191,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         override fun onDataChanged() {
             super.onDataChanged()
             if (mGalleryProvider != null) {
-                val size = mGalleryProvider!!.size()
+                val size = mGalleryProvider!!.size
                 val task = mNotifyTaskPool.pop() ?: NotifyTask()
                 task.setData(NOTIFY_KEY_SIZE, size)
                 SimpleHandler.getInstance().post(task)

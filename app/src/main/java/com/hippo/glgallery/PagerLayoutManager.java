@@ -293,28 +293,9 @@ class PagerLayoutManager extends GalleryView.LayoutManager {
         int width = galleryView.getWidth();
         int height = galleryView.getHeight();
         int size = adapter.size();
-        String errorStr = adapter.getError();
 
-        if (size == GalleryProvider.STATE_WAIT) { // Wait here, show progress bar
-            // Remove error view and all pages
-            removeErrorView();
-            removeAllPages();
-
-            // Ensure progress
-            if (mProgress == null) {
-                mProgress = galleryView.obtainProgress();
-                galleryView.addComponent(mProgress);
-            }
-
-            // Place progress center
-            placeCenter(mProgress);
-        } else if (size <= GalleryProvider.STATE_ERROR || size == 0) { // Get error or empty, show error text
-            // Ensure error is not null
-            if (0 == size) {
-                errorStr = galleryView.getEmptyStr();
-            } else if (null == errorStr) {
-                errorStr = galleryView.getDefaultErrorStr();
-            }
+        if (size == 0) { // Get empty, show error text
+            String errorStr = galleryView.getEmptyStr();
 
             // Remove progress and all pages
             removeProgress();

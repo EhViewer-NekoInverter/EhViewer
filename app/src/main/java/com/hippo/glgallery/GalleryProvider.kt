@@ -38,6 +38,8 @@ abstract class GalleryProvider {
     private var mGLRoot: GLRoot? = null
     private var mStarted = false
 
+    abstract suspend fun awaitReady(): Boolean
+
     @UiThread
     open fun start() {
         OSUtils.checkMainLoop()
@@ -55,12 +57,7 @@ abstract class GalleryProvider {
         mGLRoot = glRoot
     }
 
-    /**
-     * @return [.STATE_WAIT] for wait,
-     * [.STATE_ERROR] for error, [.getError] to get error message,
-     * 0 for empty
-     */
-    abstract fun size(): Int
+    abstract val size: Int
 
     fun request(index: Int) {
         val imageWrapper = mImageCache[index]
@@ -69,8 +66,13 @@ abstract class GalleryProvider {
         } else {
             onRequest(index)
         }
-        val pagesAbsent = ((index - 5).coerceAtLeast(0) until (mPreloads + index).coerceAtMost(size())).mapNotNull { it.takeIf { mImageCache[it] == null } }
-        preloadPages(pagesAbsent, (index - 10).coerceAtLeast(0) to (mPreloads + index + 10).coerceAtMost(size()))
+        val pagesAbsent =
+            ((index - 5).coerceAtLeast(0) until (mPreloads + index).coerceAtMost(size)).mapNotNull { it.takeIf { mImageCache[it] == null } }
+        preloadPages(
+            pagesAbsent, (index - 10).coerceAtLeast(0) to (mPreloads + index + 10).coerceAtMost(
+                size
+            )
+        )
     }
 
     fun forceRequest(index: Int) {
@@ -93,14 +95,8 @@ abstract class GalleryProvider {
 
     protected abstract fun onCancelRequest(index: Int)
 
-    abstract val error: String?
-
     fun setListener(listener: Listener?) {
         mListener = listener
-    }
-
-    fun notifyDataChanged() {
-        notify(NotifyTask.TYPE_DATA_CHANGED, -1, 0.0f, null, null)
     }
 
     fun notifyDataChanged(index: Int) {
@@ -243,10 +239,5 @@ abstract class GalleryProvider {
             private const val MAX_CACHE_SIZE = (512 * 1024 * 1024).toLong()
             private const val MIN_CACHE_SIZE = (256 * 1024 * 1024).toLong()
         }
-    }
-
-    companion object {
-        const val STATE_WAIT = -1
-        const val STATE_ERROR = -2
     }
 }

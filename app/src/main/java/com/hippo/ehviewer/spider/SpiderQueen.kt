@@ -166,9 +166,12 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
     }
 
     private var downloadMode = false
+    private val isReady
+        get() = this::mSpiderInfo.isInitialized && this::mPageStateArray.isInitialized
 
     @Synchronized
     private fun updateMode() {
+        if (!isReady) return
         val mode: Int = if (mDownloadReference > 0) {
             MODE_DOWNLOAD
         } else {
@@ -207,10 +210,6 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
             MODE_DOWNLOAD -> mDownloadReference++
         }
         check(mDownloadReference <= 1) { "mDownloadReference can't more than 1" }
-        launchIO {
-            awaitReady()
-            updateMode()
-        }
     }
 
     private fun clearMode(@Mode mode: Int) {
@@ -219,10 +218,6 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
             MODE_DOWNLOAD -> mDownloadReference--
         }
         check(!(mReadReference < 0 || mDownloadReference < 0)) { "Mode reference < 0" }
-        launchIO {
-            awaitReady()
-            updateMode()
-        }
     }
 
     private val prepareJob = launchIO { doPrepare() }
@@ -230,15 +225,17 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
     private suspend fun doPrepare() {
         mSpiderInfo = readSpiderInfoFromLocal() ?: readSpiderInfoFromInternet() ?: return
         mPageStateArray = IntArray(mSpiderInfo.pages)
+        notifyGetPages(mSpiderInfo.pages)
     }
 
-    private suspend fun awaitReady() {
+    suspend fun awaitReady(): Boolean {
         prepareJob.join()
-        notifyGetPages(mSpiderInfo.pages)
+        return isReady
     }
 
     suspend fun awaitStartPage(): Int {
         prepareJob.join()
+        if (!isReady) return 0
         return mSpiderInfo.startPage
     }
 
@@ -429,6 +426,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
 
     @Synchronized
     private fun writeSpiderInfoToLocal() {
+        if (!isReady) return
         mSpiderDen.downloadDir?.run { createFile(SPIDER_INFO_FILENAME).also { mSpiderInfo.write(it) } }
         mSpiderInfo.saveToCache()
     }
@@ -790,17 +788,23 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
 
         @JvmStatic
         fun obtainSpiderQueen(galleryInfo: GalleryInfo, @Mode mode: Int): SpiderQueen {
-            return sQueenMap[galleryInfo.gid]?.apply { setMode(mode) }
-                ?: SpiderQueen(galleryInfo).apply { setMode(mode) }
-                    .also { sQueenMap[galleryInfo.gid] = it }
+            val gid = galleryInfo.gid
+            return (sQueenMap[gid] ?: SpiderQueen(galleryInfo).also { sQueenMap[gid] = it }).apply {
+                setMode(mode)
+                launchIO { if (awaitReady()) updateMode() }
+            }
         }
 
         @JvmStatic
         fun releaseSpiderQueen(queen: SpiderQueen, @Mode mode: Int) {
-            queen.clearMode(mode)
-            if (queen.mReadReference == 0 && queen.mDownloadReference == 0) {
-                queen.stop()
-                sQueenMap.remove(queen.galleryInfo.gid)
+            queen.run {
+                clearMode(mode)
+                if (mReadReference == 0 && mDownloadReference == 0) {
+                    stop()
+                    sQueenMap.remove(galleryInfo.gid)
+                } else {
+                    launchIO { if (awaitReady()) updateMode() }
+                }
             }
         }
     }

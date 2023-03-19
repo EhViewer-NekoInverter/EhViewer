@@ -17,6 +17,8 @@ package com.hippo.ehviewer.gallery
 
 import com.hippo.ehviewer.client.data.GalleryInfo
 import com.hippo.ehviewer.spider.SpiderQueen
+import com.hippo.ehviewer.spider.SpiderQueen.Companion.obtainSpiderQueen
+import com.hippo.ehviewer.spider.SpiderQueen.Companion.releaseSpiderQueen
 import com.hippo.ehviewer.spider.SpiderQueen.OnSpiderListener
 import com.hippo.image.Image
 import com.hippo.unifile.UniFile
@@ -25,29 +27,22 @@ import java.util.Locale
 
 class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) : GalleryProvider2(),
     OnSpiderListener {
-    private var mSpiderQueen: SpiderQueen? = null
+    private lateinit var mSpiderQueen: SpiderQueen
     override fun start() {
         super.start()
-        mSpiderQueen = SpiderQueen.obtainSpiderQueen(mGalleryInfo, SpiderQueen.MODE_READ)
-        mSpiderQueen!!.addOnSpiderListener(this)
+        mSpiderQueen = obtainSpiderQueen(mGalleryInfo, SpiderQueen.MODE_READ)
+        mSpiderQueen.addOnSpiderListener(this)
     }
 
     override fun stop() {
         super.stop()
-        if (mSpiderQueen != null) {
-            mSpiderQueen!!.removeOnSpiderListener(this)
-            // Activity recreate may called, so wait 3000s
-            SimpleHandler.getInstance().postDelayed(ReleaseTask(mSpiderQueen), 3000)
-            mSpiderQueen = null
-        }
+        mSpiderQueen.removeOnSpiderListener(this)
+        // Activity recreate may called, so wait 3000s
+        SimpleHandler.getInstance().postDelayed(ReleaseTask(mSpiderQueen), 3000)
     }
 
     override fun getStartPage(): Int {
-        return if (mSpiderQueen != null) {
-            mSpiderQueen!!.startPage
-        } else {
-            super.getStartPage()
-        }
+        return mSpiderQueen.startPage
     }
 
     override fun getImageFilename(index: Int): String {
@@ -61,18 +56,16 @@ class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) : GalleryProvider
     }
 
     override fun getImageFilenameWithExtension(index: Int): String {
-        if (null != mSpiderQueen) {
-            val extension = mSpiderQueen!!.getExtension(index)
-            if (extension != null) {
-                return String.format(
-                    Locale.US,
-                    "%d-%s-%08d.%s",
-                    mGalleryInfo.gid,
-                    mGalleryInfo.token,
-                    index + 1,
-                    extension
-                )
-            }
+        val extension = mSpiderQueen.getExtension(index)
+        if (extension != null) {
+            return String.format(
+                Locale.US,
+                "%d-%s-%08d.%s",
+                mGalleryInfo.gid,
+                mGalleryInfo.token,
+                index + 1,
+                extension
+            )
         }
         return String.format(
             Locale.US,
@@ -84,62 +77,39 @@ class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) : GalleryProvider
     }
 
     override fun save(index: Int, file: UniFile): Boolean {
-        return if (null != mSpiderQueen) {
-            mSpiderQueen!!.save(index, file)
-        } else {
-            false
-        }
+        return mSpiderQueen.save(index, file)
     }
 
     override fun save(index: Int, dir: UniFile, filename: String): UniFile? {
-        return if (null != mSpiderQueen) {
-            mSpiderQueen!!.save(index, dir, filename)
-        } else {
-            null
-        }
+        return mSpiderQueen.save(index, dir, filename)
     }
 
     override fun putStartPage(page: Int) {
-        if (mSpiderQueen != null) {
-            mSpiderQueen!!.putStartPage(page)
-        }
+        mSpiderQueen.putStartPage(page)
     }
 
-    override fun size(): Int {
-        return if (mSpiderQueen != null) {
-            mSpiderQueen!!.size
-        } else {
-            STATE_ERROR
-        }
-    }
+    override val size: Int
+        get() = mSpiderQueen.size
 
     override fun onRequest(index: Int) {
-        if (mSpiderQueen != null) {
-            mSpiderQueen!!.request(index)
-        }
+        mSpiderQueen.request(index)
     }
 
     override fun onForceRequest(index: Int) {
-        if (mSpiderQueen != null) {
-            mSpiderQueen!!.forceRequest(index)
-        }
+        mSpiderQueen.forceRequest(index)
+    }
+
+    override suspend fun awaitReady(): Boolean {
+        return mSpiderQueen.awaitReady()
     }
 
     override fun onCancelRequest(index: Int) {
-        if (mSpiderQueen != null) {
-            mSpiderQueen!!.cancelRequest(index)
-        }
+        mSpiderQueen.cancelRequest(index)
     }
 
-    override val error = mSpiderQueen?.error ?: "Error"
+    override fun onGetPages(pages: Int) {}
 
-    override fun onGetPages(pages: Int) {
-        notifyDataChanged()
-    }
-
-    override fun onGet509(index: Int) {
-        // TODO
-    }
+    override fun onGet509(index: Int) {}
 
     override fun onPageDownload(
         index: Int,
@@ -166,7 +136,7 @@ class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) : GalleryProvider
 
     override fun onFinish(finished: Int, downloaded: Int, total: Int) {}
     override fun onGetImageSuccess(index: Int, image: Image?) {
-        notifyPageSucceed(index, image)
+        notifyPageSucceed(index, image!!)
     }
 
     override fun onGetImageFailure(index: Int, error: String?) {
@@ -174,17 +144,13 @@ class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) : GalleryProvider
     }
 
     override fun preloadPages(pages: List<Int>, pair: Pair<Int, Int>) {
-        if (mSpiderQueen != null) {
-            mSpiderQueen!!.preloadPages(pages, pair)
-        }
+        mSpiderQueen.preloadPages(pages, pair)
     }
 
     private class ReleaseTask(private var mSpiderQueen: SpiderQueen?) : Runnable {
         override fun run() {
-            if (null != mSpiderQueen) {
-                SpiderQueen.releaseSpiderQueen(mSpiderQueen!!, SpiderQueen.MODE_READ)
-                mSpiderQueen = null
-            }
+            mSpiderQueen?.let { releaseSpiderQueen(it, SpiderQueen.MODE_READ) }
+            mSpiderQueen = null
         }
     }
 }

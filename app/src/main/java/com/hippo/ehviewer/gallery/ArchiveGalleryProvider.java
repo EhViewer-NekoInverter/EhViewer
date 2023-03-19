@@ -32,6 +32,7 @@ import com.hippo.ehviewer.Settings;
 import com.hippo.image.Image;
 import com.hippo.unifile.UniFile;
 import com.hippo.yorozuya.FileUtils;
+import com.hippo.yorozuya.SimpleHandler;
 import com.hippo.yorozuya.thread.PVLock;
 import com.hippo.yorozuya.thread.PriorityThread;
 
@@ -45,6 +46,8 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicInteger;
 import kotlin.Pair;
+import kotlin.coroutines.Continuation;
+import kotlin.coroutines.intrinsics.CoroutineSingletons;
 
 public class ArchiveGalleryProvider extends GalleryProvider2 {
     private static final AtomicInteger sIdGenerator = new AtomicInteger();
@@ -61,7 +64,7 @@ public class ArchiveGalleryProvider extends GalleryProvider2 {
             new Thread(new DecodeTask())
     };
     private Thread archiveThread;
-    private volatile int size = STATE_WAIT;
+    private volatile int size = 0;
     private String error;
 
     public ArchiveGalleryProvider(Context context, Uri uri) {
@@ -107,7 +110,7 @@ public class ArchiveGalleryProvider extends GalleryProvider2 {
     }
 
     @Override
-    public int size() {
+    public int getSize() {
         return size;
     }
 
@@ -138,11 +141,6 @@ public class ArchiveGalleryProvider extends GalleryProvider2 {
         synchronized (requests) {
             requests.remove(Integer.valueOf(index));
         }
-    }
-
-    @Override
-    public String getError() {
-        return error;
     }
 
     @NonNull
@@ -191,6 +189,15 @@ public class ArchiveGalleryProvider extends GalleryProvider2 {
     protected void preloadPages(@NonNull List<Integer> pages, @NonNull Pair<Integer, Integer> pair) {
     }
 
+    private Continuation<? super Boolean> continuation = null;
+
+    @Nullable
+    @Override
+    public Object awaitReady(@NonNull Continuation<? super Boolean> $completion) {
+        continuation = $completion;
+        return CoroutineSingletons.COROUTINE_SUSPENDED;
+    }
+
     private class ArchiveHostTask implements Runnable {
         public final Thread[] archiveThreads = new Thread[]{
                 new Thread(new ArchiveTask()),
@@ -221,13 +228,10 @@ public class ArchiveGalleryProvider extends GalleryProvider2 {
                 size = 0;
             }
             if (size <= 0) {
-                size = STATE_ERROR;
                 error = GetText.getString(R.string.error_reading_failed);
-                notifyDataChanged();
                 return;
             }
-            // Update size and notify changed
-            notifyDataChanged();
+            SimpleHandler.getInstance().post(() -> continuation.resumeWith(true));
 
             if (archiveAccessor.needPassword()) {
                 boolean need_request = true;

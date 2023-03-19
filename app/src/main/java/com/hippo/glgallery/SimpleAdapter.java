@@ -62,13 +62,8 @@ public class SimpleAdapter extends GalleryView.Adapter implements GalleryProvide
     }
 
     @Override
-    public String getError() {
-        return mProvider.getError();
-    }
-
-    @Override
     public int size() {
-        return mProvider.size();
+        return mProvider.getSize();
     }
 
     @Override
