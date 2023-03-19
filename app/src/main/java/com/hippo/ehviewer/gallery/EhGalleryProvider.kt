@@ -41,9 +41,8 @@ class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) : GalleryProvider
         SimpleHandler.getInstance().postDelayed(ReleaseTask(mSpiderQueen), 3000)
     }
 
-    override fun getStartPage(): Int {
-        return mSpiderQueen.startPage
-    }
+    override val startPage
+        get() = mSpiderQueen.startPage
 
     override fun getImageFilename(index: Int): String {
         return String.format(
