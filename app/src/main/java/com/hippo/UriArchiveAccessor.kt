@@ -23,7 +23,7 @@ import android.net.Uri
 import com.hippo.image.Image
 import java.nio.ByteBuffer
 
-class UriArchiveAccessor(ctx: Context, uri: Uri) {
+class UriArchiveAccessor(ctx: Context, private val uri: Uri) {
     val pfd by lazy { ctx.contentResolver.openFileDescriptor(uri, "r")!! }
     fun open(): Int {
         return openArchive(pfd.fd, pfd.statSize)

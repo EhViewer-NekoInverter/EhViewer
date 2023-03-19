@@ -34,11 +34,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.os.Looper
 import android.os.ParcelFileDescriptor
 import android.os.ParcelFileDescriptor.MODE_READ_ONLY
-import android.os.Handler
-import android.os.Message
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.view.KeyEvent
@@ -90,6 +87,7 @@ import com.hippo.util.getParcelableExtraCompat
 import com.hippo.util.getParcelableCompat
 import com.hippo.util.launchIO
 import com.hippo.util.launchUI
+import com.hippo.util.withUIContext
 import com.hippo.widget.ColorView
 import com.hippo.yorozuya.AnimationUtils
 import com.hippo.yorozuya.ConcurrentPool
@@ -101,7 +99,13 @@ import com.hippo.yorozuya.SimpleHandler
 import com.hippo.yorozuya.ViewUtils
 import java.io.File
 import java.io.IOException
-import java.lang.ref.WeakReference
+import java.util.concurrent.atomic.AtomicReference
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.suspendCancellableCoroutine
 import rikka.core.res.isNight
 import rikka.core.res.resolveColor
 
@@ -186,9 +190,9 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
     private var mSize = 0
     private var mCurrentIndex = 0
     private var mSavingPage = -1
-    private var builder: EditTextDialogBuilder? = null
+    private lateinit var builder: EditTextDialogBuilder
+    private lateinit var dialog: AlertDialog
     private var dialogShown = false
-    private var dialog: AlertDialog? = null
 
     private val galleryDetailUrl: String?
         get() {
@@ -220,7 +224,41 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
                 } catch (e: Exception) {
                     Toast.makeText(this, R.string.error_reading_failed, Toast.LENGTH_SHORT).show()
                 }
-                mGalleryProvider = ArchiveGalleryProvider(this, mUri)
+                val continuation: AtomicReference<Continuation<String>?> = AtomicReference(null)
+                mGalleryProvider = ArchiveGalleryProvider(this, mUri!!,
+                    flow {
+                        if (!dialogShown) {
+                            withUIContext {
+                                dialogShown = true
+                                dialog.run {
+                                    show()
+                                    getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                                        val passwd = builder.text
+                                        if (passwd.isEmpty())
+                                            builder.setError(getString(R.string.passwd_cannot_be_empty))
+                                        else {
+                                            continuation.get()?.resume(passwd)
+                                        }
+                                    }
+                                    setOnCancelListener {
+                                        finish()
+                                    }
+                                }
+                            }
+                        }
+                        while (true) {
+                            currentCoroutineContext().ensureActive()
+                            val r = suspendCancellableCoroutine {
+                                continuation.set(it)
+                                it.invokeOnCancellation { dialog.dismiss() }
+                            }
+                            emit(r)
+                            withUIContext {
+                                builder.setError(getString(R.string.passwd_wrong))
+                            }
+                        }
+                    }
+                )
             }
         }
     }
@@ -282,11 +320,10 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
             onRestore(savedInstanceState)
         }
         builder = EditTextDialogBuilder(this, null, getString(R.string.archive_passwd))
-        builder!!.setTitle(getString(R.string.archive_need_passwd))
-        builder!!.setPositiveButton(getString(android.R.string.ok), null)
-        dialog = builder!!.create()
-        dialog!!.setCanceledOnTouchOutside(false)
-        ArchiveGalleryProvider.showPasswd = ShowPasswdDialogHandler(this)
+        builder.setTitle(getString(R.string.archive_need_passwd))
+        builder.setPositiveButton(getString(android.R.string.ok), null)
+        dialog = builder.create()
+        dialog.setCanceledOnTouchOutside(false)
         if (mGalleryProvider == null) {
             finish()
             return
@@ -299,6 +336,8 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
     }
 
     private fun setGallery() {
+        // TODO: Not well place to call it
+        dialog.dismiss()
         // Get start page
         if (mCurrentIndex == 0) mCurrentIndex = if (mPage >= 0) mPage else mGalleryProvider!!.startPage
         mSize = mGalleryProvider!!.size
@@ -932,55 +971,6 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         super.onProvideAssistContent(outContent)
         galleryDetailUrl?.let {
             outContent.webUri = Uri.parse(it)
-        }
-    }
-
-    private fun showPasswdDialog() {
-        if (!dialogShown) {
-            dialogShown = true
-            dialog!!.show()
-            if (dialog!!.getButton(AlertDialog.BUTTON_POSITIVE) != null) {
-                dialog!!.getButton(AlertDialog.BUTTON_POSITIVE)
-                    .setOnClickListener { onProvidePasswd() }
-            }
-            dialog!!.setOnCancelListener { finish() }
-        }
-    }
-
-    private fun onProvidePasswd() {
-        val passwd = builder!!.text
-        if (passwd.isEmpty()) builder!!.setError(getString(R.string.passwd_cannot_be_empty)) else {
-            ArchiveGalleryProvider.passwd = passwd
-            ArchiveGalleryProvider.pv.v()
-        }
-    }
-
-    private fun onPasswdWrong() {
-        builder!!.setError(getString(R.string.passwd_wrong))
-    }
-
-    private fun onPasswdCorrect() {
-        dialog!!.dismiss()
-    }
-
-    private class ShowPasswdDialogHandler(activity: GalleryActivity?) : Handler(Looper.getMainLooper()) {
-        //弱引用持有HandlerActivity , GC 回收时会被回收掉
-        private val weakReference: WeakReference<GalleryActivity?>
-
-        init {
-            weakReference = WeakReference(activity)
-        }
-
-        override fun handleMessage(msg: Message) {
-            val activity = weakReference.get()
-            super.handleMessage(msg)
-            if (null != activity) {
-                when (msg.what) {
-                    0 -> activity.showPasswdDialog()
-                    1 -> activity.onPasswdWrong()
-                    2 -> activity.onPasswdCorrect()
-                }
-            }
         }
     }
 

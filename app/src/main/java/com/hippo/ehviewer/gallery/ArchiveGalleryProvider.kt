@@ -1,360 +1,166 @@
 /*
- * Copyright 2019 Hippo Seven
+ * Copyright 2023 Tarsin Norbin
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This file is part of EhViewer
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * EhViewer is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * EhViewer is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with EhViewer.
+ * If not, see <https://www.gnu.org/licenses/>.
  */
+package com.hippo.ehviewer.gallery
 
-package com.hippo.ehviewer.gallery;
+import android.content.Context
+import android.net.Uri
+import com.hippo.Native.getFd
+import com.hippo.UriArchiveAccessor
+import com.hippo.ehviewer.GetText
+import com.hippo.ehviewer.R
+import com.hippo.ehviewer.Settings
+import com.hippo.image.Image
+import com.hippo.unifile.UniFile
+import com.hippo.yorozuya.FileUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
+import java.io.FileOutputStream
+import java.io.IOException
 
-import android.content.Context;
-import android.net.Uri;
-import android.os.Handler;
-import android.os.Process;
+class ArchiveGalleryProvider(context: Context, uri: Uri, passwdFlow: Flow<String>) : GalleryProvider2(),
+    CoroutineScope {
+    override val coroutineContext = Dispatchers.IO + Job()
+    private val archiveAccessor by lazy { UriArchiveAccessor(context, uri) }
+    private val hostJob = launch(start = CoroutineStart.LAZY) {
+        size = archiveAccessor.open()
+        if (size == 0) {
+            return@launch
+        }
+        archiveAccessor.run {
+            if (needPassword()) {
+                Settings.archivePasswds?.forEach {
+                    if (providePassword(it)) return@launch
+                }
+                passwdFlow.collect {
+                    if (providePassword(it)) {
+                        Settings.putPasswdToArchivePasswds(it)
+                        currentCoroutineContext().cancel()
+                    }
+                }
+            }
+        }
+    }
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+    override var size = 0
+        private set
 
-import com.hippo.Native;
-import com.hippo.UriArchiveAccessor;
-import com.hippo.ehviewer.GetText;
-import com.hippo.ehviewer.R;
-import com.hippo.ehviewer.Settings;
-import com.hippo.image.Image;
-import com.hippo.unifile.UniFile;
-import com.hippo.yorozuya.FileUtils;
-import com.hippo.yorozuya.SimpleHandler;
-import com.hippo.yorozuya.thread.PVLock;
-import com.hippo.yorozuya.thread.PriorityThread;
+    override fun start() {
+        super.start()
+        hostJob.start()
+    }
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
-import java.util.concurrent.atomic.AtomicInteger;
-import kotlin.Pair;
-import kotlin.coroutines.Continuation;
-import kotlin.coroutines.intrinsics.CoroutineSingletons;
+    override fun stop() {
+        cancel()
+        archiveAccessor.close()
+        super.stop()
+    }
 
-public class ArchiveGalleryProvider extends GalleryProvider2 {
-    private static final AtomicInteger sIdGenerator = new AtomicInteger();
-    public static Handler showPasswd;
-    public static String passwd;
-    public static PVLock pv = new PVLock(0);
-    private final UriArchiveAccessor archiveAccessor;
-    private final Stack<Integer> requests = new Stack<>();
-    private final LinkedHashMap<Integer, Image.CloseableSource> streams = new LinkedHashMap<>();
-    private final Thread[] decodeThread = new Thread[]{
-            new Thread(new DecodeTask()),
-            new Thread(new DecodeTask()),
-            new Thread(new DecodeTask()),
-            new Thread(new DecodeTask())
-    };
-    private Thread archiveThread;
-    private volatile int size = 0;
-    private String error;
+    private val mJobMap = hashMapOf<Int, Job>()
+    private val mSemaphore = Semaphore(4)
 
-    public ArchiveGalleryProvider(Context context, Uri uri) {
-        UriArchiveAccessor archiveAccessor1;
+    override fun onRequest(index: Int) {
+        notifyPageWait(index)
+        synchronized(mJobMap) {
+            val current = mJobMap[index]
+            if (current?.isActive != true) {
+                mJobMap[index] = launch {
+                    mSemaphore.withPermit {
+                        doRealWork(index)
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun doRealWork(index: Int) {
+        val src = archiveAccessor.getImageSource(index) ?: return
+        runCatching {
+            currentCoroutineContext().ensureActive()
+        }.onFailure {
+            src.close()
+            throw it
+        }
+        val image = Image.decode(src) ?: return notifyPageFailed(index, GetText.getString(R.string.error_decoding_failed))
+        runCatching {
+            currentCoroutineContext().ensureActive()
+        }.onFailure {
+            image.recycle()
+            throw it
+        }
+        notifyPageSucceed(index, image)
+    }
+
+    override fun onForceRequest(index: Int) {
+        onRequest(index)
+    }
+
+    override suspend fun awaitReady(): Boolean {
+        hostJob.join()
+        return size != 0
+    }
+
+    override fun onCancelRequest(index: Int) {
+        mJobMap[index]?.cancel()
+    }
+
+    override fun getImageFilename(index: Int): String {
+        return FileUtils.getNameFromFilename(getImageFilenameWithExtension(index))
+    }
+
+    override fun getImageFilenameWithExtension(index: Int): String {
+        return FileUtils.sanitizeFilename(archiveAccessor.getFilename(index))
+    }
+
+    override fun save(index: Int, file: UniFile): Boolean {
+        val fd: Int
+        val stream: FileOutputStream
         try {
-            archiveAccessor1 = new UriArchiveAccessor(context, uri);
-        } catch (Exception e) {
-            archiveAccessor1 = null;
-            e.printStackTrace();
+            stream = file.openOutputStream() as FileOutputStream
+            fd = getFd(stream.fd)
+        } catch (e: IOException) {
+            e.printStackTrace()
+            return false
         }
-        archiveAccessor = archiveAccessor1;
-    }
-
-    @Override
-    public void start() {
-        super.start();
-
-        int id = sIdGenerator.incrementAndGet();
-
-        archiveThread = new PriorityThread(
-                new ArchiveHostTask(), "ArchiveTask" + '-' + id, Process.THREAD_PRIORITY_BACKGROUND);
-        archiveThread.start();
-        for (Thread i : decodeThread) {
-            i.start();
-        }
-    }
-
-    @Override
-    public void stop() {
-        super.stop();
-        if (archiveThread != null) {
-            archiveThread.interrupt();
-            archiveThread = null;
-        }
-        for (Thread i : decodeThread) {
-            i.interrupt();
-        }
+        archiveAccessor.extractToFd(index, fd)
         try {
-            archiveAccessor.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+            stream.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+            return false
         }
+        return true
     }
 
-    @Override
-    public int getSize() {
-        return size;
+    override fun save(index: Int, dir: UniFile, filename: String): UniFile {
+        val extension = FileUtils.getExtensionFromFilename(getImageFilenameWithExtension(index))
+        val dst = dir.subFile(if (null != extension) "$filename.$extension" else filename)
+        save(index, dst!!)
+        return dst
     }
 
-    @Override
-    protected void onRequest(int index) {
-        boolean inDecodeTask;
-        synchronized (streams) {
-            inDecodeTask = streams.containsKey(index);
-        }
-
-        synchronized (requests) {
-            boolean inArchiveTask = requests.contains(index);
-            if (!inArchiveTask && !inDecodeTask) {
-                requests.add(index);
-                requests.notify();
-            }
-        }
-        notifyPageWait(index);
-    }
-
-    @Override
-    protected void onForceRequest(int index) {
-        onRequest(index);
-    }
-
-    @Override
-    protected void onCancelRequest(int index) {
-        synchronized (requests) {
-            requests.remove(Integer.valueOf(index));
-        }
-    }
-
-    @NonNull
-    @Override
-    public String getImageFilename(int index) {
-        return FileUtils.getNameFromFilename(getImageFilenameWithExtension(index));
-    }
-
-    @NonNull
-    @Override
-    public String getImageFilenameWithExtension(int index) {
-        return FileUtils.sanitizeFilename(archiveAccessor.getFilename(index));
-    }
-
-    @Override
-    public boolean save(int index, @NonNull UniFile file) {
-        int fd;
-        FileOutputStream stream;
-        try {
-            stream = (FileOutputStream) file.openOutputStream();
-            fd = Native.getFd(stream.getFD());
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        archiveAccessor.extractToFd(index, fd);
-        try {
-            stream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public UniFile save(int index, @NonNull UniFile dir, @NonNull String filename) {
-        String extension = FileUtils.getExtensionFromFilename(getImageFilenameWithExtension(index));
-        UniFile dst = dir.subFile(null != extension ? filename + "." + extension : filename);
-        save(index, dst);
-        return dst;
-    }
-
-    @Override
-    protected void preloadPages(@NonNull List<Integer> pages, @NonNull Pair<Integer, Integer> pair) {
-    }
-
-    private Continuation<? super Boolean> continuation = null;
-
-    @Nullable
-    @Override
-    public Object awaitReady(@NonNull Continuation<? super Boolean> $completion) {
-        continuation = $completion;
-        return CoroutineSingletons.COROUTINE_SUSPENDED;
-    }
-
-    private class ArchiveHostTask implements Runnable {
-        public final Thread[] archiveThreads = new Thread[]{
-                new Thread(new ArchiveTask()),
-                new Thread(new ArchiveTask()),
-                new Thread(new ArchiveTask()),
-                new Thread(new ArchiveTask())
-        };
-
-        private void waitPasswd() throws InterruptedException {
-            showPasswd.sendEmptyMessage(0);
-            pv.p();
-        }
-
-        private void notifyError() {
-            showPasswd.sendEmptyMessage(1);
-        }
-
-        private void notifyDismiss() {
-            showPasswd.sendEmptyMessage(2);
-        }
-
-        @Override
-        public void run() {
-            try {
-                size = archiveAccessor.open();
-            } catch (Exception e) {
-                e.printStackTrace();
-                size = 0;
-            }
-            if (size <= 0) {
-                error = GetText.getString(R.string.error_reading_failed);
-                return;
-            }
-            SimpleHandler.getInstance().post(() -> continuation.resumeWith(true));
-
-            if (archiveAccessor.needPassword()) {
-                boolean need_request = true;
-                Set<String> set = Settings.INSTANCE.getArchivePasswds();
-                if (set != null) {
-                    for (String passwd : set) {
-                        if (archiveAccessor.providePassword(passwd)) {
-                            need_request = false;
-                            break;
-                        }
-                    }
-                }
-                while (!Thread.currentThread().isInterrupted() && need_request) {
-                    try {
-                        waitPasswd();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                        return;
-                    }
-                    if (!archiveAccessor.providePassword(passwd))
-                        notifyError();
-                    else {
-                        Settings.INSTANCE.putPasswdToArchivePasswds(passwd);
-                        notifyDismiss();
-                        break;
-                    }
-                }
-            }
-            for (Thread i : archiveThreads) {
-                i.start();
-            }
-
-            Object o = new Object();
-            synchronized (o) {
-                try {
-                    o.wait();
-                } catch (InterruptedException e) {
-                    for (Thread i : archiveThreads) {
-                        i.interrupt();
-                    }
-                }
-            }
-        }
-    }
-
-    private class ArchiveTask implements Runnable {
-        @Override
-        public void run() {
-            while (!Thread.currentThread().isInterrupted()) {
-                int index;
-                synchronized (requests) {
-                    if (requests.isEmpty()) {
-                        try {
-                            requests.wait();
-                        } catch (InterruptedException e) {
-                            // Interrupted
-                            break;
-                        }
-                        continue;
-                    }
-                    index = requests.pop();
-                }
-
-                // Check index valid
-                if (index < 0 || index >= size) {
-                    notifyPageFailed(index, GetText.getString(R.string.error_out_of_range));
-                    continue;
-                }
-
-                synchronized (streams) {
-                    if (streams.get(index) != null) {
-                        continue;
-                    }
-                }
-
-                Image.CloseableSource src = archiveAccessor.getImageSource(index);
-
-                synchronized (streams) {
-                    streams.put(index, src);
-                    streams.notify();
-                }
-            }
-        }
-    }
-
-    private class DecodeTask implements Runnable {
-        @Override
-        public void run() {
-            while (!Thread.currentThread().isInterrupted()) {
-                int index;
-                Image.CloseableSource src;
-                synchronized (streams) {
-                    if (streams.isEmpty()) {
-                        try {
-                            streams.wait();
-                        } catch (InterruptedException e) {
-                            break;
-                        }
-                        continue;
-                    }
-
-                    Iterator<Map.Entry<Integer, Image.CloseableSource>> iterator = streams.entrySet().iterator();
-                    Map.Entry<Integer, Image.CloseableSource> entry = iterator.next();
-                    iterator.remove();
-                    index = entry.getKey();
-                    src = entry.getValue();
-                }
-
-                Image image = null;
-                if (src != null) {
-                    image = Image.decode(src);
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        // Ignore
-                    }
-                }
-                if (image != null) {
-                    notifyPageSucceed(index, image);
-                } else {
-                    notifyPageFailed(index, GetText.getString(R.string.error_decoding_failed));
-                }
-            }
-        }
-    }
+    override fun preloadPages(pages: List<Int>, pair: Pair<Int, Int>) {}
 }
