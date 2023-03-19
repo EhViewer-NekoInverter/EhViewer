@@ -100,6 +100,7 @@ import com.hippo.ehviewer.download.DownloadManager
 import com.hippo.ehviewer.download.DownloadManager.DownloadInfoListener
 import com.hippo.ehviewer.spider.SpiderDen
 import com.hippo.ehviewer.spider.SpiderQueen
+import com.hippo.ehviewer.spider.SpiderQueen.Companion.MODE_READ
 import com.hippo.ehviewer.ui.CommonOperations
 import com.hippo.ehviewer.ui.GalleryActivity
 import com.hippo.ehviewer.widget.GalleryRatingBar
@@ -329,7 +330,9 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
             // Other Actions
             viewLifecycleOwner.lifecycleScope.launchIO {
                 runCatching {
-                    val startPage = spiderQueen?.awaitStartPage() ?: 0
+                    val queen = SpiderQueen.obtainSpiderQueen(it, MODE_READ)
+                    val startPage = queen.awaitStartPage()
+                    SpiderQueen.releaseSpiderQueen(queen, MODE_READ)
                     withUIContext {
                         mRead!!.text = if (startPage == 0) {
                             getString(R.string.read)
@@ -427,8 +430,6 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
             }
         )
     }
-
-    private var spiderQueen: SpiderQueen? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -542,15 +543,12 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
             adjustViewVisibility(STATE_FAILED, false)
         }
         mDownloadManager.addDownloadInfoListener(this)
-        spiderQueen = SpiderQueen.obtainSpiderQueen(galleryInfo!!, SpiderQueen.MODE_READ)
         return view
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         mDownloadManager.removeDownloadInfoListener(this)
-        spiderQueen?.let { SpiderQueen.releaseSpiderQueen(it, SpiderQueen.MODE_READ)  }
-        spiderQueen = null
         mTip = null
         mViewTransition = null
         mHeader = null
