@@ -39,10 +39,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicInteger;
+import kotlin.Pair;
 
 public class ArchiveGalleryProvider extends GalleryProvider2 {
     private static final AtomicInteger sIdGenerator = new AtomicInteger();
@@ -183,6 +185,10 @@ public class ArchiveGalleryProvider extends GalleryProvider2 {
         UniFile dst = dir.subFile(null != extension ? filename + "." + extension : filename);
         save(index, dst);
         return dst;
+    }
+
+    @Override
+    protected void preloadPages(@NonNull List<Integer> pages, @NonNull Pair<Integer, Integer> pair) {
     }
 
     private class ArchiveHostTask implements Runnable {

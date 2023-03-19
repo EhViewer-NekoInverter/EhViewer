@@ -23,18 +23,22 @@ import com.hippo.ehviewer.client.EhEngine.getGalleryPage
 import com.hippo.ehviewer.client.EhEngine.getGalleryPageApi
 import com.hippo.ehviewer.client.EhUrl.getPageUrl
 import com.hippo.ehviewer.client.exception.ParseException
+import com.hippo.ehviewer.spider.SpiderQueen.DECODE_ERROR
 import com.hippo.ehviewer.spider.SpiderQueen.ERROR_509
 import com.hippo.ehviewer.spider.SpiderQueen.NETWORK_ERROR
 import com.hippo.ehviewer.spider.SpiderQueen.PTOKEN_FAILED_MESSAGE
 import com.hippo.ehviewer.spider.SpiderQueen.STATE_FAILED
 import com.hippo.ehviewer.spider.SpiderQueen.STATE_FINISHED
+import com.hippo.image.Image.Companion.decode
 import com.hippo.util.ExceptionUtils
 import com.hippo.util.runSuspendCatching
 import com.hippo.yorozuya.StringUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.Semaphore
@@ -46,7 +50,7 @@ class SpiderQueenWorker(private val queen: SpiderQueen) : CoroutineScope {
     private val spiderDen
         get() = queen.mSpiderDen
     private val spiderInfo by lazy { queen.mSpiderInfo.get() }
-    private val mJobMap = hashMapOf<Int, Job>()
+    private val mFetcherJobMap = hashMapOf<Int, Job>()
     private val mSemaphore = Semaphore(Settings.downloadThreadCount)
     private val pTokenLock = Mutex()
     private var showKey: String? = null
@@ -58,11 +62,8 @@ class SpiderQueenWorker(private val queen: SpiderQueen) : CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + Job()
 
-    fun cancel(index: Int) {
-        if (isDownloadMode) return
-        synchronized(mJobMap) {
-            mJobMap.remove(index)?.cancel()
-        }
+    fun cancelDecode(index: Int) {
+        decoder.cancel(index)
     }
 
     @Synchronized
@@ -72,42 +73,40 @@ class SpiderQueenWorker(private val queen: SpiderQueen) : CoroutineScope {
         isDownloadMode = true
     }
 
-    private fun updateRAList(list: List<Int>) {
+    fun updateRAList(list: List<Int>, cancelBounds: Pair<Int, Int> = 0 to Int.MAX_VALUE) {
         if (isDownloadMode) return
-        synchronized(mJobMap) {
-            sequence {
-                mJobMap.forEach { (i, job) ->
-                    if (i !in list) {
-                        job.cancel()
-                    }
-                    if (!job.isActive) yield(i)
-                }
-            }.toSet().forEach { mJobMap.remove(it) }
+        synchronized(mFetcherJobMap) {
+            mFetcherJobMap.forEach { (i, job) ->
+                if (i < cancelBounds.first || i > cancelBounds.second)
+                    job.cancel()
+            }
             list.forEach {
-                if (mJobMap[it]?.isActive != true)
-                    launch(it)
+                if (mFetcherJobMap[it]?.isActive != true)
+                    doLaunchDownloadJob(it, false)
+            }
+        }
+    }
+
+    private fun doLaunchDownloadJob(index: Int, force: Boolean) {
+        val state = queen.mPageStateArray[index]
+        if (!force && state == STATE_FINISHED) return
+        val currentJob = mFetcherJobMap[index]
+        if (force) currentJob?.cancel()
+        if (currentJob?.isActive != true) {
+            mFetcherJobMap[index] = launch {
+                mSemaphore.withPermit {
+                    doInJob(index, force)
+                }
             }
         }
     }
 
     @JvmOverloads
     fun launch(index: Int, force: Boolean = false) {
-        if (isDownloadMode) return
         check(index in 0 until size)
-        val state = queen.mPageStateArray[index]
-        if (!force && state == STATE_FINISHED) return
-
-        synchronized(mJobMap) {
-            val currentJob = mJobMap[index]
-            if (force) currentJob?.cancel()
-            if (currentJob?.isActive != true) {
-                mJobMap[index] = launch {
-                    mSemaphore.withPermit {
-                        doInJob(index, force)
-                    }
-                }
-            }
-        }
+        if (!isDownloadMode) synchronized(mFetcherJobMap) { doLaunchDownloadJob(index, force) }
+        if (force) decoder.cancel(index)
+        decoder.launch(index)
     }
 
     private suspend fun doInJob(index: Int, force: Boolean) {
@@ -123,7 +122,6 @@ class SpiderQueenWorker(private val queen: SpiderQueen) : CoroutineScope {
             return queen.updatePageState(index, STATE_FINISHED)
         }
         if (force) {
-            spiderDen.remove(index)
             pTokenLock.withLock {
                 val pToken = spiderInfo.pTokenMap[index]
                 if (pToken == SpiderInfo.TOKEN_FAILED) spiderInfo.pTokenMap.remove(index)
@@ -305,5 +303,43 @@ class SpiderQueenWorker(private val queen: SpiderQueen) : CoroutineScope {
         )
 
         private const val DEBUG_TAG = "SpiderQueenWorker"
+    }
+
+    private val decoder = Decoder()
+
+    inner class Decoder {
+        private val mSemaphore = Semaphore(4)
+        private val mDecodeJobMap = hashMapOf<Int, Job>()
+        fun cancel(index: Int) {
+            synchronized(mDecodeJobMap) {
+                mDecodeJobMap.remove(index)?.cancel()
+            }
+        }
+        fun launch(index: Int) {
+            synchronized(mDecodeJobMap) {
+                val currentJob = mDecodeJobMap[index]
+                if (currentJob?.isActive != true) {
+                    mDecodeJobMap[index] = launch {
+                        doInJob(index)
+                    }
+                }
+            }
+        }
+        private suspend fun doInJob(index: Int) {
+            mFetcherJobMap[index]?.takeIf { it.isActive }?.join()
+            val src = spiderDen.getImageSource(index) ?: return
+            val image = mSemaphore.withPermit { decode(src) }
+            runCatching {
+                currentCoroutineContext().ensureActive()
+            }.onFailure {
+                image?.recycle()
+                throw it
+            }
+            if (image == null) {
+                queen.notifyGetImageFailure(index, DECODE_ERROR)
+            } else {
+                queen.notifyGetImageSuccess(index, image)
+            }
+        }
     }
 }

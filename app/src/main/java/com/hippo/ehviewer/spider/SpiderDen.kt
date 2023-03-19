@@ -115,7 +115,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
                 // Get extension
                 val extension = fixExtension("." + snapshot.metadata.toFile().readText())
                 // Don't copy from cache if `download original image` enabled, ignore gif
-                if (skip && extension != GalleryProvider2.SUPPORT_IMAGE_EXTENSIONS[3]) {
+                if (skip && extension != GalleryProvider2.SUPPORT_IMAGE_EXTENSIONS[2]) {
                     return false
                 }
                 // Copy from cache to download dir
@@ -323,8 +323,8 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
 
     companion object {
         private const val TRANSFER_BLOCK: Long = 8192
+        private val COMPAT_IMAGE_EXTENSIONS = GalleryProvider2.SUPPORT_IMAGE_EXTENSIONS + ".jpeg"
 
-        // We use data to store image file, and metadata for image type
         private val sCache by lazy {
             DiskCache.Builder()
                 .directory(File(application.cacheDir, "image"))
@@ -354,7 +354,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
         }
 
         private fun findImageFile(dir: UniFile, index: Int): UniFile? {
-            for (extension in GalleryProvider2.SUPPORT_IMAGE_EXTENSIONS) {
+            for (extension in COMPAT_IMAGE_EXTENSIONS) {
                 val filename = generateImageFilename(index, extension)
                 val file = dir.findFile(filename)
                 if (file != null) {

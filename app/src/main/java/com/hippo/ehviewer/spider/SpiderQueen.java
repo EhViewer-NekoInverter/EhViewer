@@ -36,7 +36,6 @@ import com.hippo.ehviewer.client.exception.ParseException;
 import com.hippo.ehviewer.client.parser.GalleryDetailParser;
 import com.hippo.ehviewer.client.parser.GalleryMultiPageViewerPTokenParser;
 import com.hippo.ehviewer.client.parser.GalleryPageUrlParser;
-import com.hippo.glgallery.GalleryPageView;
 import com.hippo.glgallery.GalleryProvider;
 import com.hippo.image.Image;
 import com.hippo.unifile.UniFile;
@@ -47,12 +46,11 @@ import com.hippo.yorozuya.thread.PriorityThread;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import kotlin.Pair;
 import kotlinx.coroutines.CoroutineScopeKt;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -65,7 +63,6 @@ public final class SpiderQueen implements Runnable {
     public static final int STATE_DOWNLOADING = 1;
     public static final int STATE_FINISHED = 2;
     public static final int STATE_FAILED = 3;
-    public static final int DECODE_THREAD_NUM = 1;
     public static final String SPIDER_INFO_FILENAME = ".ehviewer";
     private static final String TAG = SpiderQueen.class.getSimpleName();
     private static final AtomicInteger sIdGenerator = new AtomicInteger();
@@ -75,6 +72,7 @@ public final class SpiderQueen implements Runnable {
     public static String PTOKEN_FAILED_MESSAGE = GetText.getString(R.string.error_get_ptoken_error);
     public static String ERROR_509 = GetText.getString(R.string.error_509);
     public static String NETWORK_ERROR = GetText.getString(R.string.error_socket);
+    public static String DECODE_ERROR = GetText.getString(R.string.error_decoding_failed);
     @NonNull
     public final SpiderDen mSpiderDen;
     public final AtomicReference<SpiderInfo> mSpiderInfo = new AtomicReference<>();
@@ -85,9 +83,6 @@ public final class SpiderQueen implements Runnable {
     @NonNull
     private final GalleryInfo mGalleryInfo;
     private final Object mQueenLock = new Object();
-    private final Thread[] mDecodeThreadArray = new Thread[DECODE_THREAD_NUM];
-    private final int[] mDecodeIndexArray = new int[DECODE_THREAD_NUM];
-    private final Queue<Integer> mDecodeRequestQueue = new LinkedList<>();
     private final Object mPageStateLock = new Object();
     private final AtomicInteger mDownloadedPages = new AtomicInteger(0);
     private final AtomicInteger mFinishedPages = new AtomicInteger(0);
@@ -107,11 +102,6 @@ public final class SpiderQueen implements Runnable {
         mHttpClient = EhApplication.getNonCacheOkHttpClient();
         mGalleryInfo = galleryInfo;
         mSpiderDen = new SpiderDen(mGalleryInfo);
-
-        for (int i = 0; i < DECODE_THREAD_NUM; i++) {
-            mDecodeIndexArray[i] = GalleryPageView.INVALID_INDEX;
-        }
-
         mWorkerScope = new SpiderQueenWorker(this);
     }
 
@@ -231,7 +221,7 @@ public final class SpiderQueen implements Runnable {
         }
     }
 
-    private void notifyGetImageSuccess(int index, Image image) {
+    public void notifyGetImageSuccess(int index, Image image) {
         synchronized (mSpiderListeners) {
             for (OnSpiderListener listener : mSpiderListeners) {
                 listener.onGetImageSuccess(index, image);
@@ -239,7 +229,7 @@ public final class SpiderQueen implements Runnable {
         }
     }
 
-    private void notifyGetImageFailure(int index, String error) {
+    public void notifyGetImageFailure(int index, String error) {
         if (error == null) {
             error = GetText.getString(R.string.error_unknown);
         }
@@ -250,7 +240,7 @@ public final class SpiderQueen implements Runnable {
         }
     }
 
-    private boolean shouldIntoDownload = false;
+    private boolean mInDownloadMode = false;
 
     private void updateMode() {
         int mode;
@@ -265,7 +255,7 @@ public final class SpiderQueen implements Runnable {
         // Update download page
         boolean intoDownloadMode = mode == MODE_DOWNLOAD;
 
-        if (intoDownloadMode && mPageStateArray != null) {
+        if (intoDownloadMode && !mInDownloadMode && mPageStateArray != null) {
             // Clear download state
             synchronized (mPageStateLock) {
                 int[] temp = mPageStateArray;
@@ -280,9 +270,8 @@ public final class SpiderQueen implements Runnable {
                 mPageErrorMap.clear();
                 mPagePercentMap.clear();
             }
-        } else if (intoDownloadMode && mPageStateArray == null) {
-            shouldIntoDownload = true;
         }
+        mInDownloadMode = intoDownloadMode;
     }
 
     private void setMode(@Mode int mode) {
@@ -323,9 +312,6 @@ public final class SpiderQueen implements Runnable {
         synchronized (mQueenLock) {
             mQueenLock.notifyAll();
         }
-        synchronized (mDecodeRequestQueue) {
-            mDecodeRequestQueue.notify();
-        }
         CoroutineScopeKt.cancel(mWorkerScope, null);
         mWorkerScope = null;
     }
@@ -348,12 +334,12 @@ public final class SpiderQueen implements Runnable {
         }
     }
 
-    public Object forceRequest(int index) {
-        return request(index, true, true);
+    public void forceRequest(int index) {
+        request(index, true);
     }
 
-    public Object request(int index) {
-        return request(index, true, false);
+    public void request(int index) {
+        request(index, false);
     }
 
     private int getPageState(int index) {
@@ -371,60 +357,31 @@ public final class SpiderQueen implements Runnable {
             return;
         }
 
-        mWorkerScope.cancel(index);
-        synchronized (mDecodeRequestQueue) {
-            mDecodeRequestQueue.remove(index);
-        }
+        mWorkerScope.cancelDecode(index);
     }
 
-    /**
-     * @return String for error<br>
-     * Float for download percent<br>
-     * null for wait
-     */
-    private Object request(int index, boolean ignoreError, boolean force) {
+    public void preloadPages(@NonNull List<Integer> pages, @NonNull Pair<Integer, Integer> pair) {
         if (mQueenThread == null) {
-            return null;
+            return;
+        }
+        mWorkerScope.updateRAList(pages, pair);
+    }
+
+    private void request(int index, boolean force) {
+        if (mQueenThread == null) {
+            return;
         }
 
         // Get page state
         int state = getPageState(index);
 
         // Fix state for force
-        if ((force && (state == STATE_FINISHED || state == STATE_FAILED)) ||
-                (ignoreError && state == STATE_FAILED)) {
+        if ((force && (state == STATE_FINISHED || state == STATE_FAILED)) || (state == STATE_FAILED)) {
             // Update state to none at once
             updatePageState(index, STATE_NONE);
-            state = STATE_NONE;
         }
     
         mWorkerScope.launch(index, force);
-
-        Object result;
-
-        switch (state) {
-            case STATE_NONE -> result = null;
-            case STATE_DOWNLOADING -> result = mPagePercentMap.get(index);
-            case STATE_FAILED -> {
-                String error = mPageErrorMap.get(index);
-                if (error == null) {
-                    error = GetText.getString(R.string.error_unknown);
-                }
-                result = error;
-            }
-            case STATE_FINISHED -> {
-                synchronized (mDecodeRequestQueue) {
-                    if (!contain(mDecodeIndexArray, index) && !mDecodeRequestQueue.contains(index)) {
-                        mDecodeRequestQueue.add(index);
-                        mDecodeRequestQueue.notify();
-                    }
-                }
-                result = null;
-            }
-            default -> throw new IllegalStateException("Unexpected value: " + state);
-        }
-
-        return result;
     }
 
     public boolean save(int index, @NonNull UniFile file) {
@@ -652,15 +609,7 @@ public final class SpiderQueen implements Runnable {
         // Notify get pages
         notifyGetPages(spiderInfo.getPages());
 
-        if (shouldIntoDownload) mWorkerScope.enterDownloadMode();
-
-        // Start decoder
-        for (int i = 0; i < DECODE_THREAD_NUM; i++) {
-            Thread decoderThread = new PriorityThread(new SpiderDecoder(i),
-                    "SpiderDecoder-" + i, Process.THREAD_PRIORITY_DEFAULT);
-            mDecodeThreadArray[i] = decoderThread;
-            decoderThread.start();
-        }
+        if (mInDownloadMode) mWorkerScope.enterDownloadMode();
 
         // Wait finish
         synchronized (mQueenLock) {
@@ -772,81 +721,5 @@ public final class SpiderQueen implements Runnable {
         void onGetImageSuccess(int index, Image image);
 
         void onGetImageFailure(int index, String error);
-    }
-
-    private class SpiderDecoder implements Runnable {
-        private final int mThreadIndex;
-
-        public SpiderDecoder(int index) {
-            mThreadIndex = index;
-        }
-
-        private void resetDecodeIndex() {
-            synchronized (mDecodeRequestQueue) {
-                mDecodeIndexArray[mThreadIndex] = GalleryPageView.INVALID_INDEX;
-            }
-        }
-
-        @Override
-        public void run() {
-            if (DEBUG_LOG) {
-                Log.i(TAG, Thread.currentThread().getName() + ": start");
-            }
-
-            while (!mStoped) {
-                int index;
-                synchronized (mDecodeRequestQueue) {
-                    if (mStoped) break;
-                    if (mDecodeRequestQueue.isEmpty()) {
-                        try {
-                            mDecodeRequestQueue.wait();
-                        } catch (InterruptedException e) {
-                            // Interrupted
-                            break;
-                        }
-                        if (mStoped) break;
-                        continue;
-                    }
-                    index = mDecodeRequestQueue.remove();
-                    mDecodeIndexArray[mThreadIndex] = index;
-                }
-
-                // Check index valid
-                if (index < 0 || index >= mPageStateArray.length) {
-                    resetDecodeIndex();
-                    notifyGetImageFailure(index, GetText.getString(R.string.error_out_of_range));
-                    continue;
-                }
-
-                Image.CloseableSource src = mSpiderDen.getImageSource(index);
-                if (src == null) {
-                    resetDecodeIndex();
-                    // Can't find the file, it might be removed from cache,
-                    // Reset it state and request it
-                    updatePageState(index, STATE_NONE, null);
-                    request(index, false, false);
-                    continue;
-                }
-
-                Image image = Image.decode(src);
-                String error = null;
-                if (image == null) {
-                    error = GetText.getString(R.string.error_decoding_failed);
-                }
-
-                // Notify
-                if (image != null) {
-                    notifyGetImageSuccess(index, image);
-                } else {
-                    notifyGetImageFailure(index, error);
-                }
-
-                resetDecodeIndex();
-            }
-
-            if (DEBUG_LOG) {
-                Log.i(TAG, Thread.currentThread().getName() + ": end");
-            }
-        }
     }
 }

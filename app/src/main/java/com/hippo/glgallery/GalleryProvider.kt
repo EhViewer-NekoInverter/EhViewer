@@ -18,6 +18,7 @@ package com.hippo.glgallery
 import android.util.LruCache
 import androidx.annotation.IntDef
 import androidx.annotation.UiThread
+import com.hippo.ehviewer.Settings
 import com.hippo.glview.glrenderer.GLCanvas
 import com.hippo.glview.image.ImageWrapper
 import com.hippo.glview.view.GLRoot
@@ -30,6 +31,7 @@ import com.hippo.yorozuya.OSUtils
 abstract class GalleryProvider {
     private val mNotifyTaskPool = ConcurrentPool<NotifyTask>(5)
     private val mImageCache = ImageCache()
+    private val mPreloads = MathUtils.clamp(Settings.preloadImage, 0, 100)
     @Volatile
     private var mListener: Listener? = null
     @Volatile
@@ -67,6 +69,8 @@ abstract class GalleryProvider {
         } else {
             onRequest(index)
         }
+        val pagesAbsent = ((index - 5).coerceAtLeast(0) until (mPreloads + index).coerceAtMost(size())).mapNotNull { it.takeIf { mImageCache[it] == null } }
+        preloadPages(pagesAbsent, (index - 10).coerceAtLeast(0) to (mPreloads + index + 10).coerceAtMost(size()))
     }
 
     fun forceRequest(index: Int) {
@@ -76,6 +80,8 @@ abstract class GalleryProvider {
     fun removeCache(index: Int) {
         mImageCache.remove(index)
     }
+
+    protected abstract fun preloadPages(pages: List<Int>, pair: Pair<Int, Int>)
 
     protected abstract fun onRequest(index: Int)
 
