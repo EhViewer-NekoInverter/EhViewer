@@ -36,8 +36,7 @@ import java.nio.ByteBuffer
 import kotlin.math.min
 
 class Image private constructor(
-    source: Source? = null,
-    private var src: ByteBufferSource? = null,
+    private val src: CloseableSource? = null,
     drawable: Drawable? = null
 ) {
     private var mObtainedDrawable: Drawable?
@@ -46,17 +45,16 @@ class Image private constructor(
 
     init {
         mObtainedDrawable = null
-        source?.let {
+        src?.let {source ->
             mObtainedDrawable =
-                ImageDecoder.decodeDrawable(source) { decoder: ImageDecoder, info: ImageInfo, _: Source ->
+                ImageDecoder.decodeDrawable(source.source) { decoder: ImageDecoder, info: ImageInfo, _: Source ->
                     decoder.allocator = ALLOCATOR_SOFTWARE
                     decoder.setTargetSampleSize(
                         calculateSampleSize(info, 2 * screenHeight, 2 * screenWidth)
                     )
                 }.also {
                     (it as? BitmapDrawable)?.run {
-                        src?.close()
-                        src = null
+                        source.close()
                     }
                 }
         }
@@ -75,14 +73,13 @@ class Image private constructor(
     fun recycle() {
         mObtainedDrawable ?: return
         (mObtainedDrawable as? AnimatedImageDrawable)?.stop()
+        (mObtainedDrawable as? AnimatedImageDrawable)?.let { src?.close() }
         (mObtainedDrawable as? BitmapDrawable)?.bitmap?.recycle()
         mObtainedDrawable?.callback = null
         mObtainedDrawable = null
         mCanvas = null
         mBitmap?.recycle()
         mBitmap = null
-        src?.close()
-        src = null
     }
 
     private fun prepareBitmap() {
@@ -155,12 +152,9 @@ class Image private constructor(
         val screenHeight = EhApplication.application.resources.displayMetrics.heightPixels
 
         @JvmStatic
-        fun decode(src: ByteBufferSource): Image? {
-            val directBuffer = src.getByteBuffer()
-            check(directBuffer.isDirect)
-            rewriteGifSource(directBuffer)
+        fun decode(src: CloseableSource): Image? {
             return runCatching {
-                Image(ImageDecoder.createSource(directBuffer), src)
+                Image(src)
             }.onFailure {
                 src.close()
                 it.printStackTrace()
@@ -183,11 +177,10 @@ class Image private constructor(
         )
 
         @JvmStatic
-        private external fun rewriteGifSource(buffer: ByteBuffer)
+        external fun rewriteGifSource(buffer: ByteBuffer)
     }
 
-    interface ByteBufferSource : AutoCloseable {
-        // A read-write direct bytebuffer, it may in native heap or file mapping
-        fun getByteBuffer(): ByteBuffer
+    interface CloseableSource : AutoCloseable {
+        val source: Source
     }
 }

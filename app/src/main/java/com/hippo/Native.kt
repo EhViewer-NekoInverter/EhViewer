@@ -21,7 +21,6 @@ import android.os.ParcelFileDescriptor
 import android.system.Int64Ref
 import android.system.Os
 import java.io.FileDescriptor
-import java.nio.ByteBuffer
 
 object Native {
     fun initialize() {
@@ -30,12 +29,6 @@ object Native {
 
     @JvmStatic
     external fun getFd(fd: FileDescriptor?): Int
-
-    @JvmStatic
-    external fun mapFd(fd: Int, capability: Long): ByteBuffer?
-
-    @JvmStatic
-    external fun unmapDirectByteBuffer(buffer: ByteBuffer)
 }
 
 private fun sendFileTotally(from: FileDescriptor, to: FileDescriptor) {
