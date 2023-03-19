@@ -33,7 +33,6 @@ import com.hippo.ehviewer.client.EhDns
 import com.hippo.ehviewer.client.EhEngine
 import com.hippo.ehviewer.client.EhSSLSocketFactory
 import com.hippo.ehviewer.client.EhTagDatabase
-import com.hippo.ehviewer.client.EhX509TrustManager
 import com.hippo.ehviewer.client.data.GalleryDetail
 import com.hippo.ehviewer.coil.MergeInterceptor
 import com.hippo.ehviewer.dao.buildMainDB
@@ -46,10 +45,10 @@ import com.hippo.util.ReadableTime
 import com.hippo.util.launchIO
 import com.hippo.yorozuya.FileUtils
 import com.hippo.yorozuya.IntIdGenerator
+import com.hippo.yorozuya.MathUtils
 import java.io.File
 import java.net.Proxy
 import java.security.KeyStore
-import java.util.Arrays
 import javax.net.ssl.TrustManagerFactory
 import javax.net.ssl.X509TrustManager
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -244,24 +243,11 @@ class EhApplication : SceneApplication(), ImageLoaderFactory {
                 .proxySelector(ehProxySelector)
 
             if (Settings.dF) {
-                var trustManager: X509TrustManager
-                try {
-                    val trustManagerFactory = TrustManagerFactory.getInstance(
-                        TrustManagerFactory.getDefaultAlgorithm()
-                    )
-                    trustManagerFactory.init(null as KeyStore?)
-                    val trustManagers = trustManagerFactory.trustManagers
-                    check(!(trustManagers.size != 1 || trustManagers[0] !is X509TrustManager)) {
-                        "Unexpected default trust managers:" + Arrays.toString(
-                            trustManagers
-                        )
-                    }
-                    trustManager = trustManagers[0] as X509TrustManager
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    trustManager = EhX509TrustManager
-                }
-
+                val factory =
+                    TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())!!
+                factory.init(null as KeyStore?)
+                val manager = factory.trustManagers!!
+                val trustManager = manager.filterIsInstance<X509TrustManager>().first()
                 builder.sslSocketFactory(EhSSLSocketFactory, trustManager)
                 builder.proxy(Proxy.NO_PROXY)
             }
@@ -272,7 +258,7 @@ class EhApplication : SceneApplication(), ImageLoaderFactory {
         @JvmStatic
         val okHttpClient by lazy {
             nonCacheOkHttpClient.newBuilder()
-                .cache(Cache(File(application.cacheDir, "http_cache"), 20L * 1024L * 1024L))
+                .cache(Cache(File(application.cacheDir, "http_cache"), 20 * 1024 * 1024))
                 .build()
         }
 
@@ -297,7 +283,7 @@ class EhApplication : SceneApplication(), ImageLoaderFactory {
         val thumbCache by lazy {
             DiskCache.Builder()
                 .directory(File(application.cacheDir, "thumb"))
-                .maxSizeBytes(Settings.thumbCacheSize.toLong() * 1024 * 1024)
+                .maxSizeBytes(MathUtils.clamp(Settings.thumbCacheSize, 40, 1280).toLong() * 1024 * 1024)
                 .build()
         }
     }

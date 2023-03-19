@@ -107,7 +107,7 @@ class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) : GalleryProvider
 
     override fun size(): Int {
         return if (mSpiderQueen != null) {
-            mSpiderQueen!!.size()
+            mSpiderQueen!!.size
         } else {
             STATE_ERROR
         }
@@ -115,37 +115,13 @@ class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) : GalleryProvider
 
     override fun onRequest(index: Int) {
         if (mSpiderQueen != null) {
-            when (val `object` = mSpiderQueen!!.request(index)) {
-                is Float -> {
-                    notifyPagePercent(index, `object`)
-                }
-
-                is String -> {
-                    notifyPageFailed(index, `object`)
-                }
-
-                null -> {
-                    notifyPageWait(index)
-                }
-            }
+            mSpiderQueen!!.request(index)
         }
     }
 
     override fun onForceRequest(index: Int) {
         if (mSpiderQueen != null) {
-            when (val `object` = mSpiderQueen!!.forceRequest(index)) {
-                is Float -> {
-                    notifyPagePercent(index, `object`)
-                }
-
-                is String -> {
-                    notifyPageFailed(index, `object`)
-                }
-
-                null -> {
-                    notifyPageWait(index)
-                }
-            }
+            mSpiderQueen!!.forceRequest(index)
         }
     }
 
@@ -176,13 +152,11 @@ class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) : GalleryProvider
         }
     }
 
-    override fun onPageSuccess(index: Int, finished: Int, downloaded: Int, total: Int) {
-        notifyDataChanged(index)
-    }
+    override fun onPageSuccess(index: Int, finished: Int, downloaded: Int, total: Int) {}
 
     override fun onPageFailure(
         index: Int,
-        error: String,
+        error: String?,
         finished: Int,
         downloaded: Int,
         total: Int
@@ -191,12 +165,18 @@ class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) : GalleryProvider
     }
 
     override fun onFinish(finished: Int, downloaded: Int, total: Int) {}
-    override fun onGetImageSuccess(index: Int, image: Image) {
+    override fun onGetImageSuccess(index: Int, image: Image?) {
         notifyPageSucceed(index, image)
     }
 
-    override fun onGetImageFailure(index: Int, error: String) {
+    override fun onGetImageFailure(index: Int, error: String?) {
         notifyPageFailed(index, error)
+    }
+
+    override fun preloadPages(pages: List<Int>, pair: Pair<Int, Int>) {
+        if (mSpiderQueen != null) {
+            mSpiderQueen!!.preloadPages(pages, pair)
+        }
     }
 
     private class ReleaseTask(private var mSpiderQueen: SpiderQueen?) : Runnable {

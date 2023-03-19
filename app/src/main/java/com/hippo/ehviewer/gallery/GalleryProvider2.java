@@ -26,7 +26,6 @@ public abstract class GalleryProvider2 extends GalleryProvider {
     // With dot
     public static final String[] SUPPORT_IMAGE_EXTENSIONS = {
             ".jpg", // Joint Photographic Experts Group
-            ".jpeg",
             ".png", // Portable Network Graphics
             ".gif", // Graphics Interchange Format
     };

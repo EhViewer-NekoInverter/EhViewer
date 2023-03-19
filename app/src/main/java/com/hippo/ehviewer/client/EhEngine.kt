@@ -140,17 +140,6 @@ private suspend inline fun <T> Request.Builder.executeAndParsingWith(block: Stri
     }
 }
 
-private inline fun <T> Request.Builder.executeNonAsyncAndParsingWith(block: String.() -> T): T {
-    return okHttpClient.newCall(this.build()).execute().use { response ->
-        val body = response.body.string()
-        runCatching {
-            block(body)
-        }.onFailure {
-            rethrowExactly(response.code, response.headers, body, it)
-        }.getOrThrow()
-    }
-}
-
 object EhEngine {
     suspend fun signIn(username: String, password: String): String {
         val referer = "https://forums.e-hentai.org/index.php?act=Login&CODE=00"
@@ -670,19 +659,17 @@ object EhEngine {
             .apply { fillGalleryList(galleryInfoList, url, true) }
     }
 
-    @JvmStatic
-    fun getGalleryPage(
+    suspend fun getGalleryPage(
         url: String?,
         gid: Long,
         token: String?
     ): GalleryPageParser.Result {
         val referer = EhUrl.getGalleryDetailUrl(gid, token)
         Log.d(TAG, url!!)
-        return EhRequestBuilder(url, referer).executeNonAsyncAndParsingWith(GalleryPageParser::parse)
+        return EhRequestBuilder(url, referer).executeAndParsingWith(GalleryPageParser::parse)
     }
 
-    @JvmStatic
-    fun getGalleryPageApi(
+    suspend fun getGalleryPageApi(
         gid: Long,
         index: Int,
         pToken: String?,
@@ -705,6 +692,6 @@ object EhEngine {
         Log.d(TAG, url)
         return EhRequestBuilder(url, referer, origin)
             .post(requestBody)
-            .executeNonAsyncAndParsingWith(GalleryPageApiParser::parse)
+            .executeAndParsingWith(GalleryPageApiParser::parse)
     }
 }

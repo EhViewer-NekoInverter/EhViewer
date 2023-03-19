@@ -52,6 +52,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.IntDef
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -97,9 +98,8 @@ import com.hippo.ehviewer.dao.DownloadInfo
 import com.hippo.ehviewer.dao.Filter
 import com.hippo.ehviewer.download.DownloadManager
 import com.hippo.ehviewer.download.DownloadManager.DownloadInfoListener
-import com.hippo.ehviewer.gallery.EhGalleryProvider
-import com.hippo.ehviewer.gallery.GalleryProvider2
 import com.hippo.ehviewer.spider.SpiderDen
+import com.hippo.ehviewer.spider.SpiderQueen
 import com.hippo.ehviewer.ui.CommonOperations
 import com.hippo.ehviewer.ui.GalleryActivity
 import com.hippo.ehviewer.widget.GalleryRatingBar
@@ -113,6 +113,7 @@ import com.hippo.util.ReadableTime
 import com.hippo.util.addTextToClipboard
 import com.hippo.util.getParcelableCompat
 import com.hippo.util.launchIO
+import com.hippo.util.withUIContext
 import com.hippo.view.ViewTransition
 import com.hippo.widget.AutoWrapLayout
 import com.hippo.widget.LoadImageView
@@ -326,17 +327,19 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         mRead ?: return
         mGalleryInfo?.let {
             // Other Actions
-            try {
-                val galleryProvider: GalleryProvider2 = EhGalleryProvider(mGalleryInfo!!)
-                galleryProvider.start()
-                val startPage = galleryProvider.startPage
-                galleryProvider.stop()
-                mRead!!.text = if (startPage == 0) {
-                    getString(R.string.read)
-                } else {
-                    getString(R.string.read_from, startPage + 1)
+            viewLifecycleOwner.lifecycleScope.launchIO {
+                runCatching {
+                    val startPage = spiderQueen?.awaitStartPage() ?: 0
+                    withUIContext {
+                        mRead!!.text = if (startPage == 0) {
+                            getString(R.string.read)
+                        } else {
+                            getString(R.string.read_from, startPage + 1)
+                        }
+                    }
+                }.onFailure {
+                    it.printStackTrace()
                 }
-            } catch (ignore: Exception) {
             }
         }
     }
@@ -425,6 +428,8 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         )
     }
 
+    private var spiderQueen: SpiderQueen? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -450,7 +455,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         val progressView = ViewUtils.`$$`(main, R.id.progress_view)
         mTip = ViewUtils.`$$`(main, R.id.tip) as TextView
         mViewTransition = ViewTransition(mainView, progressView, mTip)
-        val drawable = requireContext().getDrawable(R.drawable.big_sad_pandroid)
+        val drawable = AppCompatResources.getDrawable(requireContext(), R.drawable.big_sad_pandroid)
         drawable!!.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
         mTip!!.setCompoundDrawables(null, drawable, null, null)
         mTip!!.setOnClickListener(this)
@@ -537,12 +542,15 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
             adjustViewVisibility(STATE_FAILED, false)
         }
         mDownloadManager.addDownloadInfoListener(this)
+        spiderQueen = SpiderQueen.obtainSpiderQueen(galleryInfo!!, SpiderQueen.MODE_READ)
         return view
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         mDownloadManager.removeDownloadInfoListener(this)
+        spiderQueen?.let { SpiderQueen.releaseSpiderQueen(it, SpiderQueen.MODE_READ)  }
+        spiderQueen = null
         mTip = null
         mViewTransition = null
         mHeader = null
@@ -627,7 +635,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
 
     private fun setActionDrawable(text: TextView?, @DrawableRes resId: Int) {
         text ?: return
-        val drawable = text.context.getDrawable(resId) ?: return
+        val drawable = AppCompatResources.getDrawable(text.context, resId) ?: return
         drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
         text.setCompoundDrawables(null, drawable, null, null)
     }
