@@ -102,6 +102,9 @@ class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) : GalleryProvider
         return mSpiderQueen.awaitReady()
     }
 
+    override val isReady: Boolean
+        get() = mSpiderQueen.isReady
+
     override fun onCancelRequest(index: Int) {
         mSpiderQueen.cancelRequest(index)
     }

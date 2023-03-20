@@ -123,6 +123,9 @@ class ArchiveGalleryProvider(context: Context, uri: Uri, passwdFlow: Flow<String
         return size != 0
     }
 
+    override val isReady: Boolean
+        get() = size != 0
+
     override fun onCancelRequest(index: Int) {
         mJobMap[index]?.cancel()
     }

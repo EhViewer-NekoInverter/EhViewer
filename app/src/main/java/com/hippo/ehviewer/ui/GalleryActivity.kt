@@ -86,7 +86,6 @@ import com.hippo.util.ExceptionUtils
 import com.hippo.util.getParcelableExtraCompat
 import com.hippo.util.getParcelableCompat
 import com.hippo.util.launchIO
-import com.hippo.util.launchUI
 import com.hippo.util.withUIContext
 import com.hippo.widget.ColorView
 import com.hippo.yorozuya.AnimationUtils
@@ -237,7 +236,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
                                         if (passwd.isEmpty())
                                             builder.setError(getString(R.string.passwd_cannot_be_empty))
                                         else {
-                                            continuation.get()?.resume(passwd)
+                                            continuation.getAndSet(null)?.resume(passwd)
                                         }
                                     }
                                     setOnCancelListener {
@@ -324,18 +323,20 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         builder.setPositiveButton(getString(android.R.string.ok), null)
         dialog = builder.create()
         dialog.setCanceledOnTouchOutside(false)
-        if (mGalleryProvider == null) {
-            finish()
-            return
-        }
-        mGalleryProvider!!.start()
-
-        lifecycleScope.launchUI {
-            if (mGalleryProvider!!.awaitReady()) setGallery()
+        mGalleryProvider.let {
+            if (it == null) {
+                finish()
+                return
+            }
+            lifecycleScope.launchIO {
+                it.start()
+                if (it.awaitReady()) withUIContext { setGallery() }
+            }
         }
     }
 
     private fun setGallery() {
+        if (mGalleryProvider?.isReady != true) return
         // TODO: Not well place to call it
         dialog.dismiss()
         // Get start page

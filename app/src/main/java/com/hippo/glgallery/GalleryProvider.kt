@@ -40,6 +40,8 @@ abstract class GalleryProvider {
 
     abstract suspend fun awaitReady(): Boolean
 
+    abstract val isReady: Boolean
+
     @UiThread
     open fun start() {
         OSUtils.checkMainLoop()
