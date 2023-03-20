@@ -279,7 +279,7 @@ class EhApplication : SceneApplication(), ImageLoaderFactory {
         val thumbCache by lazy {
             DiskCache.Builder()
                 .directory(File(application.cacheDir, "thumb"))
-                .maxSizeBytes(Settings.thumbCacheSize.coerceIn(40, 1280).toLong() * 1024 * 1024)
+                .maxSizeBytes(Settings.thumbCacheSize.coerceIn(160, 5120).toLong() * 1024 * 1024)
                 .build()
         }
     }
