@@ -206,9 +206,9 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
             return EhUrl.getGalleryDetailUrl(gid, token, 0, false)
         }
 
-    private fun buildProvider() {
+    private fun buildProvider(replace: Boolean = false) {
         if (mGalleryProvider != null) {
-            return
+            if (replace) mGalleryProvider!!.stop() else return
         }
         if (ACTION_EH == mAction) {
             mGalleryInfo?.let { mGalleryProvider = EhGalleryProvider(it) }
@@ -274,6 +274,21 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
     private fun onInit() {
         handleIntent(intent)
         buildProvider()
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
+        buildProvider(true)
+        mGalleryProvider?.let {
+            lifecycleScope.launchIO {
+                it.start()
+                if (it.awaitReady()) withUIContext {
+                    mCurrentIndex = 0
+                    setGallery()
+                }
+            }
+        }
     }
 
     private fun onRestore(savedInstanceState: Bundle) {
@@ -348,7 +363,9 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         mLeftText = ViewUtils.`$$`(mSeekBarPanel, R.id.left) as TextView
         mRightText = ViewUtils.`$$`(mSeekBarPanel, R.id.right) as TextView
         mSeekBar = ViewUtils.`$$`(mSeekBarPanel, R.id.seek_bar) as ReversibleSeekBar
-
+        mClock!!.visibility = if (Settings.showClock) View.VISIBLE else View.GONE
+        mProgress!!.visibility = if (Settings.showProgress) View.VISIBLE else View.GONE
+        mBattery!!.visibility = if (Settings.showBattery) View.VISIBLE else View.GONE
         mMaskView!!.setOnGenericMotionListener { _: View?, event: MotionEvent ->
             if (mGalleryView == null) {
                 return@setOnGenericMotionListener false
@@ -414,6 +431,28 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
 
         // Screen lightness
         setScreenLightness(Settings.customScreenLightness, Settings.screenLightness)
+
+        // Update keep screen on
+        if (Settings.keepScreenOn) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        } else {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+
+        // Orientation
+        requestedOrientation = when (Settings.screenRotation) {
+            0 -> ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            1 -> ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+            2 -> ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+            3 -> ActivityInfo.SCREEN_ORIENTATION_SENSOR
+            else -> ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
+
+        // Guide
+        if (Settings.guideGallery) {
+            val mainLayout = ViewUtils.`$$`(this, R.id.main) as FrameLayout
+            mainLayout.addView(GalleryGuideView(this))
+        }
     }
 
     private fun setGallery() {
@@ -453,33 +492,8 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         if (mGalleryView != null) {
             mLayoutMode = mGalleryView!!.layoutMode
         }
-        mClock!!.visibility = if (Settings.showClock) View.VISIBLE else View.GONE
-        mProgress!!.visibility = if (Settings.showProgress) View.VISIBLE else View.GONE
-        mBattery!!.visibility = if (Settings.showBattery) View.VISIBLE else View.GONE
         mSize = mGalleryProvider!!.size
         updateSlider()
-
-        // Update keep screen on
-        if (Settings.keepScreenOn) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        } else {
-            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        }
-
-        // Orientation
-        requestedOrientation = when (Settings.screenRotation) {
-            0 -> ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-            1 -> ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
-            2 -> ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-            3 -> ActivityInfo.SCREEN_ORIENTATION_SENSOR
-            else -> ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-        }
-
-        // Guide
-        if (Settings.guideGallery) {
-            val mainLayout = ViewUtils.`$$`(this, R.id.main) as FrameLayout
-            mainLayout.addView(GalleryGuideView(this))
-        }
     }
 
     override fun onDestroy() {
