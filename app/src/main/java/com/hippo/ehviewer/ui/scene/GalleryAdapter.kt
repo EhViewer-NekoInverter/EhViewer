@@ -34,11 +34,12 @@ import com.hippo.ehviewer.client.EhCacheKeyFactory
 import com.hippo.ehviewer.client.EhUtils
 import com.hippo.ehviewer.client.data.GalleryInfo
 import com.hippo.ehviewer.dao.LocalFavoriteInfo
-import com.hippo.ehviewer.download.DownloadManager as downloadManager
 import com.hippo.ehviewer.widget.TileThumb
 import com.hippo.widget.recyclerview.AutoStaggeredGridLayoutManager
 import com.hippo.yorozuya.ViewUtils
+import com.hippo.ehviewer.download.DownloadManager as downloadManager
 
+@SuppressLint("InflateParams")
 internal abstract class GalleryAdapter(
     private val mInflater: LayoutInflater, private val mResources: Resources,
     private val mRecyclerView: RecyclerView, type: Int, showFavourited: Boolean
@@ -112,7 +113,7 @@ internal abstract class GalleryAdapter(
         mShowFavourited = showFavourited
         mRecyclerView.adapter = this
         mRecyclerView.layoutManager = mLayoutManager
-        @SuppressLint("InflateParams") val calculator =
+        val calculator =
             mInflater.inflate(R.layout.item_gallery_list_thumb_height, null)
         ViewUtils.measureView(calculator, 1024, ViewGroup.LayoutParams.WRAP_CONTENT)
         mListThumbHeight = calculator.measuredHeight

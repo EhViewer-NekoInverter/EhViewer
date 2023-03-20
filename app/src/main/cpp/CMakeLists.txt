@@ -41,7 +41,7 @@ SET(HAVE_LZMADEC_H 1)
 SET(HAVE_LIBLZMADEC 1)
 
 # Configure libarchive link's static lib
-SET(LIBARCHIVE_CUSTOM_LIBS "liblzma" "nettle")
+SET(LIBARCHIVE_CUSTOM_LIBS "nettle" "liblzma")
 
 # Build libarchive
 add_subdirectory(libarchive)

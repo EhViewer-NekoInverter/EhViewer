@@ -30,12 +30,12 @@ object EhFilter {
     private val mCommenterFilterList: MutableList<Filter> = ArrayList()
     private val mCommentFilterList: MutableList<Filter> = ArrayList()
 
-    const val MODE_TITLE = 0
+    private const val MODE_TITLE = 0
     const val MODE_UPLOADER = 1
     const val MODE_TAG = 2
-    const val MODE_TAG_NAMESPACE = 3
+    private const val MODE_TAG_NAMESPACE = 3
     const val MODE_COMMENTER = 4
-    const val MODE_COMMENT = 5
+    private const val MODE_COMMENT = 5
     private val TAG = EhFilter::class.java.simpleName
 
     init {

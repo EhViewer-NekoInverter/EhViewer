@@ -18,6 +18,10 @@ package com.hippo.ehviewer.client
 import com.hippo.ehviewer.EhApplication
 import com.hippo.network.CookieDatabase
 import com.hippo.network.CookieSet
+import com.hippo.util.launchIO
+import io.ktor.client.plugins.cookies.CookiesStorage
+import io.ktor.http.Url
+import kotlinx.coroutines.DelicateCoroutinesApi
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl
@@ -25,7 +29,9 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import java.util.Collections
 import java.util.regex.Pattern
 
-object EhCookieStore : CookieJar {
+typealias KtorCookie = io.ktor.http.Cookie
+
+object EhCookieStore : CookieJar, CookiesStorage {
     private val db: CookieDatabase = CookieDatabase(EhApplication.application, "okhttp3-cookie.db")
     private val map: MutableMap<String, CookieSet> = db.allCookies
 
@@ -39,14 +45,13 @@ object EhCookieStore : CookieJar {
                 contains(url, KEY_IPB_PASS_HASH)
     }
 
-    private const val KEY_CONTENT_WARNING = "nw"
-    private const val CONTENT_WARNING_NOT_SHOW = "1"
     const val KEY_IPB_MEMBER_ID = "ipb_member_id"
     const val KEY_IPB_PASS_HASH = "ipb_pass_hash"
     const val KEY_IGNEOUS = "igneous"
     const val KEY_SETTINGS_PROFILE = "sp"
     const val KEY_STAR = "star"
-
+    private const val KEY_CONTENT_WARNING = "nw"
+    private const val CONTENT_WARNING_NOT_SHOW = "1"
     private val sTipsCookie: Cookie = Cookie.Builder()
         .name(KEY_CONTENT_WARNING)
         .value(CONTENT_WARNING_NOT_SHOW)
@@ -190,15 +195,28 @@ object EhCookieStore : CookieJar {
     /**
      * Remove all cookies in this `CookieRepository`.
      */
+    @OptIn(DelicateCoroutinesApi::class)
     @Synchronized
     fun clear() {
         map.clear()
-        db.clear()
+        launchIO {
+            db.clear()
+        }
     }
 
-    @Synchronized
-    fun close() {
-        db.close()
+    // This should never be closed
+    override fun close() {}
+
+    override suspend fun addCookie(requestUrl: Url, cookie: io.ktor.http.Cookie) {}
+
+    private val okhttpCookieToKtorCookieMap = hashMapOf<Cookie, KtorCookie>()
+    override suspend fun get(requestUrl: Url): List<io.ktor.http.Cookie> {
+        return loadForRequest(requestUrl.toString().toHttpUrl()).map {
+            okhttpCookieToKtorCookieMap[it] ?: KtorCookie(
+                it.name,
+                it.value
+            ).apply { okhttpCookieToKtorCookieMap[it] = this }
+        }
     }
 
     override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {

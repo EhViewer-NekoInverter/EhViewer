@@ -48,21 +48,21 @@ interface GalleryInfo : AbstractGalleryInfo, Parcelable {
         /**
          * ISO 639-1
          */
-        const val S_LANG_JA = "JA"
-        const val S_LANG_EN = "EN"
-        const val S_LANG_ZH = "ZH"
-        const val S_LANG_NL = "NL"
-        const val S_LANG_FR = "FR"
-        const val S_LANG_DE = "DE"
-        const val S_LANG_HU = "HU"
-        const val S_LANG_IT = "IT"
-        const val S_LANG_KO = "KO"
-        const val S_LANG_PL = "PL"
-        const val S_LANG_PT = "PT"
-        const val S_LANG_RU = "RU"
-        const val S_LANG_ES = "ES"
-        const val S_LANG_TH = "TH"
-        const val S_LANG_VI = "VI"
+        private const val S_LANG_JA = "JA"
+        private const val S_LANG_EN = "EN"
+        private const val S_LANG_ZH = "ZH"
+        private const val S_LANG_NL = "NL"
+        private const val S_LANG_FR = "FR"
+        private const val S_LANG_DE = "DE"
+        private const val S_LANG_HU = "HU"
+        private const val S_LANG_IT = "IT"
+        private const val S_LANG_KO = "KO"
+        private const val S_LANG_PL = "PL"
+        private const val S_LANG_PT = "PT"
+        private const val S_LANG_RU = "RU"
+        private const val S_LANG_ES = "ES"
+        private const val S_LANG_TH = "TH"
+        private const val S_LANG_VI = "VI"
         val S_LANGS = arrayOf(
             S_LANG_EN,
             S_LANG_ZH,

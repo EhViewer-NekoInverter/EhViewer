@@ -18,42 +18,39 @@ package com.hippo.ehviewer.spider
 import android.graphics.ImageDecoder
 import android.os.ParcelFileDescriptor
 import android.os.ParcelFileDescriptor.MODE_READ_WRITE
-import coil.decode.DecodeUtils
-import coil.decode.FrameDelayRewritingSource
-import coil.decode.isGif
 import coil.disk.DiskCache
 import com.hippo.ehviewer.EhApplication
 import com.hippo.ehviewer.EhApplication.Companion.application
 import com.hippo.ehviewer.EhDB
 import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.client.EhCacheKeyFactory
-import com.hippo.ehviewer.client.EhRequestBuilder
 import com.hippo.ehviewer.client.EhUtils.getSuitableTitle
 import com.hippo.ehviewer.client.data.GalleryInfo
+import com.hippo.ehviewer.client.referer
 import com.hippo.ehviewer.coil.edit
 import com.hippo.ehviewer.coil.read
 import com.hippo.ehviewer.gallery.GalleryProvider2
+import com.hippo.image.Image
 import com.hippo.image.Image.CloseableSource
 import com.hippo.sendTo
-import com.hippo.unifile.RawFile
 import com.hippo.unifile.UniFile
+import com.hippo.unifile.openOutputStream
 import com.hippo.util.runSuspendCatching
 import com.hippo.yorozuya.FileUtils
-import com.hippo.yorozuya.MathUtils
-import kotlinx.coroutines.currentCoroutineContext
-import kotlinx.coroutines.ensureActive
-import okhttp3.executeAsync
-import okio.buffer
+import io.ktor.client.plugins.onDownload
+import io.ktor.client.request.prepareGet
+import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsChannel
+import io.ktor.http.ContentType
+import io.ktor.http.contentLength
+import io.ktor.http.contentType
+import io.ktor.utils.io.jvm.nio.copyTo
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
 import java.io.IOException
-import java.nio.channels.FileChannel
 import java.util.Locale
 import kotlin.io.path.readText
 
-private val client = EhApplication.nonCacheOkHttpClient
-private val contentResolver = application.contentResolver
+private val client = EhApplication.ktorClient
 
 class SpiderDen(private val mGalleryInfo: GalleryInfo) {
     private val mGid: Long = mGalleryInfo.gid
@@ -77,13 +74,6 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
         mDownloadDir = getGalleryDownloadDir(mGid)
         return mDownloadDir?.ensureDir() ?: false
     }
-
-    val isReady: Boolean
-        get() = when (mMode) {
-            SpiderQueen.MODE_READ -> true
-            SpiderQueen.MODE_DOWNLOAD -> mDownloadDir?.isDirectory ?: false
-            else -> false
-        }
 
     val downloadDir: UniFile?
         get() {
@@ -125,9 +115,9 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
                 }
                 // Copy from cache to download dir
                 val file = dir.createFile(generateImageFilename(index, extension)) ?: return false
-                (file.openOutputStream() as FileOutputStream).use { outputStream ->
+                file.openFileDescriptor("w").use { outFd ->
                     ParcelFileDescriptor.open(data.toFile(), MODE_READ_WRITE).use {
-                        it sendTo outputStream.fd
+                        it sendTo outFd
                     }
                 }
             }
@@ -179,83 +169,83 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
         referer: String?,
         notifyProgress: (Long, Long, Int) -> Unit
     ): Boolean {
-        val call = client.newCall(EhRequestBuilder(url, referer).build())
-        call.executeAsync().use { response ->
-            if (response.code >= 400) return false
-            val body = response.body
-            val extension = body.contentType()?.subtype ?: "jpg"
-            val length = body.contentLength()
-            suspend fun doSave(chan: FileChannel): Long {
-                var receivedSize: Long = 0
-                body.source().use { responseSource ->
-                    val source = if (DecodeUtils.isGif(responseSource)) FrameDelayRewritingSource(
-                        responseSource
-                    ).buffer() else responseSource
-                    source.use {
-                        while (true) {
-                            currentCoroutineContext().ensureActive()
-                            val bytesRead = chan.transferFrom(it, receivedSize, TRANSFER_BLOCK)
-                            receivedSize += bytesRead
-                            notifyProgress(body.contentLength(), receivedSize, bytesRead.toInt())
-                            if (bytesRead.toInt() == 0) break
-                        }
-                    }
-                }
-                return receivedSize
+        return client.prepareGet(url) {
+            var state: Long = 0
+            referer(referer)
+            onDownload { bytesSentTotal, contentLength ->
+                notifyProgress(contentLength, bytesSentTotal, (bytesSentTotal - state).toInt())
+                state = bytesSentTotal
             }
-            findDownloadFileForIndex(index, extension)?.runSuspendCatching {
-                openOutputStream().use { outputStream ->
-                    (outputStream as FileOutputStream).channel.use { return doSave(it) == length }
-                }
-            }?.onFailure {
-                it.printStackTrace()
-                return false
-            }
-            // Read Mode, allow save to cache
-            if (mMode == SpiderQueen.MODE_READ) {
-                val key = EhCacheKeyFactory.getImageKey(mGid, index)
-                var received: Long = 0
-                runSuspendCatching {
-                    sCache.edit(key) {
-                        metadata.toFile().writeText(extension)
-                        data.toFile().outputStream().use { outputStream ->
-                            outputStream.channel.use { received = doSave(it) }
-                        }
-                    }
-                }.onFailure {
-                    it.printStackTrace()
-                }.onSuccess {
-                    return received == length
-                }
-            }
-            return false
+        }.execute {
+            if (it.status.value >= 400) return@execute false
+            saveFromHttpResponse(index, it)
         }
     }
 
+    private suspend fun saveFromHttpResponse(index: Int, body: HttpResponse): Boolean {
+        val contentType = body.contentType()
+        val extension = contentType?.contentSubtype ?: "jpg"
+        val length = body.contentLength() ?: return false
+
+        suspend fun doSave(outFile: UniFile): Long {
+            val ret: Long
+            outFile.openOutputStream().use {
+                ret = body.bodyAsChannel().copyTo(it.channel)
+            }
+            if (contentType == ContentType.Image.GIF)
+                outFile.openFileDescriptor("rw").use {
+                    Image.rewriteGifSource2(it.fd)
+                }
+            return ret
+        }
+
+        findDownloadFileForIndex(index, extension)?.runSuspendCatching {
+            return doSave(this) == length
+        }?.onFailure {
+            it.printStackTrace()
+            return false
+        }
+
+        // Read Mode, allow save to cache
+        if (mMode == SpiderQueen.MODE_READ) {
+            val key = EhCacheKeyFactory.getImageKey(mGid, index)
+            var received: Long = 0
+            runSuspendCatching {
+                sCache.edit(key) {
+                    metadata.toFile().writeText(extension)
+                    received = doSave(UniFile.fromFile(data.toFile())!!)
+                }
+            }.onFailure {
+                it.printStackTrace()
+            }.onSuccess {
+                return received == length
+            }
+        }
+
+        return false
+    }
+
     fun saveToUniFile(index: Int, file: UniFile): Boolean {
-        (file.openOutputStream() as FileOutputStream).use { outputStream ->
-            outputStream.channel.use { outChannel ->
-                val key = EhCacheKeyFactory.getImageKey(mGid, index)
-                fun copy(inputStream: FileInputStream) {
-                    inputStream.channel.use {
-                        outChannel.transferFrom(it, 0, it.size())
+        file.openFileDescriptor("w").use { toFd ->
+            val key = EhCacheKeyFactory.getImageKey(mGid, index)
+
+            // Read from diskCache first
+            sCache[key]?.use { snapshot ->
+                runCatching {
+                    UniFile.fromFile(snapshot.data.toFile())!!.openFileDescriptor("r").use {
+                        it sendTo toFd
                     }
+                }.onSuccess {
+                    return true
+                }.onFailure {
+                    it.printStackTrace()
+                    return false
                 }
-                // Read from diskCache first
-                sCache[key]?.use { snapshot ->
-                    runCatching {
-                        snapshot.data.toFile().inputStream().use { copy(it) }
-                    }.onSuccess {
-                        return true
-                    }.onFailure {
-                        it.printStackTrace()
-                        return false
-                    }
-                }
+
                 downloadDir?.let { uniFile ->
                     runCatching {
-                        findImageFile(uniFile, index)?.openInputStream()?.use {
-                            copy(it as FileInputStream)
+                        findImageFile(uniFile, index)?.openFileDescriptor("r")?.use {
+                            it sendTo toFd
                         }
                     }.onFailure {
                         it.printStackTrace()
@@ -264,9 +254,9 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
                         return true
                     }
                 }
-                return false
             }
         }
+        return false
     }
 
     fun getExtension(index: Int): String? {
@@ -299,33 +289,22 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
                 file = findImageFile(dir, index)
             }
         }
-        if (file is RawFile) {
-            val source = ImageDecoder.createSource(file.mFile)
-            return object : CloseableSource {
-                override val source: ImageDecoder.Source
-                    get() = source
-                override fun close() {}
-            }
+        val source = file?.imageSource ?: return null
+        return object : CloseableSource {
+            override val source: ImageDecoder.Source
+                get() = source
+
+            override fun close() {}
         }
-        if (file != null) {
-            val source = ImageDecoder.createSource(contentResolver, file.uri)
-            return object : CloseableSource {
-                override val source: ImageDecoder.Source
-                    get() = source
-                override fun close() {}
-            }
-        }
-        return null
     }
 
     companion object {
-        private const val TRANSFER_BLOCK: Long = 8192
         private val COMPAT_IMAGE_EXTENSIONS = GalleryProvider2.SUPPORT_IMAGE_EXTENSIONS + ".jpeg"
 
         private val sCache by lazy {
             DiskCache.Builder()
                 .directory(File(application.cacheDir, "image"))
-                .maxSizeBytes(MathUtils.clamp(Settings.readCacheSize, 40, 1280).toLong() * 1024 * 1024)
+                .maxSizeBytes(Settings.readCacheSize.coerceIn(40, 1280).toLong() * 1024 * 1024)
                 .build()
         }
 

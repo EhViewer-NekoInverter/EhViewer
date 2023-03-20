@@ -39,8 +39,6 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.sync.withPermit
-import java.io.FileOutputStream
-import java.io.IOException
 
 class ArchiveGalleryProvider(context: Context, uri: Uri, passwdFlow: Flow<String>) : GalleryProvider2(),
     CoroutineScope {
@@ -70,7 +68,6 @@ class ArchiveGalleryProvider(context: Context, uri: Uri, passwdFlow: Flow<String
         private set
 
     override fun start() {
-        super.start()
         hostJob.start()
     }
 
@@ -143,18 +140,12 @@ class ArchiveGalleryProvider(context: Context, uri: Uri, passwdFlow: Flow<String
     }
 
     override fun save(index: Int, file: UniFile): Boolean {
-        val stream: FileOutputStream
-        try {
-            stream = file.openOutputStream() as FileOutputStream
-        } catch (e: IOException) {
-            e.printStackTrace()
-            return false
-        }
-        archiveAccessor.extractToFd(index, stream.fd)
-        try {
-            stream.close()
-        } catch (e: IOException) {
-            e.printStackTrace()
+        runCatching {
+            file.openFileDescriptor("w").use {
+                archiveAccessor.extractToFd(index, it.fd)
+            }
+        }.onFailure {
+            it.printStackTrace()
             return false
         }
         return true

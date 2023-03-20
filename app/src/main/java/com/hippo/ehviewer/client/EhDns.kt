@@ -40,14 +40,12 @@ object EhDns : Dns {
         )
 
         put(
-            builtInHosts,
             "e-hentai.org",
             Pair("104.20.134.21", false),
             Pair("104.20.135.21", false),
             Pair("172.67.0.127", false),
         )
         put(
-            builtInHosts,
             "exhentai.org",
             Pair("178.175.128.252", false),
             Pair("178.175.129.252", false),
@@ -57,49 +55,40 @@ object EhDns : Dns {
             Pair("178.175.132.22", false),
         )
         put(
-            builtInHosts,
             "repo.e-hentai.org",
             Pair("94.100.28.57", true),
             Pair("94.100.29.73", true),
         )
         put(
-            builtInHosts,
             "forums.e-hentai.org",
             Pair("94.100.18.243", false),
         )
         put(
-            builtInHosts,
             "ehgt.org",
             *ehgtHosts
         )
         put(
-            builtInHosts,
             "gt0.ehgt.org",
             *ehgtHosts
         )
         put(
-            builtInHosts,
             "gt1.ehgt.org",
             *ehgtHosts
         )
         put(
-            builtInHosts,
             "gt2.ehgt.org",
             *ehgtHosts
         )
         put(
-            builtInHosts,
             "gt3.ehgt.org",
             *ehgtHosts
         )
         put(
-            builtInHosts,
             "ul.ehgt.org",
             Pair("94.100.24.82", true),
             Pair("94.100.24.72", true),
         )
         put(
-            builtInHosts,
             "raw.githubusercontent.com",
             Pair("151.101.0.133", false),
             Pair("151.101.64.133", false),
@@ -109,11 +98,10 @@ object EhDns : Dns {
     }
 
     private fun put(
-        map: MutableMap<String, List<InetAddress>>,
         host: String,
         vararg ips: Pair<String, Boolean>
     ) {
-        map[host] = ips.mapNotNull { pair ->
+        builtInHosts[host] = ips.mapNotNull { pair ->
             Hosts.toInetAddress(host, pair.first).takeUnless { Settings.dF && pair.second }
         }
     }

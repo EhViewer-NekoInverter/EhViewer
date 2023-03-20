@@ -20,19 +20,12 @@ import android.util.AttributeSet
 import com.hippo.ehviewer.GetText
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
-import com.hippo.ehviewer.download.DownloadManager as downloadManager
 import com.hippo.unifile.UniFile
 import com.hippo.util.launchUI
 import com.hippo.util.withUIContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-
-private val NO_REDUNDANCY =
-    GetText.getString(R.string.settings_download_clean_redundancy_no_redundancy)
-private val CLEAR_REDUNDANCY_DONE =
-    { cnt: Int -> GetText.getString(R.string.settings_download_clean_redundancy_done, cnt) }
-private val FINAL_CLEAR_REDUNDANCY_MSG =
-    { cnt: Int -> if (cnt == 0) NO_REDUNDANCY else CLEAR_REDUNDANCY_DONE(cnt) }
+import com.hippo.ehviewer.download.DownloadManager as downloadManager
 
 class CleanRedundancyPreference @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
@@ -68,6 +61,15 @@ class CleanRedundancyPreference @JvmOverloads constructor(
                 dialog.dismiss()
             }
         }
+    }
+
+    companion object {
+        private val NO_REDUNDANCY =
+            GetText.getString(R.string.settings_download_clean_redundancy_no_redundancy)
+        private val CLEAR_REDUNDANCY_DONE =
+            { cnt: Int -> GetText.getString(R.string.settings_download_clean_redundancy_done, cnt) }
+        private val FINAL_CLEAR_REDUNDANCY_MSG =
+            { cnt: Int -> if (cnt == 0) NO_REDUNDANCY else CLEAR_REDUNDANCY_DONE(cnt) }
     }
 }
 

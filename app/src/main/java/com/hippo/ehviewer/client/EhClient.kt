@@ -17,9 +17,9 @@ package com.hippo.ehviewer.client
 
 import com.hippo.util.launchIO
 import com.hippo.util.withUIContext
-import java.io.File
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
+import java.io.File
 
 object EhClient {
     internal fun enqueue(request: EhRequest, scope: CoroutineScope) {

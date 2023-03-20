@@ -390,8 +390,8 @@ object EhDB {
      */
     @Synchronized
     fun importDB(context: Context, uri: Uri): String? {
+        val tmpDBName = "tmp.db"
         runCatching {
-            val tmpDBName = "tmp.db"
             val oldDB = databaseBuilder(context, EhDatabase::class.java, tmpDBName)
                 .createFromInputStream { context.contentResolver.openInputStream(uri) }.build()
             // Download label

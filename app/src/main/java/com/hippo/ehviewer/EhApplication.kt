@@ -45,15 +45,16 @@ import com.hippo.util.ReadableTime
 import com.hippo.util.launchIO
 import com.hippo.yorozuya.FileUtils
 import com.hippo.yorozuya.IntIdGenerator
-import com.hippo.yorozuya.MathUtils
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
+import kotlinx.coroutines.DelicateCoroutinesApi
+import okhttp3.Cache
+import okhttp3.OkHttpClient
 import java.io.File
 import java.net.Proxy
 import java.security.KeyStore
 import javax.net.ssl.TrustManagerFactory
 import javax.net.ssl.X509TrustManager
-import kotlinx.coroutines.DelicateCoroutinesApi
-import okhttp3.Cache
-import okhttp3.OkHttpClient
 
 class EhApplication : SceneApplication(), ImageLoaderFactory {
     private val mIdGenerator = IntIdGenerator()
@@ -196,10 +197,6 @@ class EhApplication : SceneApplication(), ImageLoaderFactory {
         return mGlobalStuffMap.containsKey(id)
     }
 
-    fun getGlobalStuff(id: Int): Any? {
-        return mGlobalStuffMap[id]
-    }
-
     fun removeGlobalStuff(id: Int): Any? {
         return mGlobalStuffMap.remove(id)
     }
@@ -229,41 +226,42 @@ class EhApplication : SceneApplication(), ImageLoaderFactory {
     companion object {
         private const val KEY_GLOBAL_STUFF_NEXT_ID = "global_stuff_next_id"
 
-        @JvmStatic
         lateinit var application: EhApplication
             private set
 
-        @JvmStatic
         val ehProxySelector by lazy { EhProxySelector() }
 
-        @JvmStatic
         val nonCacheOkHttpClient by lazy {
-            val builder = OkHttpClient.Builder()
-                .cookieJar(EhCookieStore)
-                .dns(EhDns)
-                .proxySelector(ehProxySelector)
-
-            if (Settings.dF) {
-                val factory =
-                    TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())!!
-                factory.init(null as KeyStore?)
-                val manager = factory.trustManagers!!
-                val trustManager = manager.filterIsInstance<X509TrustManager>().first()
-                builder.sslSocketFactory(EhSSLSocketFactory, trustManager)
-                builder.proxy(Proxy.NO_PROXY)
-            }
-            builder.build()
+            OkHttpClient.Builder().apply {
+                cookieJar(EhCookieStore)
+                dns(EhDns)
+                proxySelector(ehProxySelector)
+                if (Settings.dF) {
+                    val factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())!!
+                    factory.init(null as KeyStore?)
+                    val manager = factory.trustManagers!!
+                    val trustManager = manager.filterIsInstance<X509TrustManager>().first()
+                    sslSocketFactory(EhSSLSocketFactory, trustManager)
+                    proxy(Proxy.NO_PROXY)
+                }
+            }.build()
         }
 
         // Never use this okhttp client to download large blobs!!!
-        @JvmStatic
         val okHttpClient by lazy {
             nonCacheOkHttpClient.newBuilder()
                 .cache(Cache(File(application.cacheDir, "http_cache"), 20 * 1024 * 1024))
                 .build()
         }
 
-        @JvmStatic
+        val ktorClient by lazy {
+            HttpClient(OkHttp) {
+                engine {
+                    preconfigured = nonCacheOkHttpClient
+                }
+            }
+        }
+
         val galleryDetailCache by lazy {
             LruCache<Long, GalleryDetail>(25).also {
                 favouriteStatusRouter.addListener { gid, slot ->
@@ -272,19 +270,16 @@ class EhApplication : SceneApplication(), ImageLoaderFactory {
             }
         }
 
-        @JvmStatic
         val hosts by lazy { Hosts(application, "hosts.db") }
 
-        @JvmStatic
         val favouriteStatusRouter by lazy { FavouriteStatusRouter() }
 
-        @JvmStatic
         val ehDatabase by lazy { buildMainDB(application) }
 
         val thumbCache by lazy {
             DiskCache.Builder()
                 .directory(File(application.cacheDir, "thumb"))
-                .maxSizeBytes(MathUtils.clamp(Settings.thumbCacheSize, 40, 1280).toLong() * 1024 * 1024)
+                .maxSizeBytes(Settings.thumbCacheSize.coerceIn(40, 1280).toLong() * 1024 * 1024)
                 .build()
         }
     }

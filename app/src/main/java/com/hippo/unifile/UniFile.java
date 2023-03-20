@@ -19,16 +19,16 @@ package com.hippo.unifile;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Build;
+import android.os.ParcelFileDescriptor;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -411,41 +411,9 @@ public abstract class UniFile {
      */
     public abstract boolean renameTo(String displayName);
 
-    /**
-     * Open a stream on to the content associated with the file, clean it if it exists
-     *
-     * @return the {@link OutputStream}
-     * @throws IOException
-     */
     @NonNull
-    public abstract OutputStream openOutputStream() throws IOException;
+    public abstract ImageDecoder.Source getImageSource();
 
-    /**
-     * Open a stream on to the content associated with the file
-     *
-     * @param append {@code true} for do not clean it if it exists
-     * @return the {@link OutputStream}
-     * @throws IOException
-     */
     @NonNull
-    public abstract OutputStream openOutputStream(boolean append) throws IOException;
-
-    /**
-     * Open a stream on to the content associated with the file
-     *
-     * @return the {@link InputStream}
-     * @throws IOException
-     */
-    @NonNull
-    public abstract InputStream openInputStream() throws IOException;
-
-    /**
-     * Get a random access stuff of the UniFile
-     *
-     * @param mode "r" or "rw"
-     * @return the random access stuff
-     * @throws IOException
-     */
-    @NonNull
-    public abstract UniRandomAccessFile createRandomAccessFile(String mode) throws IOException;
+    public abstract ParcelFileDescriptor openFileDescriptor(@NonNull String mode) throws IOException;
 }

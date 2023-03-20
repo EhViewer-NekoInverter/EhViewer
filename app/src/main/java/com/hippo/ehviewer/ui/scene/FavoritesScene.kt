@@ -73,10 +73,10 @@ import com.hippo.yorozuya.LayoutUtils
 import com.hippo.yorozuya.ObjectUtils
 import com.hippo.yorozuya.SimpleHandler
 import com.hippo.yorozuya.ViewUtils
+import rikka.core.res.resolveColor
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
-import rikka.core.res.resolveColor
 
 // TODO Get favorite, modify favorite, add favorite, what a mess!
 @SuppressLint("NotifyDataSetChanged", "RtlHardcoded")

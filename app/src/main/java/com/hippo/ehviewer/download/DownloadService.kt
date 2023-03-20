@@ -37,8 +37,8 @@ import com.hippo.ehviewer.dao.DownloadInfo
 import com.hippo.ehviewer.ui.MainActivity
 import com.hippo.ehviewer.ui.scene.DownloadsScene
 import com.hippo.scene.StageActivity
-import com.hippo.util.getParcelableExtraCompat
 import com.hippo.util.ReadableTime
+import com.hippo.util.getParcelableExtraCompat
 import com.hippo.yorozuya.FileUtils
 import com.hippo.yorozuya.SimpleHandler
 import com.hippo.yorozuya.collect.LongList

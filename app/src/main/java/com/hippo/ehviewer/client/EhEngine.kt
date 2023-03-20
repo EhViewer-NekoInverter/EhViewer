@@ -47,8 +47,6 @@ import com.hippo.ehviewer.client.parser.TorrentParser
 import com.hippo.ehviewer.client.parser.VoteCommentParser
 import com.hippo.ehviewer.client.parser.VoteTagParser
 import com.hippo.network.StatusCodeException
-import java.io.File
-import kotlin.math.ceil
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -65,6 +63,8 @@ import okhttp3.executeAsync
 import org.json.JSONArray
 import org.json.JSONObject
 import org.jsoup.Jsoup
+import java.io.File
+import kotlin.math.ceil
 
 private val okHttpClient = EhApplication.okHttpClient
 private val MEDIA_TYPE_JSON: MediaType = "application/json; charset=utf-8".toMediaType()

@@ -20,7 +20,6 @@ import android.util.Log
 import androidx.annotation.IntDef
 import androidx.collection.LongSparseArray
 import androidx.collection.set
-import com.hippo.ehviewer.EhApplication.Companion.okHttpClient as plainTextOkHttpClient
 import com.hippo.ehviewer.GetText
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
@@ -57,6 +56,7 @@ import kotlinx.coroutines.sync.withPermit
 import okhttp3.executeAsync
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
+import com.hippo.ehviewer.EhApplication.Companion.okHttpClient as plainTextOkHttpClient
 
 class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineScope {
     override val coroutineContext = Dispatchers.IO + Job()

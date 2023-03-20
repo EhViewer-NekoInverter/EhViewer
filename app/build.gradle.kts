@@ -180,7 +180,8 @@ dependencies {
     // https://coil-kt.github.io/coil/changelog/
     implementation("io.coil-kt:coil:2.3.0-SNAPSHOT")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+    implementation("io.ktor:ktor-client-okhttp:2.2.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.0-Beta")
     implementation("org.jsoup:jsoup:1.15.4")
 }
 

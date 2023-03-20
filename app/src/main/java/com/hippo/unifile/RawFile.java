@@ -16,23 +16,21 @@
 
 package com.hippo.unifile;
 
+import android.graphics.ImageDecoder;
 import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import androidx.annotation.NonNull;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
 
-public class RawFile extends UniFile {
+class RawFile extends UniFile {
     private static final String TAG = RawFile.class.getSimpleName();
 
     public File mFile;
@@ -105,8 +103,8 @@ public class RawFile extends UniFile {
         }
     }
 
-    @Override
     @NonNull
+    @Override
     public Uri getUri() {
         return Uri.fromFile(mFile);
     }
@@ -225,7 +223,7 @@ public class RawFile extends UniFile {
                 results.add(new RawFile(this, file));
             }
         }
-        return results.toArray(new UniFile[results.size()]);
+        return results.toArray(new UniFile[0]);
     }
 
     @Override
@@ -245,27 +243,20 @@ public class RawFile extends UniFile {
         }
     }
 
-    @Override
     @NonNull
-    public OutputStream openOutputStream() throws IOException {
-        return new FileOutputStream(mFile);
+    @Override
+    public ImageDecoder.Source getImageSource() {
+        return ImageDecoder.createSource(mFile);
     }
 
-    @Override
     @NonNull
-    public OutputStream openOutputStream(boolean append) throws IOException {
-        return new FileOutputStream(mFile, append);
-    }
-
     @Override
-    @NonNull
-    public InputStream openInputStream() throws IOException {
-        return new FileInputStream(mFile);
-    }
-
-    @Override
-    @NonNull
-    public UniRandomAccessFile createRandomAccessFile(String mode) throws FileNotFoundException {
-        return new RawRandomAccessFile(new RandomAccessFile(mFile, mode));
+    public ParcelFileDescriptor openFileDescriptor(@NonNull String mode) throws IOException {
+        var md = ParcelFileDescriptor.parseMode(mode);
+        var pfd = ParcelFileDescriptor.open(mFile, md);
+        if (pfd == null) {
+            throw new IOException("Can't open ParcelFileDescriptor");
+        }
+        return pfd;
     }
 }

@@ -30,8 +30,8 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputLayout
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
-import com.hippo.ehviewer.client.EhEngine
 import com.hippo.ehviewer.client.EhCookieStore
+import com.hippo.ehviewer.client.EhEngine
 import com.hippo.ehviewer.client.EhUrl
 import com.hippo.ehviewer.client.EhUtils
 import com.hippo.util.ExceptionUtils
@@ -40,9 +40,9 @@ import com.hippo.util.getTextFromClipboard
 import com.hippo.util.launchIO
 import com.hippo.util.withUIContext
 import com.hippo.yorozuya.ViewUtils
+import kotlinx.coroutines.Job
 import okhttp3.Cookie
 import java.util.Locale
-import kotlinx.coroutines.Job
 
 class CookieSignInScene : SolidScene(), OnEditorActionListener, View.OnClickListener {
     private var mProgress: View? = null
@@ -149,9 +149,9 @@ class CookieSignInScene : SolidScene(), OnEditorActionListener, View.OnClickList
         }
         hideSoftInput()
         showProgress()
-        storeCookie(ipbMemberId, ipbPassHash, igneous)
         mSignInJob = viewLifecycleOwner.lifecycleScope.launchIO {
             runCatching {
+                storeCookie(ipbMemberId, ipbPassHash, igneous)
                 EhEngine.getProfile().run {
                     Settings.putDisplayName(displayName)
                     Settings.putAvatar(avatar)

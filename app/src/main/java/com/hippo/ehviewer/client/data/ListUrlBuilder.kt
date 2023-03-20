@@ -48,7 +48,6 @@ data class ListUrlBuilder(
     var isOnlySearchCovers: Boolean = false,
     var isShowExpunged: Boolean = false,
 ) : Parcelable {
-
     fun reset() {
         mode = MODE_NORMAL
         mPrev = null

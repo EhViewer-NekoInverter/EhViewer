@@ -83,8 +83,8 @@ import com.hippo.glview.view.GLRootView
 import com.hippo.sendTo
 import com.hippo.unifile.UniFile
 import com.hippo.util.ExceptionUtils
-import com.hippo.util.getParcelableExtraCompat
 import com.hippo.util.getParcelableCompat
+import com.hippo.util.getParcelableExtraCompat
 import com.hippo.util.launchIO
 import com.hippo.util.withUIContext
 import com.hippo.widget.ColorView
@@ -96,17 +96,17 @@ import com.hippo.yorozuya.ResourcesUtils
 import com.hippo.yorozuya.SimpleAnimatorListener
 import com.hippo.yorozuya.SimpleHandler
 import com.hippo.yorozuya.ViewUtils
-import java.io.File
-import java.io.IOException
-import java.util.concurrent.atomic.AtomicReference
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import rikka.core.res.isNight
 import rikka.core.res.resolveColor
+import java.io.File
+import java.io.IOException
+import java.util.concurrent.atomic.AtomicReference
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
 
 class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Listener {
     private val requestStoragePermissionLauncher = registerForActivityResult(
@@ -323,11 +323,13 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         builder.setPositiveButton(getString(android.R.string.ok), null)
         dialog = builder.create()
         dialog.setCanceledOnTouchOutside(false)
+
         mGalleryProvider.let {
             if (it == null) {
                 finish()
                 return
             }
+            initializeGallery()
             lifecycleScope.launchIO {
                 it.start()
                 if (it.awaitReady()) withUIContext { setGallery() }
@@ -335,57 +337,18 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         }
     }
 
-    private fun setGallery() {
-        if (mGalleryProvider?.isReady != true) return
-        // TODO: Not well place to call it
-        dialog.dismiss()
-        // Get start page
-        if (mCurrentIndex == 0) mCurrentIndex = if (mPage >= 0) mPage else mGalleryProvider!!.startPage
-        mSize = mGalleryProvider!!.size
+    private fun initializeGallery() {
         setContentView(R.layout.activity_gallery)
         mGLRootView = ViewUtils.`$$`(this, R.id.gl_root_view) as GLRootView
-        mGalleryAdapter = GalleryAdapter(mGLRootView!!, mGalleryProvider!!)
-        val resources = resources
-        mGalleryView = GalleryView.Builder(this, mGalleryAdapter!!)
-            .setListener(this)
-            .setLayoutMode(Settings.readingDirection)
-            .setScaleMode(Settings.pageScaling)
-            .setStartPosition(Settings.startPosition)
-            .setStartPage(mCurrentIndex)
-            .setBackgroundColor(theme.resolveColor(android.R.attr.colorBackground))
-            .setPagerInterval(if (Settings.showPageInterval) resources.getDimensionPixelOffset(R.dimen.gallery_pager_interval) else 0)
-            .setScrollInterval(if (Settings.showPageInterval) resources.getDimensionPixelOffset(R.dimen.gallery_scroll_interval) else 0)
-            .setPageMinHeight(resources.getDimensionPixelOffset(R.dimen.gallery_page_min_height))
-            .setPageInfoInterval(resources.getDimensionPixelOffset(R.dimen.gallery_page_info_interval))
-            .setProgressColor(ResourcesUtils.getAttrColor(this, androidx.appcompat.R.attr.colorPrimary))
-            .setProgressSize(resources.getDimensionPixelOffset(R.dimen.gallery_progress_size))
-            .setPageTextColor(theme.resolveColor(android.R.attr.textColorSecondary))
-            .setPageTextSize(resources.getDimensionPixelOffset(R.dimen.gallery_page_text_size))
-            .setPageTextTypeface(Typeface.DEFAULT)
-            .setErrorTextColor(this@GalleryActivity.getColor(R.color.red_500))
-            .setErrorTextSize(resources.getDimensionPixelOffset(R.dimen.gallery_error_text_size))
-            .setDefaultErrorString(resources.getString(R.string.error_unknown))
-            .setEmptyString(resources.getString(R.string.error_empty))
-            .build()
-        mGLRootView!!.setContentPane(mGalleryView)
-        mGalleryProvider!!.setListener(mGalleryAdapter)
-        mGalleryProvider!!.setGLRoot(mGLRootView)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        insetsController = WindowCompat.getInsetsController(window, window.decorView)
-        if (Settings.readingFullscreen) {
-            insetsController!!.systemBarsBehavior =
-                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-            // This does not hide navigation bar sometimes on 31, framework bug???
-            insetsController!!.hide(WindowInsetsCompat.Type.systemBars())
-        } else {
-            insetsController!!.systemBarsBehavior =
-                WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
-            insetsController!!.show(WindowInsetsCompat.Type.systemBars())
-        }
-        val night = resources.configuration.isNight()
-        insetsController!!.isAppearanceLightStatusBars = !night
-        insetsController!!.isAppearanceLightNavigationBars = !night
         mMaskView = ViewUtils.`$$`(this, R.id.mask) as ColorView
+        mClock = ViewUtils.`$$`(this, R.id.clock)
+        mProgress = ViewUtils.`$$`(this, R.id.progress) as TextView
+        mBattery = ViewUtils.`$$`(this, R.id.battery)
+        mSeekBarPanel = ViewUtils.`$$`(this, R.id.seek_bar_panel)
+        mLeftText = ViewUtils.`$$`(mSeekBarPanel, R.id.left) as TextView
+        mRightText = ViewUtils.`$$`(mSeekBarPanel, R.id.right) as TextView
+        mSeekBar = ViewUtils.`$$`(mSeekBarPanel, R.id.seek_bar) as ReversibleSeekBar
+
         mMaskView!!.setOnGenericMotionListener { _: View?, event: MotionEvent ->
             if (mGalleryView == null) {
                 return@setOnGenericMotionListener false
@@ -420,20 +383,80 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
             }
             false
         }
-        mClock = ViewUtils.`$$`(this, R.id.clock)
-        mProgress = ViewUtils.`$$`(this, R.id.progress) as TextView
-        mBattery = ViewUtils.`$$`(this, R.id.battery)
-        mClock!!.visibility = if (Settings.showClock) View.VISIBLE else View.GONE
-        mProgress!!.visibility = if (Settings.showProgress) View.VISIBLE else View.GONE
-        mBattery!!.visibility = if (Settings.showBattery) View.VISIBLE else View.GONE
-        mSeekBarPanel = ViewUtils.`$$`(this, R.id.seek_bar_panel)
-        mLeftText = ViewUtils.`$$`(mSeekBarPanel, R.id.left) as TextView
-        mRightText = ViewUtils.`$$`(mSeekBarPanel, R.id.right) as TextView
-        mSeekBar = ViewUtils.`$$`(mSeekBarPanel, R.id.seek_bar) as ReversibleSeekBar
         mSeekBar!!.setOnSeekBarChangeListener(this)
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        insetsController = WindowCompat.getInsetsController(window, window.decorView)
+        if (Settings.readingFullscreen) {
+            insetsController!!.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            insetsController!!.hide(WindowInsetsCompat.Type.systemBars())
+        } else {
+            insetsController!!.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
+            insetsController!!.show(WindowInsetsCompat.Type.systemBars())
+        }
+        val night = resources.configuration.isNight()
+        insetsController!!.isAppearanceLightStatusBars = !night
+
+        // Cutout
+        window.attributes.layoutInDisplayCutoutMode =
+            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        val galleryHeader = findViewById<GalleryHeader>(R.id.gallery_header)
+        ViewCompat.setOnApplyWindowInsetsListener(galleryHeader) { _: View?, insets: WindowInsetsCompat ->
+            if (!Settings.readingFullscreen) {
+                galleryHeader.setTopInsets(insets.getInsets(WindowInsetsCompat.Type.statusBars()).top)
+            } else {
+                galleryHeader.setDisplayCutout(insets.displayCutout)
+            }
+            WindowInsetsCompat.CONSUMED
+        }
+
+        // Screen lightness
+        setScreenLightness(Settings.customScreenLightness, Settings.screenLightness)
+    }
+
+    private fun setGallery() {
+        if (mGalleryProvider?.isReady != true) return
+
+        // TODO: Not well place to call it
+        dialog.dismiss()
+
+        // Get start page
+        if (mCurrentIndex == 0) mCurrentIndex = if (mPage >= 0) mPage else mGalleryProvider!!.startPage
+        mGalleryAdapter = GalleryAdapter(mGLRootView!!, mGalleryProvider!!)
+        val resources = resources
+        mGalleryView = GalleryView.Builder(this, mGalleryAdapter!!)
+            .setListener(this)
+            .setLayoutMode(Settings.readingDirection)
+            .setScaleMode(Settings.pageScaling)
+            .setStartPosition(Settings.startPosition)
+            .setStartPage(mCurrentIndex)
+            .setBackgroundColor(theme.resolveColor(android.R.attr.colorBackground))
+            .setPagerInterval(if (Settings.showPageInterval) resources.getDimensionPixelOffset(R.dimen.gallery_pager_interval) else 0)
+            .setScrollInterval(if (Settings.showPageInterval) resources.getDimensionPixelOffset(R.dimen.gallery_scroll_interval) else 0)
+            .setPageMinHeight(resources.getDimensionPixelOffset(R.dimen.gallery_page_min_height))
+            .setPageInfoInterval(resources.getDimensionPixelOffset(R.dimen.gallery_page_info_interval))
+            .setProgressColor(ResourcesUtils.getAttrColor(this, androidx.appcompat.R.attr.colorPrimary))
+            .setProgressSize(resources.getDimensionPixelOffset(R.dimen.gallery_progress_size))
+            .setPageTextColor(theme.resolveColor(android.R.attr.textColorSecondary))
+            .setPageTextSize(resources.getDimensionPixelOffset(R.dimen.gallery_page_text_size))
+            .setPageTextTypeface(Typeface.DEFAULT)
+            .setErrorTextColor(this@GalleryActivity.getColor(R.color.red_500))
+            .setErrorTextSize(resources.getDimensionPixelOffset(R.dimen.gallery_error_text_size))
+            .setDefaultErrorString(resources.getString(R.string.error_unknown))
+            .setEmptyString(resources.getString(R.string.error_empty))
+            .build()
+        mGLRootView!!.setContentPane(mGalleryView)
+        mGalleryProvider!!.setListener(mGalleryAdapter)
+        mGalleryProvider!!.setGLRoot(mGLRootView)
         if (mGalleryView != null) {
             mLayoutMode = mGalleryView!!.layoutMode
         }
+        mClock!!.visibility = if (Settings.showClock) View.VISIBLE else View.GONE
+        mProgress!!.visibility = if (Settings.showProgress) View.VISIBLE else View.GONE
+        mBattery!!.visibility = if (Settings.showBattery) View.VISIBLE else View.GONE
+        mSize = mGalleryProvider!!.size
         updateSlider()
 
         // Update keep screen on
@@ -452,21 +475,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
             else -> ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         }
 
-        // Screen lightness
-        setScreenLightness(Settings.customScreenLightness, Settings.screenLightness)
-
-        // Cutout
-        window.attributes.layoutInDisplayCutoutMode =
-            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
-        val galleryHeader = findViewById<GalleryHeader>(R.id.gallery_header)
-        ViewCompat.setOnApplyWindowInsetsListener(galleryHeader) { _: View?, insets: WindowInsetsCompat ->
-            if (!Settings.readingFullscreen) {
-                galleryHeader.setTopInsets(insets.getInsets(WindowInsetsCompat.Type.statusBars()).top)
-            } else {
-                galleryHeader.setDisplayCutout(insets.displayCutout)
-            }
-            WindowInsetsCompat.CONSUMED
-        }
+        // Guide
         if (Settings.guideGallery) {
             val mainLayout = ViewUtils.`$$`(this, R.id.main) as FrameLayout
             mainLayout.addView(GalleryGuideView(this))

@@ -17,6 +17,7 @@
  */
 package com.hippo.app
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.view.KeyEvent
@@ -29,6 +30,7 @@ import androidx.appcompat.app.AlertDialog
 import com.google.android.material.textfield.TextInputLayout
 import com.hippo.ehviewer.R
 
+@SuppressLint("InflateParams")
 class EditTextCheckBoxDialogBuilder constructor(
     context: Context,
     text: String?,

@@ -70,7 +70,7 @@ static size_t archiveSize = 0;
 static entry *entries = NULL;
 static size_t entryCount = 0;
 
-const char supportExt[9][6] = {
+const char supportExt[10][6] = {
         "jpeg",
         "jpg",
         "png",
@@ -79,7 +79,8 @@ const char supportExt[9][6] = {
         "bmp",
         "ico",
         "wbmp",
-        "heif"
+        "heif",
+        "avif"
 };
 
 static inline int filename_is_playable_file(const char *name) {
@@ -87,7 +88,7 @@ static inline int filename_is_playable_file(const char *name) {
     if (!dotptr++)
         return false;
     int i;
-    for (i = 0; i < 9; i++)
+    for (i = 0; i < 10; i++)
         if (strcmp(dotptr, supportExt[i]) == 0)
             return true;
     return false;
@@ -473,7 +474,7 @@ Java_com_hippo_UriArchiveAccessor_getFilename(JNIEnv *env, jobject thiz, jint in
 }
 
 JNIEXPORT void JNICALL
-Java_com_hippo_UriArchiveAccessor_extractToFd(JNIEnv *env, jobject thiz, jint index, jobject fd) {
+Java_com_hippo_UriArchiveAccessor_extractToFd(JNIEnv *env, jobject thiz, jint index, jint fd) {
     EH_UNUSED(env);
     EH_UNUSED(thiz);
     index = entries[index].index;
@@ -481,10 +482,7 @@ Java_com_hippo_UriArchiveAccessor_extractToFd(JNIEnv *env, jobject thiz, jint in
     int ret;
     ret = archive_get_ctx(&ctx, index);
     if (!ret) {
-        jclass fdClass = (*env)->FindClass(env, "java/io/FileDescriptor");
-        jfieldID fdClassDescriptorFieldID = (*env)->GetFieldID(env, fdClass, "descriptor", "I");
-        int realfd = (*env)->GetIntField(env, fd, fdClassDescriptorFieldID);
-        archive_read_data_into_fd(ctx->arc, realfd);
+        archive_read_data_into_fd(ctx->arc, fd);
         ctx->using = 0;
     }
 }

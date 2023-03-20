@@ -20,25 +20,23 @@ import com.hippo.ehviewer.AppConfig
 import com.hippo.ehviewer.EhApplication
 import com.hippo.ehviewer.EhApplication.Companion.nonCacheOkHttpClient
 import com.hippo.ehviewer.R
-import com.hippo.util.HashCodeUtils
 import com.hippo.yorozuya.FileUtils
 import com.hippo.yorozuya.copyToFile
-import java.io.File
-import java.io.FileInputStream
-import java.io.IOException
-import java.nio.charset.StandardCharsets
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.executeAsync
 import okio.BufferedSource
+import okio.HashingSink.Companion.sha1
+import okio.blackholeSink
 import okio.buffer
 import okio.source
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.File
+import java.io.IOException
+import java.nio.charset.StandardCharsets
 
 private typealias TagGroup = Map<String, String>
 private typealias TagGroups = Map<String, TagGroup>
@@ -153,35 +151,24 @@ object EhTagDatabase {
     }
 
     private fun getFileContent(file: File): String? {
-        try {
-            file.source().buffer().use { return it.readString(StandardCharsets.UTF_8) }
-        } catch (e: IOException) {
-            return null
-        }
+        return runCatching {
+            file.source().buffer().use { it.readString(StandardCharsets.UTF_8) }
+        }.getOrNull()
     }
 
     private fun getFileSha1(file: File): String? {
-        try {
-            FileInputStream(file).use { stream ->
-                val digest = MessageDigest.getInstance("SHA-1")
-                var n: Int
-                val buffer = ByteArray(4 * 1024)
-                while (stream.read(buffer).also { n = it } != -1) {
-                    digest.update(buffer, 0, n)
+        return runCatching {
+            file.source().buffer().use { source ->
+                sha1(blackholeSink()).use {
+                    source.readAll(it)
+                    it.hash.hex()
                 }
-                return HashCodeUtils.bytesToHexString(digest.digest())
             }
-        } catch (e: IOException) {
-            return null
-        } catch (e: NoSuchAlgorithmException) {
-            return null
-        }
+        }.getOrNull()
     }
 
-    private fun checkData(sha1File: File, dataFile: File): Boolean {
-        val s1 = getFileContent(sha1File) ?: return false
-        val s2 = getFileSha1(dataFile) ?: return false
-        return s1 == s2
+    private fun checkData(sha1: String?, data: File): Boolean {
+        return sha1 != null && sha1 == getFileSha1(data)
     }
 
     private suspend fun save(client: OkHttpClient, url: String, file: File): Boolean {
@@ -218,38 +205,31 @@ object EhTagDatabase {
             val dataName = urls[2]
             val dataUrl = urls[3]
 
-            try {
-                val dir = AppConfig.getFilesDir("tag-translations")
-                checkNotNull(dir)
+            val dir = AppConfig.getFilesDir("tag-translations")
+            checkNotNull(dir)
+            val sha1File = File(dir, sha1Name)
+            val dataFile = File(dir, dataName)
 
+            runCatching {
                 // Check current sha1 and current data
-                val sha1File = File(dir, sha1Name)
-                val dataFile = File(dir, dataName)
-                if (!checkData(sha1File, dataFile)) {
+                val sha1 = getFileContent(sha1File)
+                if (!checkData(sha1, dataFile)) {
                     FileUtils.delete(sha1File)
                     FileUtils.delete(dataFile)
                 }
 
-                // Read current EhTagDatabase
-                if (!isInitialized() && dataFile.exists()) {
-                    try {
-                        dataFile.source().buffer().use { updateData(it) }
-                    } catch (e: IOException) {
-                        FileUtils.delete(sha1File)
-                        FileUtils.delete(dataFile)
-                    }
-                }
                 val client = nonCacheOkHttpClient
 
                 // Save new sha1
                 val tempSha1File = File(dir, "$sha1Name.tmp")
                 check(save(client, sha1Url, tempSha1File))
+                val tempSha1 = getFileContent(tempSha1File)
 
-                // Check new sha1 and current data
-                if (checkData(tempSha1File, dataFile)) {
+                // Check new sha1 and current sha1
+                if (tempSha1 == sha1) {
                     // The data is the same
                     FileUtils.delete(tempSha1File)
-                    return
+                    return@runCatching
                 }
 
                 // Save new data
@@ -257,10 +237,10 @@ object EhTagDatabase {
                 check(save(client, dataUrl, tempDataFile))
 
                 // Check new sha1 and new data
-                if (!checkData(tempSha1File, tempDataFile)) {
+                if (!checkData(tempSha1, tempDataFile)) {
                     FileUtils.delete(tempSha1File)
                     FileUtils.delete(tempDataFile)
-                    return
+                    return@runCatching
                 }
 
                 // Replace current sha1 and current data with new sha1 and new data
@@ -274,8 +254,18 @@ object EhTagDatabase {
                     dataFile.source().buffer().use { updateData(it) }
                 } catch (_: IOException) {
                 }
-            } catch (e: Throwable) {
-                e.printStackTrace()
+            }.onFailure {
+                it.printStackTrace()
+            }
+
+            // Read current EhTagDatabase
+            if (!isInitialized() && dataFile.exists()) {
+                try {
+                    dataFile.source().buffer().use { updateData(it) }
+                } catch (e: IOException) {
+                    FileUtils.delete(sha1File)
+                    FileUtils.delete(dataFile)
+                }
             }
         }
     }

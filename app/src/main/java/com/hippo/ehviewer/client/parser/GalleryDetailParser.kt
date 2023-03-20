@@ -307,9 +307,9 @@ object GalleryDetailParser {
                 if (it.hasClass("gtw")) {
                     tag = "_W$tag"
                 }
-                group.addTag(tag)
+                group.add(tag)
             }
-            if (group.size() > 0) group else null
+            if (group.size > 0) group else null
         } catch (e: Throwable) {
             ExceptionUtils.throwIfFatal(e)
             e.printStackTrace()

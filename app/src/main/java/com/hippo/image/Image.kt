@@ -26,7 +26,7 @@ import android.graphics.ImageDecoder.ALLOCATOR_SOFTWARE
 import android.graphics.ImageDecoder.ImageInfo
 import android.graphics.ImageDecoder.Source
 import android.graphics.PorterDuff
-import android.graphics.drawable.AnimatedImageDrawable
+import android.graphics.drawable.Animatable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.drawable.toDrawable
@@ -45,17 +45,15 @@ class Image private constructor(
 
     init {
         mObtainedDrawable = null
-        src?.let {source ->
+        src?.let {src ->
             mObtainedDrawable =
-                ImageDecoder.decodeDrawable(source.source) { decoder: ImageDecoder, info: ImageInfo, _: Source ->
+                ImageDecoder.decodeDrawable(src.source) { decoder: ImageDecoder, info: ImageInfo, _: Source ->
                     decoder.allocator = ALLOCATOR_SOFTWARE
                     decoder.setTargetSampleSize(
                         calculateSampleSize(info, 2 * screenHeight, 2 * screenWidth)
                     )
                 }.also {
-                    (it as? BitmapDrawable)?.run {
-                        source.close()
-                    }
+                    if (it !is Animatable) src.close()
                 }
         }
         if (mObtainedDrawable == null) {
@@ -63,7 +61,7 @@ class Image private constructor(
         }
     }
 
-    val animated = mObtainedDrawable is AnimatedImageDrawable
+    val animated = mObtainedDrawable is Animatable
     val width = mObtainedDrawable!!.intrinsicWidth
     val height = mObtainedDrawable!!.intrinsicHeight
     val isRecycled = mObtainedDrawable == null
@@ -72,10 +70,10 @@ class Image private constructor(
     @Synchronized
     fun recycle() {
         mObtainedDrawable ?: return
-        (mObtainedDrawable as? AnimatedImageDrawable)?.stop()
-        (mObtainedDrawable as? AnimatedImageDrawable)?.let { src?.close() }
+        (mObtainedDrawable as? Animatable)?.stop()
         (mObtainedDrawable as? BitmapDrawable)?.bitmap?.recycle()
         mObtainedDrawable?.callback = null
+        if (mObtainedDrawable is Animatable) src?.close()
         mObtainedDrawable = null
         mCanvas = null
         mBitmap?.recycle()
@@ -115,7 +113,7 @@ class Image private constructor(
     fun start() {
         if (!started) {
             started = true
-            (mObtainedDrawable as AnimatedImageDrawable?)?.start()
+            (mObtainedDrawable as Animatable?)?.start()
         }
     }
 
@@ -178,6 +176,9 @@ class Image private constructor(
 
         @JvmStatic
         external fun rewriteGifSource(buffer: ByteBuffer)
+
+        @JvmStatic
+        external fun rewriteGifSource2(fd: Int)
     }
 
     interface CloseableSource : AutoCloseable {

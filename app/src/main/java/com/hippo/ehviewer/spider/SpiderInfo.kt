@@ -19,6 +19,8 @@ import coil.disk.DiskCache
 import com.hippo.ehviewer.EhApplication
 import com.hippo.ehviewer.coil.edit
 import com.hippo.unifile.UniFile
+import com.hippo.unifile.openInputStream
+import com.hippo.unifile.openOutputStream
 import com.hippo.yorozuya.IOUtils
 import com.hippo.yorozuya.NumberUtils
 import java.io.File

@@ -15,12 +15,14 @@
  */
 package com.hippo.app
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.widget.CheckBox
 import androidx.appcompat.app.AlertDialog
 import com.hippo.ehviewer.R
 
+@SuppressLint("InflateParams")
 class CheckBoxDialogBuilder constructor(
     context: Context,
     message: String?,

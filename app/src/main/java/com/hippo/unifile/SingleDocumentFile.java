@@ -17,13 +17,13 @@
 package com.hippo.unifile;
 
 import android.content.Context;
+import android.graphics.ImageDecoder;
 import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 
 import androidx.annotation.NonNull;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 class SingleDocumentFile extends UniFile {
     private final Context mContext;
@@ -98,18 +98,7 @@ class SingleDocumentFile extends UniFile {
 
     @Override
     public boolean ensureFile() {
-        if (isFile()) {
-            return true;
-        } else {
-            OutputStream os;
-            try {
-                os = openOutputStream();
-            } catch (IOException e) {
-                return false;
-            }
-            Utils.closeQuietly(os);
-            return true;
-        }
+        return isFile();
     }
 
     @Override
@@ -149,29 +138,13 @@ class SingleDocumentFile extends UniFile {
 
     @NonNull
     @Override
-    public OutputStream openOutputStream() throws IOException {
-        return Contracts.openOutputStream(mContext, mUri);
+    public ImageDecoder.Source getImageSource() {
+        return Contracts.getImageSource(mContext, mUri);
     }
 
     @NonNull
     @Override
-    public OutputStream openOutputStream(boolean append) throws IOException {
-        return Contracts.openOutputStream(mContext, mUri, append);
-    }
-
-    @NonNull
-    @Override
-    public InputStream openInputStream() throws IOException {
-        return Contracts.openInputStream(mContext, mUri);
-    }
-
-    @NonNull
-    @Override
-    public UniRandomAccessFile createRandomAccessFile(String mode) throws IOException {
-        // Check file
-        if (!ensureFile()) {
-            throw new IOException("Can't make sure it is file");
-        }
-        return FileDescriptorRandomAccessFile.create(mContext, mUri, mode);
+    public ParcelFileDescriptor openFileDescriptor(@NonNull String mode) throws IOException {
+        return Contracts.openFileDescriptor(mContext, mUri, mode);
     }
 }

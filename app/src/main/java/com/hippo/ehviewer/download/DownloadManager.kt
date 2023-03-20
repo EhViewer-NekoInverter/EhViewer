@@ -33,9 +33,9 @@ import com.hippo.yorozuya.MathUtils
 import com.hippo.yorozuya.ObjectUtils
 import com.hippo.yorozuya.SimpleHandler
 import com.hippo.yorozuya.collect.LongList
-import java.util.LinkedList
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import java.util.LinkedList
 
 object DownloadManager : OnSpiderListener {
     // All download info list

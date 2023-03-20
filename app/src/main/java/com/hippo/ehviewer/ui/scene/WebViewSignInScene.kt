@@ -23,10 +23,13 @@ import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.lifecycle.lifecycleScope
 import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.EhUrl
 import com.hippo.ehviewer.client.EhUtils
 import com.hippo.ehviewer.widget.DialogWebChromeClient
+import com.hippo.util.launchIO
+import com.hippo.util.withUIContext
 import okhttp3.Cookie
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -110,12 +113,18 @@ class WebViewSignInScene : SolidScene() {
                 } else if (EhCookieStore.KEY_IPB_PASS_HASH == cookie.name) {
                     getHash = true
                 }
-                addCookie(EhUrl.DOMAIN_EX, cookie)
-                addCookie(EhUrl.DOMAIN_E, cookie)
             }
             if (getId && getHash) {
-                setResult(RESULT_OK, null)
-                finish()
+                viewLifecycleOwner.lifecycleScope.launchIO {
+                    cookies.forEach {
+                        addCookie(EhUrl.DOMAIN_EX, it)
+                        addCookie(EhUrl.DOMAIN_E, it)
+                    }
+                    withUIContext {
+                        setResult(RESULT_OK, null)
+                        finish()
+                    }
+                }
             }
         }
     }

@@ -16,8 +16,8 @@
 package com.hippo.glgallery
 
 import android.util.LruCache
+import androidx.annotation.CallSuper
 import androidx.annotation.IntDef
-import androidx.annotation.UiThread
 import com.hippo.ehviewer.Settings
 import com.hippo.glview.glrenderer.GLCanvas
 import com.hippo.glview.image.ImageWrapper
@@ -36,22 +36,15 @@ abstract class GalleryProvider {
     private var mListener: Listener? = null
     @Volatile
     private var mGLRoot: GLRoot? = null
-    private var mStarted = false
 
     abstract suspend fun awaitReady(): Boolean
 
     abstract val isReady: Boolean
 
-    @UiThread
-    open fun start() {
-        OSUtils.checkMainLoop()
-        check(!mStarted) { "Can't start it twice" }
-        mStarted = true
-    }
+    abstract fun start()
 
-    @UiThread
+    @CallSuper
     open fun stop() {
-        OSUtils.checkMainLoop()
         mImageCache.evictAll()
     }
 

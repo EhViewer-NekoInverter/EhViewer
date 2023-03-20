@@ -37,6 +37,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.Keep
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
@@ -264,6 +265,7 @@ class SearchBar @JvmOverloads constructor(
         }
     }
 
+    @Keep
     private fun showImeAndSuggestionsList(animation: Boolean) {
         // Show ime
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -332,6 +334,7 @@ class SearchBar @JvmOverloads constructor(
         return mProgress
     }
 
+    @Keep
     override fun setProgress(progress: Float) {
         mProgress = progress
         invalidate()

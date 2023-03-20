@@ -25,7 +25,6 @@ import com.hippo.ehviewer.client.EhEngine.fillGalleryListByApi
 import com.hippo.ehviewer.client.EhUrl
 import com.hippo.ehviewer.client.data.BaseGalleryInfo
 import com.hippo.ehviewer.client.data.GalleryInfo
-import com.hippo.ehviewer.download.DownloadManager as downloadManager
 import com.hippo.ehviewer.spider.SpiderInfo
 import com.hippo.ehviewer.spider.SpiderQueen
 import com.hippo.unifile.UniFile
@@ -34,11 +33,7 @@ import com.hippo.util.runSuspendCatching
 import com.hippo.util.withUIContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-
-private val RESTORE_NOT_FOUND = GetText.getString(R.string.settings_download_restore_not_found)
-private val RESTORE_FAILED = GetText.getString(R.string.settings_download_restore_failed)
-private val RESTORE_COUNT_MSG =
-    { cnt: Int -> if (cnt == 0) RESTORE_NOT_FOUND else GetText.getString(R.string.settings_download_restore_successfully, cnt) }
+import com.hippo.ehviewer.download.DownloadManager as downloadManager
 
 class RestoreDownloadPreference @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
@@ -50,8 +45,8 @@ class RestoreDownloadPreference @JvmOverloads constructor(
         val siFile = file.findFile(SpiderQueen.SPIDER_INFO_FILENAME) ?: return null
         return runCatching {
             val spiderInfo = SpiderInfo.readCompatFromUniFile(siFile) ?: return null
-            var gid = spiderInfo.gid
-            var dirname = file.name
+            val gid = spiderInfo.gid
+            val dirname = file.name
             if (mManager.containDownloadInfo(gid)) {
                 // Restore download dir to avoid redownload
                 val dbdirname = EhDB.getDownloadDirname(gid)
@@ -61,11 +56,13 @@ class RestoreDownloadPreference @JvmOverloads constructor(
                 }
                 return null
             }
-            RestoreItem().apply {
-                gid = spiderInfo.gid
-                token = spiderInfo.token
-                dirname = file.name
+            RestoreItem().also {
+                it.gid = spiderInfo.gid
+                it.token = spiderInfo.token
+                it.dirname = file.name
             }
+        }.onFailure {
+            it.printStackTrace()
         }.getOrNull()
     }
 
@@ -75,6 +72,8 @@ class RestoreDownloadPreference @JvmOverloads constructor(
         val restoreItemList = files.mapNotNull { getRestoreItem(it) }
         return runSuspendCatching {
             fillGalleryListByApi(restoreItemList, EhUrl.referer)
+        }.onFailure {
+            it.printStackTrace()
         }.getOrNull()
     }
 
@@ -118,6 +117,13 @@ class RestoreDownloadPreference @JvmOverloads constructor(
                 dialog.dismiss()
             }
         }
+    }
+
+    companion object {
+        private val RESTORE_NOT_FOUND = GetText.getString(R.string.settings_download_restore_not_found)
+        private val RESTORE_FAILED = GetText.getString(R.string.settings_download_restore_failed)
+        private val RESTORE_COUNT_MSG =
+            { cnt: Int -> if (cnt == 0) RESTORE_NOT_FOUND else GetText.getString(R.string.settings_download_restore_successfully, cnt) }
     }
 }
 

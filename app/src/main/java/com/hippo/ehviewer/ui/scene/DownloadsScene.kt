@@ -81,8 +81,8 @@ import com.hippo.yorozuya.LayoutUtils
 import com.hippo.yorozuya.ObjectUtils
 import com.hippo.yorozuya.ViewUtils
 import com.hippo.yorozuya.collect.LongList
-import java.util.LinkedList
 import rikka.core.res.resolveColor
+import java.util.LinkedList
 
 @SuppressLint("RtlHardcoded")
 class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,

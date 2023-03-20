@@ -19,7 +19,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
-import android.app.DownloadManager as AndroidDownloadManager
 import android.app.assist.AssistContent
 import android.content.Context
 import android.content.DialogInterface
@@ -58,8 +57,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import androidx.transition.TransitionInflater
 import androidx.lifecycle.lifecycleScope
+import androidx.transition.TransitionInflater
 import coil.Coil.imageLoader
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.snackbar.Snackbar
@@ -125,13 +124,14 @@ import com.hippo.yorozuya.IntIdGenerator
 import com.hippo.yorozuya.SimpleHandler
 import com.hippo.yorozuya.ViewUtils
 import com.hippo.yorozuya.collect.IntList
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import rikka.core.res.resolveBoolean
+import rikka.core.res.resolveColor
 import kotlin.math.abs
 import kotlin.math.hypot
 import kotlin.math.max
 import kotlin.math.roundToInt
-import okhttp3.HttpUrl.Companion.toHttpUrl
-import rikka.core.res.resolveBoolean
-import rikka.core.res.resolveColor
+import android.app.DownloadManager as AndroidDownloadManager
 
 class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListener,
     OnLongClickListener {
@@ -813,30 +813,29 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
             if (Settings.showTagTranslations && isTranslatable(context)) EhTagDatabase else null
         val colorTag = theme.resolveColor(R.attr.tagBackgroundColor)
         val colorName = theme.resolveColor(R.attr.tagGroupBackgroundColor)
-        for (tg in tagGroups) {
+        for (tgs in tagGroups) {
             val ll = inflater.inflate(R.layout.gallery_tag_group, mTags, false) as LinearLayout
             ll.orientation = LinearLayout.HORIZONTAL
             mTags!!.addView(ll)
             var readableTagName: String? = null
             if (ehTags != null && ehTags.isInitialized()) {
-                readableTagName = ehTags.getTranslation(tag = tg.groupName)
+                readableTagName = ehTags.getTranslation(tag = tgs.groupName)
             }
             val tgName = inflater.inflate(R.layout.item_gallery_tag, ll, false) as TextView
             ll.addView(tgName)
-            tgName.text = readableTagName ?: tg.groupName
+            tgName.text = readableTagName ?: tgs.groupName
             tgName.backgroundTintList = ColorStateList.valueOf(colorName)
-            val prefix = namespaceToPrefix(tg.groupName!!)
+            val prefix = namespaceToPrefix(tgs.groupName!!)
             val awl = AutoWrapLayout(context)
             ll.addView(
                 awl,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            var i = 0
-            while (i < tg.size()) {
+            for (tg in tgs) {
                 val tag = inflater.inflate(R.layout.item_gallery_tag, awl, false) as TextView
                 awl.addView(tag)
-                var tagStr = tg.getTagAt(i)
+                var tagStr = tg
                 while (tagStr.startsWith("_")) {
                     when (tagStr.substring(1, 2)) {
                         "W" -> tag.alpha = 0.5f
@@ -851,10 +850,9 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                 }
                 tag.text = readableTag ?: tagStr
                 tag.backgroundTintList = ColorStateList.valueOf(colorTag)
-                tag.setTag(R.id.tag, tg.groupName + ":" + tagStr)
+                tag.setTag(R.id.tag, tgs.groupName + ":" + tagStr)
                 tag.setOnClickListener(this)
                 tag.setOnLongClickListener(this)
-                i++
             }
         }
     }
@@ -2012,8 +2010,8 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                 return null
             }
             for (tagGroup in tagGroups) {
-                if ("artist" == tagGroup.groupName && tagGroup.size() > 0) {
-                    var tagStr = tagGroup.getTagAt(0)
+                if ("artist" == tagGroup.groupName && tagGroup.size > 0) {
+                    var tagStr = tagGroup[0]
                     while (tagStr.startsWith("_")) {
                         tagStr = tagStr.substring(2)
                     }

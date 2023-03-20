@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Tarsin Norbin
+ * Copyright 2023 Tarsin Norbin
  *
  * This file is part of EhViewer
  *
@@ -15,17 +15,23 @@
  * You should have received a copy of the GNU General Public License along with EhViewer.
  * If not, see <https://www.gnu.org/licenses/>.
  */
-package com.hippo
+package com.hippo.unifile
 
-import android.os.ParcelFileDescriptor
-import android.system.Int64Ref
-import android.system.Os
-import java.io.FileDescriptor
+import android.os.ParcelFileDescriptor.AutoCloseInputStream
+import android.os.ParcelFileDescriptor.AutoCloseOutputStream
+import java.io.FileInputStream
+import java.io.FileOutputStream
 
-private fun sendFileTotally(from: FileDescriptor, to: FileDescriptor) {
-    Os.sendfile(to, from, Int64Ref(0), Long.MAX_VALUE)
+/**
+ * Use Native IO/NIO directly if possible, unless you need process file content on JVM!
+ */
+fun UniFile.openInputStream(): FileInputStream {
+    return AutoCloseInputStream(openFileDescriptor("r"))
 }
 
-infix fun ParcelFileDescriptor.sendTo(fd: ParcelFileDescriptor) {
-    sendFileTotally(fileDescriptor, fd.fileDescriptor)
+/**
+ * Use Native IO/NIO directly if possible, unless you need process file content on JVM!
+ */
+fun UniFile.openOutputStream(): FileOutputStream {
+    return AutoCloseOutputStream(openFileDescriptor("w"))
 }
