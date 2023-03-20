@@ -462,8 +462,8 @@
     <string name="settings_download_media_scan">允許其他程式進行媒體掃描</string>
     <string name="settings_download_media_scan_summary_on">請別讓別人看到你的相簿</string>
     <string name="settings_download_media_scan_summary_off">大部分相簿軟體將會忽略顯示下載路徑中的影像</string>
-    <string name="settings_download_multi_thread_download">同時多重下載</string>
-    <string name="settings_download_multi_thread_download_summary">最多同時下載 %s 張圖片</string>
+    <string name="settings_download_concurrency">同時多重下載</string>
+    <string name="settings_download_concurrency_summary">最多同時下載 %s 張圖片</string>
     <string name="settings_download_download_delay">下載延時</string>
     <string name="settings_download_download_delay_summary">每次下載延時 %s 毫秒</string>
     <string name="settings_download_preload_image">預載圖片</string>

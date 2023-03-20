@@ -17,14 +17,12 @@
  * EhViewer. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <assert.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 #include <pthread.h>
 #include <sys/mman.h>
-#include <syscall.h>
 
 #include <jni.h>
 #include <android/log.h>
@@ -46,11 +44,24 @@ typedef struct {
 typedef struct {
     const char *filename;
     int index;
+    size_t size;
 } entry;
 
 pthread_mutex_t ctx_lock;
 static archive_ctx **ctx_pool;
 #define CTX_POOL_SIZE 20
+
+static void *mempool = NULL;
+static size_t *mempoolofs = NULL;
+
+#define PAGE_ALIGN(x) ((x + ~PAGE_MASK) & PAGE_MASK)
+
+#define MEMPOOL_ADDR_BY_SORTED_IDX(x) (mempool + (index ? mempoolofs[index - 1] : 0))
+#define MEMPOOL_SIZE (mempoolofs[entryCount - 1])
+#define MEMPOOL_ENTITY_SIZE(x) PAGE_ALIGN(entries[x].size)
+
+#define PROT_RW (PROT_WRITE | PROT_READ)
+#define MAP_ANON_POOL (MAP_ANONYMOUS | MAP_NORESERVE | MAP_PRIVATE | MAP_UNINITIALIZED)
 
 static bool need_encrypt = false;
 static char *passwd = NULL;
@@ -58,8 +69,6 @@ static void *archiveAddr = NULL;
 static size_t archiveSize = 0;
 static entry *entries = NULL;
 static size_t entryCount = 0;
-
-#define POPULATE_THRESHOLD (512 * 1024 * 1024) // 512 MiB
 
 const char supportExt[9][6] = {
         "jpeg",
@@ -112,6 +121,7 @@ static long archive_map_entries_index(archive_ctx *ctx) {
         if (filename_is_playable_file(name)) {
             entries[count].filename = strdup(name);
             entries[count].index = count;
+            entries[count].size = archive_entry_size(ctx->entry);
             count++;
         }
     }
@@ -119,6 +129,48 @@ static long archive_map_entries_index(archive_ctx *ctx) {
         LOGE("%s", archive_error_string(ctx->arc));
     qsort(entries, entryCount, sizeof(entry), compare_entries);
     return count;
+}
+
+static bool archive_prealloc_mempool() {
+    mempoolofs = calloc(entryCount, sizeof(size_t));
+    for (int i = 0; i < entryCount; ++i) {
+        if (!i)
+            mempoolofs[i] = PAGE_ALIGN(entries[i].size);
+        else
+            mempoolofs[i] = PAGE_ALIGN(entries[i].size) + mempoolofs[i - 1];
+    }
+    mempool = mmap(0, MEMPOOL_SIZE, PROT_RW, MAP_ANON_POOL, -1, 0);
+    if (mempool == MAP_FAILED) {
+        LOGE("%s%s", "mmap failed with error ", strerror(errno));
+        return false;
+    }
+    return true;
+}
+
+
+// Mincore does not support anon mapping yet
+// Now that we use MADV_FREE, how can we detect whether pages is reclaimed?
+static bool is_mempool_pages_present_and_lock(int index) {
+    void *addr = MEMPOOL_ADDR_BY_SORTED_IDX(index);
+    size_t size = MEMPOOL_ENTITY_SIZE(index);
+    mlock(addr, size);
+#if 0
+    unsigned char vec[size / PAGE_SIZE];
+    unsigned char r = 1;
+    mincore(addr, size, vec);
+    for (int i = 0; i < size / PAGE_SIZE; ++i) r &= vec[i];
+    return r;
+#endif
+    return false;
+}
+
+#define MEMPOOL_IN_CORE_AND_LOCK(x) is_mempool_pages_present_and_lock(x)
+
+static void mempool_release_pages(void *addr, size_t size) {
+    size = PAGE_ALIGN(size);
+    munlock(addr, size);
+    int ret = madvise(addr, size, MADV_FREE);
+    if (ret == -EINVAL) madvise(addr, size, MADV_DONTNEED);
 }
 
 static long archive_list_all_entries(archive_ctx *ctx) {
@@ -171,7 +223,6 @@ static int archive_alloc_ctx(archive_ctx **ctxptr) {
 }
 
 static int archive_skip_to_index(archive_ctx *ctx, int index) {
-    assert(!(ctx->next_index > index));
     while (archive_read_next_header(ctx->arc, &ctx->entry) == ARCHIVE_OK) {
         if (!filename_is_playable_file(archive_entry_pathname(ctx->entry)))
             continue;
@@ -246,8 +297,6 @@ Java_com_hippo_UriArchiveAccessor_openArchive(JNIEnv *env, jobject thiz, jint fd
     EH_UNUSED(thiz);
     archive_ctx *ctx = NULL;
     int mmap_flags = MAP_PRIVATE;
-    if (size <= POPULATE_THRESHOLD)
-        mmap_flags |= MAP_POPULATE;
     archiveAddr = mmap64(0, size, PROT_READ, mmap_flags, fd, 0);
     if (archiveAddr == MAP_FAILED) {
         LOGE("%s%s", "mmap64 failed with error ", strerror(errno));
@@ -268,7 +317,7 @@ Java_com_hippo_UriArchiveAccessor_openArchive(JNIEnv *env, jobject thiz, jint fd
         LOGE("%s%s", "Archive open failed:", archive_error_string(ctx->arc));
     } else {
         entryCount = archive_list_all_entries(ctx);
-        LOGI("%s%ld%s", "Found ", r, " image entries in archive");
+        LOGI("%s%zu%s", "Found ", entryCount, " image entries in archive");
 
         // We must read through the file|vm then we can know whether it is encrypted
         int encryptRet = archive_read_has_encrypted_entries(ctx->arc);
@@ -305,40 +354,51 @@ Java_com_hippo_UriArchiveAccessor_openArchive(JNIEnv *env, jobject thiz, jint fd
     } else {
         entries = calloc(entryCount, sizeof(entry));
         r = archive_map_entries_index(ctx);
+        if (!archive_prealloc_mempool()) {
+            r = 0;
+            for (int i = 0; i < entryCount; ++i) {
+                free((void *) entries[i].filename);
+            }
+            free(entries);
+        }
     }
 
     archive_release_ctx(ctx);
     return r;
 }
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "ConstantConditionsOC"
+#pragma ide diagnostic ignored "UnreachableCode"
+
 JNIEXPORT jobject JNICALL
 Java_com_hippo_UriArchiveAccessor_extractToByteBuffer(JNIEnv *env, jobject thiz, jint index) {
     EH_UNUSED(env);
     EH_UNUSED(thiz);
-    index = entries[index].index;
-    archive_ctx *ctx = NULL;
-    int ret;
-    ret = archive_get_ctx(&ctx, index);
-    if (ret)
-        return 0;
-    long long size = archive_entry_size(ctx->entry);
-    void *buffer = malloc(size);
-    if (!buffer) {
+    void *addr = MEMPOOL_ADDR_BY_SORTED_IDX(index);
+    size_t size = entries[index].size;
+    if (!MEMPOOL_IN_CORE_AND_LOCK(index)) {
+        index = entries[index].index;
+        archive_ctx *ctx = NULL;
+        int ret;
+        ret = archive_get_ctx(&ctx, index);
+        if (ret) return 0;
+        ret = archive_read_data(ctx->arc, addr, size);
         ctx->using = 0;
-        LOGE("Allocate buffer for decompression failed:ENOMEM");
-        return 0;
+        if (ret == size)
+            return (*env)->NewDirectByteBuffer(env, addr, size);
+        if (ret != size)
+            LOGE("%s", "No enough data read, WTF?");
+        if (ret < 0)
+            LOGE("%s%s", "Archive read failed:", archive_error_string(ctx->arc));
+        mempool_release_pages(addr, size);
+    } else {
+        return (*env)->NewDirectByteBuffer(env, addr, size);
     }
-    ret = archive_read_data(ctx->arc, buffer, size);
-    ctx->using = 0;
-    if (ret == size)
-        return (*env)->NewDirectByteBuffer(env, buffer, size);
-    if (ret != size)
-        LOGE("%s", "No enough data read, WTF?");
-    if (ret < 0)
-        LOGE("%s%s", "Archive read failed:", archive_error_string(ctx->arc));
-    free(buffer);
     return 0;
 }
+
+#pragma clang diagnostic pop
 
 JNIEXPORT void JNICALL
 Java_com_hippo_UriArchiveAccessor_closeArchive(JNIEnv *env, jobject thiz) {
@@ -352,6 +412,8 @@ Java_com_hippo_UriArchiveAccessor_closeArchive(JNIEnv *env, jobject thiz) {
     passwd = NULL;
     need_encrypt = false;
     munmap(archiveAddr, archiveSize);
+    munmap(mempool, MEMPOOL_SIZE);
+    free(mempoolofs);
     for (int i = 0; i < entryCount; ++i) {
         free((void *) entries[i].filename);
     }
@@ -411,7 +473,7 @@ Java_com_hippo_UriArchiveAccessor_getFilename(JNIEnv *env, jobject thiz, jint in
 }
 
 JNIEXPORT void JNICALL
-Java_com_hippo_UriArchiveAccessor_extractToFd(JNIEnv *env, jobject thiz, jint index, jint fd) {
+Java_com_hippo_UriArchiveAccessor_extractToFd(JNIEnv *env, jobject thiz, jint index, jobject fd) {
     EH_UNUSED(env);
     EH_UNUSED(thiz);
     index = entries[index].index;
@@ -419,7 +481,10 @@ Java_com_hippo_UriArchiveAccessor_extractToFd(JNIEnv *env, jobject thiz, jint in
     int ret;
     ret = archive_get_ctx(&ctx, index);
     if (!ret) {
-        archive_read_data_into_fd(ctx->arc, fd);
+        jclass fdClass = (*env)->FindClass(env, "java/io/FileDescriptor");
+        jfieldID fdClassDescriptorFieldID = (*env)->GetFieldID(env, fdClass, "descriptor", "I");
+        int realfd = (*env)->GetIntField(env, fd, fdClassDescriptorFieldID);
+        archive_read_data_into_fd(ctx->arc, realfd);
         ctx->using = 0;
     }
 }
@@ -428,5 +493,6 @@ JNIEXPORT void JNICALL
 Java_com_hippo_UriArchiveAccessor_releaseByteBuffer(JNIEnv *env, jobject thiz, jobject buffer) {
     EH_UNUSED(thiz);
     void *addr = (*env)->GetDirectBufferAddress(env, buffer);
-    free(addr);
+    size_t size = (*env)->GetDirectBufferCapacity(env, buffer);
+    mempool_release_pages(addr, size);
 }

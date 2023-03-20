@@ -27,7 +27,7 @@ import androidx.collection.LruCache
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.disk.DiskCache
-import com.hippo.Native
+import coil.util.DebugLogger
 import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.EhDns
 import com.hippo.ehviewer.client.EhEngine
@@ -84,7 +84,7 @@ class EhApplication : SceneApplication(), ImageLoaderFactory {
             handler?.uncaughtException(t, e)
         }
         super.onCreate()
-        Native.initialize()
+        System.loadLibrary("ehviewer")
         GetText.initialize(this)
         Settings.initialize()
         ReadableTime.initialize(this)
@@ -222,6 +222,7 @@ class EhApplication : SceneApplication(), ImageLoaderFactory {
             components { add(MergeInterceptor) }
             crossfade(false)
             diskCache(thumbCache)
+            if (BuildConfig.DEBUG) logger(DebugLogger())
         }.build()
     }
 

@@ -65,7 +65,7 @@ class DownloadFragment : BasePreferenceFragment() {
         mDownloadLocation?.onPreferenceClickListener = this
         mediaScan!!.onPreferenceChangeListener = this
         multiThreadDownload!!.setSummaryProvider {
-            getString(R.string.settings_download_multi_thread_download_summary, (it as ListPreference).entry)
+            getString(R.string.settings_download_concurrency_summary, (it as ListPreference).entry)
         }
         downloadDelay!!.setSummaryProvider {
             getString(R.string.settings_download_download_delay_summary, (it as ListPreference).entry)

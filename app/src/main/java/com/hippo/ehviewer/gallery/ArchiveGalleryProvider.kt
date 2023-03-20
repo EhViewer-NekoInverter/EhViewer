@@ -19,7 +19,6 @@ package com.hippo.ehviewer.gallery
 
 import android.content.Context
 import android.net.Uri
-import com.hippo.Native.getFd
 import com.hippo.UriArchiveAccessor
 import com.hippo.ehviewer.GetText
 import com.hippo.ehviewer.R
@@ -36,7 +35,9 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.sync.withPermit
 import java.io.FileOutputStream
 import java.io.IOException
@@ -80,6 +81,7 @@ class ArchiveGalleryProvider(context: Context, uri: Uri, passwdFlow: Flow<String
     }
 
     private val mJobMap = hashMapOf<Int, Job>()
+    private val mWorkerMutex by lazy { (0 until size).map { Mutex() } }
     private val mSemaphore = Semaphore(4)
 
     override fun onRequest(index: Int) {
@@ -88,8 +90,10 @@ class ArchiveGalleryProvider(context: Context, uri: Uri, passwdFlow: Flow<String
             val current = mJobMap[index]
             if (current?.isActive != true) {
                 mJobMap[index] = launch {
-                    mSemaphore.withPermit {
-                        doRealWork(index)
+                    mWorkerMutex[index].withLock {
+                        mSemaphore.withPermit {
+                            doRealWork(index)
+                        }
                     }
                 }
             }
@@ -139,16 +143,14 @@ class ArchiveGalleryProvider(context: Context, uri: Uri, passwdFlow: Flow<String
     }
 
     override fun save(index: Int, file: UniFile): Boolean {
-        val fd: Int
         val stream: FileOutputStream
         try {
             stream = file.openOutputStream() as FileOutputStream
-            fd = getFd(stream.fd)
         } catch (e: IOException) {
             e.printStackTrace()
             return false
         }
-        archiveAccessor.extractToFd(index, fd)
+        archiveAccessor.extractToFd(index, stream.fd)
         try {
             stream.close()
         } catch (e: IOException) {

@@ -16,6 +16,8 @@
 package com.hippo.ehviewer.spider
 
 import android.graphics.ImageDecoder
+import android.os.ParcelFileDescriptor
+import android.os.ParcelFileDescriptor.MODE_READ_WRITE
 import coil.decode.DecodeUtils
 import coil.decode.FrameDelayRewritingSource
 import coil.decode.isGif
@@ -32,6 +34,7 @@ import com.hippo.ehviewer.coil.edit
 import com.hippo.ehviewer.coil.read
 import com.hippo.ehviewer.gallery.GalleryProvider2
 import com.hippo.image.Image.CloseableSource
+import com.hippo.sendTo
 import com.hippo.unifile.RawFile
 import com.hippo.unifile.UniFile
 import com.hippo.util.runSuspendCatching
@@ -123,12 +126,8 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
                 // Copy from cache to download dir
                 val file = dir.createFile(generateImageFilename(index, extension)) ?: return false
                 (file.openOutputStream() as FileOutputStream).use { outputStream ->
-                    outputStream.channel.use { outChannel ->
-                        data.toFile().inputStream().use { inputStream ->
-                            inputStream.channel.use {
-                                outChannel.transferFrom(it, 0, it.size())
-                            }
-                        }
+                    ParcelFileDescriptor.open(data.toFile(), MODE_READ_WRITE).use {
+                        it sendTo outputStream.fd
                     }
                 }
             }
