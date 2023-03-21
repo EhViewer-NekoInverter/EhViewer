@@ -614,11 +614,11 @@ class GalleryListScene : BaseScene(), OnDragHandlerListener, OnStateChangeListen
         qsDrawerAdapter.setHasStableIds(true)
         mItemTouchHelper = ItemTouchHelper(GalleryListQSItemTouchHelperCallback(qsDrawerAdapter))
         mItemTouchHelper!!.attachToRecyclerView(recyclerView)
-        recyclerView.adapter = qsDrawerAdapter
         lifecycleScope.launchIO {
             // DB Actions
             mQuickSearchList = EhDB.allQuickSearch.toMutableList()
             withUIContext {
+                recyclerView.adapter = qsDrawerAdapter
                 updateDrawerView(false)
             }
         }
