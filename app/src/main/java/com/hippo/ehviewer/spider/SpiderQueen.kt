@@ -694,7 +694,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
                 val targetImageUrl: String?
                 val referer: String?
 
-                if (Settings.getDownloadOriginImage(isDownloadMode) && !originImageUrl.isNullOrBlank()) {
+                if (Settings.getDownloadOriginImage(mSpiderDen.downloadDir != null) && !originImageUrl.isNullOrBlank()) {
                     targetImageUrl = originImageUrl
                     referer = EhUrl.getPageUrl(mSpiderInfo.gid, index, pToken)
                 } else {

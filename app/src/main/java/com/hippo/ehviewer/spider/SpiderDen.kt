@@ -283,21 +283,13 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
             }
         }
         val dir = downloadDir ?: return null
-        var file = findImageFile(dir, index)
-        if (file != null && mMode == SpiderQueen.MODE_DOWNLOAD) {
-            if (copyFromCacheToDownloadDir(index, false)) {
-                file = findImageFile(dir, index)
-            }
+        val file = findImageFile(dir, index) ?: return null
+        file.openFileDescriptor("rw").use {
+            Image.rewriteGifSource2(it.fd)
         }
-        file?.let {image ->
-            image.openFileDescriptor("rw").use {
-                Image.rewriteGifSource2(it.fd)
-            }
-        }
-        val source = file?.imageSource ?: return null
         return object : CloseableSource {
             override val source: ImageDecoder.Source
-                get() = source
+                get() = file.imageSource
 
             override fun close() {}
         }
