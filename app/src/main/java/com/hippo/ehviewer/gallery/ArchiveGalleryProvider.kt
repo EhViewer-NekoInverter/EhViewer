@@ -64,7 +64,7 @@ class ArchiveGalleryProvider(context: Context, uri: Uri, passwdFlow: Flow<String
         }
     }
 
-    override var size = 0
+    override var size = -1
         private set
 
     override fun start() {
@@ -121,11 +121,11 @@ class ArchiveGalleryProvider(context: Context, uri: Uri, passwdFlow: Flow<String
 
     override suspend fun awaitReady(): Boolean {
         hostJob.join()
-        return size != 0
+        return size != -1
     }
 
     override val isReady: Boolean
-        get() = size != 0
+        get() = size != -1
 
     override fun onCancelRequest(index: Int) {
         mJobMap[index]?.cancel()

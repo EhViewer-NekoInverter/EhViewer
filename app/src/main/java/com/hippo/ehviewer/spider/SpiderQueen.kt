@@ -253,9 +253,6 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
     val size
         get() = mPageStateArray.size
 
-    val error: String?
-        get() = null
-
     fun forceRequest(index: Int) {
         request(index, true)
     }
