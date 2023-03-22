@@ -48,7 +48,7 @@ abstract class GalleryProvider {
         mImageCache.evictAll()
     }
 
-    fun setGLRoot(glRoot: GLRoot?) {
+    fun setGLRoot(glRoot: GLRoot) {
         mGLRoot = glRoot
     }
 
@@ -106,13 +106,13 @@ abstract class GalleryProvider {
         notify(NotifyTask.TYPE_PERCENT, index, percent, null, null)
     }
 
-    fun notifyPageSucceed(index: Int, image: Image?) {
-        val imageWrapper = ImageWrapper(image!!)
+    fun notifyPageSucceed(index: Int, image: Image) {
+        val imageWrapper = ImageWrapper(image)
         mImageCache.add(index, imageWrapper)
         notifyPageSucceed(index, imageWrapper)
     }
 
-    private fun notifyPageSucceed(index: Int, image: ImageWrapper?) {
+    private fun notifyPageSucceed(index: Int, image: ImageWrapper) {
         notify(NotifyTask.TYPE_SUCCEED, index, 0.0f, image, null)
     }
 
@@ -203,31 +203,28 @@ abstract class GalleryProvider {
         }
     }
 
-    private class ImageCache : LruCache<Int?, ImageWrapper?>(
+    private class ImageCache : LruCache<Int, ImageWrapper>(
         MathUtils.clamp(
             OSUtils.getTotalMemory() / 12,
             MIN_CACHE_SIZE,
             MAX_CACHE_SIZE
         ).toInt()
     ) {
-        fun add(key: Int?, value: ImageWrapper) {
+        fun add(key: Int, value: ImageWrapper) {
             if (!value.animated && value.obtain()) put(key, value)
         }
 
-        override fun sizeOf(key: Int?, value: ImageWrapper?): Int {
-            value?.let{
-                return it.width * it.height * if (it.animated) 15 else 4
-            }
-            return 0
+        override fun sizeOf(key: Int, value: ImageWrapper): Int {
+            return value.width * value.height * if (value.animated) 15 else 4
         }
 
         override fun entryRemoved(
             evicted: Boolean,
-            key: Int?,
-            oldValue: ImageWrapper?,
+            key: Int,
+            oldValue: ImageWrapper,
             newValue: ImageWrapper?
         ) {
-            oldValue?.release()
+            oldValue.release()
         }
 
         companion object {

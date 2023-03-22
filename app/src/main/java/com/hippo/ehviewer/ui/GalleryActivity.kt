@@ -488,7 +488,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
             .build()
         mGLRootView!!.setContentPane(mGalleryView)
         mGalleryProvider!!.setListener(mGalleryAdapter)
-        mGalleryProvider!!.setGLRoot(mGLRootView)
+        mGalleryProvider!!.setGLRoot(mGLRootView!!)
         if (mGalleryView != null) {
             mLayoutMode = mGalleryView!!.layoutMode
         }
