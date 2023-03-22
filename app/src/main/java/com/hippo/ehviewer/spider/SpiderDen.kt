@@ -289,6 +289,11 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
                 file = findImageFile(dir, index)
             }
         }
+        file?.let {image ->
+            image.openFileDescriptor("rw").use {
+                Image.rewriteGifSource2(it.fd)
+            }
+        }
         val source = file?.imageSource ?: return null
         return object : CloseableSource {
             override val source: ImageDecoder.Source
