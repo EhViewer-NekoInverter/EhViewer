@@ -90,10 +90,12 @@ class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) : GalleryProvider
         get() = mSpiderQueen.size
 
     override fun onRequest(index: Int) {
+        notifyPageWait(index)
         mSpiderQueen.request(index)
     }
 
     override fun onForceRequest(index: Int) {
+        notifyPageWait(index)
         mSpiderQueen.forceRequest(index)
     }
 
