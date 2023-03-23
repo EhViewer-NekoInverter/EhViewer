@@ -449,6 +449,7 @@ class ScrollLayoutManager extends GalleryView.LayoutManager {
             if (GalleryPageView.INVALID_INDEX != mKeepTopPageIndex) {
                 keepTopIndex = mKeepTopPageIndex;
                 keepTop = mKeepTop;
+                mKeepTopPageIndex = GalleryPageView.INVALID_INDEX;
             } else if (GalleryPageView.INVALID_INDEX != mFirstShownPageIndex) {
                 keepTopIndex = mFirstShownPageIndex;
             } else {
