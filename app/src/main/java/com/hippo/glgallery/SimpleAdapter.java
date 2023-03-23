@@ -25,7 +25,6 @@ import com.hippo.glview.view.GLRootView;
 public class SimpleAdapter extends GalleryView.Adapter implements GalleryProvider.Listener {
     private final GalleryProvider mProvider;
     private final ImageTexture.Uploader mUploader;
-    private boolean mShowIndex = true;
 
     public SimpleAdapter(@NonNull GLRootView glRootView, @NonNull GalleryProvider provider) {
         mProvider = provider;
@@ -36,20 +35,12 @@ public class SimpleAdapter extends GalleryView.Adapter implements GalleryProvide
         mUploader.clear();
     }
 
-    public void setShowIndex(boolean show) {
-        mShowIndex = show;
-    }
-
     @Override
     public void onBind(GalleryPageView view, int index) {
         mProvider.request(index);
         view.showInfo();
         view.setImage(null);
-        if (mShowIndex) {
-            view.setPage(index + 1);
-        } else {
-            view.hidePage();
-        }
+        view.setPage(index + 1);
         view.setProgress(GalleryPageView.PROGRESS_INDETERMINATE);
         view.setError(null, null);
     }
@@ -77,11 +68,7 @@ public class SimpleAdapter extends GalleryView.Adapter implements GalleryProvide
         if (page != null) {
             page.showInfo();
             page.setImage(null);
-            if (mShowIndex) {
-                page.setPage(index + 1);
-            } else {
-                page.hidePage();
-            }
+            page.setPage(index + 1);
             page.setProgress(GalleryPageView.PROGRESS_INDETERMINATE);
             page.setError(null, null);
         }
@@ -93,11 +80,7 @@ public class SimpleAdapter extends GalleryView.Adapter implements GalleryProvide
         if (page != null) {
             page.showInfo();
             page.setImage(null);
-            if (mShowIndex) {
-                page.setPage(index + 1);
-            } else {
-                page.hidePage();
-            }
+            page.setPage(index + 1);
             page.setProgress(percent);
             page.setError(null, null);
         }
@@ -112,11 +95,7 @@ public class SimpleAdapter extends GalleryView.Adapter implements GalleryProvide
                 mUploader.addTexture(imageTexture);
                 page.showImage();
                 page.setImage(imageTexture);
-                if (mShowIndex) {
-                    page.setPage(index + 1);
-                } else {
-                    page.hidePage();
-                }
+                page.setPage(index + 1);
                 page.setProgress(GalleryPageView.PROGRESS_GONE);
                 page.setError(null, null);
             } else {
@@ -133,11 +112,7 @@ public class SimpleAdapter extends GalleryView.Adapter implements GalleryProvide
         if (page != null) {
             page.showInfo();
             page.setImage(null);
-            if (mShowIndex) {
-                page.setPage(index + 1);
-            } else {
-                page.hidePage();
-            }
+            page.setPage(index + 1);
             page.setProgress(GalleryPageView.PROGRESS_GONE);
             page.setError(error, mGalleryView);
         }

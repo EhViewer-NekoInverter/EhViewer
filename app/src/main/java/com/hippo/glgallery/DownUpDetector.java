@@ -38,19 +38,13 @@ class DownUpDetector {
 
     public void onTouchEvent(MotionEvent ev) {
         switch (ev.getActionMasked()) {
-            case MotionEvent.ACTION_DOWN:
-                setState(true, ev);
-                break;
-            case MotionEvent.ACTION_POINTER_DOWN:
-                mListener.onPointerDown(ev);
-                break;
-            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_DOWN -> setState(true, ev);
+            case MotionEvent.ACTION_POINTER_DOWN -> mListener.onPointerDown(ev);
+            case MotionEvent.ACTION_UP -> {
                 mListener.onPointerUp(ev);
                 setState(false, ev);
-                break;
-            case MotionEvent.ACTION_CANCEL:
-                setState(false, ev);
-                break;
+            }
+            case MotionEvent.ACTION_CANCEL -> setState(false, ev);
         }
     }
 

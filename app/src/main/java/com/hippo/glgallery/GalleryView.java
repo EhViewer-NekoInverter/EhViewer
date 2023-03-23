@@ -35,7 +35,6 @@ import com.hippo.glview.util.GalleryUtils;
 import com.hippo.glview.view.AnimationTime;
 import com.hippo.glview.view.GLRoot;
 import com.hippo.glview.view.GLView;
-import com.hippo.glview.widget.GLProgressView;
 import com.hippo.glview.widget.GLTextureView;
 import com.hippo.yorozuya.MathUtils;
 import com.hippo.yorozuya.Pool;
@@ -102,7 +101,6 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
     private final Typeface mPageTextTypeface;
     private final int mErrorTextSize;
     private final int mErrorTextColor;
-    private final String mDefaultErrorString;
     private final String mEmptyString;
     private final Rect mLeftArea = new Rect();
     private final Rect mRightArea = new Rect();
@@ -119,7 +117,6 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
     private ScrollLayoutManager mScrollLayoutManager;
     @Nullable
     private LayoutManager mLayoutManager;
-    private GLProgressView mProgressCache;
     private GLTextureView mErrorViewCache;
     private int mPagerInterval;
     private int mScrollInterval;
@@ -129,9 +126,9 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
     private boolean mScale = false;
     private boolean mScroll = false;
     private boolean mFirstScroll = false;
-    private int mLayoutMode = LAYOUT_RIGHT_TO_LEFT;
-    private int mScaleMode = ImageView.SCALE_FIT;
-    private int mStartPosition = ImageView.START_POSITION_TOP_LEFT;
+    private int mLayoutMode;
+    private int mScaleMode;
+    private int mStartPosition;
     private int mIndex;
 
     private GalleryView(Builder build) {
@@ -159,7 +156,6 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
         mErrorTextColor = build.mErrorTextColor;
         mErrorTextSize = build.mErrorTextSize;
 
-        mDefaultErrorString = build.mDefaultErrorString;
         mEmptyString = build.mEmptyString;
 
         setBackgroundColor(mBackgroundColor);
@@ -221,29 +217,29 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
         }
 
         switch (mLayoutMode) {
-            case LAYOUT_LEFT_TO_RIGHT:
+            case LAYOUT_LEFT_TO_RIGHT -> {
                 ensurePagerLayoutManager();
                 mPagerLayoutManager.setMode(PagerLayoutManager.MODE_LEFT_TO_RIGHT);
                 mPagerLayoutManager.onAttach(mAdapter);
                 mPagerLayoutManager.setCurrentIndex(mIndex);
                 mAdapter = null;
                 mLayoutManager = mPagerLayoutManager;
-                break;
-            case LAYOUT_RIGHT_TO_LEFT:
+            }
+            case LAYOUT_RIGHT_TO_LEFT -> {
                 ensurePagerLayoutManager();
                 mPagerLayoutManager.setMode(PagerLayoutManager.MODE_RIGHT_TO_LEFT);
                 mPagerLayoutManager.onAttach(mAdapter);
                 mPagerLayoutManager.setCurrentIndex(mIndex);
                 mAdapter = null;
                 mLayoutManager = mPagerLayoutManager;
-                break;
-            case LAYOUT_TOP_TO_BOTTOM:
+            }
+            case LAYOUT_TOP_TO_BOTTOM -> {
                 ensureScrollLayoutManager();
                 mScrollLayoutManager.onAttach(mAdapter);
                 mScrollLayoutManager.setCurrentIndex(mIndex);
                 mAdapter = null;
                 mLayoutManager = mScrollLayoutManager;
-                break;
+            }
         }
 
         requestFill();
@@ -259,7 +255,6 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
         mLayoutManager = null;
     }
 
-    @SuppressWarnings("deprecation")
     private void onAttachToRootInternal() {
         if (null == mPageTextTexture) {
             mPageTextTexture = ImageMovableTextTexture.create(mPageTextTypeface,
@@ -309,10 +304,6 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
         postMethod(METHOD_SET_LAYOUT_MODE, layoutMode);
     }
 
-    public int getCurrentIndex() {
-        return mCurrentIndex.get();
-    }
-
     @Override
     public void requestLayout() {
         // Do not need requestLayout, because the size will not change
@@ -333,10 +324,6 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
         // Do not pass event to component, so handle event here
         mGestureRecognizer.onTouchEvent(event);
         return true;
-    }
-
-    String getDefaultErrorStr() {
-        return mDefaultErrorString;
     }
 
     String getEmptyStr() {
@@ -413,7 +400,7 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
 
     @Override
     public void onLongPress(float x, float y) {
-        if (mLayoutManager != null && !mLayoutManager.isTapOrPressEnable()) {
+        if (mLayoutManager != null && mLayoutManager.isTapOrPressDisable()) {
             return;
         }
 
@@ -494,7 +481,7 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
         }
     }
 
-    private void onSingleTapUpInternal(float x, float y) {
+    private void onSingleTapUpInternal() {
     }
 
     private GalleryPageView findPageUnder(float x, float y) {
@@ -508,7 +495,7 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
     }
 
     private void onSingleTapConfirmedInternal(float x, float y) {
-        if (mLayoutManager == null || !mLayoutManager.isTapOrPressEnable()) {
+        if (mLayoutManager == null || mLayoutManager.isTapOrPressDisable()) {
             return;
         }
 
@@ -535,7 +522,7 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
         }
     }
 
-    private void onDoubleTapInternal(float x, float y) {
+    private void onDoubleTapInternal() {
     }
 
     private void onDoubleTapConfirmedInternal(float x, float y) {
@@ -602,7 +589,7 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
     private void onScaleEndInternal() {
     }
 
-    private void onDownInternal(float x, float y) {
+    private void onDownInternal() {
         mScale = false;
         mScroll = false;
         mFirstScroll = true;
@@ -617,7 +604,7 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
         }
     }
 
-    private void onPointerDownInternal(float x, float y) {
+    private void onPointerDownInternal() {
         if (!mScroll && (mLayoutManager != null && mLayoutManager.canScale())) {
             mScale = true;
         }
@@ -637,7 +624,7 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
         }
 
         switch (mLayoutMode) {
-            case LAYOUT_LEFT_TO_RIGHT:
+            case LAYOUT_LEFT_TO_RIGHT -> {
                 if (mLayoutManager == mPagerLayoutManager) {
                     // mPagerLayoutManager already attached, just change mode
                     mPagerLayoutManager.setMode(PagerLayoutManager.MODE_LEFT_TO_RIGHT);
@@ -649,8 +636,8 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
                     mPagerLayoutManager.setCurrentIndex(index);
                     mLayoutManager = mPagerLayoutManager;
                 }
-                break;
-            case LAYOUT_RIGHT_TO_LEFT:
+            }
+            case LAYOUT_RIGHT_TO_LEFT -> {
                 if (mLayoutManager == mPagerLayoutManager) {
                     // mPagerLayoutManager already attached, just change mode
                     mPagerLayoutManager.setMode(PagerLayoutManager.MODE_RIGHT_TO_LEFT);
@@ -662,14 +649,14 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
                     mPagerLayoutManager.setCurrentIndex(index);
                     mLayoutManager = mPagerLayoutManager;
                 }
-                break;
-            case LAYOUT_TOP_TO_BOTTOM:
+            }
+            case LAYOUT_TOP_TO_BOTTOM -> {
                 ensureScrollLayoutManager();
                 int index = mLayoutManager.getInternalCurrentIndex();
                 mScrollLayoutManager.onAttach(mLayoutManager.onDetach());
                 mScrollLayoutManager.setCurrentIndex(index);
                 mLayoutManager = mScrollLayoutManager;
-                break;
+            }
         }
 
         requestFill();
@@ -750,76 +737,35 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
             Object[] args = argsListTemp.get(i);
 
             switch (method) {
-                case METHOD_ON_SINGLE_TAP_UP:
-                    onSingleTapUpInternal((Float) args[0], (Float) args[1]);
-                    break;
-                case METHOD_ON_SINGLE_TAP_CONFIRMED:
-                    onSingleTapConfirmedInternal((Float) args[0], (Float) args[1]);
-                    break;
-                case METHOD_ON_DOUBLE_TAP:
-                    onDoubleTapInternal((Float) args[0], (Float) args[1]);
-                    break;
-                case METHOD_ON_DOUBLE_TAP_CONFIRMED:
-                    onDoubleTapConfirmedInternal((Float) args[0], (Float) args[1]);
-                    break;
-                case METHOD_ON_LONG_PRESS:
-                    onLongPressInternal((Float) args[0], (Float) args[1]);
-                    break;
-                case METHOD_ON_SCROLL:
-                    onScrollInternal((Float) args[0], (Float) args[1], (Float) args[2],
-                            (Float) args[3], (Float) args[4], (Float) args[5]);
-                    break;
-                case METHOD_ON_FLING:
-                    onFlingInternal((Float) args[0], (Float) args[1]);
-                    break;
-                case METHOD_ON_SCALE_BEGIN:
-                    onScaleBeginInternal((Float) args[0], (Float) args[1]);
-                    break;
-                case METHOD_ON_SCALE:
-                    onScaleInternal((Float) args[0], (Float) args[1], (Float) args[2]);
-                    break;
-                case METHOD_ON_SCALE_END:
-                    onScaleEndInternal();
-                    break;
-                case METHOD_ON_DOWN:
-                    onDownInternal((Float) args[0], (Float) args[1]);
-                    break;
-                case METHOD_ON_UP:
-                    onUpInternal();
-                    break;
-                case METHOD_ON_POINTER_DOWN:
-                    onPointerDownInternal((Float) args[0], (Float) args[1]);
-                    break;
-                case METHOD_ON_POINTER_UP:
-                    onPointerUpInternal();
-                    break;
-                case METHOD_SET_LAYOUT_MODE:
-                    setLayoutModeInternal((Integer) args[0]);
-                    break;
-                case METHOD_SET_CURRENT_PAGE:
-                    setCurrentPageInternal((Integer) args[0]);
-                    break;
-                case METHOD_PAGE_LEFT:
-                    pageLeftInternal();
-                    break;
-                case METHOD_PAGE_RIGHT:
-                    pageRightInternal();
-                    break;
-                case METHOD_SET_SCALE_MODE:
-                    setScaleModeInternal((Integer) args[0]);
-                    break;
-                case METHOD_SET_START_POSITION:
-                    setStartPositionInternal((Integer) args[0]);
-                    break;
-                case METHOD_ON_ATTACH_TO_ROOT:
-                    onAttachToRootInternal();
-                    break;
-                case METHOD_SET_PAGER_INTERVAL:
-                    setPagerIntervalInternal((Integer) args[0]);
-                    break;
-                case METHOD_SET_SCROLL_INTERVAL:
-                    setScrollIntervalInternal((Integer) args[0]);
-                    break;
+                case METHOD_ON_SINGLE_TAP_UP -> onSingleTapUpInternal();
+                case METHOD_ON_SINGLE_TAP_CONFIRMED ->
+                        onSingleTapConfirmedInternal((Float) args[0], (Float) args[1]);
+                case METHOD_ON_DOUBLE_TAP -> onDoubleTapInternal();
+                case METHOD_ON_DOUBLE_TAP_CONFIRMED ->
+                        onDoubleTapConfirmedInternal((Float) args[0], (Float) args[1]);
+                case METHOD_ON_LONG_PRESS -> onLongPressInternal((Float) args[0], (Float) args[1]);
+                case METHOD_ON_SCROLL ->
+                        onScrollInternal((Float) args[0], (Float) args[1], (Float) args[2],
+                                (Float) args[3], (Float) args[4], (Float) args[5]);
+                case METHOD_ON_FLING -> onFlingInternal((Float) args[0], (Float) args[1]);
+                case METHOD_ON_SCALE_BEGIN ->
+                        onScaleBeginInternal((Float) args[0], (Float) args[1]);
+                case METHOD_ON_SCALE ->
+                        onScaleInternal((Float) args[0], (Float) args[1], (Float) args[2]);
+                case METHOD_ON_SCALE_END -> onScaleEndInternal();
+                case METHOD_ON_DOWN -> onDownInternal();
+                case METHOD_ON_UP -> onUpInternal();
+                case METHOD_ON_POINTER_DOWN -> onPointerDownInternal();
+                case METHOD_ON_POINTER_UP -> onPointerUpInternal();
+                case METHOD_SET_LAYOUT_MODE -> setLayoutModeInternal((Integer) args[0]);
+                case METHOD_SET_CURRENT_PAGE -> setCurrentPageInternal((Integer) args[0]);
+                case METHOD_PAGE_LEFT -> pageLeftInternal();
+                case METHOD_PAGE_RIGHT -> pageRightInternal();
+                case METHOD_SET_SCALE_MODE -> setScaleModeInternal((Integer) args[0]);
+                case METHOD_SET_START_POSITION -> setStartPositionInternal((Integer) args[0]);
+                case METHOD_ON_ATTACH_TO_ROOT -> onAttachToRootInternal();
+                case METHOD_SET_PAGER_INTERVAL -> setPagerIntervalInternal((Integer) args[0]);
+                case METHOD_SET_SCROLL_INTERVAL -> setScrollIntervalInternal((Integer) args[0]);
             }
         }
 
@@ -878,32 +824,6 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
 
     void releasePage(GalleryPageView page) {
         mGalleryPageViewPool.push(page);
-    }
-
-    /**
-     * Indeterminate GLProgressView
-     */
-    GLProgressView obtainProgress() {
-        GLProgressView progress;
-        if (mProgressCache != null) {
-            progress = mProgressCache;
-            mProgressCache = null;
-        } else {
-            progress = new GLProgressView();
-            progress.setColor(mProgressColor);
-            progress.setBgColor(mBackgroundColor);
-            progress.setIndeterminate(true);
-            progress.setMinimumWidth(mProgressSize);
-            progress.setMinimumHeight(mProgressSize);
-        }
-        return progress;
-    }
-
-    /**
-     * @param progress Indeterminate GLProgressView
-     */
-    void releaseProgress(GLProgressView progress) {
-        mProgressCache = progress;
     }
 
     GLTextureView obtainErrorView() {
@@ -970,7 +890,6 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
     public static class Builder {
         private final Context mContext;
         private final Adapter mAdapter;
-        private final int mEdgeColor = Color.WHITE;
         private Listener mListener;
         private int mLayoutMode = LAYOUT_LEFT_TO_RIGHT;
         private int mScaleMode = SCALE_FIT;
@@ -988,7 +907,6 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
         private Typeface mPageTextTypeface = Typeface.DEFAULT;
         private int mErrorTextColor = Color.RED;
         private int mErrorTextSize = 24;
-        private String mDefaultErrorString = "Error";
         private String mEmptyString = "Empty";
 
         public Builder(@NonNull Context context, @NonNull Adapter adapter) {
@@ -1081,11 +999,6 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
             return this;
         }
 
-        public Builder setDefaultErrorString(String defaultErrorString) {
-            mDefaultErrorString = defaultErrorString;
-            return this;
-        }
-
         public Builder setEmptyString(String emptyString) {
             mEmptyString = emptyString;
             return this;
@@ -1139,8 +1052,6 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
 
         public abstract void onDoubleTapConfirmed(float x, float y);
 
-        public abstract void onLongPress(float x, float y);
-
         public abstract void onScroll(float dx, float dy, float totalX, float totalY, float x, float y);
 
         public abstract void onFling(float velocityX, float velocityY);
@@ -1157,7 +1068,7 @@ public final class GalleryView extends GLView implements GestureRecognizer.Liste
 
         public abstract void onPageRight();
 
-        public abstract boolean isTapOrPressEnable();
+        public abstract boolean isTapOrPressDisable();
 
         public abstract GalleryPageView findPageByIndex(int index);
 

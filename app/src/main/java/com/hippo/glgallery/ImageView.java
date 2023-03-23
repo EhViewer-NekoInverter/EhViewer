@@ -65,30 +65,6 @@ class ImageView extends GLView implements ImageTexture.Callback {
         mAlphaAnimation.setInterpolator(AnimationUtils.FAST_SLOW_INTERPOLATOR);
     }
 
-    public static int sanitizeScaleMode(int scaleMode) {
-        if (scaleMode != SCALE_ORIGIN &&
-                scaleMode != SCALE_FIT_WIDTH &&
-                scaleMode != SCALE_FIT_HEIGHT &&
-                scaleMode != SCALE_FIT &&
-                scaleMode != SCALE_FIXED) {
-            return SCALE_FIT;
-        } else {
-            return scaleMode;
-        }
-    }
-
-    public static int sanitizeStartPosition(int startPosition) {
-        if (startPosition != START_POSITION_TOP_LEFT &&
-                startPosition != START_POSITION_TOP_RIGHT &&
-                startPosition != START_POSITION_BOTTOM_LEFT &&
-                startPosition != START_POSITION_BOTTOM_RIGHT &&
-                startPosition != START_POSITION_CENTER) {
-            return START_POSITION_TOP_RIGHT;
-        } else {
-            return startPosition;
-        }
-    }
-
     @Override
     protected int getSuggestedMinimumWidth() {
         return Math.max(super.getSuggestedMinimumWidth(),
@@ -229,28 +205,6 @@ class ImageView extends GLView implements ImageTexture.Callback {
         return mImageTexture != null;
     }
 
-    public boolean canFlingVertically() {
-        if (mScaleOffsetDirty) {
-            setScaleOffset(mScaleMode, mStartPosition, mScaleValue);
-            if (mScaleOffsetDirty) {
-                return false;
-            }
-        }
-
-        return mDst.top < 0.0f || mDst.bottom > getHeight();
-    }
-
-    public boolean canFlingHorizontally() {
-        if (mScaleOffsetDirty) {
-            setScaleOffset(mScaleMode, mStartPosition, mScaleValue);
-            if (mScaleOffsetDirty) {
-                return false;
-            }
-        }
-
-        return mDst.left < 0.0f || mDst.right > getWidth();
-    }
-
     public boolean canFling() {
         if (mScaleOffsetDirty) {
             setScaleOffset(mScaleMode, mStartPosition, mScaleValue);
@@ -365,22 +319,22 @@ class ImageView extends GLView implements ImageTexture.Callback {
         float targetWidth;
         float targetHeight;
         switch (scaleMode) {
-            case SCALE_ORIGIN:
+            case SCALE_ORIGIN -> {
                 mScale = 1.0f;
                 targetWidth = textureWidth;
                 targetHeight = textureHeight;
-                break;
-            case SCALE_FIT_WIDTH:
+            }
+            case SCALE_FIT_WIDTH -> {
                 mScale = (float) screenWidth / textureWidth;
                 targetWidth = screenWidth;
                 targetHeight = textureHeight * mScale;
-                break;
-            case SCALE_FIT_HEIGHT:
+            }
+            case SCALE_FIT_HEIGHT -> {
                 mScale = (float) screenHeight / textureHeight;
                 targetWidth = textureWidth * mScale;
                 targetHeight = screenHeight;
-                break;
-            case SCALE_FIT:
+            }
+            case SCALE_FIT -> {
                 float scaleX = (float) screenWidth / textureWidth;
                 float scaleY = (float) screenHeight / textureHeight;
                 if (scaleX < scaleY) {
@@ -391,15 +345,13 @@ class ImageView extends GLView implements ImageTexture.Callback {
                     mScale = scaleY;
                     targetWidth = textureWidth * scaleY;
                     targetHeight = screenHeight;
-                    break;
                 }
-                break;
-            case SCALE_FIXED:
-            default:
+            }
+            default -> {
                 mScale = scaleValue;
                 targetWidth = textureWidth * scaleValue;
                 targetHeight = textureHeight * scaleValue;
-                break;
+            }
         }
 
         // adjust scale, not too big, not too small
@@ -416,27 +368,26 @@ class ImageView extends GLView implements ImageTexture.Callback {
         // Set mDst.left and mDst.right
         RectF dst = mDst;
         switch (startPosition) {
-            case START_POSITION_TOP_LEFT:
+            case START_POSITION_TOP_LEFT -> {
                 dst.left = 0;
                 dst.top = 0;
-                break;
-            case START_POSITION_TOP_RIGHT:
+            }
+            case START_POSITION_TOP_RIGHT -> {
                 dst.left = screenWidth - targetWidth;
                 dst.top = 0;
-                break;
-            case START_POSITION_BOTTOM_LEFT:
+            }
+            case START_POSITION_BOTTOM_LEFT -> {
                 dst.left = 0;
                 dst.top = screenHeight - targetHeight;
-                break;
-            case START_POSITION_BOTTOM_RIGHT:
+            }
+            case START_POSITION_BOTTOM_RIGHT -> {
                 dst.left = screenWidth - targetWidth;
                 dst.top = screenHeight - targetHeight;
-                break;
-            case START_POSITION_CENTER:
-            default:
+            }
+            default -> {
                 dst.left = (screenWidth - targetWidth) / 2;
                 dst.top = (screenHeight - targetHeight) / 2;
-                break;
+            }
         }
 
         // Set mDst.right and mDst.bottom

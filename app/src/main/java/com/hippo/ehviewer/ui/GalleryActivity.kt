@@ -483,7 +483,6 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
             .setPageTextTypeface(Typeface.DEFAULT)
             .setErrorTextColor(this@GalleryActivity.getColor(R.color.red_500))
             .setErrorTextSize(resources.getDimensionPixelOffset(R.dimen.gallery_error_text_size))
-            .setDefaultErrorString(resources.getString(R.string.error_unknown))
             .setEmptyString(resources.getString(R.string.error_empty))
             .build()
         mGLRootView!!.setContentPane(mGalleryView)

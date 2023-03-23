@@ -17,11 +17,11 @@
 package com.hippo.glgallery;
 
 import android.content.Context;
-import android.os.SystemClock;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
+import androidx.annotation.NonNull;
 import androidx.core.view.GestureDetectorCompat;
 
 // This class aggregates three gesture detectors: GestureDetector,
@@ -53,14 +53,6 @@ class GestureRecognizer {
 
     public boolean isDown() {
         return mDownUpDetector.isDown();
-    }
-
-    public void cancelScale() {
-        long now = SystemClock.uptimeMillis();
-        MotionEvent cancelEvent = MotionEvent.obtain(
-                now, now, MotionEvent.ACTION_CANCEL, 0, 0, 0);
-        mScaleDetector.onTouchEvent(cancelEvent);
-        cancelEvent.recycle();
     }
 
     public interface Listener {
@@ -136,7 +128,7 @@ class GestureRecognizer {
         }
 
         @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+        public boolean onFling(@NonNull MotionEvent e1, @NonNull MotionEvent e2, float velocityX,
                                float velocityY) {
             return mListener.onFling(e1, e2, velocityX, velocityY);
         }
@@ -157,7 +149,7 @@ class GestureRecognizer {
         }
 
         @Override
-        public void onScaleEnd(ScaleGestureDetector detector) {
+        public void onScaleEnd(@NonNull ScaleGestureDetector detector) {
             mListener.onScaleEnd();
         }
     }

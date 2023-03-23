@@ -39,12 +39,9 @@ class PagerLayoutManager extends GalleryView.LayoutManager {
     public static final int MODE_LEFT_TO_RIGHT = 0;
     public static final int MODE_RIGHT_TO_LEFT = 1;
     private static final String TAG = PagerLayoutManager.class.getSimpleName();
-    private static final Interpolator SMOOTH_SCROLLER_INTERPOLATOR = new Interpolator() {
-        @Override
-        public float getInterpolation(float t) {
-            t -= 1.0f;
-            return t * t * t * t * t + 1.0f;
-        }
+    private static final Interpolator SMOOTH_SCROLLER_INTERPOLATOR = t -> {
+        t -= 1.0f;
+        return t * t * t * t * t + 1.0f;
     };
     private final int[] mScrollRemain = new int[2];
     private final float[] mScaleDefault = new float[4];
@@ -65,8 +62,6 @@ class PagerLayoutManager extends GalleryView.LayoutManager {
     private int mStartPosition;
     private float mScaleValue;
     private int mOffset;
-    private int mDeltaX;
-    private int mDeltaY;
     private boolean mCanScrollBetweenPages = false;
     private boolean mStopAnimationFinger;
     private int mInterval;
@@ -106,8 +101,6 @@ class PagerLayoutManager extends GalleryView.LayoutManager {
 
     private void resetParameters() {
         mOffset = 0;
-        mDeltaX = 0;
-        mDeltaY = 0;
         mCanScrollBetweenPages = false;
         mStopAnimationFinger = false;
     }
@@ -189,7 +182,6 @@ class PagerLayoutManager extends GalleryView.LayoutManager {
     private void removeProgress() {
         if (mProgress != null) {
             mGalleryView.removeComponent(mProgress);
-            mGalleryView.releaseProgress(mProgress);
             mProgress = null;
         }
     }
@@ -245,23 +237,11 @@ class PagerLayoutManager extends GalleryView.LayoutManager {
     }
 
     private GalleryPageView getLeftPage() {
-        switch (mMode) {
-            case MODE_LEFT_TO_RIGHT:
-                return mPrevious;
-            default:
-            case MODE_RIGHT_TO_LEFT:
-                return mNext;
-        }
+        return mMode == MODE_LEFT_TO_RIGHT ? mPrevious : mNext;
     }
 
     private GalleryPageView getRightPage() {
-        switch (mMode) {
-            case MODE_LEFT_TO_RIGHT:
-                return mNext;
-            default:
-            case MODE_RIGHT_TO_LEFT:
-                return mPrevious;
-        }
+        return mMode == MODE_LEFT_TO_RIGHT ? mNext : mPrevious;
     }
 
     private GalleryPageView obtainPage() {
@@ -271,12 +251,12 @@ class PagerLayoutManager extends GalleryView.LayoutManager {
     }
 
     private void layoutPage(GalleryPageView page, int widthSpec, int heightSpec,
-                            int left, int top, int right, int bottom) {
+                            int left, int right, int bottom) {
         Rect rect = mTempRect;
         page.getValidRect(rect);
         boolean oldValid = !rect.isEmpty();
         page.measure(widthSpec, heightSpec);
-        page.layout(left, top, right, bottom);
+        page.layout(left, 0, right, bottom);
         page.getValidRect(rect);
         boolean newValid = !rect.isEmpty();
         if (!oldValid && newValid) {
@@ -369,23 +349,21 @@ class PagerLayoutManager extends GalleryView.LayoutManager {
             final int heightSpec = GLView.MeasureSpec.makeMeasureSpec(height, GLView.MeasureSpec.EXACTLY);
             if (mCurrent != null) {
                 layoutPage(mCurrent, widthSpec, heightSpec,
-                        offset, 0, width + offset, height);
+                        offset, width + offset, height);
             }
             if (leftPage != null) {
                 layoutPage(leftPage, widthSpec, heightSpec,
-                        -mInterval - width + offset, 0, -mInterval + offset, height);
+                        -mInterval - width + offset, -mInterval + offset, height);
             }
             if (rightPage != null) {
                 layoutPage(rightPage, widthSpec, heightSpec,
-                        width + mInterval + offset, 0, width + mInterval + width + offset, height);
+                        width + mInterval + offset, width + mInterval + width + offset, height);
             }
         }
     }
 
     @Override
     public void onDown() {
-        mDeltaX = 0;
-        mDeltaY = 0;
         mStopAnimationFinger = cancelAllAnimations();
     }
 
@@ -408,7 +386,7 @@ class PagerLayoutManager extends GalleryView.LayoutManager {
             }
             final float pageDelta = 7 * (float) Math.abs(mOffset) / (width + mInterval);
             int duration = (int) ((pageDelta + 1) * 100);
-            mSmoothScroller.startSmoothScroll(dx, 0, duration);
+            mSmoothScroller.startSmoothScroll(dx, duration);
         }
     }
 
@@ -431,10 +409,6 @@ class PagerLayoutManager extends GalleryView.LayoutManager {
         }
 
         mSmoothScaler.startSmoothScaler(x, y, scale, endScale, 300);
-    }
-
-    @Override
-    public void onLongPress(float x, float y) {
     }
 
     private void pagePrevious() {
@@ -480,26 +454,18 @@ class PagerLayoutManager extends GalleryView.LayoutManager {
     }
 
     private void pageLeft() {
-        switch (mMode) {
-            case MODE_LEFT_TO_RIGHT:
-                pagePrevious();
-                break;
-            default:
-            case MODE_RIGHT_TO_LEFT:
-                pageNext();
-                break;
+        if (mMode == MODE_LEFT_TO_RIGHT) {
+            pagePrevious();
+        } else {
+            pageNext();
         }
     }
 
     private void pageRight() {
-        switch (mMode) {
-            case MODE_LEFT_TO_RIGHT:
-                pageNext();
-                break;
-            default:
-            case MODE_RIGHT_TO_LEFT:
-                pagePrevious();
-                break;
+        if (mMode == MODE_LEFT_TO_RIGHT) {
+            pageNext();
+        } else {
+            pagePrevious();
         }
     }
 
@@ -552,7 +518,7 @@ class PagerLayoutManager extends GalleryView.LayoutManager {
         return remain;
     }
 
-    public void scrollInternal(float dx, float dy, float x, float y) {
+    public void scrollInternal(float dx, float dy) {
         if (mCurrent == null) {
             return;
         }
@@ -573,8 +539,6 @@ class PagerLayoutManager extends GalleryView.LayoutManager {
                 remainX = mScrollRemain[0];
                 remainY = mScrollRemain[1];
                 canImageScroll = false;
-                mDeltaX = 0;
-                mDeltaY = 0;
             } else if (remainX == 0 ||
                     (getLeftPage() == null && mOffset == 0 && remainX < 0) ||
                     (getRightPage() == null && mOffset == 0 && remainX > 0)) {
@@ -585,13 +549,9 @@ class PagerLayoutManager extends GalleryView.LayoutManager {
                 remainX = scrollBetweenPages(remainX);
                 canImageScroll = true;
                 needFill = true;
-                mDeltaX = 0;
-                mDeltaY = 0;
             } else {
                 remainX = 0;
                 remainY = 0;
-                mDeltaX = 0;
-                mDeltaY = 0;
             }
         }
 
@@ -602,7 +562,7 @@ class PagerLayoutManager extends GalleryView.LayoutManager {
 
     @Override
     public void onScroll(float dx, float dy, float totalX, float totalY, float x, float y) {
-        scrollInternal(dx, dy, x, y);
+        scrollInternal(dx, dy);
     }
 
     @Override
@@ -692,7 +652,7 @@ class PagerLayoutManager extends GalleryView.LayoutManager {
     }
 
     @Override
-    public boolean isTapOrPressEnable() {
+    public boolean isTapOrPressDisable() {
         return !mStopAnimationFinger;
     }
 
@@ -800,19 +760,15 @@ class PagerLayoutManager extends GalleryView.LayoutManager {
 
     private class SmoothScroller extends Animation {
         private int mDx;
-        private int mDy;
         private int mLastX;
-        private int mLastY;
 
         public SmoothScroller() {
             setInterpolator(SMOOTH_SCROLLER_INTERPOLATOR);
         }
 
-        public void startSmoothScroll(int dx, int dy, int duration) {
+        public void startSmoothScroll(int dx, int duration) {
             mDx = dx;
-            mDy = dy;
             mLastX = 0;
-            mLastY = 0;
             setDuration(duration);
             start();
             mGalleryView.invalidate();
@@ -821,7 +777,6 @@ class PagerLayoutManager extends GalleryView.LayoutManager {
         @Override
         protected void onCalculate(float progress) {
             int x = (int) (mDx * progress);
-            int y = (int) (mDy * progress);
             int offsetX = x - mLastX;
             while (offsetX != 0) {
                 int oldOffsetX = offsetX;
@@ -834,14 +789,11 @@ class PagerLayoutManager extends GalleryView.LayoutManager {
                 }
             }
             mLastX = x;
-            mLastY = y;
         }
     }
 
     private class PageFling extends Fling {
         private final int[] mTemp = new int[2];
-        private int mVelocityX;
-        private int mVelocityY;
         private int mDx;
         private int mDy;
         private int mLastX;
@@ -853,8 +805,6 @@ class PagerLayoutManager extends GalleryView.LayoutManager {
 
         public void startFling(int velocityX, int minX, int maxX,
                                int velocityY, int minY, int maxY) {
-            mVelocityX = velocityX;
-            mVelocityY = velocityY;
             mDx = (int) (getSplineFlingDistance(velocityX) * Math.signum(velocityX));
             mDy = (int) (getSplineFlingDistance(velocityY) * Math.signum(velocityY));
             mLastX = 0;
@@ -863,19 +813,19 @@ class PagerLayoutManager extends GalleryView.LayoutManager {
             int durationY = getSplineFlingDuration(velocityY);
 
             if (mDx < minX) {
-                durationX = adjustDuration(0, mDx, minX, durationX);
+                durationX = adjustDuration(mDx, minX, durationX);
                 mDx = minX;
             }
             if (mDx > maxX) {
-                durationX = adjustDuration(0, mDx, maxX, durationX);
+                durationX = adjustDuration(mDx, maxX, durationX);
                 mDx = maxX;
             }
             if (mDy < minY) {
-                durationY = adjustDuration(0, mDy, minY, durationY);
+                durationY = adjustDuration(mDy, minY, durationY);
                 mDy = minY;
             }
             if (mDy > maxY) {
-                durationY = adjustDuration(0, mDy, maxY, durationY);
+                durationY = adjustDuration(mDy, maxY, durationY);
                 mDy = maxY;
             }
 
