@@ -34,7 +34,6 @@ android {
         storePassword = "000000"
         keyAlias = "key0"
         keyPassword = "000000"
-
         enableV3Signing = true
         enableV4Signing = true
     }
@@ -187,7 +186,4 @@ dependencies {
 
 configurations.all {
     exclude("dev.rikka.rikkax.appcompat", "appcompat")
-    exclude("org.jetbrains.kotlin", "kotlin-android-extensions-runtime")
-    exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk7")
-    exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk8")
 }
