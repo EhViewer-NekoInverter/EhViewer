@@ -76,7 +76,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
 
     private fun containInDownloadDir(index: Int): Boolean {
         val dir = downloadDir ?: return false
-        return findImageFile(dir, index) != null
+        return findImageFile(dir, index).first != null
     }
 
     private fun copyFromCacheToDownloadDir(index: Int, skip: Boolean): Boolean {
@@ -127,7 +127,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
     }
 
     private fun removeFromDownloadDir(index: Int): Boolean {
-        return downloadDir?.let { findImageFile(it, index)?.delete() } ?: false
+        return downloadDir?.let { findImageFile(it, index).first?.delete() } ?: false
     }
 
     fun remove(index: Int): Boolean {
@@ -224,7 +224,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
             // Read from download dir
             downloadDir?.let { uniFile ->
                 runCatching {
-                    findImageFile(uniFile, index)?.openFileDescriptor("r")?.use {
+                    findImageFile(uniFile, index).first?.openFileDescriptor("r")?.use {
                         it sendTo toFd
                     }
                 }.onFailure {
@@ -241,7 +241,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
     fun getExtension(index: Int): String? {
         val key = EhCacheKeyFactory.getImageKey(mGid, index)
         return sCache[key]?.use { it.metadata.toNioPath().readText() }
-            ?: downloadDir?.let { findImageFile(it, index) }
+            ?: downloadDir?.let { findImageFile(it, index).first }
                 ?.name.let { FileUtils.getExtensionFromFilename(it) }
     }
 
@@ -256,16 +256,17 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
             }
         }
         val dir = downloadDir ?: return null
-        val file = findImageFile(dir, index) ?: return null
-        file.openFileDescriptor("rw").use {
-            Image.rewriteGifSource2(it.fd)
-        }
-        return object : CloseableSource {
-            override val source: ImageDecoder.Source
-                get() = file.imageSource
+        val (file, isGif) = findImageFile(dir, index)
+        file?.run {
+            if (isGif) openFileDescriptor("rw").use {
+                Image.rewriteGifSource2(it.fd)
+            }
+            return object : CloseableSource {
+                override val source = imageSource
 
-            override fun close() {}
-        }
+                override fun close() {}
+            }
+        } ?: return null
     }
 
     companion object {
@@ -287,15 +288,15 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
                 ?: SUPPORT_IMAGE_EXTENSIONS[0]
         }
 
-        private fun findImageFile(dir: UniFile, index: Int): UniFile? {
+        private fun findImageFile(dir: UniFile, index: Int): Pair<UniFile?, Boolean> {
             for (extension in COMPAT_IMAGE_EXTENSIONS) {
-                val filename = generateImageFilename(index, extension)
+                val filename = perFilename(index, extension)
                 val file = dir.findFile(filename)
                 if (file != null) {
-                    return file
+                    return file to (extension == GIF_IMAGE_EXTENSION)
                 }
             }
-            return null
+            return null to false
         }
 
         /**
