@@ -653,7 +653,7 @@ class PagerLayoutManager extends GalleryView.LayoutManager {
 
     @Override
     public boolean isTapOrPressDisable() {
-        return !mStopAnimationFinger;
+        return mStopAnimationFinger;
     }
 
     @Override

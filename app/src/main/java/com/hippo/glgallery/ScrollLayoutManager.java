@@ -778,7 +778,7 @@ class ScrollLayoutManager extends GalleryView.LayoutManager {
         // UP
         ///////
         GalleryView galleryView = mGalleryView;
-        if (mIndex != 0 || mOffsetY < 0) {
+        if (mIndex > 0 || mOffsetY < 0) {
             // Cancel all animations
             cancelAllAnimations();
 
@@ -1028,7 +1028,6 @@ class ScrollLayoutManager extends GalleryView.LayoutManager {
         @Override
         protected void onFinish() {
             mFlingUp = false;
-
             getBottomState();
         }
     }
