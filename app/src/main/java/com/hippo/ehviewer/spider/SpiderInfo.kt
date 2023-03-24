@@ -66,8 +66,8 @@ class SpiderInfo @JvmOverloads constructor(
     fun saveToCache() {
         runCatching {
             spiderInfoCache.edit(gid.toString()) {
-                data.toFile().outputStream().use { outputStream ->
-                    write(outputStream)
+                data.toFile().outputStream().use {
+                    write(it)
                 }
             }
         }.onFailure {

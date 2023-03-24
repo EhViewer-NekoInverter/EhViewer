@@ -139,7 +139,7 @@ object EhDB {
         val end = if (reverse) 0 else limit - 1
         val toTime = list[end].time
         var i = end
-        while (if (reverse) i < start else i > start) {
+        while (if (reverse) i < start else i > 0) {
             list[i].time = list[i + step].time
             i += step
         }
@@ -235,6 +235,7 @@ object EhDB {
 
     @Synchronized
     fun deleteQuickSearch(quickSearch: QuickSearch?) {
+        quickSearch ?: return
         val dao = db.quickSearchDao()
         dao.delete(quickSearch)
     }
@@ -254,7 +255,7 @@ object EhDB {
         val end = if (reverse) 0 else limit - 1
         val toTime = list[end].time
         var i = end
-        while (if (reverse) i < start else i > start) {
+        while (if (reverse) i < start else i > 0) {
             list[i].time = list[i + step].time
             i += step
         }
