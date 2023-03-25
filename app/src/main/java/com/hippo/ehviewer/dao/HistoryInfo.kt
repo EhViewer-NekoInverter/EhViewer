@@ -31,11 +31,13 @@ class HistoryInfo() : BaseGalleryInfo() {
     // Trick: Use MODE for favoriteSlot
     @ColumnInfo(name = "MODE")
     var favoriteSlotBackingField: Int = 0
+
     override var favoriteSlot: Int
         get() = favoriteSlotBackingField - 2
         set(value) {
             favoriteSlotBackingField = value + 2
         }
+    // Trick end
 
     constructor(galleryInfo: GalleryInfo) : this() {
         gid = galleryInfo.gid
