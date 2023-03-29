@@ -15,9 +15,9 @@
  */
 package com.hippo.glgallery
 
-import android.util.LruCache
 import androidx.annotation.CallSuper
 import androidx.annotation.IntDef
+import androidx.collection.lruCache
 import com.hippo.ehviewer.Settings
 import com.hippo.glview.glrenderer.GLCanvas
 import com.hippo.glview.image.ImageWrapper
@@ -30,7 +30,11 @@ import com.hippo.yorozuya.OSUtils
 
 abstract class GalleryProvider {
     private val mNotifyTaskPool = ConcurrentPool<NotifyTask>(5)
-    private val mImageCache = ImageCache()
+    private val mImageCache = lruCache<Int, ImageWrapper>(
+        maxSize = (OSUtils.getTotalMemory() / 12).toInt().coerceIn(MIN_CACHE_SIZE, MAX_CACHE_SIZE),
+        sizeOf = { _, v -> v.width * v.height * if (v.animated) 15 else 4 },
+        onEntryRemoved = { _, _, o, _ -> o.release() }
+    )
     private val mPreloads = MathUtils.clamp(Settings.preloadImage, 0, 100)
     @Volatile
     private var mListener: Listener? = null
@@ -108,7 +112,8 @@ abstract class GalleryProvider {
 
     fun notifyPageSucceed(index: Int, image: Image) {
         val imageWrapper = ImageWrapper(image)
-        mImageCache.add(index, imageWrapper)
+        if (!imageWrapper.animated && imageWrapper.obtain())
+            mImageCache.put(index, imageWrapper)
         notifyPageSucceed(index, imageWrapper)
     }
 
@@ -203,33 +208,8 @@ abstract class GalleryProvider {
         }
     }
 
-    private class ImageCache : LruCache<Int, ImageWrapper>(
-        MathUtils.clamp(
-            OSUtils.getTotalMemory() / 12,
-            MIN_CACHE_SIZE,
-            MAX_CACHE_SIZE
-        ).toInt()
-    ) {
-        fun add(key: Int, value: ImageWrapper) {
-            if (!value.animated && value.obtain()) put(key, value)
-        }
-
-        override fun sizeOf(key: Int, value: ImageWrapper): Int {
-            return value.width * value.height * if (value.animated) 15 else 4
-        }
-
-        override fun entryRemoved(
-            evicted: Boolean,
-            key: Int,
-            oldValue: ImageWrapper,
-            newValue: ImageWrapper?
-        ) {
-            oldValue.release()
-        }
-
-        companion object {
-            private const val MAX_CACHE_SIZE = (512 * 1024 * 1024).toLong()
-            private const val MIN_CACHE_SIZE = (256 * 1024 * 1024).toLong()
-        }
+    companion object {
+        private const val MAX_CACHE_SIZE = 512 * 1024 * 1024
+        private const val MIN_CACHE_SIZE = 256 * 1024 * 1024
     }
 }
