@@ -37,10 +37,9 @@ import com.hippo.ehviewer.client.data.GalleryDetail
 import com.hippo.ehviewer.coil.MergeInterceptor
 import com.hippo.ehviewer.dao.buildMainDB
 import com.hippo.ehviewer.download.DownloadManager
-import com.hippo.ehviewer.ui.CommonOperations
 import com.hippo.ehviewer.ui.EhActivity
+import com.hippo.ehviewer.ui.keepNoMediaFileStatus
 import com.hippo.scene.SceneApplication
-import com.hippo.util.ExceptionUtils
 import com.hippo.util.ReadableTime
 import com.hippo.util.launchIO
 import com.hippo.yorozuya.FileUtils
@@ -112,25 +111,16 @@ class EhApplication : SceneApplication(), ImageLoaderFactory {
         mIdGenerator.setNextId(Settings.getInt(KEY_GLOBAL_STUFF_NEXT_ID, 0))
     }
 
-    private fun cleanupDownload() {
-        // Check no media file
-        try {
-            val downloadLocation = Settings.downloadLocation
-            if (Settings.mediaScan) {
-                CommonOperations.removeNoMediaFile(downloadLocation)
-            } else {
-                CommonOperations.ensureNoMediaFile(downloadLocation)
-            }
-        } catch (t: Throwable) {
-            t.printStackTrace()
-            ExceptionUtils.throwIfFatal(t)
+    private suspend fun cleanupDownload() {
+        runCatching {
+            keepNoMediaFileStatus()
+        }.onFailure {
+            it.printStackTrace()
         }
-        // Clear temp files
-        try {
+        runCatching {
             clearTempDir()
-        } catch (t: Throwable) {
-            t.printStackTrace()
-            ExceptionUtils.throwIfFatal(t)
+        }.onFailure {
+            it.printStackTrace()
         }
     }
 
