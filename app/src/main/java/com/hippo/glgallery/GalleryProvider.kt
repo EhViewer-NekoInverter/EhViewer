@@ -32,7 +32,7 @@ abstract class GalleryProvider {
     private val mNotifyTaskPool = ConcurrentPool<NotifyTask>(5)
     private val mImageCache = lruCache<Int, ImageWrapper>(
         maxSize = (OSUtils.getTotalMemory() / 12).toInt().coerceIn(MIN_CACHE_SIZE, MAX_CACHE_SIZE),
-        sizeOf = { _, v -> v.width * v.height * if (v.animated) 15 else 4 },
+        sizeOf = { _, v -> v.width * v.height * if (v.animated) 20 else 4 },
         onEntryRemoved = { _, _, o, _ -> o.release() }
     )
     private val mPreloads = MathUtils.clamp(Settings.preloadImage, 0, 100)
@@ -59,12 +59,9 @@ abstract class GalleryProvider {
     abstract val size: Int
 
     fun request(index: Int) {
-        val imageWrapper = mImageCache[index]
-        if (imageWrapper != null) {
-            notifyPageSucceed(index, imageWrapper)
-        } else {
-            onRequest(index)
-        }
+        mImageCache[index]?.let {
+            notifyPageSucceed(index, it)
+        } ?: onRequest(index)
         val pagesAbsent =
             ((index - 5).coerceAtLeast(0) until (mPreloads + index).coerceAtMost(size)).mapNotNull { it.takeIf { mImageCache[it] == null } }
         preloadPages(
@@ -112,8 +109,7 @@ abstract class GalleryProvider {
 
     fun notifyPageSucceed(index: Int, image: Image) {
         val imageWrapper = ImageWrapper(image)
-        if (!imageWrapper.animated && imageWrapper.obtain())
-            mImageCache.put(index, imageWrapper)
+        if (imageWrapper.obtain()) mImageCache.put(index, imageWrapper)
         notifyPageSucceed(index, imageWrapper)
     }
 
