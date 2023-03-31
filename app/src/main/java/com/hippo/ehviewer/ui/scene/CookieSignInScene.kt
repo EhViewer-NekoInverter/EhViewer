@@ -62,7 +62,8 @@ class CookieSignInScene : SolidScene(), OnEditorActionListener, View.OnClickList
 
     override fun onCreateView(
         inflater: LayoutInflater,
-        container: ViewGroup?, savedInstanceState: Bundle?
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         val view = inflater.inflate(R.layout.scene_cookie_sign_in, container, false)
         val loginForm = ViewUtils.`$$`(view, R.id.cookie_signin_form)

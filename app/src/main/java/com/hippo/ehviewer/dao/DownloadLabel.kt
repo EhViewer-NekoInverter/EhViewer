@@ -31,5 +31,5 @@ data class DownloadLabel(
     var label: String? = null,
 
     @ColumnInfo(name = "TIME")
-    var time: Long = 0
+    var time: Long = 0,
 )

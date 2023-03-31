@@ -110,7 +110,7 @@ import kotlin.coroutines.resume
 
 class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Listener {
     private val requestStoragePermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
+        ActivityResultContracts.RequestPermission(),
     ) { result ->
         if (result!! && mSavingPage != -1) {
             saveImage(mSavingPage)
@@ -120,7 +120,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         mSavingPage = -1
     }
     private val saveImageToLauncher = registerForActivityResult(
-        CreateDocument("todo/todo")
+        CreateDocument("todo/todo"),
     ) { uri ->
         if (uri != null) {
             val filepath = AppConfig.getExternalTempDir().toString() + File.separator + mCacheFileName
@@ -139,7 +139,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
                         Toast.makeText(
                             this@GalleryActivity,
                             getString(R.string.image_saved, uri.path),
-                            Toast.LENGTH_SHORT
+                            Toast.LENGTH_SHORT,
                         ).show()
                     }
                 }
@@ -218,13 +218,15 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
                     grantUriPermission(
                         BuildConfig.APPLICATION_ID,
                         mUri,
-                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION,
                     )
                 } catch (e: Exception) {
                     Toast.makeText(this, R.string.error_reading_failed, Toast.LENGTH_SHORT).show()
                 }
                 val continuation: AtomicReference<Continuation<String>?> = AtomicReference(null)
-                mGalleryProvider = ArchiveGalleryProvider(this, mUri!!,
+                mGalleryProvider = ArchiveGalleryProvider(
+                    this,
+                    mUri!!,
                     flow {
                         if (!dialogShown) {
                             withUIContext {
@@ -233,9 +235,9 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
                                     show()
                                     getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                                         val passwd = builder.text
-                                        if (passwd.isEmpty())
+                                        if (passwd.isEmpty()) {
                                             builder.setError(getString(R.string.passwd_cannot_be_empty))
-                                        else {
+                                        } else {
                                             continuation.getAndSet(null)?.resume(passwd)
                                         }
                                     }
@@ -256,7 +258,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
                                 builder.setError(getString(R.string.passwd_wrong))
                             }
                         }
-                    }
+                    },
                 )
             }
         }
@@ -283,9 +285,11 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         mGalleryProvider?.let {
             lifecycleScope.launchIO {
                 it.start()
-                if (it.awaitReady()) withUIContext {
-                    mCurrentIndex = 0
-                    setGallery()
+                if (it.awaitReady()) {
+                    withUIContext {
+                        mCurrentIndex = 0
+                        setGallery()
+                    }
                 }
             }
         }
@@ -609,17 +613,19 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
 
         // Check keyboard and Dpad
         return if (keyCode == KeyEvent.KEYCODE_PAGE_UP ||
-                    keyCode == KeyEvent.KEYCODE_PAGE_DOWN ||
-                    keyCode == KeyEvent.KEYCODE_DPAD_LEFT ||
-                    keyCode == KeyEvent.KEYCODE_DPAD_UP ||
-                    keyCode == KeyEvent.KEYCODE_DPAD_RIGHT ||
-                    keyCode == KeyEvent.KEYCODE_DPAD_DOWN ||
-                    keyCode == KeyEvent.KEYCODE_DPAD_CENTER ||
-                    keyCode == KeyEvent.KEYCODE_SPACE ||
-                    keyCode == KeyEvent.KEYCODE_MENU
+            keyCode == KeyEvent.KEYCODE_PAGE_DOWN ||
+            keyCode == KeyEvent.KEYCODE_DPAD_LEFT ||
+            keyCode == KeyEvent.KEYCODE_DPAD_UP ||
+            keyCode == KeyEvent.KEYCODE_DPAD_RIGHT ||
+            keyCode == KeyEvent.KEYCODE_DPAD_DOWN ||
+            keyCode == KeyEvent.KEYCODE_DPAD_CENTER ||
+            keyCode == KeyEvent.KEYCODE_SPACE ||
+            keyCode == KeyEvent.KEYCODE_MENU
         ) {
             true
-        } else super.onKeyUp(keyCode, event)
+        } else {
+            super.onKeyUp(keyCode, event)
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -775,7 +781,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         val file = mGalleryProvider!!.save(
             page,
             UniFile.fromFile(dir)!!,
-            mGalleryProvider!!.getImageFilename(page)
+            mGalleryProvider!!.getImageFilename(page),
         )
         if (file == null) {
             Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show()
@@ -787,7 +793,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
             return
         }
         var mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-            MimeTypeMap.getFileExtensionFromUrl(filename)
+            MimeTypeMap.getFileExtensionFromUrl(filename),
         )
         if (TextUtils.isEmpty(mimeType)) {
             mimeType = "image/jpeg"
@@ -795,17 +801,18 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         val uri = FileProvider.getUriForFile(
             this,
             BuildConfig.APPLICATION_ID + ".fileprovider",
-            File(dir, filename)
+            File(dir, filename),
         )
         val intent = Intent()
         intent.action = Intent.ACTION_SEND
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         intent.putExtra(Intent.EXTRA_STREAM, uri)
-        if (mGalleryInfo != null)
+        if (mGalleryInfo != null) {
             intent.putExtra(
                 Intent.EXTRA_TEXT,
-                EhUrl.getGalleryDetailUrl(mGalleryInfo!!.gid, mGalleryInfo!!.token)
+                EhUrl.getGalleryDetailUrl(mGalleryInfo!!.gid, mGalleryInfo!!.token),
             )
+        }
         intent.setDataAndType(uri, mimeType)
         try {
             startActivity(Intent.createChooser(intent, getString(R.string.share_image)))
@@ -827,7 +834,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         val file = mGalleryProvider!!.save(
             page,
             UniFile.fromFile(dir)!!,
-            mGalleryProvider!!.getImageFilename(page)
+            mGalleryProvider!!.getImageFilename(page),
         )
         if (file == null) {
             Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show()
@@ -841,7 +848,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         val uri = FileProvider.getUriForFile(
             this,
             BuildConfig.APPLICATION_ID + ".fileprovider",
-            File(dir, filename)
+            File(dir, filename),
         )
         val clipboardManager = getSystemService(ClipboardManager::class.java)
         if (clipboardManager != null) {
@@ -855,9 +862,9 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         if (null == mGalleryProvider) {
             return
         }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q &&ContextCompat.checkSelfPermission(
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && ContextCompat.checkSelfPermission(
                 this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             mSavingPage = page
@@ -866,7 +873,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         }
         val filename = mGalleryProvider!!.getImageFilenameWithExtension(page)
         var mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-            MimeTypeMap.getFileExtensionFromUrl(filename)
+            MimeTypeMap.getFileExtensionFromUrl(filename),
         )
         if (TextUtils.isEmpty(mimeType)) {
             mimeType = "image/jpeg"
@@ -880,14 +887,14 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             values.put(
                 MediaStore.MediaColumns.RELATIVE_PATH,
-                Environment.DIRECTORY_PICTURES + File.separator + AppConfig.APP_DIRNAME
+                Environment.DIRECTORY_PICTURES + File.separator + AppConfig.APP_DIRNAME,
             )
             values.put(MediaStore.MediaColumns.IS_PENDING, 1)
             realPath = Environment.DIRECTORY_PICTURES + File.separator + AppConfig.APP_DIRNAME
         } else {
             val path = File(
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                AppConfig.APP_DIRNAME
+                AppConfig.APP_DIRNAME,
             )
             realPath = path.toString()
             if (!FileUtils.ensureDirectory(path)) {
@@ -917,7 +924,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         Toast.makeText(
             this,
             getString(R.string.image_saved, realPath + File.separator + filename),
-            Toast.LENGTH_SHORT
+            Toast.LENGTH_SHORT,
         ).show()
     }
 
@@ -933,7 +940,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         val file = mGalleryProvider!!.save(
             page,
             UniFile.fromFile(dir)!!,
-            mGalleryProvider!!.getImageFilename(page)
+            mGalleryProvider!!.getImageFilename(page),
         )
         if (file == null) {
             Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show()
@@ -962,7 +969,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
             getString(R.string.page_menu_share),
             getString(android.R.string.copy),
             getString(R.string.page_menu_save),
-            getString(R.string.page_menu_save_to)
+            getString(R.string.page_menu_save_to),
         )
         pageDialogListener(builder, items, page)
         builder.show()
@@ -971,7 +978,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
     private fun pageDialogListener(
         builder: AlertDialog.Builder,
         items: Array<CharSequence>,
-        page: Int
+        page: Int,
     ) {
         builder.setItems(items) { _: DialogInterface?, which: Int ->
             if (mGalleryProvider == null) {
@@ -997,8 +1004,8 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         }
     }
 
-    @SuppressLint("UseSwitchCompatOrMaterialCode")
-    private inner class GalleryMenuHelper @SuppressLint("InflateParams") constructor(context: Context?) :
+    @SuppressLint("InflateParams", "UseSwitchCompatOrMaterialCode")
+    private inner class GalleryMenuHelper constructor(context: Context?) :
         DialogInterface.OnClickListener {
         val view: View
         private val mScreenRotation: Spinner
@@ -1115,14 +1122,22 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
             mProgress?.visibility = if (showProgress) View.VISIBLE else View.GONE
             mBattery?.visibility = if (showBattery) View.VISIBLE else View.GONE
             mGalleryView!!.setPagerInterval(
-                if (showPageInterval) resources.getDimensionPixelOffset(
-                    R.dimen.gallery_pager_interval
-                ) else 0
+                if (showPageInterval) {
+                    resources.getDimensionPixelOffset(
+                        R.dimen.gallery_pager_interval,
+                    )
+                } else {
+                    0
+                },
             )
             mGalleryView!!.setScrollInterval(
-                if (showPageInterval) resources.getDimensionPixelOffset(
-                    R.dimen.gallery_scroll_interval
-                ) else 0
+                if (showPageInterval) {
+                    resources.getDimensionPixelOffset(
+                        R.dimen.gallery_scroll_interval,
+                    )
+                } else {
+                    0
+                },
             )
             setScreenLightness(customScreenLightness, screenLightness)
             // Update slider

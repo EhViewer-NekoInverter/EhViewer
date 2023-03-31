@@ -28,7 +28,7 @@ import com.hippo.ehviewer.R
 open class CheckTextView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
+    defStyleAttr: Int = 0,
 ) : AppCompatCheckedTextView(context, attrs, defStyleAttr), View.OnClickListener {
     private val mSelfBounds = Rect()
     private val mOverlayBounds = Rect()
@@ -39,17 +39,21 @@ open class CheckTextView @JvmOverloads constructor(
 
     init {
         val a = context.obtainStyledAttributes(
-            attrs, R.styleable.CheckTextView,
-            defStyleAttr, 0
+            attrs,
+            R.styleable.CheckTextView,
+            defStyleAttr,
+            0,
         )
         mForegroundGravity = a.getInt(
-            R.styleable.CheckTextView_android_foregroundGravity, mForegroundGravity
+            R.styleable.CheckTextView_android_foregroundGravity,
+            mForegroundGravity,
         )
         a.getDrawable(R.styleable.CheckTextView_android_foreground)?.let {
             foreground = it
         }
         mForegroundInPadding = a.getBoolean(
-            R.styleable.CheckTextView_foregroundInsidePadding, true
+            R.styleable.CheckTextView_foregroundInsidePadding,
+            true,
         )
         a.recycle()
         setOnClickListener(this)
@@ -176,8 +180,11 @@ open class CheckTextView @JvmOverloads constructor(
                     selfBounds[paddingLeft, paddingTop, w - paddingRight] = h - paddingBottom
                 }
                 Gravity.apply(
-                    mForegroundGravity, foreground.intrinsicWidth,
-                    foreground.intrinsicHeight, selfBounds, overlayBounds
+                    mForegroundGravity,
+                    foreground.intrinsicWidth,
+                    foreground.intrinsicHeight,
+                    selfBounds,
+                    overlayBounds,
                 )
                 foreground.bounds = overlayBounds
             }

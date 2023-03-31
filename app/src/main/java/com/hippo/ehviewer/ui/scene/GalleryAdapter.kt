@@ -41,8 +41,11 @@ import com.hippo.ehviewer.download.DownloadManager as downloadManager
 
 @SuppressLint("InflateParams")
 internal abstract class GalleryAdapter(
-    private val mInflater: LayoutInflater, private val mResources: Resources,
-    private val mRecyclerView: RecyclerView, type: Int, showFavourited: Boolean
+    private val mInflater: LayoutInflater,
+    private val mResources: Resources,
+    private val mRecyclerView: RecyclerView,
+    type: Int,
+    showFavourited: Boolean,
 ) : RecyclerView.Adapter<GalleryHolder>() {
     private val mLayoutManager: AutoStaggeredGridLayoutManager =
         AutoStaggeredGridLayoutManager(0, StaggeredGridLayoutManager.VERTICAL)
@@ -57,6 +60,7 @@ internal abstract class GalleryAdapter(
 
     var type: Int
         get() = mType
+
         @SuppressLint("NotifyDataSetChanged")
         set(type) {
             if (type == mType) {
@@ -125,8 +129,10 @@ internal abstract class GalleryAdapter(
     private fun adjustPaddings() {
         val recyclerView = mRecyclerView
         recyclerView.setPadding(
-            recyclerView.paddingLeft, recyclerView.paddingTop + mPaddingTopSB,
-            recyclerView.paddingRight, recyclerView.paddingBottom
+            recyclerView.paddingLeft,
+            recyclerView.paddingTop + mPaddingTopSB,
+            recyclerView.paddingRight,
+            recyclerView.paddingBottom,
         )
     }
 
@@ -161,13 +167,13 @@ internal abstract class GalleryAdapter(
         holder.card.setOnClickListener {
             onItemClick(
                 holder.itemView,
-                holder.bindingAdapterPosition
+                holder.bindingAdapterPosition,
             )
         }
         holder.card.setOnLongClickListener {
             onItemLongClick(
                 holder.itemView,
-                holder.bindingAdapterPosition
+                holder.bindingAdapterPosition,
             )
         }
         return holder
@@ -264,7 +270,7 @@ internal abstract class GalleryAdapter(
         // Update transition name
         ViewCompat.setTransitionName(
             holder.thumb,
-            TransitionNameFactory.getThumbTransitionName(gi.gid)
+            TransitionNameFactory.getThumbTransitionName(gi.gid),
         )
     }
 

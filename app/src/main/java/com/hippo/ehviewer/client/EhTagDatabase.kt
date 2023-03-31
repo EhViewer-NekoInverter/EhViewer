@@ -77,16 +77,21 @@ object EhTagDatabase {
     }
 
     private fun internalSuggest(
-        tags: Map<String, String>, prefix: String?,
-        keyword: String, translate: Boolean
+        tags: Map<String, String>,
+        prefix: String?,
+        keyword: String,
+        translate: Boolean,
     ): ArrayList<Pair<String?, String>> {
         val equalsTags = ArrayList<Pair<String?, String>>()
         val startsTags = ArrayList<Pair<String?, String>>()
         val containsTags = ArrayList<Pair<String?, String>>()
         tags.forEach { (tag, hint) ->
             val pair = Pair(if (translate) hint else null, if (prefix == null) tag else "$prefix:$tag")
-            val tagStr = if (prefix == null && (keyword.endsWith(':') || !tag.endsWith(':')))
-                tag.substring(tag.indexOf(':') + 1) else tag
+            val tagStr = if (prefix == null && (keyword.endsWith(':') || !tag.endsWith(':'))) {
+                tag.substring(tag.indexOf(':') + 1)
+            } else {
+                tag
+            }
             if (tagStr.equalsIgnoreSpace(keyword) || hint.equalsIgnoreSpace(keyword)) {
                 equalsTags.add(pair)
             } else if (tagStr.startsWithIgnoreSpace(keyword) || hint.startsWithIgnoreSpace(keyword)) {
@@ -107,8 +112,8 @@ object EhTagDatabase {
         val tags = tagGroups[prefix.takeIf { keywordTag.isNotEmpty() && it != NAMESPACE_PREFIX }]
         tags?.let {
             return internalSuggest(it, prefix, keywordTag, translate)
-        } ?:
-            return internalSuggest(tagList, null, keyword, translate)
+        }
+            ?: return internalSuggest(tagList, null, keyword, translate)
     }
 
     private fun String.removeSpace(): String = replace(" ", "")

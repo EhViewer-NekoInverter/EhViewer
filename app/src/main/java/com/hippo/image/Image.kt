@@ -37,7 +37,7 @@ import kotlin.math.min
 
 class Image private constructor(
     private val src: CloseableSource? = null,
-    drawable: Drawable? = null
+    drawable: Drawable? = null,
 ) {
     private var mObtainedDrawable: Drawable?
     private var mBitmap: Bitmap? = null
@@ -45,12 +45,12 @@ class Image private constructor(
 
     init {
         mObtainedDrawable = null
-        src?.let {src ->
+        src?.let { src ->
             mObtainedDrawable =
                 ImageDecoder.decodeDrawable(src.source) { decoder: ImageDecoder, info: ImageInfo, _: Source ->
                     decoder.allocator = ALLOCATOR_SOFTWARE
                     decoder.setTargetSampleSize(
-                        calculateSampleSize(info, 2 * screenHeight, 2 * screenWidth)
+                        calculateSampleSize(info, 2 * screenHeight, 2 * screenWidth),
                     )
                 }.also {
                     if (it !is Animatable) src.close()
@@ -106,7 +106,7 @@ class Image private constructor(
             offsetX,
             offsetY,
             width,
-            height
+            height,
         )
     }
 
@@ -131,7 +131,7 @@ class Image private constructor(
         fun calculateSampleSize(info: ImageInfo, targetHeight: Int, targetWeight: Int): Int {
             return min(
                 info.size.width / targetWeight,
-                info.size.height / targetHeight
+                info.size.height / targetHeight,
             ).coerceAtLeast(1)
         }
 
@@ -142,7 +142,7 @@ class Image private constructor(
         val imageSearchDecoderSampleListener =
             ImageDecoder.OnHeaderDecodedListener { decoder, info, _ ->
                 decoder.setTargetSampleSize(
-                    calculateSampleSize(info, imageSearchMaxSize, imageSearchMaxSize)
+                    calculateSampleSize(info, imageSearchMaxSize, imageSearchMaxSize),
                 )
             }
 
@@ -171,7 +171,7 @@ class Image private constructor(
             offsetX: Int,
             offsetY: Int,
             width: Int,
-            height: Int
+            height: Int,
         )
 
         @JvmStatic

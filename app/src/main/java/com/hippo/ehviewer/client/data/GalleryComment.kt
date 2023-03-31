@@ -33,5 +33,5 @@ class GalleryComment(
     var time: Long = 0,
     var user: String? = null,
     var comment: String? = null,
-    var lastEdited: Long = 0
+    var lastEdited: Long = 0,
 ) : Parcelable

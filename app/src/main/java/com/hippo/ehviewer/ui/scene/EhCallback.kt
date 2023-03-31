@@ -24,7 +24,7 @@ import com.hippo.ehviewer.ui.MainActivity
 import com.hippo.scene.SceneFragment
 
 abstract class EhCallback<E : SceneFragment?, T>(
-    context: Context
+    context: Context,
 ) : EhClient.Callback<T> {
     val application: EhApplication
 
@@ -44,8 +44,9 @@ abstract class EhCallback<E : SceneFragment?, T>(
             activity.showTip(id, length)
         } else {
             Toast.makeText(
-                application, id,
-                if (length == BaseScene.LENGTH_LONG) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
+                application,
+                id,
+                if (length == BaseScene.LENGTH_LONG) Toast.LENGTH_LONG else Toast.LENGTH_SHORT,
             ).show()
         }
     }
@@ -56,8 +57,9 @@ abstract class EhCallback<E : SceneFragment?, T>(
             activity.showTip(tip, length)
         } else {
             Toast.makeText(
-                application, tip,
-                if (length == BaseScene.LENGTH_LONG) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
+                application,
+                tip,
+                if (length == BaseScene.LENGTH_LONG) Toast.LENGTH_LONG else Toast.LENGTH_SHORT,
             ).show()
         }
     }

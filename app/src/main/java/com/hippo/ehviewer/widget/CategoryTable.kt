@@ -30,7 +30,8 @@ import com.hippo.widget.CheckTextView
 import com.hippo.yorozuya.NumberUtils
 
 class CategoryTable @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
+    context: Context,
+    attrs: AttributeSet? = null,
 ) : TableLayout(context, attrs), View.OnLongClickListener {
     private var mDoujinshi: CheckTextView
     private var mManga: CheckTextView
@@ -62,7 +63,7 @@ class CategoryTable @JvmOverloads constructor(
         mAsianPorn = row4.getChildAt(0) as CheckTextView
         mMisc = row4.getChildAt(1) as CheckTextView
         mOptions = arrayOf(
-            mDoujinshi, mManga, mArtistCG, mGameCG, mWestern, mNonH, mImageSets, mCosplay, mAsianPorn, mMisc
+            mDoujinshi, mManga, mArtistCG, mGameCG, mWestern, mNonH, mImageSets, mCosplay, mAsianPorn, mMisc,
         )
         for (option in mOptions) {
             option.setOnLongClickListener(this)

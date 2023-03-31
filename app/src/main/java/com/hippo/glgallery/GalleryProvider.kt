@@ -33,11 +33,13 @@ abstract class GalleryProvider {
     private val mImageCache = lruCache<Int, ImageWrapper>(
         maxSize = (OSUtils.getTotalMemory() / 12).toInt().coerceIn(MIN_CACHE_SIZE, MAX_CACHE_SIZE),
         sizeOf = { _, v -> v.width * v.height * if (v.animated) 20 else 4 },
-        onEntryRemoved = { _, _, o, _ -> o.release() }
+        onEntryRemoved = { _, _, o, _ -> o.release() },
     )
     private val mPreloads = MathUtils.clamp(Settings.preloadImage, 0, 100)
+
     @Volatile
     private var mListener: Listener? = null
+
     @Volatile
     private var mGLRoot: GLRoot? = null
 
@@ -65,9 +67,10 @@ abstract class GalleryProvider {
         val pagesAbsent =
             ((index - 5).coerceAtLeast(0) until (mPreloads + index).coerceAtMost(size)).mapNotNull { it.takeIf { mImageCache[it] == null } }
         preloadPages(
-            pagesAbsent, (index - 10).coerceAtLeast(0) to (mPreloads + index + 10).coerceAtMost(
-                size
-            )
+            pagesAbsent,
+            (index - 10).coerceAtLeast(0) to (mPreloads + index + 10).coerceAtMost(
+                size,
+            ),
         )
     }
 
@@ -126,7 +129,7 @@ abstract class GalleryProvider {
         index: Int,
         percent: Float,
         image: ImageWrapper?,
-        error: String?
+        error: String?,
     ) {
         val listener = mListener ?: return
         val glRoot = mGLRoot ?: return
@@ -146,7 +149,7 @@ abstract class GalleryProvider {
 
     private class NotifyTask(
         private val mListener: Listener,
-        private val mPool: ConcurrentPool<NotifyTask>
+        private val mPool: ConcurrentPool<NotifyTask>,
     ) : OnGLIdleListener {
         @Type
         private var mType = 0
@@ -159,7 +162,7 @@ abstract class GalleryProvider {
             index: Int,
             percent: Float,
             image: ImageWrapper?,
-            error: String?
+            error: String?,
         ) {
             mType = type
             mIndex = index
@@ -192,7 +195,7 @@ abstract class GalleryProvider {
 
         @IntDef(TYPE_DATA_CHANGED, TYPE_WAIT, TYPE_PERCENT, TYPE_SUCCEED, TYPE_FAILED)
         @Retention(
-            AnnotationRetention.SOURCE
+            AnnotationRetention.SOURCE,
         )
         annotation class Type
         companion object {

@@ -61,10 +61,10 @@ class DownloadService : Service(), DownloadManager.DownloadListener {
         mNotifyManager!!.createNotificationChannel(
             NotificationChannelCompat.Builder(
                 mChannelID!!,
-                NotificationManagerCompat.IMPORTANCE_LOW
+                NotificationManagerCompat.IMPORTANCE_LOW,
             )
                 .setName(getString(R.string.download_service))
-                .build()
+                .build(),
         )
         mDownloadManager = DownloadManager
         mDownloadManager!!.setDownloadListener(this)
@@ -167,7 +167,7 @@ class DownloadService : Service(), DownloadManager.DownloadListener {
             .addAction(
                 R.drawable.v_pause_x24,
                 getString(R.string.stat_download_action_stop_all),
-                piStopAll
+                piStopAll,
             )
             .setShowWhen(false)
             .setChannelId(mChannelID!!)
@@ -189,8 +189,10 @@ class DownloadService : Service(), DownloadManager.DownloadListener {
         activityIntent.putExtra(StageActivity.KEY_SCENE_NAME, DownloadsScene::class.java.name)
         activityIntent.putExtra(StageActivity.KEY_SCENE_ARGS, bundle)
         val piActivity = PendingIntent.getActivity(
-            this@DownloadService, 0,
-            activityIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            this@DownloadService,
+            0,
+            activityIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
         mDownloadedBuilder = NotificationCompat.Builder(applicationContext, mChannelID!!)
             .setSmallIcon(android.R.drawable.stat_sys_download_done)
@@ -212,7 +214,7 @@ class DownloadService : Service(), DownloadManager.DownloadListener {
             .setContentText(getString(R.string.stat_509_alert_title))
             .setContentText(getString(R.string.stat_509_alert_text))
             .setStyle(
-                NotificationCompat.BigTextStyle().bigText(getString(R.string.stat_509_alert_text))
+                NotificationCompat.BigTextStyle().bigText(getString(R.string.stat_509_alert_text)),
             )
             .setAutoCancel(true)
             .setOngoing(false)
@@ -244,8 +246,10 @@ class DownloadService : Service(), DownloadManager.DownloadListener {
         activityIntent.putExtra(StageActivity.KEY_SCENE_NAME, DownloadsScene::class.java.name)
         activityIntent.putExtra(StageActivity.KEY_SCENE_ARGS, bundle)
         val piActivity = PendingIntent.getActivity(
-            this@DownloadService, 0,
-            activityIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            this@DownloadService,
+            0,
+            activityIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
         mDownloadingBuilder!!.setContentTitle(EhUtils.getSuitableTitle(info))
             .setContentText(null)
@@ -270,7 +274,7 @@ class DownloadService : Service(), DownloadManager.DownloadListener {
             getString(
                 R.string.download_speed_text_2,
                 text,
-                ReadableTime.getShortTimeInterval(remaining)
+                ReadableTime.getShortTimeInterval(remaining),
             )
         } else {
             getString(R.string.download_speed_text, text)
@@ -330,7 +334,7 @@ class DownloadService : Service(), DownloadManager.DownloadListener {
                 text = if (sItemTitleArray.size() >= 1) {
                     getString(
                         R.string.stat_download_done_line_succeeded,
-                        sItemTitleArray.valueAt(0)
+                        sItemTitleArray.valueAt(0),
                     )
                 } else {
                     Log.d("TAG", "WTF, sItemTitleArray is null")
@@ -346,7 +350,7 @@ class DownloadService : Service(), DownloadManager.DownloadListener {
                 text = if (sItemTitleArray.size() >= 1) {
                     getString(
                         R.string.stat_download_done_line_failed,
-                        sItemTitleArray.valueAt(0)
+                        sItemTitleArray.valueAt(0),
                     )
                 } else {
                     Log.d("TAG", "WTF, sItemTitleArray is null")
@@ -379,8 +383,8 @@ class DownloadService : Service(), DownloadManager.DownloadListener {
                 style.addLine(
                     getString(
                         if (fin) R.string.stat_download_done_line_succeeded else R.string.stat_download_done_line_failed,
-                        title
-                    )
+                        title,
+                    ),
                 )
                 i++
             }
@@ -416,7 +420,7 @@ class DownloadService : Service(), DownloadManager.DownloadListener {
         private var mService: Service,
         private val mNotifyManager: NotificationManagerCompat,
         private val mBuilder: NotificationCompat.Builder,
-        private val mId: Int
+        private val mId: Int,
     ) : Runnable {
         private var mLastTime: Long = 0
         private var mPosted = false
@@ -434,7 +438,7 @@ class DownloadService : Service(), DownloadManager.DownloadListener {
                     // Wait long enough, do it now
                     if (ActivityCompat.checkSelfPermission(
                             mService,
-                            Manifest.permission.POST_NOTIFICATIONS
+                            Manifest.permission.POST_NOTIFICATIONS,
                         ) != PackageManager.PERMISSION_GRANTED
                     ) {
                         return
@@ -490,7 +494,7 @@ class DownloadService : Service(), DownloadManager.DownloadListener {
                 OPS_NOTIFY -> {
                     if (ActivityCompat.checkSelfPermission(
                             mService,
-                            Manifest.permission.POST_NOTIFICATIONS
+                            Manifest.permission.POST_NOTIFICATIONS,
                         ) != PackageManager.PERMISSION_GRANTED
                     ) {
                         return

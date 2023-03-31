@@ -87,5 +87,5 @@ open class BaseGalleryInfo(
     override var favoriteName: String? = null,
 
     @Ignore
-    override var favoriteNote: String? = null
+    override var favoriteNote: String? = null,
 ) : GalleryInfo

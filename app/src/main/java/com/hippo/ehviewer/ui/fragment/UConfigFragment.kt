@@ -54,7 +54,7 @@ class UConfigFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         val view = inflater.inflate(R.layout.activity_webview, container, false)
         webView = view.findViewById(R.id.webview)
@@ -75,21 +75,25 @@ class UConfigFragment : BaseFragment() {
         progress!!.visibility = View.VISIBLE
         webView!!.loadUrl(url)
         showTip(R.string.apply_tip, BaseScene.LENGTH_LONG)
-        requireActivity().addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.activity_u_config, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                if (menuItem.itemId == R.id.action_apply) {
-                    if (loaded) {
-                        apply()
-                    }
-                    return true
+        requireActivity().addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.activity_u_config, menu)
                 }
-                return false
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    if (menuItem.itemId == R.id.action_apply) {
+                        if (loaded) {
+                            apply()
+                        }
+                        return true
+                    }
+                    return false
+                }
+            },
+            viewLifecycleOwner,
+            Lifecycle.State.RESUMED,
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -113,7 +117,7 @@ class UConfigFragment : BaseFragment() {
             """javascript:(function() {
     var apply = document.getElementById("apply").children[0];
     apply.click();
-})();"""
+})();""",
         )
     }
 

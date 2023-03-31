@@ -28,7 +28,7 @@ class AboutFragment : BasePreferenceFragment() {
         author!!.summary =
             Html.fromHtml(
                 getString(R.string.settings_about_author_summary).replace("$", "@"),
-                Html.FROM_HTML_MODE_LEGACY
+                Html.FROM_HTML_MODE_LEGACY,
             )
     }
 

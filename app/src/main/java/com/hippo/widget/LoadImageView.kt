@@ -33,8 +33,11 @@ import com.hippo.drawable.PreciselyClipDrawable
 import com.hippo.ehviewer.R
 
 open class LoadImageView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : FixedAspectImageView(context, attrs, defStyleAttr), View.OnClickListener,
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
+) : FixedAspectImageView(context, attrs, defStyleAttr),
+    View.OnClickListener,
     View.OnLongClickListener {
     private var mOffsetX = Int.MIN_VALUE
     private var mOffsetY = Int.MIN_VALUE
@@ -148,7 +151,7 @@ open class LoadImageView @JvmOverloads constructor(
                 .target(
                     { onWait() },
                     { onFailure() },
-                    { onGetValue(it, crossfade) }
+                    { onGetValue(it, crossfade) },
                 ).build().also { load(it) }
     }
 

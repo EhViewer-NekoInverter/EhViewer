@@ -28,7 +28,8 @@ import kotlinx.coroutines.launch
 import com.hippo.ehviewer.download.DownloadManager as downloadManager
 
 class CleanRedundancyPreference @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
+    context: Context,
+    attrs: AttributeSet? = null,
 ) : TaskPreference(context, attrs) {
     private fun clearFile(file: UniFile): Boolean {
         var name = file.name ?: return false
@@ -49,16 +50,19 @@ class CleanRedundancyPreference @JvmOverloads constructor(
     }
 
     override fun launchJob() {
-        if (singletonJob?.isActive == true) singletonJob?.invokeOnCompletion {
-            launchUI {
-                dialog.dismiss()
+        if (singletonJob?.isActive == true) {
+            singletonJob?.invokeOnCompletion {
+                launchUI {
+                    dialog.dismiss()
+                }
             }
-        }
-        else singletonJob = launch {
-            val cnt = doRealWork()
-            withUIContext {
-                showTip(FINAL_CLEAR_REDUNDANCY_MSG(cnt))
-                dialog.dismiss()
+        } else {
+            singletonJob = launch {
+                val cnt = doRealWork()
+                withUIContext {
+                    showTip(FINAL_CLEAR_REDUNDANCY_MSG(cnt))
+                    dialog.dismiss()
+                }
             }
         }
     }

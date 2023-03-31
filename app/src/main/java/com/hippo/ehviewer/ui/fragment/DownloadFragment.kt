@@ -35,12 +35,12 @@ import com.hippo.util.launchNonCancellable
 class DownloadFragment : BasePreferenceFragment() {
     private var mDownloadLocation: Preference? = null
     private var pickImageDirLauncher = registerForActivityResult<Uri?, Uri>(
-        ActivityResultContracts.OpenDocumentTree()
+        ActivityResultContracts.OpenDocumentTree(),
     ) { treeUri: Uri? ->
         if (treeUri != null) {
             requireActivity().contentResolver.takePersistableUriPermission(
                 treeUri,
-                Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION,
             )
             val uniFile = UniFile.fromTreeUri(activity, treeUri)
             if (uniFile != null) {
@@ -52,7 +52,7 @@ class DownloadFragment : BasePreferenceFragment() {
             } else {
                 showTip(
                     R.string.settings_download_cant_get_download_location,
-                    BaseScene.LENGTH_SHORT
+                    BaseScene.LENGTH_SHORT,
                 )
             }
         }
@@ -104,7 +104,7 @@ class DownloadFragment : BasePreferenceFragment() {
         if (Settings.KEY_DOWNLOAD_LOCATION == key) {
             val file = Settings.downloadLocation
             if (file != null && !UniFile.isFileUri(
-                    Settings.downloadLocation!!.uri
+                    Settings.downloadLocation!!.uri,
                 )
             ) {
                 AlertDialog.Builder(requireContext())
@@ -122,7 +122,7 @@ class DownloadFragment : BasePreferenceFragment() {
                         } else {
                             showTip(
                                 R.string.settings_download_cant_get_download_location,
-                                BaseScene.LENGTH_SHORT
+                                BaseScene.LENGTH_SHORT,
                             )
                         }
                     }

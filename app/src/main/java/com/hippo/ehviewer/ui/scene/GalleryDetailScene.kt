@@ -133,11 +133,15 @@ import kotlin.math.max
 import kotlin.math.roundToInt
 import android.app.DownloadManager as AndroidDownloadManager
 
-class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListener,
+class GalleryDetailScene :
+    BaseScene(),
+    View.OnClickListener,
+    DownloadInfoListener,
     OnLongClickListener {
     private val mDownloadManager = DownloadManager
     private var mTip: TextView? = null
     private var mViewTransition: ViewTransition? = null
+
     // Header
     private var mHeader: FrameLayout? = null
     private var mColorBg: View? = null
@@ -150,8 +154,10 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
     private var mActionGroup: ViewGroup? = null
     private var mDownload: TextView? = null
     private var mRead: TextView? = null
+
     // Below header
     private var mBelowHeader: View? = null
+
     // Info
     private var mInfo: View? = null
     private var mLanguage: TextView? = null
@@ -160,6 +166,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
     private var mPosted: TextView? = null
     private var mFavoredTimes: TextView? = null
     private var mNewerVersion: TextView? = null
+
     // Actions
     private var mActions: View? = null
     private var mRatingText: TextView? = null
@@ -173,16 +180,20 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
     private var mRate: View? = null
     private var mSimilar: TextView? = null
     private var mSearchCover: TextView? = null
+
     // Tags
     private var mTags: LinearLayout? = null
     private var mNoTags: TextView? = null
+
     // Comments
     private var mComments: LinearLayout? = null
     private var mCommentsText: TextView? = null
+
     // Previews
     private var mPreviews: View? = null
     private var mGridLayout: SimpleGridAutoSpanLayout? = null
     private var mPreviewText: TextView? = null
+
     // Progress
     private var mProgress: View? = null
     private var mViewTransition2: ViewTransition? = null
@@ -197,7 +208,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
     private var mRequestId = IntIdGenerator.INVALID_ID
     private var mTorrentList: List<TorrentParser.Result>? = null
     private var requestStoragePermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
+        ActivityResultContracts.RequestPermission(),
     ) { result: Boolean ->
         if (result && mGalleryDetail != null) {
             val helper = TorrentListDialogHelper()
@@ -212,6 +223,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
     private var mArchiveFormParamOr: String? = null
     private var mArchiveList: List<ArchiveParser.Archive>? = null
     private var mCurrentFunds: HomeParser.Funds? = null
+
     @State
     private var mState = STATE_INIT
     private var mModifyingFavorites = false
@@ -427,13 +439,14 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                     }
                     return false
                 }
-            }
+            },
         )
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         // Get download state
         val gid = gid
@@ -448,8 +461,10 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         mainView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
             if (mActionGroup != null && mHeader != null) {
                 setLightStatusBar(
-                    (mActionGroup!!.y - mHeader!!.findViewById<View>(R.id.header_content)
-                        .paddingTop / 2f).toInt() < scrollY
+                    (
+                        mActionGroup!!.y - mHeader!!.findViewById<View>(R.id.header_content)
+                            .paddingTop / 2f
+                        ).toInt() < scrollY,
                 )
             }
         }
@@ -611,7 +626,9 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         return if (application.containGlobalStuff(mRequestId)) {
             // request exist
             true
-        } else request()
+        } else {
+            request()
+        }
     }
 
     private fun request(): Boolean {
@@ -687,7 +704,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                 // Show mBelowHeader
                 mViewTransition2!!.showView(0, doAnimation)
             }
-            STATE_REFRESH ->  {
+            STATE_REFRESH -> {
                 setLightStatusBar(true)
                 // Show mProgressView
                 mViewTransition!!.showView(1, doAnimation)
@@ -706,7 +723,8 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
             }
         }
         if ((oldState == STATE_INIT || oldState == STATE_FAILED || oldState == STATE_REFRESH) &&
-                (state == STATE_NORMAL || state == STATE_REFRESH_HEADER) && theme.resolveBoolean(androidx.appcompat.R.attr.isLightTheme, false)) {
+            (state == STATE_NORMAL || state == STATE_REFRESH_HEADER) && theme.resolveBoolean(androidx.appcompat.R.attr.isLightTheme, false)
+        ) {
             if (!createCircularReveal()) {
                 SimpleHandler.getInstance().post(this::createCircularReveal)
             }
@@ -720,7 +738,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         if (ACTION_GALLERY_INFO == mAction && mGalleryInfo != null) {
             val gi: GalleryInfo = mGalleryInfo!!
             mThumb!!.load(EhCacheKeyFactory.getThumbKey(gi.gid), gi.thumb!!)
-            mTitle!!.text =EhUtils.getSuitableTitle(gi)
+            mTitle!!.text = EhUtils.getSuitableTitle(gi)
             mUploader!!.text = gi.uploader
             mUploader!!.alpha = if (gi.disowned) .5f else 1f
             mCategory!!.text = EhUtils.getCategory(gi.category)
@@ -755,7 +773,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
             Snackbar.make(
                 requireActivity().findViewById(R.id.snackbar),
                 getString(R.string.read_from, mPage + 1),
-                Snackbar.LENGTH_LONG
+                Snackbar.LENGTH_LONG,
             )
                 .setAction(R.string.read) {
                     val intent = Intent(requireContext(), GalleryActivity::class.java)
@@ -779,7 +797,9 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         updateDownloadText()
         mLanguage!!.text = gd.language
         mPages!!.text = resources.getQuantityString(
-            R.plurals.page_count, gd.pages, gd.pages
+            R.plurals.page_count,
+            gd.pages,
+            gd.pages,
         )
         mSize!!.text = gd.size
         mPosted!!.text = gd.posted
@@ -830,7 +850,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
             ll.addView(
                 awl,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
+                ViewGroup.LayoutParams.WRAP_CONTENT,
             )
             for (tg in tgs) {
                 val tag = inflater.inflate(R.layout.item_gallery_tag, awl, false) as TextView
@@ -886,8 +906,10 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
             val c = v.findViewById<ObservedTextView>(R.id.comment)
             c.maxLines = 5
             c.text = Html.fromHtml(
-                comment.comment, Html.FROM_HTML_MODE_LEGACY,
-                URLImageGetter(c), null
+                comment.comment,
+                Html.FROM_HTML_MODE_LEGACY,
+                URLImageGetter(c),
+                null,
             )
             v.setBackgroundColor(Color.TRANSPARENT)
         }
@@ -931,14 +953,15 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
             R.string.rating_text,
             getString(getRatingText(rating)),
             rating,
-            ratingCount
+            ratingCount,
         )
     }
 
     private fun setTransitionName() {
         val gid = gid
         if (gid != -1L && mThumb != null &&
-                mTitle != null && mUploader != null && mCategory != null) {
+            mTitle != null && mUploader != null && mCategory != null
+        ) {
             ViewCompat.setTransitionName(mThumb!!, TransitionNameFactory.getThumbTransitionName(gid))
             ViewCompat.setTransitionName(mTitle!!, TransitionNameFactory.getTitleTransitionName(gid))
             ViewCompat.setTransitionName(mUploader!!, TransitionNameFactory.getUploaderTransitionName(gid))
@@ -1038,7 +1061,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                         context,
                         getString(R.string.download_remove_dialog_message, galleryDetail.title),
                         getString(R.string.download_remove_dialog_check_text),
-                        Settings.removeImageFiles
+                        Settings.removeImageFiles,
                     )
                     val helper = DeleteDialogHelper(galleryDetail, builder)
                     builder.setTitle(R.string.download_remove_dialog_title)
@@ -1059,8 +1082,8 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                         getString(
                             R.string.newer_version_title,
                             newerVersion.title,
-                            newerVersion.posted
-                        )
+                            newerVersion.posted,
+                        ),
                     )
                 }
                 AlertDialog.Builder(requireContext())
@@ -1087,17 +1110,19 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                     if (EhDB.containLocalFavorites(galleryDetail.gid) || galleryDetail.isFavorited) {
                         mModifyingFavorites = true
                         CommonOperations.removeFromFavorites(
-                            activity, galleryDetail,
-                            ModifyFavoritesListener(context, true)
+                            activity,
+                            galleryDetail,
+                            ModifyFavoritesListener(context, true),
                         )
                         remove = true
                     }
                     if (!remove) {
                         mModifyingFavorites = true
                         CommonOperations.addToFavorites(
-                            activity, galleryDetail,
+                            activity,
+                            galleryDetail,
                             ModifyFavoritesListener(context, false),
-                            false
+                            false,
                         )
                     }
                     // Update UI
@@ -1112,7 +1137,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
             mTorrent -> {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && ContextCompat.checkSelfPermission(
                         activity,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     ) != PackageManager.PERMISSION_GRANTED
                 ) {
                     requestStoragePermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -1167,10 +1192,11 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                 args.putString(GalleryCommentsScene.KEY_TOKEN, galleryDetail.token)
                 args.putParcelable(GalleryCommentsScene.KEY_COMMENT_LIST, galleryDetail.comments)
                 args.putParcelable(GalleryCommentsScene.KEY_GALLERY_DETAIL, galleryDetail)
-                startScene(Announcer(GalleryCommentsScene::class.java)
+                startScene(
+                    Announcer(GalleryCommentsScene::class.java)
                         .setArgs(args)
-                        .setRequestCode(this, REQUEST_CODE_COMMENT_GALLERY))
-
+                        .setRequestCode(this, REQUEST_CODE_COMMENT_GALLERY),
+                )
             }
             mPreviews -> {
                 val previewNum = Settings.previewNum
@@ -1317,7 +1343,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                 mGalleryDetail!!.gid,
                 mGalleryDetail!!.token!!,
                 tag,
-                vote
+                vote,
             )
             .setCallback(VoteTagListener(context))
         request.enqueue(this)
@@ -1345,21 +1371,29 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                 if (EhDB.containLocalFavorites(mGalleryDetail!!.gid)) {
                     mModifyingFavorites = true
                     CommonOperations.removeFromFavorites(
-                        activity, mGalleryDetail!!,
-                        ModifyFavoritesListener(activity, true)
+                        activity,
+                        mGalleryDetail!!,
+                        ModifyFavoritesListener(activity, true),
                     )
                     removeOrEdit = true
                 } else if (mGalleryDetail!!.isFavorited) {
                     mModifyingFavorites = true
-                    CommonOperations.doAddToFavorites(activity, mGalleryDetail!!, mGalleryDetail!!.favoriteSlot,
-                        ModifyFavoritesListener(activity, false), true)
+                    CommonOperations.doAddToFavorites(
+                        activity,
+                        mGalleryDetail!!,
+                        mGalleryDetail!!.favoriteSlot,
+                        ModifyFavoritesListener(activity, false),
+                        true,
+                    )
                     removeOrEdit = true
                 }
                 if (!removeOrEdit) {
                     mModifyingFavorites = true
                     CommonOperations.addToFavorites(
-                        activity, mGalleryDetail!!,
-                        ModifyFavoritesListener(activity, false), true
+                        activity,
+                        mGalleryDetail!!,
+                        ModifyFavoritesListener(activity, false),
+                        true,
                     )
                 }
                 // Update UI
@@ -1377,7 +1411,8 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
 
     override fun onBackPressed() {
         if (mViewTransition != null && mThumb != null &&
-            mViewTransition!!.shownViewIndex == 0 && mThumb!!.isShown) {
+            mViewTransition!!.shownViewIndex == 0 && mThumb!!.isShown
+        ) {
             val location = IntArray(2)
             mThumb!!.getLocationInWindow(location)
             // Only show transaction when thumb can be seen
@@ -1518,11 +1553,13 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
     private annotation class State
 
     private class ExitTransaction(
-        private val mThumb: View
+        private val mThumb: View,
     ) : TransitionHelper {
         override fun onTransition(
-            context: Context, transaction: FragmentTransaction,
-            exit: Fragment, enter: Fragment
+            context: Context,
+            transaction: FragmentTransaction,
+            exit: Fragment,
+            enter: Fragment,
         ): Boolean {
             if (enter !is GalleryListScene && enter !is DownloadsScene &&
                 enter !is FavoritesScene && enter !is HistoryScene
@@ -1562,7 +1599,8 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
     }
 
     private class DownloadArchiveListener(
-        context: Context, private val mGalleryInfo: GalleryInfo?
+        context: Context,
+        private val mGalleryInfo: GalleryInfo?,
     ) : EhCallback<GalleryDetailScene?, String?>(context) {
         override fun onSuccess(result: String?) {
             // TODO: Don't use buggy system download service
@@ -1571,7 +1609,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                 mGalleryInfo!!.gid.toString() + "-" + EhUtils.getSuitableTitle(mGalleryInfo) + ".zip"
             r.setDestinationInExternalPublicDir(
                 Environment.DIRECTORY_DOWNLOADS,
-                FileUtils.sanitizeFilename(name)
+                FileUtils.sanitizeFilename(name),
             )
             r.setNotificationVisibility(AndroidDownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             val dm = application.getSystemService(Context.DOWNLOAD_SERVICE) as AndroidDownloadManager
@@ -1596,7 +1634,8 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
     }
 
     private inner class DeleteDialogHelper(
-        private val mGalleryInfo: GalleryInfo, private val mBuilder: CheckBoxDialogBuilder
+        private val mGalleryInfo: GalleryInfo,
+        private val mBuilder: CheckBoxDialogBuilder,
     ) : DialogInterface.OnClickListener {
         override fun onClick(dialog: DialogInterface, which: Int) {
             if (which != DialogInterface.BUTTON_POSITIVE) {
@@ -1648,7 +1687,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
     }
 
     private inner class RateGalleryListener(
-        context: Context
+        context: Context,
     ) : EhCallback<GalleryDetailScene?, RateGalleryParser.Result>(context) {
         override fun onSuccess(result: RateGalleryParser.Result) {
             showTip(R.string.rate_successfully, LENGTH_SHORT)
@@ -1665,13 +1704,14 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
     }
 
     private inner class ModifyFavoritesListener(
-        context: Context, private val mAddOrRemove: Boolean
+        context: Context,
+        private val mAddOrRemove: Boolean,
     ) :
         EhCallback<GalleryDetailScene?, Unit>(context) {
         override fun onSuccess(result: Unit) {
             showTip(
                 if (mAddOrRemove) R.string.remove_from_favorite_success else R.string.add_to_favorite_success,
-                LENGTH_SHORT
+                LENGTH_SHORT,
             )
             val scene = this@GalleryDetailScene
             scene.onModifyFavoritesSuccess(mAddOrRemove)
@@ -1680,7 +1720,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         override fun onFailure(e: Exception) {
             showTip(
                 if (mAddOrRemove) R.string.remove_from_favorite_failure else R.string.add_to_favorite_failure,
-                LENGTH_LONG
+                LENGTH_LONG,
             )
             val scene = this@GalleryDetailScene
             scene.onModifyFavoritesFailure()
@@ -1692,8 +1732,10 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         }
     }
 
-    private inner class ArchiveListDialogHelper : AdapterView.OnItemClickListener,
-        DialogInterface.OnDismissListener, EhClient.Callback<ArchiveParser.Result> {
+    private inner class ArchiveListDialogHelper :
+        AdapterView.OnItemClickListener,
+        DialogInterface.OnDismissListener,
+        EhClient.Callback<ArchiveParser.Result> {
         private var mProgressView: CircularProgressIndicator? = null
         private var mErrorText: TextView? = null
         private var mListView: ListView? = null
@@ -1770,7 +1812,8 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                     return
                 } else if (mCurrentFunds != null) {
                     val cost = ParserUtils.parseInt(
-                        mArchiveList!![position].cost.removeSuffix("GP").removeSuffix("Credits"), 0
+                        mArchiveList!![position].cost.removeSuffix("GP").removeSuffix("Credits"),
+                        0,
                     )
                     if (cost > maxOf(mCurrentFunds!!.fundsGP, mCurrentFunds!!.fundsC)) {
                         showTip(R.string.insufficient_funds, LENGTH_SHORT)
@@ -1786,7 +1829,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                     mGalleryDetail!!.token!!,
                     mArchiveFormParamOr!!,
                     res,
-                    isHAtH
+                    isHAtH,
                 )
                 request.setCallback(DownloadArchiveListener(context, mGalleryDetail))
                 request.enqueue(this@GalleryDetailScene)
@@ -1834,8 +1877,10 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
         }
     }
 
-    private inner class TorrentListDialogHelper : AdapterView.OnItemClickListener,
-        DialogInterface.OnDismissListener, EhClient.Callback<List<TorrentParser.Result>> {
+    private inner class TorrentListDialogHelper :
+        AdapterView.OnItemClickListener,
+        DialogInterface.OnDismissListener,
+        EhClient.Callback<List<TorrentParser.Result>> {
         private var mProgressView: CircularProgressIndicator? = null
         private var mErrorText: TextView? = null
         private var mListView: ListView? = null
@@ -1895,7 +1940,7 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
                     AndroidDownloadManager.Request(Uri.parse(url.replace("exhentai.org", "ehtracker.org")))
                 r.setDestinationInExternalPublicDir(
                     Environment.DIRECTORY_DOWNLOADS,
-                    FileUtils.sanitizeFilename("$name.torrent")
+                    FileUtils.sanitizeFilename("$name.torrent"),
                 )
                 r.setNotificationVisibility(AndroidDownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 r.addRequestHeader("Cookie", EhCookieStore.getCookieHeader(url.toHttpUrl()))
@@ -1976,11 +2021,14 @@ class GalleryDetailScene : BaseScene(), View.OnClickListener, DownloadInfoListen
             val request = EhRequest()
                 .setMethod(EhClient.METHOD_GET_RATE_GALLERY)
                 .setArgs(
-                    mGalleryDetail!!.apiUid, mGalleryDetail!!.apiKey!!,
-                    mGalleryDetail!!.gid, mGalleryDetail!!.token!!, mRatingBar!!.rating
+                    mGalleryDetail!!.apiUid,
+                    mGalleryDetail!!.apiKey!!,
+                    mGalleryDetail!!.gid,
+                    mGalleryDetail!!.token!!,
+                    mRatingBar!!.rating,
                 )
                 .setCallback(
-                    RateGalleryListener(context)
+                    RateGalleryListener(context),
                 )
             request.enqueue(this@GalleryDetailScene)
         }

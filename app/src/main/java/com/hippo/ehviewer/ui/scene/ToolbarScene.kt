@@ -32,7 +32,8 @@ abstract class ToolbarScene : BaseScene() {
 
     open fun onCreateViewWithToolbar(
         inflater: LayoutInflater,
-        container: ViewGroup?, savedInstanceState: Bundle?
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View? {
         return null
     }
@@ -41,7 +42,8 @@ abstract class ToolbarScene : BaseScene() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
-        container: ViewGroup?, savedInstanceState: Bundle?
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View? {
         val view = inflater.inflate(R.layout.scene_toolbar, container, false)
         val toolbar = view.findViewById<Toolbar>(R.id.toolbar)

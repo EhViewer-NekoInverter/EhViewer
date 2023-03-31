@@ -92,10 +92,13 @@ class GalleryPreviewsScene : ToolbarScene() {
 
     override fun onCreateViewWithToolbar(
         inflater: LayoutInflater,
-        container: ViewGroup?, savedInstanceState: Bundle?
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         val mContentLayout = inflater.inflate(
-            R.layout.scene_gallery_previews, container, false
+            R.layout.scene_gallery_previews,
+            container,
+            false,
         ) as ContentLayout
         mContentLayout.hideFastScroll()
         mRecyclerView = mContentLayout.recyclerView
@@ -200,8 +203,12 @@ class GalleryPreviewsScene : ToolbarScene() {
                 list.add(previewSet.getGalleryPreview(mGalleryInfo!!.gid, i))
             }
             mHelper!!.onGetPageData(
-                taskId, result.second, 0, null, null,
-                list as List<GalleryPreview>
+                taskId,
+                result.second,
+                0,
+                null,
+                null,
+                list as List<GalleryPreview>,
             )
             if (mScrollTo != 0 && mScrollTo < size) {
                 mHelper!!.scrollTo(mScrollTo)
@@ -227,7 +234,8 @@ class GalleryPreviewsScene : ToolbarScene() {
     }
 
     private inner class GetPreviewSetListener(
-        context: Context, private val mTaskId: Int
+        context: Context,
+        private val mTaskId: Int,
     ) : EhCallback<GalleryPreviewsScene, Pair<PreviewSet, Int>>(context) {
         override fun onSuccess(result: Pair<PreviewSet, Int>) {
             val scene = this@GalleryPreviewsScene
@@ -250,8 +258,8 @@ class GalleryPreviewsScene : ToolbarScene() {
                 mInflater.inflate(
                     R.layout.item_gallery_preview,
                     parent,
-                    false
-                )
+                    false,
+                ),
             )
         }
 
@@ -278,7 +286,7 @@ class GalleryPreviewsScene : ToolbarScene() {
             type: Int,
             page: Int,
             index: String?,
-            isNext: Boolean
+            isNext: Boolean,
         ) {
             val activity = mainActivity
             if (null == activity || null == mGalleryInfo) {
@@ -290,7 +298,7 @@ class GalleryPreviewsScene : ToolbarScene() {
             val request = EhRequest()
             request.setMethod(EhClient.METHOD_GET_PREVIEW_SET)
             request.setCallback(
-                GetPreviewSetListener(context, taskId)
+                GetPreviewSetListener(context, taskId),
             )
             request.setArgs(url)
             request.enqueue(this@GalleryPreviewsScene)

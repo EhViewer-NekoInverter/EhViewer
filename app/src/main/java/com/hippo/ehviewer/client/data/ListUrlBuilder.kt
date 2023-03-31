@@ -32,7 +32,8 @@ import java.net.URLDecoder
 
 @Parcelize
 data class ListUrlBuilder(
-    @get:Mode @Mode var mode: Int = MODE_NORMAL,
+    @get:Mode @Mode
+    var mode: Int = MODE_NORMAL,
     private var mPrev: String? = null,
     private var mNext: String? = null,
     private var mJumpTo: String? = null,
@@ -128,7 +129,9 @@ data class ListUrlBuilder(
         }
         return if (q.pageFrom != pageFrom) {
             false
-        } else q.pageTo == pageTo
+        } else {
+            q.pageTo == pageTo
+        }
     }
 
     /**
@@ -384,7 +387,7 @@ data class ListUrlBuilder(
         MODE_WHATS_HOT,
         MODE_IMAGE_SEARCH,
         MODE_SUBSCRIPTION,
-        MODE_TOPLIST
+        MODE_TOPLIST,
     )
     @Retention(AnnotationRetention.SOURCE)
     private annotation class Mode

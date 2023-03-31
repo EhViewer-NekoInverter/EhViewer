@@ -65,7 +65,7 @@ android {
                 "zh-rHK",
                 "zh-rTW",
                 "ja",
-            )
+            ),
         )
         buildConfigField("String", "VERSION_CODE", "\"${defaultConfig.versionCode}\"")
         buildConfigField("String", "COMMIT_SHA", "\"$commitSha\"")

@@ -60,7 +60,7 @@ internal class CookieSet {
     internal data class Key(
         val name: String,
         val domain: String,
-        val path: String
+        val path: String,
     ) {
         constructor(cookie: Cookie) : this(cookie.name, cookie.domain, cookie.path)
     }

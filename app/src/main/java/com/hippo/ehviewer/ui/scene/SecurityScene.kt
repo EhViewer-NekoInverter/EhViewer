@@ -55,21 +55,22 @@ class SecurityScene : SolidScene(), OnPatternListener {
         mRetryTimes = savedInstanceState?.getInt(KEY_RETRY_TIMES) ?: MAX_RETRY_TIMES
 
         canAuthenticate = Settings.enableFingerprint &&
-                BiometricManager.from(context).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS
+            BiometricManager.from(context).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS
         biometricPrompt = BiometricPrompt(
-            this, Executors.newSingleThreadExecutor(),
+            this,
+            Executors.newSingleThreadExecutor(),
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     startSceneForCheckStep(CHECK_STEP_SECURITY, arguments)
                     finish()
                 }
-            }
+            },
         )
         promptInfo = BiometricPrompt.PromptInfo.Builder()
-                .setTitle(getString(R.string.app_name))
-                .setNegativeButtonText(getString(android.R.string.cancel))
-                .setConfirmationRequired(false)
-                .build()
+            .setTitle(getString(R.string.app_name))
+            .setNegativeButtonText(getString(android.R.string.cancel))
+            .setConfirmationRequired(false)
+            .build()
     }
 
     override fun onDestroy() {

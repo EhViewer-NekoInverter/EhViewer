@@ -36,7 +36,8 @@ import kotlinx.coroutines.launch
 import com.hippo.ehviewer.download.DownloadManager as downloadManager
 
 class RestoreDownloadPreference @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
+    context: Context,
+    attrs: AttributeSet? = null,
 ) : TaskPreference(context, attrs) {
     private val mManager = downloadManager
     private var restoreDirCount = 0
@@ -82,39 +83,42 @@ class RestoreDownloadPreference @JvmOverloads constructor(
     }
 
     override fun launchJob() {
-        if (singletonJob?.isActive == true) singletonJob?.invokeOnCompletion {
-            launchUI {
-                dialog.dismiss()
-            }
-        }
-        else singletonJob = launch {
-            val result = doRealWork()
-            withUIContext {
-                if (result == null) {
-                    showTip(RESTORE_FAILED)
-                } else {
-                    if (result.isEmpty()) {
-                        showTip(RESTORE_COUNT_MSG(restoreDirCount))
-                    } else {
-                        var count = 0
-                        var i = 0
-                        val n = result.size
-                        while (i < n) {
-                            val item = result[i]
-                            // Avoid failed gallery info
-                            if (null != item.title) {
-                                // Put to download
-                                mManager.addDownload(item, null)
-                                // Put download dir to DB
-                                EhDB.putDownloadDirname(item.gid, (item as RestoreItem).dirname)
-                                count++
-                            }
-                            i++
-                        }
-                        showTip(RESTORE_COUNT_MSG(count + restoreDirCount))
-                    }
+        if (singletonJob?.isActive == true) {
+            singletonJob?.invokeOnCompletion {
+                launchUI {
+                    dialog.dismiss()
                 }
-                dialog.dismiss()
+            }
+        } else {
+            singletonJob = launch {
+                val result = doRealWork()
+                withUIContext {
+                    if (result == null) {
+                        showTip(RESTORE_FAILED)
+                    } else {
+                        if (result.isEmpty()) {
+                            showTip(RESTORE_COUNT_MSG(restoreDirCount))
+                        } else {
+                            var count = 0
+                            var i = 0
+                            val n = result.size
+                            while (i < n) {
+                                val item = result[i]
+                                // Avoid failed gallery info
+                                if (null != item.title) {
+                                    // Put to download
+                                    mManager.addDownload(item, null)
+                                    // Put download dir to DB
+                                    EhDB.putDownloadDirname(item.gid, (item as RestoreItem).dirname)
+                                    count++
+                                }
+                                i++
+                            }
+                            showTip(RESTORE_COUNT_MSG(count + restoreDirCount))
+                        }
+                    }
+                    dialog.dismiss()
+                }
             }
         }
     }

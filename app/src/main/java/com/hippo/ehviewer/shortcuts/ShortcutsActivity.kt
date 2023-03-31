@@ -31,7 +31,7 @@ class ShortcutsActivity : AppCompatActivity() {
         if (action != null && (action == DownloadService.ACTION_START_ALL || action == DownloadService.ACTION_STOP_ALL)) {
             ContextCompat.startForegroundService(
                 this,
-                Intent(this, DownloadService::class.java).setAction(action)
+                Intent(this, DownloadService::class.java).setAction(action),
             )
         }
         finish()

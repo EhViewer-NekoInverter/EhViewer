@@ -26,7 +26,7 @@ class NormalPreviewSet(
     private var mOffsetYList: IntList = IntList(),
     private var mClipWidthList: IntList = IntList(),
     private var mClipHeightList: IntList = IntList(),
-    private var mPageUrlList: ArrayList<String> = arrayListOf()
+    private var mPageUrlList: ArrayList<String> = arrayListOf(),
 ) : PreviewSet() {
     private fun getImageKey(imageUrl: String): String {
         val index = imageUrl.indexOf('/')
@@ -38,8 +38,13 @@ class NormalPreviewSet(
     }
 
     fun addItem(
-        position: Int, imageUrl: String, xOffset: Int, yOffset: Int, width: Int,
-        height: Int, pageUrl: String
+        position: Int,
+        imageUrl: String,
+        xOffset: Int,
+        yOffset: Int,
+        width: Int,
+        height: Int,
+        pageUrl: String,
     ) {
         mPositionList.add(position)
         mImageKeyList.add(getImageKey(imageUrl))
@@ -78,8 +83,10 @@ class NormalPreviewSet(
 
     override fun load(view: LoadImageView, gid: Long, index: Int) {
         view.setClip(
-            mOffsetXList[index], mOffsetYList[index],
-            mClipWidthList[index], mClipHeightList[index]
+            mOffsetXList[index],
+            mOffsetYList[index],
+            mClipWidthList[index],
+            mClipHeightList[index],
         )
         view.load(mImageKeyList[index], mImageUrlList[index])
     }

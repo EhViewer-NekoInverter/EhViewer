@@ -116,7 +116,8 @@ class GalleryInfoScene : ToolbarScene() {
 
     override fun onCreateViewWithToolbar(
         inflater: LayoutInflater,
-        container: ViewGroup?, savedInstanceState: Bundle?
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         val view = inflater.inflate(R.layout.scene_gallery_info, container, false)
         val context = requireContext()
@@ -127,7 +128,7 @@ class GalleryInfoScene : ToolbarScene() {
         val decoration = LinearDividerItemDecoration(
             LinearDividerItemDecoration.VERTICAL,
             theme.resolveColor(R.attr.dividerColor),
-            LayoutUtils.dp2pix(context, 1f)
+            LayoutUtils.dp2pix(context, 1f),
         )
         val keylineMargin = context.resources.getDimensionPixelOffset(R.dimen.keyline_margin)
         decoration.setPadding(keylineMargin)
@@ -199,8 +200,8 @@ class GalleryInfoScene : ToolbarScene() {
                 mInflater.inflate(
                     if (viewType == TYPE_HEADER) R.layout.item_gallery_info_header else R.layout.item_gallery_info_data,
                     parent,
-                    false
-                )
+                    false,
+                ),
             )
         }
 

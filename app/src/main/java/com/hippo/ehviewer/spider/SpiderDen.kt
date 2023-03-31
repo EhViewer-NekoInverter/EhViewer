@@ -145,7 +145,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
         index: Int,
         url: String,
         referer: String?,
-        notifyProgress: (Long, Long, Int) -> Unit
+        notifyProgress: (Long, Long, Int) -> Unit,
     ): Boolean {
         return client.prepareGet(url) {
             var state: Long = 0
@@ -170,10 +170,11 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
             outFile.openOutputStream().use {
                 ret = body.bodyAsChannel().copyTo(it.channel)
             }
-            if (contentType == ContentType.Image.GIF)
+            if (contentType == ContentType.Image.GIF) {
                 outFile.openFileDescriptor("rw").use {
                     Image.rewriteGifSource2(it.fd)
                 }
+            }
             return ret
         }
 
@@ -258,8 +259,10 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
         val dir = downloadDir ?: return null
         val (file, isGif) = findImageFile(dir, index)
         file?.run {
-            if (isGif) openFileDescriptor("rw").use {
-                Image.rewriteGifSource2(it.fd)
+            if (isGif) {
+                openFileDescriptor("rw").use {
+                    Image.rewriteGifSource2(it.fd)
+                }
             }
             return object : CloseableSource {
                 override val source = imageSource

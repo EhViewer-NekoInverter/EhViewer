@@ -94,7 +94,6 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 
-
 class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedListener {
     private val settingsLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -114,7 +113,7 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
                 availableNetworks.remove(network)
                 if (network == activeNetwork) {
                     connectivityManager.bindProcessToNetwork(
-                        availableNetworks.takeIf { it.isNotEmpty() }?.last()
+                        availableNetworks.takeIf { it.isNotEmpty() }?.last(),
                     )
                 }
             }
@@ -144,7 +143,7 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
             val args = Bundle()
             args.putString(
                 GalleryListScene.KEY_ACTION,
-                Settings.launchPageGalleryListSceneAction
+                Settings.launchPageGalleryListSceneAction,
             )
             Announcer(GalleryListScene::class.java).setArgs(args)
         }
@@ -237,7 +236,7 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
                         .setPositiveButton(android.R.string.copy) { _: DialogInterface?, _: Int ->
                             this.addTextToClipboard(
                                 url,
-                                false
+                                false,
                             )
                         }
                         .show()
@@ -250,7 +249,7 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
                     val args = Bundle()
                     args.putString(
                         GalleryListScene.KEY_ACTION,
-                        Settings.launchPageGalleryListSceneAction
+                        Settings.launchPageGalleryListSceneAction,
                     )
                     startScene(processAnnouncer(Announcer(GalleryListScene::class.java).setArgs(args)))
                 }
@@ -349,13 +348,13 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
                     try {
                         val intent = Intent(
                             android.provider.Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS,
-                            Uri.parse("package:$packageName")
+                            Uri.parse("package:$packageName"),
                         )
                         startActivity(intent)
                     } catch (t: Throwable) {
                         val intent = Intent(
                             android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                            Uri.parse("package:$packageName")
+                            Uri.parse("package:$packageName"),
                         )
                         startActivity(intent)
                     }
@@ -363,7 +362,7 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
                 .setNegativeButton(android.R.string.cancel, null)
                 .setNeutralButton(R.string.dont_show_again) { _: DialogInterface?, _: Int ->
                     Settings.putAppLinkVerifyTip(
-                        true
+                        true,
                     )
                 }
                 .show()
@@ -389,7 +388,7 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
                 Snackbar.make(
                     mDrawerLayout!!,
                     R.string.metered_network_warning,
-                    Snackbar.LENGTH_LONG
+                    Snackbar.LENGTH_LONG,
                 )
                     .setAction(R.string.settings) {
                         val panelIntent =
@@ -476,11 +475,11 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
                 val snackbar = Snackbar.make(
                     mDrawerLayout!!,
                     R.string.clipboard_gallery_url_snack_message,
-                    Snackbar.LENGTH_SHORT
+                    Snackbar.LENGTH_SHORT,
                 )
                 snackbar.setAction(R.string.clipboard_gallery_url_snack_action) {
                     startScene(
-                        announcer
+                        announcer,
                     )
                 }
                 snackbar.show()
@@ -499,18 +498,20 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
         if (scene is BaseScene && mRightDrawer != null && mDrawerLayout != null) {
             mRightDrawer!!.removeAllViews()
             val drawerView = scene.createDrawerView(
-                scene.layoutInflater, mRightDrawer, null
+                scene.layoutInflater,
+                mRightDrawer,
+                null,
             )
             if (drawerView != null) {
                 mRightDrawer!!.addView(drawerView)
                 mDrawerLayout!!.setDrawerLockMode(
                     DrawerLayout.LOCK_MODE_UNLOCKED,
-                    GravityCompat.END
+                    GravityCompat.END,
                 )
             } else {
                 mDrawerLayout!!.setDrawerLockMode(
                     DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
-                    GravityCompat.END
+                    GravityCompat.END,
                 )
             }
         }
@@ -592,18 +593,23 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
     fun showTip(message: CharSequence, length: Int) {
         findViewById<View>(R.id.snackbar)?.apply {
             Snackbar.make(
-                this, message,
-                if (length == BaseScene.LENGTH_LONG) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT
+                this,
+                message,
+                if (length == BaseScene.LENGTH_LONG) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT,
             ).show()
         } ?: Toast.makeText(
-            this, message,
-            if (length == BaseScene.LENGTH_LONG) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
+            this,
+            message,
+            if (length == BaseScene.LENGTH_LONG) Toast.LENGTH_LONG else Toast.LENGTH_SHORT,
         ).show()
     }
 
     override fun onBackPressed() {
-        if (mDrawerLayout != null && (mDrawerLayout!!.isDrawerOpen(GravityCompat.START) ||
-                    mDrawerLayout!!.isDrawerOpen(GravityCompat.END))) {
+        if (mDrawerLayout != null && (
+                mDrawerLayout!!.isDrawerOpen(GravityCompat.START) ||
+                    mDrawerLayout!!.isDrawerOpen(GravityCompat.END)
+                )
+        ) {
             mDrawerLayout!!.closeDrawers()
         } else {
             super.onBackPressed()
@@ -622,7 +628,7 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
                 args.putString(GalleryListScene.KEY_ACTION, GalleryListScene.ACTION_HOMEPAGE)
                 startSceneFirstly(
                     Announcer(GalleryListScene::class.java)
-                        .setArgs(args)
+                        .setArgs(args),
                 )
             }
 
@@ -631,7 +637,7 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
                 args.putString(GalleryListScene.KEY_ACTION, GalleryListScene.ACTION_SUBSCRIPTION)
                 startSceneFirstly(
                     Announcer(GalleryListScene::class.java)
-                        .setArgs(args)
+                        .setArgs(args),
                 )
             }
 
@@ -640,7 +646,7 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
                 args.putString(GalleryListScene.KEY_ACTION, GalleryListScene.ACTION_WHATS_HOT)
                 startSceneFirstly(
                     Announcer(GalleryListScene::class.java)
-                        .setArgs(args)
+                        .setArgs(args),
                 )
             }
 
@@ -649,7 +655,7 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
                 args.putString(GalleryListScene.KEY_ACTION, GalleryListScene.ACTION_TOP_LIST)
                 startSceneFirstly(
                     Announcer(GalleryListScene::class.java)
-                        .setArgs(args)
+                        .setArgs(args),
                 )
             }
 

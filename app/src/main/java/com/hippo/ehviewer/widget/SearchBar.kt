@@ -56,9 +56,13 @@ import com.hippo.yorozuya.ViewUtils
 import rikka.core.res.resolveColor
 
 class SearchBar @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
-) : MaterialCardView(context, attrs), View.OnClickListener, TextView.OnEditorActionListener,
-        TextWatcher, SearchEditText.SearchEditTextListener {
+    context: Context,
+    attrs: AttributeSet? = null,
+) : MaterialCardView(context, attrs),
+    View.OnClickListener,
+    TextView.OnEditorActionListener,
+    TextWatcher,
+    SearchEditText.SearchEditTextListener {
     private val mRect = Rect()
     private val mSearchDatabase by lazy { SearchDatabase.getInstance(context) }
     private var mState = STATE_NORMAL
@@ -110,7 +114,7 @@ class SearchBar @JvmOverloads constructor(
         val decoration = LinearDividerItemDecoration(
             LinearDividerItemDecoration.VERTICAL,
             context.theme.resolveColor(R.attr.dividerColor),
-            LayoutUtils.dp2pix(context, 1f)
+            LayoutUtils.dp2pix(context, 1f),
         )
         decoration.setShowLastDivider(false)
         mListView!!.addItemDecoration(decoration)
@@ -441,7 +445,7 @@ class SearchBar @JvmOverloads constructor(
     }
 
     private inner class SuggestionAdapter constructor(
-        private val mInflater: LayoutInflater
+        private val mInflater: LayoutInflater,
     ) : RecyclerView.Adapter<SuggestionHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SuggestionHolder {
             return SuggestionHolder(mInflater.inflate(R.layout.item_simple_list_2, parent, false))
@@ -488,7 +492,7 @@ class SearchBar @JvmOverloads constructor(
 
     inner class TagSuggestion constructor(
         private var mHint: String?,
-        private var mKeyword: String
+        private var mKeyword: String,
     ) : Suggestion() {
         override fun getText(textView: TextView): CharSequence? {
             return if (textView.id == android.R.id.text1) {
@@ -509,7 +513,7 @@ class SearchBar @JvmOverloads constructor(
     }
 
     inner class KeywordSuggestion constructor(
-        private val mKeyword: String
+        private val mKeyword: String,
     ) : Suggestion() {
         override fun getText(textView: TextView): CharSequence? {
             return if (textView.id == android.R.id.text1) {

@@ -31,10 +31,11 @@ import com.hippo.ehviewer.R
 class EditTextDialogBuilder constructor(
     context: Context,
     text: String?,
-    hint: String?
+    hint: String?,
 ) : AlertDialog.Builder(
-    context
-), OnEditorActionListener {
+    context,
+),
+    OnEditorActionListener {
     private val mTextInputLayout: TextInputLayout
     val editText: EditText
     private var mDialog: AlertDialog? = null

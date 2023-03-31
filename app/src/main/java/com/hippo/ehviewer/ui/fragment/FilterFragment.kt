@@ -74,7 +74,7 @@ class FilterFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         val view = inflater.inflate(R.layout.activity_filter, container, false)
         val recyclerView: RecyclerView =
@@ -92,7 +92,7 @@ class FilterFragment : BaseFragment() {
         val decoration = LinearDividerItemDecoration(
             LinearDividerItemDecoration.VERTICAL,
             requireActivity().theme.resolveColor(R.attr.dividerColor),
-            LayoutUtils.dp2pix(requireActivity(), 1f)
+            LayoutUtils.dp2pix(requireActivity(), 1f),
         )
         decoration.setShowLastDivider(true)
         recyclerView.addItemDecoration(decoration)
@@ -246,7 +246,7 @@ class FilterFragment : BaseFragment() {
                 holder.itemView.setOnClickListener {
                     mFilterList.trigger(filter)
 
-                    //for updating delete line on filter text
+                    // for updating delete line on filter text
                     mAdapter.notifyItemChanged(position)
                 }
                 holder.delete?.setOnClickListener { showDeleteFilterDialog(filter) }
@@ -262,7 +262,9 @@ class FilterFragment : BaseFragment() {
                 val filter = mFilterList[position]
                 if (filter.id != null) {
                     (filter.text.hashCode() shr filter.mode) + filter.id!!
-                } else (filter.text.hashCode() shr filter.mode).toLong()
+                } else {
+                    (filter.text.hashCode() shr filter.mode).toLong()
+                }
             }
         }
     }

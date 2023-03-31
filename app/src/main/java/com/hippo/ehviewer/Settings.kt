@@ -77,14 +77,15 @@ object Settings {
     private const val KEY_HIDE_HV_EVENTS = "hide_hv_events"
     private const val DEFAULT_HIDE_HV_EVENTS = false
     val SIGN_IN_REQUIRED = arrayOf(
-            KEY_GALLERY_SITE,
-            KEY_IMAGE_LIMITS,
-            KEY_U_CONFIG,
-            KEY_MY_TAGS,
-            KEY_SHOW_JPN_TITLE,
-            KEY_REQUEST_NEWS,
-            KEY_HIDE_HV_EVENTS
+        KEY_GALLERY_SITE,
+        KEY_IMAGE_LIMITS,
+        KEY_U_CONFIG,
+        KEY_MY_TAGS,
+        KEY_SHOW_JPN_TITLE,
+        KEY_REQUEST_NEWS,
+        KEY_HIDE_HV_EVENTS,
     )
+
     /********************
      ****** Read
      ********************/
@@ -118,6 +119,7 @@ object Settings {
     private const val DEFAULT_CUSTOM_SCREEN_LIGHTNESS = false
     private const val KEY_SCREEN_LIGHTNESS = "screen_lightness"
     private const val DEFAULT_SCREEN_LIGHTNESS = 50
+
     /********************
      ****** Download
      ********************/
@@ -137,6 +139,7 @@ object Settings {
     private const val DEFAULT_PRELOAD_IMAGE = 5
     const val KEY_DOWNLOAD_ORIGIN_IMAGE = "download_origin_image_"
     private const val DEFAULT_DOWNLOAD_ORIGIN_IMAGE = 0
+
     /********************
      ****** Privacy and Security
      ********************/
@@ -146,6 +149,7 @@ object Settings {
     private const val DEFAULT_ENABLE_FINGERPRINT = false
     private const val KEY_SEC_SECURITY = "enable_secure"
     private const val DEFAULT_SEC_SECURITY = false
+
     /********************
      ****** Advanced
      ********************/
@@ -173,6 +177,7 @@ object Settings {
     private const val DEFAULT_BYPASS_VPN = true
     private const val KEY_APP_LINK_VERIFY_TIP = "app_link_verify_tip"
     private const val DEFAULT_APP_LINK_VERIFY_TIP = false
+
     /********************
      ****** Favorites
      ********************/
@@ -211,17 +216,20 @@ object Settings {
     private const val DEFAULT_FAV_COUNT = 0
     private const val KEY_RECENT_FAV_CAT = "recent_fav_cat"
     private const val DEFAULT_RECENT_FAV_CAT = FavListUrlBuilder.FAV_CAT_ALL
+
     // -1 for local, 0 - 9 for cloud favorite, other for no default fav slot
     const val INVALID_DEFAULT_FAV_SLOT = -2
     private const val KEY_DEFAULT_FAV_SLOT = "default_favorite_2"
     private const val DEFAULT_DEFAULT_FAV_SLOT = INVALID_DEFAULT_FAV_SLOT
     private const val KEY_NEVER_ADD_FAV_NOTES = "never_add_favorite_notes"
     private const val DEFAULT_NEVER_ADD_FAV_NOTES = false
+
     /********************
      ****** Guide
      ********************/
     private const val KEY_GUIDE_GALLERY = "guide_gallery"
     private const val DEFAULT_GUIDE_GALLERY = true
+
     /********************
      ****** Others
      ********************/
@@ -311,8 +319,10 @@ object Settings {
 
     private fun putStringToStringSet(key: String, value: String) {
         var set = getStringSet(key)
-        if (set == null) set =
-            mutableSetOf(value) else if (set.contains(value)) return else set.add(value)
+        if (set == null) {
+            set =
+                mutableSetOf(value)
+        } else if (set.contains(value)) return else set.add(value)
         sSettingsPre.edit().putStringSet(key, set).apply()
     }
 
@@ -320,7 +330,7 @@ object Settings {
         return try {
             NumberUtils.parseIntSafely(
                 sSettingsPre.getString(key, defValue.toString()),
-                defValue
+                defValue,
             )
         } catch (e: ClassCastException) {
             Log.d(TAG, "Get ClassCastException when get $key value", e)
@@ -563,7 +573,7 @@ object Settings {
 
     val skipCopyImage: Boolean
         get() = getIntFromStr(KEY_DOWNLOAD_ORIGIN_IMAGE, DEFAULT_DOWNLOAD_ORIGIN_IMAGE) == 2
-    
+
     val security: String?
         get() = getString(KEY_SECURITY, DEFAULT_SECURITY)
     fun putSecurity(value: String?) {
@@ -638,7 +648,7 @@ object Settings {
             sSettingsPre.getString(KEY_FAV_CAT_6, DEFAULT_FAV_CAT_6)!!,
             sSettingsPre.getString(KEY_FAV_CAT_7, DEFAULT_FAV_CAT_7)!!,
             sSettingsPre.getString(KEY_FAV_CAT_8, DEFAULT_FAV_CAT_8)!!,
-            sSettingsPre.getString(KEY_FAV_CAT_9, DEFAULT_FAV_CAT_9)!!
+            sSettingsPre.getString(KEY_FAV_CAT_9, DEFAULT_FAV_CAT_9)!!,
         )
     fun putFavCat(value: Array<String?>) {
         check(value.size == 10)
@@ -667,7 +677,7 @@ object Settings {
             sSettingsPre.getInt(KEY_FAV_COUNT_6, DEFAULT_FAV_COUNT),
             sSettingsPre.getInt(KEY_FAV_COUNT_7, DEFAULT_FAV_COUNT),
             sSettingsPre.getInt(KEY_FAV_COUNT_8, DEFAULT_FAV_COUNT),
-            sSettingsPre.getInt(KEY_FAV_COUNT_9, DEFAULT_FAV_COUNT)
+            sSettingsPre.getInt(KEY_FAV_COUNT_9, DEFAULT_FAV_COUNT),
         )
     fun putFavCount(count: IntArray) {
         check(count.size == 10)

@@ -27,7 +27,7 @@ import com.hippo.ehviewer.R
 class SelectItemWithIconAdapter(
     private val context: Context,
     private val texts: Array<CharSequence>,
-    private val icons: IntArray
+    private val icons: IntArray,
 ) : BaseAdapter() {
     private val inflater: LayoutInflater
 

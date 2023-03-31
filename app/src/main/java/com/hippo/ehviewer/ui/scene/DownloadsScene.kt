@@ -85,7 +85,10 @@ import rikka.core.res.resolveColor
 import java.util.LinkedList
 
 @SuppressLint("RtlHardcoded")
-class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
+class DownloadsScene :
+    ToolbarScene(),
+    DownloadInfoListener,
+    OnClickFabListener,
     OnDragHandlerListener {
     private val mDownloadManager = DownloadManager
     private lateinit var mLabels: MutableList<String>
@@ -222,8 +225,8 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
         setTitle(
             getString(
                 R.string.scene_download_title,
-                if (mLabel != null) mLabel else getString(R.string.download_all)
-            )
+                if (mLabel != null) mLabel else getString(R.string.download_all),
+            ),
         )
     }
 
@@ -246,7 +249,8 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
 
     override fun onCreateViewWithToolbar(
         inflater: LayoutInflater,
-        container: ViewGroup?, savedInstanceState: Bundle?
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         val view = inflater.inflate(R.layout.scene_download, container, false)
         val content = ViewUtils.`$$`(view, R.id.content)
@@ -340,7 +344,7 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
                 AlertDialog.Builder(requireActivity())
                     .setSingleChoiceItems(
                         R.array.download_state,
-                        mType + 1
+                        mType + 1,
                     ) { dialog: DialogInterface, which: Int ->
                         dialog.dismiss()
                         if (which == 6) {
@@ -402,7 +406,7 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
                 AlertDialog.Builder(requireActivity())
                     .setSingleChoiceItems(
                         R.array.download_sort,
-                        mSort
+                        mSort,
                     ) { dialog: DialogInterface, which: Int ->
                         mSort = which
                         dialog.dismiss()
@@ -419,7 +423,9 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
 
     private fun showFilterTitleDialog() {
         val builder = EditTextDialogBuilder(
-            requireActivity(), null, getString(R.string.download_filter_title)
+            requireActivity(),
+            null,
+            getString(R.string.download_filter_title),
         )
         builder.setTitle(R.string.search)
         builder.setPositiveButton(android.R.string.ok, null)
@@ -452,7 +458,8 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
 
     override fun onCreateDrawerView(
         inflater: LayoutInflater,
-        container: ViewGroup?, savedInstanceState: Bundle?
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         val view = inflater.inflate(R.layout.drawer_list_rv, container, false)
         val toolbar = view.findViewById<Toolbar>(R.id.toolbar)
@@ -505,7 +512,7 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
         val decoration = LinearDividerItemDecoration(
             LinearDividerItemDecoration.VERTICAL,
             theme.resolveColor(R.attr.dividerColor),
-            LayoutUtils.dp2pix(context, 1f)
+            LayoutUtils.dp2pix(context, 1f),
         )
         decoration.setShowLastDivider(true)
         mLabelAdapter!!.setHasStableIds(true)
@@ -638,10 +645,12 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
                         context,
                         getString(R.string.download_remove_dialog_message_2, gidList!!.size),
                         getString(R.string.download_remove_dialog_check_text),
-                        Settings.removeImageFiles
+                        Settings.removeImageFiles,
                     )
                     val helper = DeleteRangeDialogHelper(
-                        downloadInfoList!!, gidList, builder
+                        downloadInfoList!!,
+                        gidList,
+                        builder,
                     )
                     builder.setTitle(R.string.download_remove_dialog_title)
                         .setPositiveButton(android.R.string.ok, helper)
@@ -730,13 +739,13 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
             DownloadInfo.STATE_NONE -> bindState(
                 holder,
                 info,
-                context.getString(R.string.download_state_none)
+                context.getString(R.string.download_state_none),
             )
 
             DownloadInfo.STATE_WAIT -> bindState(
                 holder,
                 info,
-                context.getString(R.string.download_state_wait)
+                context.getString(R.string.download_state_wait),
             )
 
             DownloadInfo.STATE_DOWNLOAD -> bindProgress(holder, info)
@@ -752,7 +761,7 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
             DownloadInfo.STATE_FINISH -> bindState(
                 holder,
                 info,
-                context.getString(R.string.download_state_finish)
+                context.getString(R.string.download_state_finish),
             )
         }
     }
@@ -809,7 +818,7 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
 
     @SuppressLint("ClickableViewAccessibility")
     private inner class DownloadLabelHolder(
-        itemView: View
+        itemView: View,
     ) : RecyclerView.ViewHolder(itemView), View.OnTouchListener {
         val label: TextView
         val option: ImageView
@@ -859,7 +868,9 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
                                 when (item.itemId) {
                                     R.id.menu_label_rename -> {
                                         val builder = EditTextDialogBuilder(
-                                            requireContext(), label, getString(R.string.download_labels)
+                                            requireContext(),
+                                            label,
+                                            getString(R.string.download_labels),
                                         )
                                         builder.setTitle(R.string.rename_label_title)
                                         builder.setPositiveButton(android.R.string.ok, null)
@@ -884,7 +895,7 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
                                 }
                                 return false
                             }
-                        }
+                        },
                     )
                 }
                 return@setOnLongClickListener true
@@ -930,7 +941,8 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
 
     private inner class DeleteRangeDialogHelper(
         private val mDownloadInfoList: List<DownloadInfo>,
-        private val mGidList: LongList, private val mBuilder: CheckBoxDialogBuilder
+        private val mGidList: LongList,
+        private val mBuilder: CheckBoxDialogBuilder,
     ) : DialogInterface.OnClickListener {
         override fun onClick(dialog: DialogInterface, which: Int) {
             if (which != DialogInterface.BUTTON_POSITIVE) {
@@ -969,7 +981,7 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
 
     private inner class MoveDialogHelper(
         private val mLabels: Array<String>,
-        private val mDownloadInfoList: List<DownloadInfo>
+        private val mDownloadInfoList: List<DownloadInfo>,
     ) : DialogInterface.OnClickListener {
         @SuppressLint("NotifyDataSetChanged")
         override fun onClick(dialog: DialogInterface, which: Int) {
@@ -989,7 +1001,8 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
         }
     }
 
-    private inner class DownloadHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+    private inner class DownloadHolder(itemView: View) :
+        RecyclerView.ViewHolder(itemView),
         View.OnClickListener {
         val thumb: LoadImageView
         val title: TextView
@@ -1039,7 +1052,7 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
                 val args = Bundle()
                 args.putString(
                     GalleryDetailScene.KEY_ACTION,
-                    GalleryDetailScene.ACTION_GALLERY_INFO
+                    GalleryDetailScene.ACTION_GALLERY_INFO,
                 )
                 args.putParcelable(GalleryDetailScene.KEY_GALLERY_INFO, list[index])
                 val announcer = Announcer(GalleryDetailScene::class.java).setArgs(args)
@@ -1063,7 +1076,8 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
         private val mListThumbHeight: Int
 
         init {
-            @SuppressLint("InflateParams") val calculator =
+            @SuppressLint("InflateParams")
+            val calculator =
                 mInflater.inflate(R.layout.item_gallery_list_thumb_height, null)
             ViewUtils.measureView(calculator, 1024, ViewGroup.LayoutParams.WRAP_CONTENT)
             mListThumbHeight = calculator.measuredHeight
@@ -1073,7 +1087,9 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
         override fun getItemId(position: Int): Long {
             return if (mList == null || position < 0 || position >= mList!!.size) {
                 0
-            } else mList!![position].gid
+            } else {
+                mList!![position].gid
+            }
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DownloadHolder {
@@ -1107,7 +1123,7 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
             // Update transition name
             ViewCompat.setTransitionName(
                 holder.thumb,
-                TransitionNameFactory.getThumbTransitionName(info.gid)
+                TransitionNameFactory.getThumbTransitionName(info.gid),
             )
             holder.itemView.setOnClickListener { onItemClick(position) }
             holder.itemView.setOnLongClickListener { onItemLongClick(position) }
@@ -1141,7 +1157,7 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
             view: EasyRecyclerView,
             position: Int,
             id: Long,
-            checked: Boolean
+            checked: Boolean,
         ) {
             if (view.checkedItemCount == 0) {
                 view.outOfCustomChoiceMode()
@@ -1150,8 +1166,9 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
     }
 
     private inner class RenameLabelDialogHelper(
-        private val mBuilder: EditTextDialogBuilder, private val mDialog: AlertDialog,
-        private val mOriginalLabel: String?
+        private val mBuilder: EditTextDialogBuilder,
+        private val mDialog: AlertDialog,
+        private val mOriginalLabel: String?,
     ) : View.OnClickListener {
         init {
             val button: Button = mDialog.getButton(DialogInterface.BUTTON_POSITIVE)
@@ -1183,7 +1200,7 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
 
     private inner class NewLabelDialogHelper(
         private val mBuilder: EditTextDialogBuilder,
-        private val mDialog: AlertDialog
+        private val mDialog: AlertDialog,
     ) : View.OnClickListener {
         init {
             val button: Button = mDialog.getButton(DialogInterface.BUTTON_POSITIVE)
@@ -1213,7 +1230,7 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
     private inner class DownloadLabelItemTouchHelperCallback : ItemTouchHelper.Callback() {
         override fun getMovementFlags(
             recyclerView: RecyclerView,
-            viewHolder: RecyclerView.ViewHolder
+            viewHolder: RecyclerView.ViewHolder,
         ): Int {
             val position = viewHolder.bindingAdapterPosition
             return if (position < LABEL_OFFSET) {
@@ -1221,10 +1238,9 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
             } else {
                 makeMovementFlags(
                     ItemTouchHelper.UP or ItemTouchHelper.DOWN,
-                    0
+                    0,
                 )
             }
-
         }
 
         override fun isLongPressDragEnabled(): Boolean {
@@ -1234,7 +1250,7 @@ class DownloadsScene : ToolbarScene(), DownloadInfoListener, OnClickFabListener,
         override fun onMove(
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder,
-            target: RecyclerView.ViewHolder
+            target: RecyclerView.ViewHolder,
         ): Boolean {
             val fromPosition = viewHolder.bindingAdapterPosition
             val toPosition = target.bindingAdapterPosition

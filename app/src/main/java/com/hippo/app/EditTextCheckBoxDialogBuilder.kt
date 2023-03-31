@@ -36,10 +36,11 @@ class EditTextCheckBoxDialogBuilder constructor(
     text: String?,
     hint: String?,
     checkText: String?,
-    checked: Boolean
+    checked: Boolean,
 ) : AlertDialog.Builder(
-    context
-), OnEditorActionListener {
+    context,
+),
+    OnEditorActionListener {
     private val mCheckBox: CheckBox
     val isChecked: Boolean
         get() = mCheckBox.isChecked

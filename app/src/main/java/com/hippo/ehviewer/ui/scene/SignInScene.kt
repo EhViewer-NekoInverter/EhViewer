@@ -60,8 +60,9 @@ class SignInScene : SolidScene(), OnEditorActionListener, View.OnClickListener {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         val view = inflater.inflate(R.layout.scene_login, container, false)
         val loginForm = ViewUtils.`$$`(view, R.id.login_form)

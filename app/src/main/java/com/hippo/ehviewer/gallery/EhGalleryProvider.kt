@@ -25,7 +25,8 @@ import com.hippo.unifile.UniFile
 import com.hippo.yorozuya.SimpleHandler
 import java.util.Locale
 
-class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) : GalleryProvider2(),
+class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) :
+    GalleryProvider2(),
     OnSpiderListener {
     private lateinit var mSpiderQueen: SpiderQueen
     override fun start() {
@@ -49,7 +50,7 @@ class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) : GalleryProvider
             "%d-%s-%08d",
             mGalleryInfo.gid,
             mGalleryInfo.token,
-            index + 1
+            index + 1,
         )
     }
 
@@ -62,7 +63,7 @@ class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) : GalleryProvider
                 mGalleryInfo.gid,
                 mGalleryInfo.token,
                 index + 1,
-                extension
+                extension,
             )
         }
         return String.format(
@@ -70,7 +71,7 @@ class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) : GalleryProvider
             "%d-%s-%08d",
             mGalleryInfo.gid,
             mGalleryInfo.token,
-            index + 1
+            index + 1,
         )
     }
 
@@ -118,7 +119,7 @@ class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) : GalleryProvider
         index: Int,
         contentLength: Long,
         receivedSize: Long,
-        bytesRead: Int
+        bytesRead: Int,
     ) {
         if (contentLength > 0) {
             notifyPagePercent(index, receivedSize.toFloat() / contentLength)
@@ -132,7 +133,7 @@ class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) : GalleryProvider
         error: String?,
         finished: Int,
         downloaded: Int,
-        total: Int
+        total: Int,
     ) {
         notifyPageFailed(index, error)
     }

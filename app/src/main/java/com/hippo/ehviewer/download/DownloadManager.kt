@@ -815,7 +815,7 @@ object DownloadManager : OnSpiderListener {
         index: Int,
         contentLength: Long,
         receivedSize: Long,
-        bytesRead: Int
+        bytesRead: Int,
     ) {
         var task = mNotifyTaskPool.pop()
         if (task == null) {
@@ -839,7 +839,7 @@ object DownloadManager : OnSpiderListener {
         error: String?,
         finished: Int,
         downloaded: Int,
-        total: Int
+        total: Int,
     ) {
         var task = mNotifyTaskPool.pop()
         if (task == null) {
@@ -961,7 +961,7 @@ object DownloadManager : OnSpiderListener {
             index: Int,
             contentLength: Long,
             receivedSize: Long,
-            bytesRead: Int
+            bytesRead: Int,
         ) {
             mType = TYPE_ON_PAGE_DOWNLOAD
             mIndex = index
@@ -983,7 +983,7 @@ object DownloadManager : OnSpiderListener {
             error: String?,
             finished: Int,
             downloaded: Int,
-            total: Int
+            total: Int,
         ) {
             mType = TYPE_ON_PAGE_FAILURE
             mIndex = index
@@ -1027,7 +1027,7 @@ object DownloadManager : OnSpiderListener {
                     mIndex,
                     mContentLength,
                     mReceivedSize,
-                    mBytesRead
+                    mBytesRead,
                 )
 
                 TYPE_ON_PAGE_SUCCESS -> {

@@ -41,8 +41,11 @@ import com.hippo.ehviewer.download.DownloadManager as downloadManager
 
 object CommonOperations {
     private fun doAddToFavorites(
-        activity: Activity, galleryInfo: GalleryInfo,
-        slot: Int, note: String, listener: EhClient.Callback<Unit>
+        activity: Activity,
+        galleryInfo: GalleryInfo,
+        slot: Int,
+        note: String,
+        listener: EhClient.Callback<Unit>,
     ) {
         val request = EhRequest()
         request.setMethod(EhClient.METHOD_ADD_FAVORITES)
@@ -52,8 +55,11 @@ object CommonOperations {
     }
 
     fun doAddToFavorites(
-        activity: Activity, galleryInfo: GalleryInfo, slot: Int,
-        listener: EhClient.Callback<Unit>, foreEdit: Boolean
+        activity: Activity,
+        galleryInfo: GalleryInfo,
+        slot: Int,
+        listener: EhClient.Callback<Unit>,
+        foreEdit: Boolean,
     ) {
         when (slot) {
             -1 -> {
@@ -65,9 +71,11 @@ object CommonOperations {
                     doAddToFavorites(activity, galleryInfo, slot, "", listener)
                 } else {
                     val builder = EditTextCheckBoxDialogBuilder(
-                        activity, null,
-                        activity.getString(R.string.favorite_note), activity.getString(R.string.favorite_note_never_show),
-                        Settings.neverAddFavNotes
+                        activity,
+                        null,
+                        activity.getString(R.string.favorite_note),
+                        activity.getString(R.string.favorite_note_never_show),
+                        Settings.neverAddFavNotes,
                     )
                     builder.setTitle(R.string.add_favorite_note_dialog_title)
                     builder.setPositiveButton(android.R.string.ok, null)
@@ -88,8 +96,10 @@ object CommonOperations {
     }
 
     fun addToFavorites(
-        activity: Activity, galleryInfo: GalleryInfo,
-        listener: EhClient.Callback<Unit>, foreSelect: Boolean = false
+        activity: Activity,
+        galleryInfo: GalleryInfo,
+        listener: EhClient.Callback<Unit>,
+        foreSelect: Boolean = false,
     ) {
         val slot = Settings.defaultFavSlot
         val localFav = activity.getString(R.string.local_favorites)
@@ -101,11 +111,12 @@ object CommonOperations {
                 galleryInfo,
                 slot,
                 DelegateFavoriteCallback(listener, galleryInfo, newFavoriteName, slot),
-                false
+                false,
             )
         } else {
             ListCheckBoxDialogBuilder(
-                activity, items,
+                activity,
+                items,
                 { builder: ListCheckBoxDialogBuilder?, _: AlertDialog?, position: Int ->
                     val slot1 = position - 1
                     val newFavoriteName = if (slot1 in 0..9) items[slot1 + 1] else null
@@ -114,7 +125,7 @@ object CommonOperations {
                         galleryInfo,
                         slot1,
                         DelegateFavoriteCallback(listener, galleryInfo, newFavoriteName, slot1),
-                        false
+                        false,
                     )
                     if (builder?.isChecked == true) {
                         Settings.putDefaultFavSlot(slot1)
@@ -123,7 +134,7 @@ object CommonOperations {
                     }
                 },
                 activity.getString(R.string.remember_favorite_collection),
-                slot != Settings.INVALID_DEFAULT_FAV_SLOT
+                slot != Settings.INVALID_DEFAULT_FAV_SLOT,
             )
                 .setTitle(R.string.add_favorites_dialog_title)
                 .setOnCancelListener { listener.onCancel() }
@@ -132,8 +143,9 @@ object CommonOperations {
     }
 
     fun removeFromFavorites(
-        activity: Activity?, galleryInfo: GalleryInfo,
-        listener: EhClient.Callback<Unit>
+        activity: Activity?,
+        galleryInfo: GalleryInfo,
+        listener: EhClient.Callback<Unit>,
     ) {
         EhDB.removeLocalFavorites(galleryInfo.gid)
         val request = EhRequest()
@@ -150,7 +162,7 @@ object CommonOperations {
     fun startDownload(
         activity: MainActivity,
         galleryInfos: List<GalleryInfo>,
-        forceDefault: Boolean
+        forceDefault: Boolean,
     ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             application.topActivity?.checkAndRequestNotificationPermission()
@@ -161,7 +173,7 @@ object CommonOperations {
     private fun doStartDownload(
         activity: MainActivity,
         galleryInfos: List<GalleryInfo>,
-        forceDefault: Boolean
+        forceDefault: Boolean,
     ) {
         val toStart = LongList()
         val toAdd: MutableList<GalleryInfo> = ArrayList()
@@ -212,7 +224,8 @@ object CommonOperations {
             items.add(activity.getString(R.string.default_download_label_name))
             items.addAll(list.mapNotNull { it.label })
             ListCheckBoxDialogBuilder(
-                activity, items,
+                activity,
+                items,
                 { builder: ListCheckBoxDialogBuilder?, _: AlertDialog?, position: Int ->
                     var label1: String?
                     if (position == 0) {
@@ -240,7 +253,9 @@ object CommonOperations {
                     }
                     // Notify
                     activity.showTip(R.string.added_to_download_list, BaseScene.LENGTH_SHORT)
-                }, activity.getString(R.string.remember_download_label), false
+                },
+                activity.getString(R.string.remember_download_label),
+                false,
             )
                 .setTitle(R.string.download)
                 .show()
@@ -248,8 +263,10 @@ object CommonOperations {
     }
 
     private class DelegateFavoriteCallback(
-        private val delegate: EhClient.Callback<Unit>, private val info: GalleryInfo,
-        private val newFavoriteName: String?, private val slot: Int
+        private val delegate: EhClient.Callback<Unit>,
+        private val info: GalleryInfo,
+        private val newFavoriteName: String?,
+        private val slot: Int,
     ) : EhClient.Callback<Unit> {
         override fun onSuccess(result: Unit) {
             EhDB.updateHistoryFavSlot(info.gid, slot)

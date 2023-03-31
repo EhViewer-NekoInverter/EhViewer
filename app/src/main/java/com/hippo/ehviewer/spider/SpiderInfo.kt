@@ -35,7 +35,7 @@ class SpiderInfo @JvmOverloads constructor(
     var startPage: Int = 0,
     var token: String? = null,
     var previewPages: Int = -1,
-    var previewPerPage: Int = -1
+    var previewPerPage: Int = -1,
 ) {
     private fun write(outputStream: OutputStream) {
         OutputStreamWriter(outputStream).use {
@@ -101,7 +101,7 @@ class SpiderInfo @JvmOverloads constructor(
                 return if (str.startsWith(VERSION_STR)) {
                     NumberUtils.parseIntSafely(
                         str.substring(VERSION_STR.length),
-                        -1
+                        -1,
                     )
                 } else {
                     1

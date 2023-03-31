@@ -40,7 +40,8 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.sync.withPermit
 
-class ArchiveGalleryProvider(context: Context, uri: Uri, passwdFlow: Flow<String>) : GalleryProvider2(),
+class ArchiveGalleryProvider(context: Context, uri: Uri, passwdFlow: Flow<String>) :
+    GalleryProvider2(),
     CoroutineScope {
     override val coroutineContext = Dispatchers.IO + Job()
     private val archiveAccessor by lazy { UriArchiveAccessor(context, uri) }

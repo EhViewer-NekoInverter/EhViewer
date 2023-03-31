@@ -32,7 +32,8 @@ import com.hippo.util.getParcelableCompat
 import com.hippo.yorozuya.NumberUtils
 
 class AdvanceSearchTable @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
+    context: Context,
+    attrs: AttributeSet? = null,
 ) : LinearLayout(context, attrs) {
     private var mSh: CheckBox
     private var mSto: CheckBox
@@ -109,7 +110,9 @@ class AdvanceSearchTable @JvmOverloads constructor(
     var pageFrom: Int
         get() = if (mSp.isChecked) {
             NumberUtils.parseIntSafely(mSpf.text.toString(), -1)
-        } else -1
+        } else {
+            -1
+        }
         set(pageFrom) {
             if (pageFrom > 0) {
                 mSpf.setText(pageFrom.toString())
@@ -123,7 +126,9 @@ class AdvanceSearchTable @JvmOverloads constructor(
     var pageTo: Int
         get() = if (mSp.isChecked) {
             NumberUtils.parseIntSafely(mSpt.text.toString(), -1)
-        } else -1
+        } else {
+            -1
+        }
         set(pageTo) {
             if (pageTo > 0) {
                 mSpt.setText(pageTo.toString())

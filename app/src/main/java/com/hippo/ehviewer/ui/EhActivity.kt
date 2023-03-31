@@ -84,7 +84,7 @@ abstract class EhActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun checkAndRequestNotificationPermission() {
-        if (Settings.notificationRequired || ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS ) == PackageManager.PERMISSION_GRANTED) return
+        if (Settings.notificationRequired || ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) return
         requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
     }
 }

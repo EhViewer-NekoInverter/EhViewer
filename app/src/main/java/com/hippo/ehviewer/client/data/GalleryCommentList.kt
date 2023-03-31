@@ -21,5 +21,5 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 class GalleryCommentList(
     var comments: Array<GalleryComment>?,
-    var hasMore: Boolean
+    var hasMore: Boolean,
 ) : Parcelable

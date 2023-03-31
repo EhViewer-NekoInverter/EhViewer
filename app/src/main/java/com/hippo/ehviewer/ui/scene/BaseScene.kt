@@ -131,7 +131,8 @@ abstract class BaseScene : SceneFragment() {
 
     fun createDrawerView(
         inflater: LayoutInflater,
-        container: ViewGroup?, savedInstanceState: Bundle?
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View? {
         drawerView = onCreateDrawerView(inflater, container, savedInstanceState)
         if (drawerView != null) {
@@ -148,7 +149,8 @@ abstract class BaseScene : SceneFragment() {
 
     open fun onCreateDrawerView(
         inflater: LayoutInflater,
-        container: ViewGroup?, savedInstanceState: Bundle?
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View? {
         return null
     }
@@ -161,7 +163,7 @@ abstract class BaseScene : SceneFragment() {
         onDestroyDrawerView()
         drawerView = null
     }
-    
+
     fun setLightStatusBar(set: Boolean) {
         val insetsController = insetsController
         if (insetsController != null) {
@@ -183,7 +185,7 @@ abstract class BaseScene : SceneFragment() {
                     startPostponedEnterTransition()
                     return true
                 }
-            }
+            },
         )
 
         // Update left drawer locked state
@@ -225,10 +227,12 @@ abstract class BaseScene : SceneFragment() {
     fun showSoftInput(view: View?) {
         if (view != null) {
             view.requestFocus()
-            view.post(Runnable {
-                val insetsController = getInsetsController()
-                insetsController?.show(WindowInsetsCompat.Type.ime())
-            })
+            view.post(
+                Runnable {
+                    val insetsController = getInsetsController()
+                    insetsController?.show(WindowInsetsCompat.Type.ime())
+                },
+            )
         }
     }
 

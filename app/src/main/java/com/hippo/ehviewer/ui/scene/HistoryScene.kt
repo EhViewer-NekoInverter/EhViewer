@@ -135,7 +135,8 @@ class HistoryScene : ToolbarScene() {
 
     override fun onCreateViewWithToolbar(
         inflater: LayoutInflater,
-        container: ViewGroup?, savedInstanceState: Bundle?
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View? {
         val view = inflater.inflate(R.layout.scene_history, container, false)
         val content = ViewUtils.`$$`(view, R.id.content)
@@ -147,14 +148,15 @@ class HistoryScene : ToolbarScene() {
         drawable!!.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
         mTip.setCompoundDrawables(null, drawable, null, null)
         val historyData = Pager(
-            PagingConfig(20)
+            PagingConfig(20),
         ) {
             // DB Actions
             EhDB.historyLazyList
         }.flow.cachedIn(viewLifecycleOwner.lifecycleScope)
         recyclerView.adapter = mAdapter
         val layoutManager = AutoStaggeredGridLayoutManager(
-            0, StaggeredGridLayoutManager.VERTICAL
+            0,
+            StaggeredGridLayoutManager.VERTICAL,
         )
         layoutManager.setColumnSize(Settings.detailSize)
         layoutManager.setStrategy(AutoStaggeredGridLayoutManager.STRATEGY_MIN_SIZE)
@@ -171,7 +173,7 @@ class HistoryScene : ToolbarScene() {
         viewLifecycleOwner.lifecycleScope.launch {
             historyData.collectLatest { value ->
                 mAdapter.submitData(
-                    value
+                    value,
                 )
             }
         }
@@ -252,38 +254,46 @@ class HistoryScene : ToolbarScene() {
         val activity = mainActivity ?: return false
         val downloaded = mDownloadManager.getDownloadState(gi.gid) != DownloadInfo.STATE_INVALID
         val favourited = gi.favoriteSlot != -2
-        val items = if (downloaded) arrayOf<CharSequence>(
-            context.getString(R.string.read),
-            context.getString(R.string.delete_downloads),
-            context.getString(if (favourited) R.string.remove_from_favourites else R.string.add_to_favourites),
-            context.getString(R.string.delete),
-            context.getString(R.string.download_move_dialog_title),
-        ) else arrayOf<CharSequence>(
-            context.getString(R.string.read),
-            context.getString(R.string.download),
-            context.getString(if (favourited) R.string.remove_from_favourites else R.string.add_to_favourites),
-            context.getString(R.string.delete),
-        )
-        val icons = if (downloaded) intArrayOf(
-            R.drawable.v_book_open_x24,
-            R.drawable.v_delete_x24,
-            if (favourited) R.drawable.v_heart_broken_x24 else R.drawable.v_heart_x24,
-            R.drawable.v_delete_x24,
-            R.drawable.v_folder_move_x24,
-        ) else intArrayOf(
-            R.drawable.v_book_open_x24,
-            R.drawable.v_download_x24,
-            if (favourited) R.drawable.v_heart_broken_x24 else R.drawable.v_heart_x24,
-            R.drawable.v_delete_x24,
-        )
+        val items = if (downloaded) {
+            arrayOf<CharSequence>(
+                context.getString(R.string.read),
+                context.getString(R.string.delete_downloads),
+                context.getString(if (favourited) R.string.remove_from_favourites else R.string.add_to_favourites),
+                context.getString(R.string.delete),
+                context.getString(R.string.download_move_dialog_title),
+            )
+        } else {
+            arrayOf<CharSequence>(
+                context.getString(R.string.read),
+                context.getString(R.string.download),
+                context.getString(if (favourited) R.string.remove_from_favourites else R.string.add_to_favourites),
+                context.getString(R.string.delete),
+            )
+        }
+        val icons = if (downloaded) {
+            intArrayOf(
+                R.drawable.v_book_open_x24,
+                R.drawable.v_delete_x24,
+                if (favourited) R.drawable.v_heart_broken_x24 else R.drawable.v_heart_x24,
+                R.drawable.v_delete_x24,
+                R.drawable.v_folder_move_x24,
+            )
+        } else {
+            intArrayOf(
+                R.drawable.v_book_open_x24,
+                R.drawable.v_download_x24,
+                if (favourited) R.drawable.v_heart_broken_x24 else R.drawable.v_heart_x24,
+                R.drawable.v_delete_x24,
+            )
+        }
         AlertDialog.Builder(context)
             .setTitle(EhUtils.getSuitableTitle(gi))
             .setAdapter(
                 SelectItemWithIconAdapter(
                     context,
                     items,
-                    icons
-                )
+                    icons,
+                ),
             ) { _: DialogInterface?, which: Int ->
                 when (which) {
                     0 -> {
@@ -299,13 +309,13 @@ class HistoryScene : ToolbarScene() {
                             .setMessage(
                                 getString(
                                     R.string.download_remove_dialog_message,
-                                    gi.title
-                                )
+                                    gi.title,
+                                ),
                             )
                             .setPositiveButton(android.R.string.ok) { _: DialogInterface?, _: Int ->
                                 // DownloadManager Actions
                                 mDownloadManager.deleteDownload(
-                                    gi.gid
+                                    gi.gid,
                                 )
                             }
                             .show()
@@ -319,7 +329,7 @@ class HistoryScene : ToolbarScene() {
                         CommonOperations.removeFromFavorites(
                             activity,
                             gi,
-                            RemoveFromFavoriteListener(context)
+                            RemoveFromFavoriteListener(context),
                         )
                     } else {
                         // CommonOperations Actions
@@ -327,7 +337,7 @@ class HistoryScene : ToolbarScene() {
                             activity,
                             gi,
                             AddToFavoriteListener(context),
-                            false
+                            false,
                         )
                     }
 
@@ -406,7 +416,7 @@ class HistoryScene : ToolbarScene() {
 
     private inner class MoveDialogHelper(
         private val mLabels: Array<String>,
-        private val mGi: GalleryInfo
+        private val mGi: GalleryInfo,
     ) : DialogInterface.OnClickListener {
         override fun onClick(dialog: DialogInterface, which: Int) {
             val downloadInfo = mDownloadManager.getDownloadInfo(mGi.gid) ?: return
@@ -423,7 +433,8 @@ class HistoryScene : ToolbarScene() {
         private val mListThumbHeight: Int
 
         init {
-            @SuppressLint("InflateParams") val calculator =
+            @SuppressLint("InflateParams")
+            val calculator =
                 mInflater.inflate(R.layout.item_gallery_list_thumb_height, null)
             ViewUtils.measureView(calculator, 1024, ViewGroup.LayoutParams.WRAP_CONTENT)
             mListThumbHeight = calculator.measuredHeight
@@ -471,7 +482,7 @@ class HistoryScene : ToolbarScene() {
             // Update transition name
             ViewCompat.setTransitionName(
                 holder.thumb,
-                TransitionNameFactory.getThumbTransitionName(gi.gid)
+                TransitionNameFactory.getThumbTransitionName(gi.gid),
             )
             holder.card.setOnClickListener { onItemClick(holder.itemView, gi) }
             holder.card.setOnLongClickListener { onItemLongClick(gi) }
@@ -481,7 +492,7 @@ class HistoryScene : ToolbarScene() {
     private inner class HistoryItemTouchHelperCallback : ItemTouchHelper.Callback() {
         override fun getMovementFlags(
             recyclerView: RecyclerView,
-            viewHolder: RecyclerView.ViewHolder
+            viewHolder: RecyclerView.ViewHolder,
         ): Int {
             return makeMovementFlags(0, ItemTouchHelper.LEFT)
         }
@@ -493,7 +504,7 @@ class HistoryScene : ToolbarScene() {
         override fun onMove(
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder,
-            target: RecyclerView.ViewHolder
+            target: RecyclerView.ViewHolder,
         ): Boolean {
             return false
         }

@@ -30,14 +30,15 @@ import com.hippo.yorozuya.ViewUtils
 class SelectSiteScene : SolidScene(), View.OnClickListener {
     private var mButtonGroup: MaterialButtonToggleGroup? = null
     private var mOk: View? = null
-    
+
     override fun needShowLeftDrawer(): Boolean {
         return false
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         val view = inflater.inflate(R.layout.scene_select_site, container, false)
         mButtonGroup = ViewUtils.`$$`(view, R.id.button_group) as MaterialButtonToggleGroup

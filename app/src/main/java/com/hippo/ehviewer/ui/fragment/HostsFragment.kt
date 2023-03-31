@@ -59,7 +59,7 @@ class HostsFragment : BaseFragment(), View.OnClickListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         val view = inflater.inflate(R.layout.activity_hosts, container, false)
         val recyclerView: RecyclerView = view.findViewById<EasyRecyclerView>(R.id.recycler_view)
@@ -73,7 +73,7 @@ class HostsFragment : BaseFragment(), View.OnClickListener {
         val decoration = LinearDividerItemDecoration(
             LinearDividerItemDecoration.VERTICAL,
             requireActivity().theme.resolveColor(R.attr.dividerColor),
-            LayoutUtils.dp2pix(requireActivity(), 1f)
+            LayoutUtils.dp2pix(requireActivity(), 1f),
         )
         decoration.setShowLastDivider(true)
         recyclerView.addItemDecoration(decoration)

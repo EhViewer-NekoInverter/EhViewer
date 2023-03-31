@@ -45,7 +45,8 @@ class WebViewSignInScene : SolidScene() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(
         inflater: LayoutInflater,
-        container: ViewGroup?, savedInstanceState: Bundle?
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         EhUtils.signOut()
 
@@ -94,11 +95,15 @@ class WebViewSignInScene : SolidScene() {
         }
 
         private fun addCookie(domain: String, cookie: Cookie) {
-            EhCookieStore.addCookie(EhCookieStore.newCookie(cookie, domain,
-                forcePersistent = true,
-                forceLongLive = true,
-                forceNotHostOnly = true
-            ))
+            EhCookieStore.addCookie(
+                EhCookieStore.newCookie(
+                    cookie,
+                    domain,
+                    forcePersistent = true,
+                    forceLongLive = true,
+                    forceNotHostOnly = true,
+                ),
+            )
         }
 
         override fun onPageFinished(view: WebView, url: String) {

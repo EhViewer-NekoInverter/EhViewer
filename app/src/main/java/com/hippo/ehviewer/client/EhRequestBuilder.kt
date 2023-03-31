@@ -21,7 +21,7 @@ import io.ktor.http.HttpMessageBuilder
 class EhRequestBuilder constructor(
     url: String,
     referer: String? = null,
-    origin: String? = null
+    origin: String? = null,
 ) : ChromeRequestBuilder(url) {
     init {
         referer?.let { addHeader("Referer", it) }

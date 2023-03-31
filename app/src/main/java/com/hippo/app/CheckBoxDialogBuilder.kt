@@ -27,9 +27,9 @@ class CheckBoxDialogBuilder constructor(
     context: Context,
     message: String?,
     checkText: String?,
-    checked: Boolean
+    checked: Boolean,
 ) : AlertDialog.Builder(
-    context
+    context,
 ) {
     private val mCheckBox: CheckBox
     val isChecked: Boolean

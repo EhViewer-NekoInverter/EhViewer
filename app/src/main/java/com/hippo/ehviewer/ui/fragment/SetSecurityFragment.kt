@@ -39,7 +39,7 @@ class SetSecurityFragment : BaseFragment(), View.OnClickListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         val view = inflater.inflate(R.layout.activity_set_security, container, false)
         mPatternView = ViewUtils.`$$`(view, R.id.pattern_view) as LockPatternView
@@ -48,8 +48,10 @@ class SetSecurityFragment : BaseFragment(), View.OnClickListener {
         mFingerprint = ViewUtils.`$$`(view, R.id.fingerprint_checkbox) as CheckBox
         val pattern = Settings.security
         if (!TextUtils.isEmpty(pattern)) {
-            mPatternView!!.setPattern(LockPatternView.DisplayMode.Correct,
-                    LockPatternUtils.stringToPattern(pattern))
+            mPatternView!!.setPattern(
+                LockPatternView.DisplayMode.Correct,
+                LockPatternUtils.stringToPattern(pattern),
+            )
         }
         if (BiometricManager.from(requireContext()).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS) {
             mFingerprint!!.visibility = View.VISIBLE
@@ -76,8 +78,9 @@ class SetSecurityFragment : BaseFragment(), View.OnClickListener {
                     mPatternView!!.patternString
                 }
                 Settings.putSecurity(security)
-                Settings.putEnableFingerprint(mFingerprint!!.visibility == View.VISIBLE &&
-                        mFingerprint!!.isChecked && security.isNotEmpty()
+                Settings.putEnableFingerprint(
+                    mFingerprint!!.visibility == View.VISIBLE &&
+                        mFingerprint!!.isChecked && security.isNotEmpty(),
                 )
             }
             requireActivity().onBackPressed()

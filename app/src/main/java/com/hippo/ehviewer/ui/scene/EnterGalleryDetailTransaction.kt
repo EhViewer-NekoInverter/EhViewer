@@ -25,11 +25,13 @@ import com.hippo.ehviewer.R
 import com.hippo.scene.TransitionHelper
 
 class EnterGalleryDetailTransaction(
-    private val mThumb: View?
+    private val mThumb: View?,
 ) : TransitionHelper {
     override fun onTransition(
-        context: Context, transaction: FragmentTransaction,
-        exit: Fragment, enter: Fragment
+        context: Context,
+        transaction: FragmentTransaction,
+        exit: Fragment,
+        enter: Fragment,
     ): Boolean {
         if (mThumb == null || enter !is GalleryDetailScene) {
             return false

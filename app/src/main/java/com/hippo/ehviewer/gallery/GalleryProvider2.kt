@@ -43,9 +43,9 @@ abstract class GalleryProvider2 : GalleryProvider() {
     companion object {
         // With dot
         val SUPPORT_IMAGE_EXTENSIONS = arrayOf(
-            ".jpg",  // Joint Photographic Experts Group
-            ".png",  // Portable Network Graphics
-            ".gif"
+            ".jpg", // Joint Photographic Experts Group
+            ".png", // Portable Network Graphics
+            ".gif",
         )
     }
 }

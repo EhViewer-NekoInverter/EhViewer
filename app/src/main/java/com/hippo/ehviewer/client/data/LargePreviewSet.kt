@@ -22,7 +22,7 @@ import com.hippo.yorozuya.collect.IntList
 class LargePreviewSet(
     private val mPositionList: IntList = IntList(),
     private val mImageUrlList: ArrayList<String> = arrayListOf(),
-    private val mPageUrlList: ArrayList<String> = arrayListOf()
+    private val mPageUrlList: ArrayList<String> = arrayListOf(),
 ) : PreviewSet() {
     fun addItem(index: Int, imageUrl: String, pageUrl: String) {
         mPositionList.add(index)
@@ -55,7 +55,7 @@ class LargePreviewSet(
         view.resetClip()
         view.load(
             EhCacheKeyFactory.getLargePreviewKey(gid, mPositionList[index]),
-            mImageUrlList[index]
+            mImageUrlList[index],
         )
     }
 }
