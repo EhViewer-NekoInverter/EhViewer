@@ -107,7 +107,7 @@ class EhFragment : BasePreferenceFragment() {
             requireActivity().setResult(Activity.RESULT_OK)
         } else if (Settings.KEY_SHOW_TAG_TRANSLATIONS == key) {
             if (java.lang.Boolean.TRUE == newValue) {
-                lifecycleScope.launchNonCancellable { EhTagDatabase.update() }
+                lifecycleScope.launchNonCancellable { EhTagDatabase.update(true) }
             }
         }
         return true

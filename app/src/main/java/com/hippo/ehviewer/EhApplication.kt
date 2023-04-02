@@ -93,7 +93,10 @@ class EhApplication : SceneApplication(), ImageLoaderFactory {
 
         launchIO {
             launchIO {
-                EhTagDatabase.update()
+                nonCacheOkHttpClient
+            }
+            launchIO {
+                EhTagDatabase.read()
             }
             launchIO {
                 ehDatabase

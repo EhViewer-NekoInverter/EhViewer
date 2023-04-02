@@ -69,6 +69,7 @@ object Settings {
     private const val DEFAULT_PREVIEW_SIZE = 3
     const val KEY_SHOW_TAG_TRANSLATIONS = "show_tag_translations"
     private const val DEFAULT_SHOW_TAG_TRANSLATIONS = false
+    private const val KEY_TRANSLATIONS_LAST_UPDATE = "translations_last_update"
     const val KEY_TAG_TRANSLATIONS_SOURCE = "tag_translations_source"
     private const val KEY_METERED_NETWORK_WARNING = "cellular_network_warning"
     private const val DEFAULT_METERED_NETWORK_WARNING = false
@@ -300,6 +301,19 @@ object Settings {
         sSettingsPre.edit().putInt(key, value).apply()
     }
 
+    private fun getLong(key: String, defValue: Long): Long {
+        return try {
+            sSettingsPre.getLong(key, defValue)
+        } catch (e: ClassCastException) {
+            Log.d(TAG, "Get ClassCastException when get $key value", e)
+            defValue
+        }
+    }
+
+    private fun putLong(key: String, value: Long) {
+        sSettingsPre.edit().putLong(key, value).apply()
+    }
+
     private fun getString(key: String, defValue: String?): String? {
         return try {
             sSettingsPre.getString(key, defValue)
@@ -426,6 +440,12 @@ object Settings {
         get() = getBoolean(KEY_SHOW_TAG_TRANSLATIONS, DEFAULT_SHOW_TAG_TRANSLATIONS)
     private fun putShowTagTranslations(value: Boolean) {
         putBoolean(KEY_SHOW_TAG_TRANSLATIONS, value)
+    }
+
+    val translationsLastUpdate: Long
+        get() = getLong(KEY_TRANSLATIONS_LAST_UPDATE, -1)
+    fun putTranslationsLastUpdate(value: Long) {
+        putLong(KEY_TRANSLATIONS_LAST_UPDATE, value)
     }
 
     val meteredNetworkWarning: Boolean
