@@ -88,7 +88,7 @@ class DownloadService : Service(), DownloadManager.DownloadListener {
         m509dBuilder = null
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         handleIntent(intent)
         return START_STICKY
     }
