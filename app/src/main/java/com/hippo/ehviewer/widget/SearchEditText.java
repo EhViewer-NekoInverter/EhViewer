@@ -89,7 +89,7 @@ public class SearchEditText extends AppCompatEditText {
         } catch (Throwable t) {
             // Some devices crash here.
             // I don't why.
-            ExceptionUtils.throwIfFatal(t);
+            ExceptionUtils.INSTANCE.throwIfFatal(t);
             return false;
         }
     }

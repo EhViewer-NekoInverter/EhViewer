@@ -92,7 +92,6 @@ import com.hippo.ehviewer.client.parser.HomeParser
 import com.hippo.ehviewer.client.parser.ParserUtils
 import com.hippo.ehviewer.client.parser.RateGalleryParser
 import com.hippo.ehviewer.client.parser.TorrentParser
-import com.hippo.ehviewer.client.parser.VoteTagParser
 import com.hippo.ehviewer.dao.DownloadInfo
 import com.hippo.ehviewer.dao.Filter
 import com.hippo.ehviewer.download.DownloadManager
@@ -1582,10 +1581,10 @@ class GalleryDetailScene :
     }
 
     private class VoteTagListener(context: Context) :
-        EhCallback<GalleryDetailScene?, VoteTagParser.Result>(context) {
-        override fun onSuccess(result: VoteTagParser.Result) {
-            if (!result.error.isNullOrEmpty()) {
-                showTip(result.error, LENGTH_SHORT)
+        EhCallback<GalleryDetailScene?, String>(context) {
+        override fun onSuccess(result: String) {
+            if (result.isNotEmpty()) {
+                showTip(result, LENGTH_SHORT)
             } else {
                 showTip(R.string.tag_vote_successfully, LENGTH_SHORT)
             }
@@ -1772,7 +1771,7 @@ class GalleryDetailScene :
                 mListView!!.visibility = View.GONE
                 mErrorText!!.setText(R.string.no_archives)
             } else {
-                val nameArray = data.stream().map {
+                val nameArray = data.map {
                     it.run {
                         if (isHAtH) {
                             val costStr =
@@ -1786,7 +1785,7 @@ class GalleryDetailScene :
                             "$nameStr [$size] [$costStr]"
                         }
                     }
-                }.toArray()
+                }.toTypedArray()
                 mProgressView!!.visibility = View.GONE
                 mErrorText!!.visibility = View.GONE
                 mListView!!.visibility = View.VISIBLE
@@ -1917,11 +1916,7 @@ class GalleryDetailScene :
                 mListView!!.visibility = View.GONE
                 mErrorText!!.setText(R.string.no_torrents)
             } else {
-                val nameArray = data.stream().map { torrent: TorrentParser.Result ->
-                    torrent.format { id: Int ->
-                        resources.getString(id)
-                    }
-                }.toArray()
+                val nameArray = data.map { it.format() }.toTypedArray()
                 mProgressView!!.visibility = View.GONE
                 mErrorText!!.visibility = View.GONE
                 mListView!!.visibility = View.VISIBLE
@@ -1933,8 +1928,8 @@ class GalleryDetailScene :
         override fun onItemClick(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
             val context = context
             if (null != context && null != mTorrentList && position < mTorrentList!!.size) {
-                val url = mTorrentList!![position].url()
-                val name = mTorrentList!![position].name()
+                val url = mTorrentList!![position].url
+                val name = mTorrentList!![position].name
                 // TODO: Don't use buggy system download service
                 val r =
                     AndroidDownloadManager.Request(Uri.parse(url.replace("exhentai.org", "ehtracker.org")))

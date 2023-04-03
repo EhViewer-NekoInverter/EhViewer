@@ -256,11 +256,11 @@ public class SearchLayout extends EasyRecyclerView implements CompoundButton.OnC
                     int pageFrom = mTableAdvanceSearch.getPageFrom();
                     int pageTo = mTableAdvanceSearch.getPageTo();
                     if (pageFrom != -1 && pageFrom > 1000) {
-                        throw new EhException(GetText.getString(R.string.search_sp_err0));
+                        throw new EhException(GetText.INSTANCE.getString(R.string.search_sp_err0));
                     } else if (pageTo != -1 && pageTo < 10) {
-                        throw new EhException(GetText.getString(R.string.search_sp_err1));
+                        throw new EhException(GetText.INSTANCE.getString(R.string.search_sp_err1));
                     } else if (pageFrom != -1 && pageTo != -1 && pageTo - pageFrom < 20) {
-                        throw new EhException(GetText.getString(R.string.search_sp_err2));
+                        throw new EhException(GetText.INSTANCE.getString(R.string.search_sp_err2));
                     }
                     urlBuilder.setPageFrom(pageFrom);
                     urlBuilder.setPageTo(pageTo);
