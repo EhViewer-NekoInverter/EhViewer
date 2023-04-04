@@ -26,7 +26,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.Editable
-import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.KeyEvent
@@ -47,12 +46,19 @@ import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.client.EhTagDatabase
 import com.hippo.util.getParcelableCompat
+import com.hippo.util.launchIO
+import com.hippo.util.withUIContext
 import com.hippo.view.ViewTransition
 import com.hippo.yorozuya.AnimationUtils
 import com.hippo.yorozuya.LayoutUtils
 import com.hippo.yorozuya.MathUtils
 import com.hippo.yorozuya.SimpleAnimatorListener
 import com.hippo.yorozuya.ViewUtils
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import rikka.core.res.resolveColor
 
 class SearchBar @JvmOverloads constructor(
@@ -85,6 +91,7 @@ class SearchBar @JvmOverloads constructor(
     private var mOnStateChangeListener: OnStateChangeListener? = null
     private var mAllowEmptySearch = true
     private var mInAnimation = false
+    private val suggestionLock = Mutex()
 
     init {
         val inflater = LayoutInflater.from(context)
@@ -105,7 +112,11 @@ class SearchBar @JvmOverloads constructor(
         mEditText!!.addTextChangedListener(this)
 
         // Get base height
-        ViewUtils.measureView(this, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        ViewUtils.measureView(
+            this,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+        )
         mBaseHeight = measuredHeight
 
         mSuggestionList = ArrayList()
@@ -130,35 +141,45 @@ class SearchBar @JvmOverloads constructor(
     }
 
     @SuppressLint("NotifyDataSetChanged")
+    @OptIn(DelicateCoroutinesApi::class)
     private fun updateSuggestions(scrollToTop: Boolean = true) {
-        val suggestions = ArrayList<Suggestion>()
-        val text = mEditText!!.text.toString()
-        mSuggestionProvider?.run {
-            providerSuggestions(text)?.let {
-                suggestions.addAll(it)
-            }
-        }
-        mSearchDatabase.getSuggestions(text, 128).forEach {
-            suggestions.add(KeywordSuggestion(it))
-        }
-        EhTagDatabase.takeIf { it.isInitialized() }?.run {
-            if (!TextUtils.isEmpty(text) && !text.endsWith(" ")) {
-                val keyword = text.substringAfterLast(" ")
-                val translate = Settings.showTagTranslations && isTranslatable(context)
-                suggest(keyword, translate).forEach {
-                    suggestions.add(TagSuggestion(it.first, it.second))
+        launchIO {
+            suggestionLock.withLock {
+                val suggestions = ArrayList<Suggestion>()
+                mergedSuggestionFlow().collect {
+                    suggestions.add(it)
+                }
+                withUIContext {
+                    mSuggestionList = suggestions
+                    if (mSuggestionList?.size == 0) {
+                        removeListHeader()
+                    } else {
+                        addListHeader()
+                    }
+                    mSuggestionAdapter?.notifyDataSetChanged()
                 }
             }
         }
-        mSuggestionList = suggestions
-        if (mSuggestionList?.size == 0) {
-            removeListHeader()
-        } else {
-            addListHeader()
-        }
-        mSuggestionAdapter?.notifyDataSetChanged()
         if (scrollToTop) {
             mListView!!.scrollToPosition(0)
+        }
+    }
+
+    private fun mergedSuggestionFlow(): Flow<Suggestion> = flow {
+        val text = mEditText!!.text.toString()
+        mSuggestionProvider?.run { providerSuggestions(text)?.forEach { emit(it) } }
+        mSearchDatabase.getSuggestions(text, 128).forEach { emit(KeywordSuggestion(it)) }
+        EhTagDatabase.takeIf { it.isInitialized() }?.run {
+            if (text.isNotEmpty() && !text.endsWith(" ")) {
+                val keyword = text.substringAfterLast(" ")
+                val translate =
+                    Settings.showTagTranslations && isTranslatable(context)
+                arrayOf(TYPE_EQUAL, TYPE_START, TYPE_CONTAIN).forEach { type ->
+                    suggestFlow(keyword, translate, type).collect {
+                        emit(TagSuggestion(it.first, it.second))
+                    }
+                }
+            }
         }
     }
 
@@ -204,7 +225,7 @@ class SearchBar @JvmOverloads constructor(
 
     fun applySearch() {
         val query = mEditText!!.text.toString().trim { it <= ' ' }
-        if (!mAllowEmptySearch && TextUtils.isEmpty(query)) {
+        if (!mAllowEmptySearch && query.isEmpty()) {
             return
         }
         // Put it into db
@@ -250,6 +271,7 @@ class SearchBar @JvmOverloads constructor(
                     }
                     mOnStateChangeListener?.onStateChange(this, state, oldState, animation)
                 }
+
                 STATE_SEARCH -> {
                     if (state == STATE_NORMAL) {
                         mViewTransition!!.showView(0, animation)
@@ -258,6 +280,7 @@ class SearchBar @JvmOverloads constructor(
                     }
                     mOnStateChangeListener?.onStateChange(this, state, oldState, animation)
                 }
+
                 STATE_SEARCH_LIST -> {
                     hideImeAndSuggestionsList(animation)
                     if (state == STATE_NORMAL) {
