@@ -29,6 +29,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
@@ -231,7 +232,7 @@ class FavoritesScene :
         )
         mLeftDrawable = DrawerArrowDrawable(context, theme.resolveColor(android.R.attr.colorControlNormal))
         mSearchBar!!.setLeftDrawable(mLeftDrawable!!)
-        mSearchBar!!.setRightDrawable(context.getDrawable(R.drawable.v_magnify_x24)!!)
+        mSearchBar!!.setRightDrawable(AppCompatResources.getDrawable(context, R.drawable.v_magnify_x24)!!)
         mSearchBar!!.setHelper(this)
         mSearchBar!!.setAllowEmptySearch(false)
         updateSearchBar()
@@ -834,8 +835,8 @@ class FavoritesScene :
         private val mBackup: List<GalleryInfo>,
         private val mGidArray: LongArray?,
         private val mSlot: Int,
-    ) : EhCallback<FavoritesScene?, Unit>(context) {
-        override fun onSuccess(result: Unit) {
+    ) : EhCallback<FavoritesScene?, Void?>(context) {
+        override fun onSuccess(result: Void?) {
             val scene = this@FavoritesScene
             scene.updateHistoryFavSlot(mGidArray, mSlot)
             scene.onGetFavoritesLocal(mKeyword, mTaskId)

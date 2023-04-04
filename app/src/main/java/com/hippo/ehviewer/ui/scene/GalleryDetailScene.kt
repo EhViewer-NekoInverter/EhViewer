@@ -1106,12 +1106,15 @@ class GalleryDetailScene :
                 // CommonOperations Actions
                 if (!mModifyingFavorites) {
                     var remove = false
-                    if (EhDB.containLocalFavorites(galleryDetail.gid) || galleryDetail.isFavorited) {
+                    val isLocalFavorites = EhDB.containLocalFavorites(galleryDetail.gid)
+                    val isOnlineFavorites = galleryDetail.isFavorited
+                    if (isLocalFavorites || isOnlineFavorites) {
                         mModifyingFavorites = true
                         CommonOperations.removeFromFavorites(
                             activity,
                             galleryDetail,
                             ModifyFavoritesListener(context, true),
+                            isLocalFavorites && !isOnlineFavorites,
                         )
                         remove = true
                     }
@@ -1373,6 +1376,7 @@ class GalleryDetailScene :
                         activity,
                         mGalleryDetail!!,
                         ModifyFavoritesListener(activity, true),
+                        true,
                     )
                     removeOrEdit = true
                 } else if (mGalleryDetail!!.isFavorited) {

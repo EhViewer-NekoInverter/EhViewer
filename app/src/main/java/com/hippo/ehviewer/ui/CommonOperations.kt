@@ -146,13 +146,19 @@ object CommonOperations {
         activity: Activity?,
         galleryInfo: GalleryInfo,
         listener: EhClient.Callback<Unit>,
+        isLocal: Boolean = false,
     ) {
         EhDB.removeLocalFavorites(galleryInfo.gid)
-        val request = EhRequest()
-        request.setMethod(EhClient.METHOD_ADD_FAVORITES)
-        request.setArgs(galleryInfo.gid, galleryInfo.token, -1, "")
-        request.setCallback(DelegateFavoriteCallback(listener, galleryInfo, null, -2))
-        request.enqueue(activity!!)
+        if (isLocal) {
+            EhDB.updateHistoryFavSlot(galleryInfo.gid, -2)
+            listener.onSuccess(Unit)
+        } else {
+            val request = EhRequest()
+            request.setMethod(EhClient.METHOD_ADD_FAVORITES)
+            request.setArgs(galleryInfo.gid, galleryInfo.token, -1, "")
+            request.setCallback(DelegateFavoriteCallback(listener, galleryInfo, null, -2))
+            request.enqueue(activity!!)
+        }
     }
 
     fun startDownload(activity: MainActivity?, galleryInfo: GalleryInfo, forceDefault: Boolean) {
