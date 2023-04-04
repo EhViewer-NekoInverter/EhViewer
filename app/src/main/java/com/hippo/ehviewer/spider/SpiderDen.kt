@@ -30,12 +30,12 @@ import com.hippo.ehviewer.client.referer
 import com.hippo.ehviewer.coil.edit
 import com.hippo.ehviewer.coil.read
 import com.hippo.ehviewer.gallery.GalleryProvider2.Companion.SUPPORT_IMAGE_EXTENSIONS
-import com.hippo.image.Image
 import com.hippo.image.Image.CloseableSource
-import com.hippo.sendTo
+import com.hippo.image.rewriteGifSource2
 import com.hippo.unifile.UniFile
 import com.hippo.unifile.openOutputStream
 import com.hippo.util.runSuspendCatching
+import com.hippo.util.sendTo
 import com.hippo.yorozuya.FileUtils
 import io.ktor.client.plugins.onDownload
 import io.ktor.client.request.prepareGet
@@ -172,7 +172,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
             }
             if (contentType == ContentType.Image.GIF) {
                 outFile.openFileDescriptor("rw").use {
-                    Image.rewriteGifSource2(it.fd)
+                    rewriteGifSource2(it.fd)
                 }
             }
             return ret
@@ -261,7 +261,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
         file?.run {
             if (isGif) {
                 openFileDescriptor("rw").use {
-                    Image.rewriteGifSource2(it.fd)
+                    rewriteGifSource2(it.fd)
                 }
             }
             return object : CloseableSource {

@@ -163,25 +163,20 @@ class Image private constructor(
         fun create(bitmap: Bitmap): Image {
             return Image(drawable = bitmap.toDrawable(Resources.getSystem()))
         }
-
-        @JvmStatic
-        private external fun nativeTexImage(
-            bitmap: Bitmap,
-            init: Boolean,
-            offsetX: Int,
-            offsetY: Int,
-            width: Int,
-            height: Int,
-        )
-
-        @JvmStatic
-        external fun rewriteGifSource(buffer: ByteBuffer)
-
-        @JvmStatic
-        external fun rewriteGifSource2(fd: Int)
     }
 
     interface CloseableSource : AutoCloseable {
         val source: Source
     }
 }
+
+private external fun nativeTexImage(
+    bitmap: Bitmap,
+    init: Boolean,
+    offsetX: Int,
+    offsetY: Int,
+    width: Int,
+    height: Int,
+)
+external fun rewriteGifSource(buffer: ByteBuffer)
+external fun rewriteGifSource2(fd: Int)

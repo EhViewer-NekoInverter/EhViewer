@@ -80,12 +80,12 @@ import com.hippo.glgallery.GalleryProvider
 import com.hippo.glgallery.GalleryView
 import com.hippo.glgallery.SimpleAdapter
 import com.hippo.glview.view.GLRootView
-import com.hippo.sendTo
 import com.hippo.unifile.UniFile
 import com.hippo.util.ExceptionUtils
 import com.hippo.util.getParcelableCompat
 import com.hippo.util.getParcelableExtraCompat
 import com.hippo.util.launchIO
+import com.hippo.util.sendTo
 import com.hippo.util.withUIContext
 import com.hippo.widget.ColorView
 import com.hippo.yorozuya.AnimationUtils

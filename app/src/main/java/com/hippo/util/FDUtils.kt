@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License along with EhViewer.
  * If not, see <https://www.gnu.org/licenses/>.
  */
-package com.hippo
+package com.hippo.util
 
 import android.os.ParcelFileDescriptor
 import android.system.Int64Ref
