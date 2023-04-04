@@ -209,7 +209,7 @@ class EhApplication : SceneApplication(), ImageLoaderFactory {
         return ImageLoader.Builder(this).apply {
             okHttpClient(nonCacheOkHttpClient)
             components { add(MergeInterceptor) }
-            crossfade(false)
+            crossfade(300)
             diskCache(thumbCache)
             if (BuildConfig.DEBUG) logger(DebugLogger())
         }.build()
