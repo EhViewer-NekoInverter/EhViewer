@@ -56,7 +56,7 @@ class EhRequest {
         EhClient.enqueue(this, scope)
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
+    @DelicateCoroutinesApi
     fun enqueue() {
         EhClient.enqueue(this, GlobalScope)
     }

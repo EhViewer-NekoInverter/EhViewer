@@ -29,6 +29,7 @@ import com.hippo.scene.Announcer
 import com.hippo.util.ExceptionUtils
 import com.hippo.view.ViewTransition
 import com.hippo.yorozuya.ViewUtils
+import kotlinx.coroutines.DelicateCoroutinesApi
 
 /**
  * Only show a progress with jobs in background
@@ -56,6 +57,7 @@ class ProgressScene : BaseScene(), View.OnClickListener {
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun doJobs(): Boolean {
         val context = context
         val activity = mainActivity
