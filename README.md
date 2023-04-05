@@ -69,11 +69,12 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 - [AOSP & AndroidX](https://source.android.com/)
 - [Kotlin & KotlinX](https://kotlinlang.org/)
-- [Material Components for Android](https://github.com/material-components/material-components-android)
 - [Coil](https://coil-kt.github.io/coil/)
 - [FullDraggableDrawer](https://github.com/PureWriter/FullDraggableDrawer)
 - [jsoup](https://jsoup.org/)
+- [Ktor](https://ktor.io/)
 - [libarchive](http://www.libarchive.org/)
+- [Material Components for Android](https://github.com/material-components/material-components-android)
 - [Nettle](https://www.lysator.liu.se/~nisse/nettle/)
 - [OkHttp](https://square.github.io/okhttp/)
 - [RikkaX](https://github.com/RikkaApps/RikkaX)
