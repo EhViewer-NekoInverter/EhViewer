@@ -43,6 +43,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.hippo.easyrecyclerview.EasyRecyclerView
 import com.hippo.easyrecyclerview.LinearDividerItemDecoration
 import com.hippo.ehviewer.R
+import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.client.EhFilter
 import com.hippo.ehviewer.dao.Filter
 import com.hippo.view.ViewTransition
@@ -241,7 +242,7 @@ class FilterFragment : BaseFragment() {
             if (MODE_HEADER == filter.mode) {
                 holder.text?.text = filter.text
             } else {
-                holder.checkbox?.text = filter.text
+                holder.checkbox?.text = if (Settings.showTagTranslations) EhFilter.applyTanslation(filter) else filter.text
                 holder.checkbox?.isChecked = filter.enable!!
                 holder.itemView.setOnClickListener {
                     mFilterList.trigger(filter)

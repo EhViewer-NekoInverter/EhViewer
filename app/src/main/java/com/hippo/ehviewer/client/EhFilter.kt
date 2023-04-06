@@ -82,6 +82,32 @@ object EhFilter {
     val commentFilterList: List<Filter>
         get() = mCommentFilterList
 
+    fun applyTanslation(filter: Filter): String? {
+        var text = filter.text ?: return null
+        if (EhTagDatabase.isInitialized()) {
+            when (filter.mode) {
+                MODE_TAG_NAMESPACE -> {
+                    EhTagDatabase.getTranslation(tag = text)?.let {
+                        text = "$text ($it)"
+                    }
+                }
+
+                MODE_TAG -> {
+                    val index = text.indexOf(':')
+                    if (index > 0) {
+                        EhTagDatabase.getTranslation(
+                            EhTagDatabase.namespaceToPrefix(text.substring(0, index)),
+                            text.substring(index + 1),
+                        )?.let {
+                            text = "$text ($it)"
+                        }
+                    }
+                }
+            }
+        }
+        return text
+    }
+
     @Synchronized
     fun addFilter(filter: Filter): Boolean {
         // enable filter by default before it is added to database
