@@ -109,6 +109,9 @@ private fun rethrowExactly(code: Int, headers: Headers, body: String, e: Throwab
 
     // Check bad response code
     if (code >= 400) {
+        if (Settings.saveParseErrorBody && e is ParseException && body.isNotEmpty()) {
+            AppConfig.saveParseErrorBody(e as ParseException?)
+        }
         throw StatusCodeException(code)
     }
 
