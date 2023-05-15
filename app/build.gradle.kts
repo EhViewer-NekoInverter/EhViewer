@@ -135,21 +135,21 @@ android {
 
 dependencies {
     // https://developer.android.com/jetpack/androidx/releases/activity
-    implementation("androidx.activity:activity-ktx:1.7.0")
+    implementation("androidx.activity:activity-ktx:1.7.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.biometric:biometric-ktx:1.2.0-alpha05")
     implementation("androidx.browser:browser:1.5.0")
     implementation("androidx.collection:collection-ktx:1.3.0-alpha04")
 
-    implementation("androidx.core:core-ktx:1.10.0-rc01")
+    implementation("androidx.core:core-ktx:1.11.0-alpha04")
 
     implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
-    implementation("androidx.fragment:fragment-ktx:1.6.0-alpha08")
+    implementation("androidx.fragment:fragment-ktx:1.6.0-rc01")
     // https://developer.android.com/jetpack/androidx/releases/lifecycle
     implementation("androidx.lifecycle:lifecycle-process:2.6.1")
 
     // https://developer.android.com/jetpack/androidx/releases/paging
-    implementation("androidx.paging:paging-runtime-ktx:3.2.0-alpha04")
+    implementation("androidx.paging:paging-runtime-ktx:3.2.0-alpha05")
     implementation("androidx.preference:preference-ktx:1.2.0")
     implementation("androidx.recyclerview:recyclerview:1.3.0")
 
@@ -160,7 +160,7 @@ dependencies {
 
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
     implementation("com.drakeet.drawer:drawer:1.0.3")
-    implementation("com.google.android.material:material:1.8.0")
+    implementation("com.google.android.material:material:1.9.0")
 
     // https://square.github.io/okhttp/changelogs/changelog/
     implementation("com.squareup.okhttp3:okhttp-bom:5.0.0-alpha.11")
@@ -179,9 +179,9 @@ dependencies {
     // https://coil-kt.github.io/coil/changelog/
     implementation("io.coil-kt:coil:2.3.0")
 
-    implementation("io.ktor:ktor-client-okhttp:2.2.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.0-Beta")
-    implementation("org.jsoup:jsoup:1.15.4")
+    implementation("io.ktor:ktor-client-okhttp:2.3.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+    implementation("org.jsoup:jsoup:1.16.1")
 }
 
 configurations.all {
