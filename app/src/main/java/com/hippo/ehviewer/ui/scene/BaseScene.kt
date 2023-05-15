@@ -16,7 +16,6 @@
 package com.hippo.ehviewer.ui.scene
 
 import android.annotation.SuppressLint
-import android.content.res.Configuration
 import android.content.res.Resources
 import android.content.res.Resources.Theme
 import android.os.Bundle
@@ -29,16 +28,13 @@ import android.view.ViewTreeObserver.OnPreDrawListener
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.core.view.GravityCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.SoftwareKeyboardControllerCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.hippo.ehviewer.ui.MainActivity
 import com.hippo.scene.SceneFragment
 import com.hippo.util.getSparseParcelableArrayCompat
 
 abstract class BaseScene : SceneFragment() {
-    private var insetsController: WindowInsetsControllerCompat? = null
     private var drawerView: View? = null
     private var drawerViewState: SparseArray<Parcelable?>? = null
     open var needWhiteStatusBar = true
@@ -165,10 +161,6 @@ abstract class BaseScene : SceneFragment() {
     }
 
     fun setLightStatusBar(set: Boolean) {
-        val insetsController = insetsController
-        if (insetsController != null) {
-            insetsController.isAppearanceLightStatusBars = set && (requireActivity().resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES <= 0)
-        }
         needWhiteStatusBar = set
     }
 
@@ -219,37 +211,7 @@ abstract class BaseScene : SceneFragment() {
             }
         }
 
-    fun hideSoftInput() {
-        val insetsController = getInsetsController()
-        insetsController?.hide(WindowInsetsCompat.Type.ime())
-    }
-
-    fun showSoftInput(view: View?) {
-        if (view != null) {
-            view.requestFocus()
-            view.post(
-                Runnable {
-                    val insetsController = getInsetsController()
-                    insetsController?.show(WindowInsetsCompat.Type.ime())
-                },
-            )
-        }
-    }
-
-    private fun getInsetsController(): WindowInsetsControllerCompat? {
-        if (insetsController == null) {
-            val activity = activity
-            if (activity != null) {
-                insetsController = WindowCompat.getInsetsController(activity.window, activity.window.decorView)
-            }
-        }
-        return insetsController
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        insetsController = null
-    }
+    fun hideSoftInput() = activity?.window?.decorView?.run { SoftwareKeyboardControllerCompat(this) }?.hide()
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
