@@ -55,6 +55,12 @@ object EhDns : Dns {
             Pair("178.175.132.22", false),
         )
         put(
+            "s.exhentai.org",
+            Pair("178.175.129.254", false),
+            Pair("178.175.128.254", false),
+            Pair("178.175.132.22", false),
+        )
+        put(
             "repo.e-hentai.org",
             Pair("94.100.28.57", true),
             Pair("94.100.29.73", true),

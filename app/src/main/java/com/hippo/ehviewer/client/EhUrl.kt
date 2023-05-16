@@ -48,7 +48,8 @@ object EhUrl {
     const val URL_HOME = HOST_E + "home.php"
     const val URL_NEWS = HOST_E + "news.php"
     const val URL_PREFIX_THUMB_E = "https://ehgt.org/"
-    const val URL_PREFIX_THUMB_EX = "https://exhentai.org/t/"
+    const val URL_PREFIX_THUMB_EX = "https://s.exhentai.org/t/"
+    const val URL_PREFIX_THUMB_EX_OLD = "https://exhentai.org/t/"
     const val REFERER_E = "https://$DOMAIN_E"
     private const val REFERER_EX = "https://$DOMAIN_EX"
     private const val ORIGIN_E = REFERER_E
