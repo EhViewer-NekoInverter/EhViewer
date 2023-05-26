@@ -1,7 +1,7 @@
 plugins {
-    id("com.android.application") version "8.1.0-alpha11" apply false
-    kotlin("android") version "1.8.10" apply false
-    id("com.google.devtools.ksp") version "1.8.10-1.0.9" apply false
+    id("com.android.application") version "8.1.0-beta04" apply false
+    kotlin("android") version "1.8.21" apply false
+    id("com.google.devtools.ksp") version "1.8.21-1.0.11" apply false
 }
 
 allprojects {
@@ -10,4 +10,10 @@ allprojects {
 
 tasks.register("Delete", Delete::class) {
     delete(rootProject.buildDir)
+}
+
+buildscript {
+    dependencies {
+        classpath("com.android.tools:r8:8.2.9-dev")
+    }
 }

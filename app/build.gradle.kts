@@ -14,7 +14,6 @@ android {
     compileSdk = 33
     buildToolsVersion = "33.0.2"
     ndkVersion = "25.2.9519653"
-    androidResources.generateLocaleConfig = true
 
     splits {
         abi {
@@ -79,12 +78,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_19
-        targetCompatibility = JavaVersion.VERSION_19
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "19"
+        jvmTarget = "17"
         freeCompilerArgs = listOf(
             // https://kotlinlang.org/docs/compiler-reference.html#progressive
             "-progressive",
@@ -135,13 +134,13 @@ android {
 
 dependencies {
     // https://developer.android.com/jetpack/androidx/releases/activity
-    implementation("androidx.activity:activity-ktx:1.7.1")
+    implementation("androidx.activity:activity-ktx:1.7.2")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.biometric:biometric-ktx:1.2.0-alpha05")
     implementation("androidx.browser:browser:1.5.0")
     implementation("androidx.collection:collection-ktx:1.3.0-alpha04")
 
-    implementation("androidx.core:core-ktx:1.11.0-alpha04")
+    implementation("androidx.core:core-ktx:1.11.0-beta01")
 
     implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
     implementation("androidx.fragment:fragment-ktx:1.6.0-rc01")
@@ -149,7 +148,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-process:2.6.1")
 
     // https://developer.android.com/jetpack/androidx/releases/paging
-    implementation("androidx.paging:paging-runtime-ktx:3.2.0-alpha05")
+    implementation("androidx.paging:paging-runtime-ktx:3.2.0-alpha06")
     implementation("androidx.preference:preference-ktx:1.2.0")
     implementation("androidx.recyclerview:recyclerview:1.3.0")
 
