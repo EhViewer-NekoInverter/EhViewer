@@ -6,9 +6,6 @@
     native <methods>;
 }
 
-# Ktor logger
--dontwarn org.slf4j.impl.StaticLoggerBinder
-
 -keepattributes LineNumberTable,SourceFile
 -renamesourcefileattribute SourceFile
 

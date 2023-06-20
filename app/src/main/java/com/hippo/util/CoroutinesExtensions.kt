@@ -26,7 +26,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
+import java.io.InterruptedIOException
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * Think twice before using this. This is a delicate API. It is easy to accidentally create resource or memory leaks when GlobalScope is used.
@@ -87,4 +91,22 @@ inline fun <R> runSuspendCatching(block: () -> R): Result<R> {
 
 inline fun <T, R> T.runSuspendCatching(block: T.() -> R): Result<R> {
     return runCatching(block).apply { except<CancellationException>() }
+}
+
+// See https://github.com/Kotlin/kotlinx.coroutines/issues/3551
+suspend inline fun <T> runInterruptibleOkio(
+    context: CoroutineContext = EmptyCoroutineContext,
+    crossinline block: () -> T,
+): T = runInterruptible(context) {
+    try {
+        block()
+    } catch (e: InterruptedIOException) {
+        if (Thread.currentThread().isInterrupted) {
+            // Coroutine cancelled
+            throw InterruptedException().initCause(e)
+        } else {
+            // AsyncTimeout reached
+            throw e
+        }
+    }
 }

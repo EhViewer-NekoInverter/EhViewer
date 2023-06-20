@@ -72,7 +72,6 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 - [Coil](https://coil-kt.github.io/coil/)
 - [FullDraggableDrawer](https://github.com/PureWriter/FullDraggableDrawer)
 - [jsoup](https://jsoup.org/)
-- [Ktor](https://ktor.io/)
 - [libarchive](http://www.libarchive.org/)
 - [Material Components for Android](https://github.com/material-components/material-components-android)
 - [Nettle](https://www.lysator.liu.se/~nisse/nettle/)
