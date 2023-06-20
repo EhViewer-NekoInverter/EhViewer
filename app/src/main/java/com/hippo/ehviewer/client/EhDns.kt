@@ -108,7 +108,7 @@ object EhDns : Dns {
         vararg ips: Pair<String, Boolean>,
     ) {
         builtInHosts[host] = ips.mapNotNull { pair ->
-            Hosts.toInetAddress(host, pair.first).takeUnless { Settings.dF && pair.second }
+            Hosts.toInetAddress(host, pair.first)
         }
     }
 
@@ -116,9 +116,5 @@ object EhDns : Dns {
     override fun lookup(hostname: String): List<InetAddress> {
         return hosts[hostname] ?: builtInHosts[hostname].takeIf { Settings.builtInHosts }
             ?: Dns.SYSTEM.lookup(hostname)
-    }
-
-    fun isInHosts(hostname: String): Boolean {
-        return hosts.contains(hostname) || (builtInHosts.contains(hostname) && Settings.builtInHosts)
     }
 }

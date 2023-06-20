@@ -26,15 +26,11 @@ import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkCapabilities
-import android.net.NetworkRequest
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
@@ -99,27 +95,7 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == RESULT_OK) refreshTopScene()
         }
-    private val mNetworkCallback =
-        object : ConnectivityManager.NetworkCallback() {
-            private val TAG = "mNetworkCallback"
-            override fun onAvailable(network: Network) {
-                Log.d(TAG, "onAvailable: $network")
-                connectivityManager.bindProcessToNetwork(network)
-                availableNetworks.add(network)
-            }
-            override fun onLost(network: Network) {
-                Log.d(TAG, "onLost: $network")
-                val activeNetwork = availableNetworks.last()
-                availableNetworks.remove(network)
-                if (network == activeNetwork) {
-                    connectivityManager.bindProcessToNetwork(
-                        availableNetworks.takeIf { it.isNotEmpty() }?.last(),
-                    )
-                }
-            }
-        }
     private lateinit var connectivityManager: ConnectivityManager
-    private val availableNetworks: MutableList<Network> = mutableListOf()
     private var mDrawerLayout: DrawerLayout? = null
     private var mStageLayout: EhStageLayout? = null
     private var mNavView: NavigationView? = null
@@ -263,9 +239,6 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
 
     override fun onCreate2(savedInstanceState: Bundle?) {
         connectivityManager = getSystemService()!!
-        if (Settings.dF && Settings.bypassVpn) {
-            bypassVpn()
-        }
         setContentView(R.layout.activity_main)
         mStageLayout = ViewUtils.`$$`(this, R.id.fragment_container) as EhStageLayout
         mDrawerLayout = ViewUtils.`$$`(this, R.id.draw_view) as DrawerLayout
@@ -309,19 +282,6 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
             }
         } else {
             onRestore(savedInstanceState)
-        }
-    }
-
-    private fun bypassVpn() {
-        val network = connectivityManager.activeNetwork
-        val capabilities = connectivityManager.getNetworkCapabilities(network)
-        capabilities?.let {
-            if (it.hasTransport(NetworkCapabilities.TRANSPORT_VPN)) {
-                val builder = NetworkRequest.Builder()
-                    .addCapability(NetworkCapabilities.NET_CAPABILITY_FOREGROUND)
-                    .addCapability(NetworkCapabilities.NET_CAPABILITY_NOT_VPN)
-                connectivityManager.registerNetworkCallback(builder.build(), mNetworkCallback)
-            }
         }
     }
 

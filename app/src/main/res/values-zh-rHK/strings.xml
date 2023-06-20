@@ -505,10 +505,6 @@
     <string name="settings_advanced_built_in_hosts_summary">應用提供的主機到 IP 的映射\n可被自定義 hosts.txt 覆蓋</string>
     <string name="settings_advanced_custom_hosts_title">自定義 hosts.txt</string>
     <string name="settings_advanced_custom_hosts_summary">將主機名稱映射到相應的 IP 地址\n可覆蓋內置 hosts.txt</string>
-    <string name="settings_advanced_domain_fronting_title">域名前置</string>
-    <string name="settings_advanced_domain_fronting_summary">繞過 SNI 封鎖，啓用時會禁用代理\n修改後重啓應用生效</string>
-    <string name="settings_advanced_bypass_vpn_title">繞過 VPN</string>
-    <string name="settings_advanced_bypass_vpn_summary">啟用域名前置時嘗試繞過 VPN</string>
     <string name="settings_advanced_backup_favorite">備份收藏列表</string>
     <string name="settings_advanced_backup_favorite_summary">備份雲端收藏列表到本地</string>
     <string name="settings_advanced_backup_favorite_start">正在備份收藏列表 %s</string>
