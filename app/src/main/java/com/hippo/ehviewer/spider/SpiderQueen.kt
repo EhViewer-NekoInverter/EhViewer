@@ -609,14 +609,14 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
             var error: String? = null
             var forceHtml = false
             var leakSkipHathKey = false
-            repeat(3) {
+            loop@ for (i in 1..3) {
                 var imageUrl: String? = null
                 var localShowKey: String?
 
                 showKeyLock.withLock {
                     localShowKey = showKey
                     if (localShowKey == null || forceHtml) {
-                        if (leakSkipHathKey) return@repeat
+                        if (leakSkipHathKey) break
                         var pageUrl = EhUrl.getPageUrl(mSpiderInfo.gid, index, pToken)
                         // Add skipHathKey
                         if (skipHathKey != null) {
@@ -633,7 +633,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
                                         // Get 509
                                         notifyGet509(index)
                                         error = ERROR_509
-                                        return@repeat
+                                        break@loop
                                     }
                                 }
                         }.onSuccess { result ->
@@ -655,14 +655,8 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
 
                             showKey = result.showKey
                         }.onFailure {
-                            if (it is ParseException && "Key mismatch" == it.message) {
-                                // Show key is wrong, enter a new loop to get the new show key
-                                if (showKey == localShowKey) showKey = null
-                                return@repeat
-                            } else {
-                                error = ExceptionUtils.getReadableString(it)
-                                return@repeat
-                            }
+                            error = ExceptionUtils.getReadableString(it)
+                            break
                         }
                     }
                 }
@@ -670,7 +664,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
                 if (imageUrl == null) {
                     if (localShowKey == null) {
                         error = "ShowKey error"
-                        return@repeat
+                        break
                     }
                     runSuspendCatching {
                         EhEngine.getGalleryPageApi(
@@ -684,17 +678,18 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
                                 // Get 509
                                 notifyGet509(index)
                                 error = ERROR_509
-                                return@repeat
+                                break@loop
                             }
                         }
                     }.onFailure {
                         if (it is ParseException && "Key mismatch" == it.message) {
                             // Show key is wrong, enter a new loop to get the new show key
                             if (showKey == localShowKey) showKey = null
+                            continue
                         } else {
                             error = ExceptionUtils.getReadableString(it)
+                            break
                         }
-                        return@repeat
                     }.onSuccess {
                         imageUrl = it.imageUrl
                         skipHathKey = it.skipHathKey
@@ -714,7 +709,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
                 }
                 if (targetImageUrl == null) {
                     error = "TargetImageUrl error"
-                    return@repeat
+                    break
                 }
                 Log.d(WORKER_DEBUG_TAG, targetImageUrl)
 
@@ -733,7 +728,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
                         Log.e(WORKER_DEBUG_TAG, "Can't download all of image data")
                         error = "Incomplete"
                         forceHtml = true
-                        return@repeat
+                        continue@loop
                     }
 
                     Log.d(WORKER_DEBUG_TAG, "Download image succeed $index")
