@@ -15,7 +15,11 @@
  */
 package com.hippo.ehviewer.client
 
+import com.hippo.ehviewer.EhApplication.Companion.noRedirectOkHttpClient
 import com.hippo.okhttp.ChromeRequestBuilder
+import okhttp3.Request
+import okhttp3.Response
+import okhttp3.executeAsync
 
 class EhRequestBuilder constructor(
     url: String,
@@ -27,3 +31,5 @@ class EhRequestBuilder constructor(
         origin?.let { addHeader("Origin", it) }
     }
 }
+
+suspend inline fun <R> Request.executeNoRedirect(block: Response.() -> R) = noRedirectOkHttpClient.newCall(this).executeAsync().use(block)
