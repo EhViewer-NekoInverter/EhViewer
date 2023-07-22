@@ -223,6 +223,11 @@ class EhApplication : SceneApplication(), ImageLoaderFactory {
                 proxySelector(ehProxySelector)
             }.build()
         }
+        val noRedirectOkHttpClient by lazy {
+            nonCacheOkHttpClient.newBuilder()
+                .followRedirects(false)
+                .build()
+        }
 
         // Never use this okhttp client to download large blobs!!!
         val okHttpClient by lazy {

@@ -27,6 +27,8 @@ import com.hippo.ehviewer.client.data.GalleryDetail
 import com.hippo.ehviewer.client.data.GalleryInfo
 import com.hippo.ehviewer.client.data.PreviewSet
 import com.hippo.ehviewer.client.exception.EhException
+import com.hippo.ehviewer.client.exception.InsufficientFundsException
+import com.hippo.ehviewer.client.exception.NotLoggedInException
 import com.hippo.ehviewer.client.exception.ParseException
 import com.hippo.ehviewer.client.parser.ArchiveParser
 import com.hippo.ehviewer.client.parser.EventPaneParser
@@ -144,6 +146,17 @@ private suspend inline fun <T> Request.Builder.executeAndParsingWith(block: Stri
 }
 
 object EhEngine {
+    suspend fun getOriginalImageUrl(url: String, referer: String?): String {
+        Log.d(TAG, url)
+        return EhRequestBuilder(url, referer).build().executeNoRedirect {
+            header("Location")?.apply {
+                if (contains("bounce_login")) {
+                    throw NotLoggedInException()
+                }
+            } ?: throw InsufficientFundsException()
+        }
+    }
+
     suspend fun signIn(username: String, password: String): String {
         val referer = "https://forums.e-hentai.org/index.php?act=Login&CODE=00"
         val builder = FormBody.Builder()

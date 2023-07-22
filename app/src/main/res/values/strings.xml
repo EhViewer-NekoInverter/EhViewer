@@ -495,7 +495,7 @@
     <string name="settings_download_preload_image">Preload image</string>
     <string name="settings_download_preload_image_summary">Preload next %s image</string>
     <string name="settings_download_download_origin_image">Load original image</string>
-    <string name="settings_download_download_origin_image_summary">%s, it\'s dangerous! You may get 509 error</string>
+    <string name="settings_download_download_origin_image_summary">%s, Caution! May require GP</string>
     <string name="settings_download_download_origin_image_never">Never</string>
     <string name="settings_download_download_origin_image_force">Always</string>
     <string name="settings_download_download_origin_image_only">Download only</string>

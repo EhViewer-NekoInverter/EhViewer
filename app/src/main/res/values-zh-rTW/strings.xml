@@ -469,7 +469,7 @@
     <string name="settings_download_preload_image">預載圖片</string>
     <string name="settings_download_preload_image_summary">向後預載 %s 張圖片</string>
     <string name="settings_download_download_origin_image">載入原圖</string>
-    <string name="settings_download_download_origin_image_summary">%s，危險！啟用會導致圖片流量配額快速耗用</string>
+    <string name="settings_download_download_origin_image_summary">%s，警告！可能需要 GP</string>
     <string name="settings_download_download_origin_image_never">從不啟用</string>
     <string name="settings_download_download_origin_image_force">總是啟用</string>
     <string name="settings_download_download_origin_image_only">僅下載時啟用</string>
