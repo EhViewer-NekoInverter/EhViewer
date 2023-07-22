@@ -100,11 +100,14 @@ class ImageLimitsPreference(context: Context, attrs: AttributeSet) :
     private fun bind() {
         val (current, maximum, resetCost) = mLimits
         val (fundsGP, fundsC) = mFunds
-        val cost = if (fundsGP >= resetCost) "$resetCost GP" else "$resetCost Credits"
-        val message = mActivity.getString(R.string.settings_eh_current_limits, "$current / $maximum", cost) +
+        val message = mActivity.getString(
+            R.string.settings_eh_current_limits,
+            "$current / $maximum",
+            resetCost,
+        ) +
             "\n" + mActivity.getString(R.string.current_funds, "$fundsGP+", fundsC)
         mDialog.setMessage(message)
-        resetButton.isEnabled = resetCost in 1..maxOf(fundsGP, fundsC)
+        resetButton.isEnabled = resetCost != 0
     }
 
     override fun onClick(v: View) {
@@ -120,9 +123,11 @@ class ImageLimitsPreference(context: Context, attrs: AttributeSet) :
                 }
             }.onSuccess {
                 withUIContext {
-                    mLimits = it ?: HomeParser.Limits(maximum = mLimits.maximum).also {
-                        mActivity.showTip(R.string.settings_eh_reset_limits_succeed, BaseScene.LENGTH_SHORT)
-                    }
+                    mLimits = it
+                    mActivity.showTip(
+                        R.string.settings_eh_reset_limits_succeed,
+                        BaseScene.LENGTH_SHORT,
+                    )
                     bind()
                 }
             }

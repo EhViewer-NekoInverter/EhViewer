@@ -458,7 +458,7 @@ object EhEngine {
     ): ArchiveParser.Result {
         val referer = EhUrl.getGalleryDetailUrl(gid, token)
         Log.d(TAG, url)
-        return EhRequestBuilder(url, referer).executeAndParsingWith(ArchiveParser::parse)!!
+        return EhRequestBuilder(url, referer).executeAndParsingWith(ArchiveParser::parse)
             .apply { funds = funds ?: getFunds() }
     }
 
@@ -529,10 +529,9 @@ object EhEngine {
         HomeParser.Result(limitsDeferred.await(), fundsDeferred.await())
     }
 
-    suspend fun resetImageLimits(): HomeParser.Limits? {
+    suspend fun resetImageLimits(): HomeParser.Limits {
         val builder = FormBody.Builder()
-            .add("act", "limits")
-            .add("reset", "Reset Limit")
+            .add("reset_imagelimit", "Reset Limit")
         val url = EhUrl.URL_HOME
         Log.d(TAG, url)
         return EhRequestBuilder(url)
