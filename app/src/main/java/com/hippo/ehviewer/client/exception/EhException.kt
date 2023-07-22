@@ -15,7 +15,11 @@
  */
 package com.hippo.ehviewer.client.exception
 
+import androidx.annotation.StringRes
+import com.hippo.ehviewer.GetText
+
 open class EhException : Exception {
     constructor(detailMessage: String?) : super(detailMessage)
     constructor(detailMessage: String?, cause: Throwable?) : super(detailMessage, cause)
+    constructor(@StringRes message: Int) : super(GetText.getString(message))
 }

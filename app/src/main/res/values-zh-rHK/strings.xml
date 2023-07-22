@@ -54,7 +54,7 @@
     <string name="press_twice_exit">再按一次退出</string>
     <string name="clipboard_gallery_url_snack_message">剪切板裏有畫廊鏈接</string>
     <string name="clipboard_gallery_url_snack_action">查看</string>
-    <string name="please_wait">請稍候...</string>
+    <string name="please_wait">請稍候…</string>
     <string name="app_link_not_verified_title">應用鏈接未驗證</string>
     <string name="app_link_not_verified_message">對於 Android 12 及更高版本，您需要手動添加鏈接到已驗證鏈接才能在 EhViewer 中打開 E-Hentai 鏈接。</string>
     <string name="open_settings">打開設置</string>
@@ -379,9 +379,9 @@
     <string name="settings_eh_account_identity_cookies_copy">複製</string>
     <string name="settings_eh_gallery_site">畫廊站點</string>
     <string name="settings_eh_image_limits">圖片配額</string>
-    <string name="settings_eh_image_limits_summary">加載中...</string>
-    <string name="settings_eh_image_limits_summary_2">當前限制：%1$d / %2$d</string>
-    <string name="settings_eh_current_limits">當前限制：%1$s\n重置花費：%2$s</string>
+    <string name="settings_eh_image_limits_summary">加載中…</string>
+    <string name="settings_eh_image_limits_summary_2">已用：%1$d / %2$d</string>
+    <string name="settings_eh_current_limits">已用：%1$s\n重置花費：%2$d GP</string>
     <string name="settings_eh_reset">重置</string>
     <string name="settings_eh_reset_limits_succeed">成功重置圖片配額</string>
     <string name="settings_eh_u_config">EHentai 設置</string>

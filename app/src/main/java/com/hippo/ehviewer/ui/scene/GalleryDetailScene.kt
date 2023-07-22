@@ -54,6 +54,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -86,10 +87,9 @@ import com.hippo.ehviewer.client.data.GalleryDetail
 import com.hippo.ehviewer.client.data.GalleryInfo
 import com.hippo.ehviewer.client.data.GalleryTagGroup
 import com.hippo.ehviewer.client.data.ListUrlBuilder
-import com.hippo.ehviewer.client.exception.NoHAtHClientException
+import com.hippo.ehviewer.client.exception.EhException
 import com.hippo.ehviewer.client.parser.ArchiveParser
 import com.hippo.ehviewer.client.parser.HomeParser
-import com.hippo.ehviewer.client.parser.ParserUtils
 import com.hippo.ehviewer.client.parser.RateGalleryParser
 import com.hippo.ehviewer.client.parser.TorrentParser
 import com.hippo.ehviewer.dao.DownloadInfo
@@ -1003,7 +1003,7 @@ class GalleryDetailScene :
         }
         try {
             val key = EhCacheKeyFactory.getThumbKey(gid)
-            val path = imageLoader(context).diskCache!![key]!!.use { it.data }
+            val path = imageLoader(context).diskCache!!.openSnapshot(key)!!.use { it.data }
             val lub = ListUrlBuilder()
             lub.mode = ListUrlBuilder.MODE_IMAGE_SEARCH
             lub.imagePath = path.toString()
@@ -1604,33 +1604,35 @@ class GalleryDetailScene :
 
     private class DownloadArchiveListener(
         context: Context,
-        private val mGalleryInfo: GalleryInfo?,
+        private val info: GalleryInfo,
     ) : EhCallback<GalleryDetailScene?, String?>(context) {
         override fun onSuccess(result: String?) {
-            // TODO: Don't use buggy system download service
-            val r = AndroidDownloadManager.Request(Uri.parse(result))
-            val name =
-                mGalleryInfo!!.gid.toString() + "-" + EhUtils.getSuitableTitle(mGalleryInfo) + ".zip"
-            r.setDestinationInExternalPublicDir(
-                Environment.DIRECTORY_DOWNLOADS,
-                FileUtils.sanitizeFilename(name),
-            )
-            r.setNotificationVisibility(AndroidDownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            val dm = application.getSystemService(Context.DOWNLOAD_SERVICE) as AndroidDownloadManager
-            try {
-                dm.enqueue(r)
-            } catch (e: Throwable) {
-                e.printStackTrace()
-                ExceptionUtils.throwIfFatal(e)
+            result?.let {
+                // TODO: Don't use buggy system download service
+                val r = AndroidDownloadManager.Request(Uri.parse(result))
+                val name = "${info.gid}-${EhUtils.getSuitableTitle(info)}.zip"
+                r.setDestinationInExternalPublicDir(
+                    Environment.DIRECTORY_DOWNLOADS,
+                    FileUtils.sanitizeFilename(name),
+                )
+                r.setNotificationVisibility(AndroidDownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                val dm = application.getSystemService<AndroidDownloadManager>()!!
+                try {
+                    dm.enqueue(r)
+                } catch (e: Throwable) {
+                    e.printStackTrace()
+                    ExceptionUtils.throwIfFatal(e)
+                }
             }
             showTip(R.string.download_archive_started, LENGTH_SHORT)
         }
 
         override fun onFailure(e: Exception) {
-            if (e is NoHAtHClientException) {
-                showTip(R.string.download_archive_failure_no_hath, LENGTH_LONG)
+            if (e is EhException) {
+                showTip(ExceptionUtils.getReadableString(e), LENGTH_LONG)
             } else {
                 showTip(R.string.download_archive_failure, LENGTH_LONG)
+                e.printStackTrace()
             }
         }
 
@@ -1811,19 +1813,6 @@ class GalleryDetailScene :
             val context = context
             val activity = mainActivity
             if (null != context && null != activity && null != mArchiveList && position < mArchiveList!!.size) {
-                if (mArchiveList!![position].name == "Insufficient Funds") {
-                    showTip(R.string.insufficient_funds, LENGTH_SHORT)
-                    return
-                } else if (mCurrentFunds != null) {
-                    val cost = ParserUtils.parseInt(
-                        mArchiveList!![position].cost.removeSuffix("GP").removeSuffix("Credits"),
-                        0,
-                    )
-                    if (cost > maxOf(mCurrentFunds!!.fundsGP, mCurrentFunds!!.fundsC)) {
-                        showTip(R.string.insufficient_funds, LENGTH_SHORT)
-                        return
-                    }
-                }
                 val res = mArchiveList!![position].res
                 val isHAtH = mArchiveList!![position].isHAtH
                 val request = EhRequest()
@@ -1835,7 +1824,7 @@ class GalleryDetailScene :
                     res,
                     isHAtH,
                 )
-                request.setCallback(DownloadArchiveListener(context, mGalleryDetail))
+                request.setCallback(DownloadArchiveListener(context, mGalleryDetail!!))
                 request.enqueue(this@GalleryDetailScene)
             }
             if (mDialog != null) {
