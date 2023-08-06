@@ -15,6 +15,7 @@
  */
 package com.hippo.ehviewer.client
 
+import android.webkit.CookieManager
 import com.hippo.ehviewer.EhApplication
 import com.hippo.network.CookieDatabase
 import com.hippo.network.CookieSet
@@ -28,19 +29,10 @@ import java.util.Collections
 import java.util.regex.Pattern
 
 object EhCookieStore : CookieJar {
+    private val cookieManager = CookieManager.getInstance()
     private val db: CookieDatabase = CookieDatabase(EhApplication.application, "okhttp3-cookie.db")
     private val map: MutableMap<String, CookieSet> = db.allCookies
-
-    fun signOut() {
-        clear()
-    }
-
-    fun hasSignedIn(): Boolean {
-        val url = EhUrl.HOST_E.toHttpUrl()
-        return contains(url, KEY_IPB_MEMBER_ID) &&
-            contains(url, KEY_IPB_PASS_HASH)
-    }
-
+    const val KEY_CLOUDFLARE = "cf_clearance"
     const val KEY_IPB_MEMBER_ID = "ipb_member_id"
     const val KEY_IPB_PASS_HASH = "ipb_pass_hash"
     const val KEY_IGNEOUS = "igneous"
@@ -55,6 +47,38 @@ object EhCookieStore : CookieJar {
         .path("/")
         .expiresAt(Long.MAX_VALUE)
         .build()
+
+    fun signOut() {
+        clear()
+    }
+
+    fun hasSignedIn(): Boolean {
+        val url = EhUrl.HOST_E.toHttpUrl()
+        return contains(url, KEY_IPB_MEMBER_ID) && contains(url, KEY_IPB_PASS_HASH)
+    }
+
+    fun loadForWebView(url: String, filter: (Cookie) -> Boolean) {
+        cookieManager.removeAllCookies(null)
+        getCookies(url.toHttpUrl()).forEach {
+            if (filter(it)) {
+                cookieManager.setCookie(url, it.toString())
+            }
+        }
+    }
+
+    fun saveFromWebView(url: String, filter: (Cookie) -> Boolean): Boolean {
+        val cookies = cookieManager.getCookie(url) ?: return false
+        var saved = false
+        cookies.split(';').forEach { header ->
+            Cookie.parse(url.toHttpUrl(), header)?.let {
+                if (filter(it)) {
+                    addCookie(it)
+                    saved = true
+                }
+            }
+        }
+        return saved
+    }
 
     fun newCookie(
         cookie: Cookie,

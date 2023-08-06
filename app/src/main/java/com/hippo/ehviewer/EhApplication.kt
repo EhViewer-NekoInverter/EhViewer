@@ -43,6 +43,7 @@ import com.hippo.util.ReadableTime
 import com.hippo.util.launchIO
 import com.hippo.yorozuya.FileUtils
 import com.hippo.yorozuya.IntIdGenerator
+import eu.kanade.tachiyomi.network.interceptor.CloudflareInterceptor
 import kotlinx.coroutines.DelicateCoroutinesApi
 import okhttp3.Cache
 import okhttp3.OkHttpClient
@@ -221,6 +222,7 @@ class EhApplication : SceneApplication(), ImageLoaderFactory {
                 cookieJar(EhCookieStore)
                 dns(EhDns)
                 proxySelector(ehProxySelector)
+                addInterceptor(CloudflareInterceptor(application))
             }.build()
         }
         val noRedirectOkHttpClient by lazy {
