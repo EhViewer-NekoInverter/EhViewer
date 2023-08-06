@@ -590,7 +590,7 @@ object EhEngine {
             getUConfigInternal(url)
         }.onFailure {
             // It may get redirected when accessing ex for the first time
-            if (EhUtils.isExHentai) {
+            if (url == EhUrl.URL_UCONFIG_EX) {
                 it.printStackTrace()
                 getUConfigInternal(url)
             } else {
