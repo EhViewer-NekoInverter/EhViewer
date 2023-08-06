@@ -27,8 +27,8 @@ import java.net.UnknownHostException
 import javax.net.ssl.SSLException
 
 object ExceptionUtils {
-    fun getReadableString(e: Throwable): String {
-        e.printStackTrace()
+    fun getReadableString(e: Throwable?): String {
+        e?.printStackTrace()
         return if (e is MalformedURLException) {
             getString(R.string.error_invalid_url)
         } else if (e is SocketTimeoutException) {

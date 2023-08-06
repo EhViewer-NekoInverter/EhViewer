@@ -660,6 +660,8 @@
     <string name="error_something_wrong_happened">Something wrong happened</string>
     <string name="kokomade_tip">Settings-&gt;Eh-&gt;Gallery Site-&gt;e-hentai</string>
     <string name="no_browser_installed">Just install a browser please.</string>
+    <string name="cloudflare_bypass_failed">Failed to bypass Cloudflare challenge</string>
+    <string name="open_in_webview">Open URL in WebView to finish the challenge?</string>
 
     <!-- Readable Time -->
     <string name="from_the_future">From the future</string>
