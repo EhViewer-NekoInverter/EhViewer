@@ -41,6 +41,7 @@ import com.hippo.util.launchIO
 import com.hippo.util.withUIContext
 import com.hippo.yorozuya.ViewUtils
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class SignInScene : SolidScene(), OnEditorActionListener, View.OnClickListener {
     private var mProgress: View? = null
@@ -220,19 +221,22 @@ class SignInScene : SolidScene(), OnEditorActionListener, View.OnClickListener {
         }
     }
 
-    private fun finishSignIn(check: Boolean = true) {
+    private fun finishSignIn(signedIn: Boolean = true) {
         lifecycleScope.launchIO {
             withUIContext {
                 showProgress()
             }
-            if (check) {
+            if (signedIn) {
                 runCatching {
                     // For the `star` cookie, https://github.com/Ehviewer-Overhauled/Ehviewer/issues/873
                     EhEngine.getNews(false)
                     EhCookieStore.copyCookie(EhUrl.DOMAIN_E, EhUrl.DOMAIN_EX, EhCookieStore.KEY_STAR)
+
+                    // Get cookies for image limits
+                    launch { runCatching { EhEngine.getUConfig(EhUrl.URL_UCONFIG_E) } }
+
                     // Sad panda check
-                    Settings.putGallerySite(EhUrl.SITE_EX)
-                    EhEngine.getUConfig()
+                    EhEngine.getUConfig(EhUrl.URL_UCONFIG_EX)
                 }.onFailure {
                     Settings.putGallerySite(EhUrl.SITE_E)
                     Settings.putSelectSite(false)
