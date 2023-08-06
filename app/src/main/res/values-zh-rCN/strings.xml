@@ -380,8 +380,8 @@
     <string name="settings_eh_gallery_site">画廊站点</string>
     <string name="settings_eh_image_limits">图片配额</string>
     <string name="settings_eh_image_limits_summary">加载中…</string>
-    <string name="settings_eh_image_limits_summary_2">已用：%1$d / %2$d</string>
-    <string name="settings_eh_current_limits">已用：%1$s\n重置花费：%2$d GP</string>
+    <string name="settings_eh_image_limits_summary_2">当前已用：%1$d / %2$d</string>
+    <string name="settings_eh_current_limits">当前已用：%1$s\n重置花费：%2$d GP</string>
     <string name="settings_eh_reset">重置</string>
     <string name="settings_eh_reset_limits_succeed">成功重置图片配额</string>
     <string name="settings_eh_u_config">EHentai 设置</string>
@@ -469,7 +469,7 @@
     <string name="settings_download_preload_image">预载图片</string>
     <string name="settings_download_preload_image_summary">向后预载 %s 张图片</string>
     <string name="settings_download_download_origin_image">加载原图</string>
-    <string name="settings_download_download_origin_image_summary">%s，警告！可能需要 GP</string>
+    <string name="settings_download_download_origin_image_summary">%s，警告！可能需要消耗 GP</string>
     <string name="settings_download_download_origin_image_never">从不启用</string>
     <string name="settings_download_download_origin_image_force">总是启用</string>
     <string name="settings_download_download_origin_image_only">仅下载时启用</string>

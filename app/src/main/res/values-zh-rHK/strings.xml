@@ -380,8 +380,8 @@
     <string name="settings_eh_gallery_site">畫廊站點</string>
     <string name="settings_eh_image_limits">圖片配額</string>
     <string name="settings_eh_image_limits_summary">加載中…</string>
-    <string name="settings_eh_image_limits_summary_2">已用：%1$d / %2$d</string>
-    <string name="settings_eh_current_limits">已用：%1$s\n重置花費：%2$d GP</string>
+    <string name="settings_eh_image_limits_summary_2">當前已用：%1$d / %2$d</string>
+    <string name="settings_eh_current_limits">當前已用：%1$s\n重置花費：%2$d GP</string>
     <string name="settings_eh_reset">重置</string>
     <string name="settings_eh_reset_limits_succeed">成功重置圖片配額</string>
     <string name="settings_eh_u_config">EHentai 設置</string>
@@ -469,7 +469,7 @@
     <string name="settings_download_preload_image">預載圖片</string>
     <string name="settings_download_preload_image_summary">向後預載 %s 張圖片</string>
     <string name="settings_download_download_origin_image">加載原圖</string>
-    <string name="settings_download_download_origin_image_summary">%s，警告！可能需要 GP</string>
+    <string name="settings_download_download_origin_image_summary">%s，警告！可能需要消耗 GP</string>
     <string name="settings_download_download_origin_image_never">從不啓用</string>
     <string name="settings_download_download_origin_image_force">總是啓用</string>
     <string name="settings_download_download_origin_image_only">僅下載時啓用</string>
@@ -596,6 +596,8 @@
     <string name="error_something_wrong_happened">被玩壞了</string>
     <string name="kokomade_tip">設置-&gt;Eh-&gt;畫廊站點-&gt;e-hentai</string>
     <string name="no_browser_installed">請安裝一個瀏覽器。</string>
+    <string name="cloudflare_bypass_failed">未能繞過 Cloudflare 驗證</string>
+    <string name="open_in_webview">在 WebView 中打開鏈接以通過驗證？</string>
 
     <!-- Readable Time -->
     <string name="from_the_future">來自未來</string>
