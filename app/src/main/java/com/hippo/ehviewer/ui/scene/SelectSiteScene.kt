@@ -24,7 +24,6 @@ import com.google.android.material.button.MaterialButtonToggleGroup
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.client.EhUrl
-import com.hippo.ehviewer.client.EhUtils
 import com.hippo.yorozuya.ViewUtils
 
 class SelectSiteScene : SolidScene(), View.OnClickListener {
@@ -42,7 +41,7 @@ class SelectSiteScene : SolidScene(), View.OnClickListener {
     ): View {
         val view = inflater.inflate(R.layout.scene_select_site, container, false)
         mButtonGroup = ViewUtils.`$$`(view, R.id.button_group) as MaterialButtonToggleGroup
-        (ViewUtils.`$$`(view, if (EhUtils.isExHentai) R.id.site_ex else R.id.site_e) as MaterialButton).isChecked = true
+        (ViewUtils.`$$`(view, R.id.site_ex) as MaterialButton).isChecked = true
         mOk = ViewUtils.`$$`(view, R.id.ok)
         mOk!!.setOnClickListener(this)
         return view
