@@ -15,23 +15,23 @@
  * You should have received a copy of the GNU General Public License along with EhViewer.
  * If not, see <https://www.gnu.org/licenses/>.
  */
-@file:Suppress("DEPRECATION")
-
 package com.hippo.util
 
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.SparseArray
-// import androidx.core.content.IntentCompat
-// import androidx.core.os.BundleCompat
+import androidx.core.content.IntentCompat
+import androidx.core.os.BundleCompat
 
-// inline fun <reified T : Parcelable> Bundle.getParcelableCompat(key: String?): T? = BundleCompat.getParcelable(this, key, T::class.java)
-// inline fun <reified T : Parcelable> Bundle.getSparseParcelableArrayCompat(key: String?): SparseArray<T?>? = BundleCompat.getSparseParcelableArray(this, key, T::class.java)
-// inline fun <reified T : Parcelable> Intent.getParcelableExtraCompat(key: String?): T? = IntentCompat.getParcelableExtra(this, key, T::class.java)
+inline fun <reified T : Parcelable> Bundle.getParcelableCompat(key: String?): T? {
+    return BundleCompat.getParcelable(this, key, T::class.java)
+}
 
-// Avoid using new API on Tiramisu
-// See https://issuetracker.google.com/issues/240585930 & https://github.com/Ehviewer-Overhauled/Ehviewer/issues/1065
-inline fun <reified T : Parcelable> Bundle.getParcelableCompat(key: String?): T? = getParcelable(key)
-inline fun <reified T : Parcelable> Bundle.getSparseParcelableArrayCompat(key: String?): SparseArray<T?>? = getSparseParcelableArray(key)
-inline fun <reified T : Parcelable> Intent.getParcelableExtraCompat(key: String?): T? = getParcelableExtra(key)
+inline fun <reified T : Parcelable> Bundle.getSparseParcelableArrayCompat(key: String?): SparseArray<T?>? {
+    return BundleCompat.getSparseParcelableArray(this, key, T::class.java)
+}
+
+inline fun <reified T : Parcelable> Intent.getParcelableExtraCompat(key: String?): T? {
+    return IntentCompat.getParcelableExtra(this, key, T::class.java)
+}
