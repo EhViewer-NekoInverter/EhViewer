@@ -42,7 +42,7 @@ object FavoritesParser {
         }.onFailure {
             ExceptionUtils.throwIfFatal(it)
             it.printStackTrace()
-            throw ParseException("Parse favorites error", body)
+            throw ParseException("Parse favorites error")
         }
         val result = GalleryListParser.parse(d, body)
         return Result(catArray, countArray, result)

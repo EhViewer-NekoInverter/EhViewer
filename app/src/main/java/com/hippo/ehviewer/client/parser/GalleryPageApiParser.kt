@@ -33,7 +33,7 @@ object GalleryPageApiParser {
             var m: Matcher
             val jo = JSONObject(body)
             if (jo.has("error")) {
-                throw ParseException(jo.getString("error"), body)
+                throw ParseException(jo.getString("error"))
             }
             val i3 = jo.getString("i3")
             m = PATTERN_IMAGE_URL.matcher(i3)
@@ -60,10 +60,10 @@ object GalleryPageApiParser {
             if (!imageUrl.isNullOrEmpty()) {
                 Result(imageUrl, skipHathKey, originImageUrl)
             } else {
-                throw ParseException("Parse image url and skip hath key error", body)
+                throw ParseException("Parse image url and skip hath key error")
             }
         } catch (e: JSONException) {
-            throw ParseException("Can't parse json", body, e)
+            throw ParseException("Can't parse json", e)
         }
     }
 

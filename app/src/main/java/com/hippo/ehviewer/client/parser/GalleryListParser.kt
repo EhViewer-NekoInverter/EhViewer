@@ -332,7 +332,7 @@ object GalleryListParser {
         } catch (e: Throwable) {
             ExceptionUtils.throwIfFatal(e)
             e.printStackTrace()
-            throw ParseException("Can't parse gallery list", body)
+            throw ParseException("Can't parse gallery list")
         }
         return result
     }
