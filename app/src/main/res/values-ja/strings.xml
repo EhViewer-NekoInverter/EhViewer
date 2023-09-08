@@ -50,7 +50,7 @@
     <string name="press_twice_exit">もう一度押して終了します</string>
     <string name="clipboard_gallery_url_snack_message">クリップボードにはギャラリーURLが検出されました。</string>
     <string name="clipboard_gallery_url_snack_action">移動</string>
-    <string name="please_wait">お待ちください...</string>
+    <string name="please_wait">お待ちください…</string>
 
     <!-- Gallery Activity -->
     <string name="page_menu_title">ページ%d</string>
@@ -386,11 +386,6 @@
     <string name="settings_advanced_dump_logcat_to">ログを%sにエクスポートしました</string>
     <string name="settings_advanced_read_cache_size">閲覧キャッシュのサイズ</string>
     <string name="settings_advanced_app_language_title">アプリ言語（Language）</string>
-    <string name="settings_advanced_proxy">プロキシ</string>
-    <string name="settings_advanced_built_in_hosts_title">既定hosts.txt</string>
-    <string name="settings_advanced_built_in_hosts_summary">ホストをアプリ既定のIPにマッピング\nカスタムhosts.txtに上書きされます。</string>
-    <string name="settings_advanced_custom_hosts_title">カスタムhosts.txt</string>
-    <string name="settings_advanced_custom_hosts_summary">ホスト名をIPにマッピング\n既定のhosts.txtを上書きできます。</string>
     <string name="settings_advanced_export_data">データをエクスポート</string>
     <string name="settings_advanced_export_data_summary">ダウンロードリストやクイック検索などのデータを外部ストレージにエクスポートします</string>
     <string name="settings_advanced_export_data_to">データを%sにエクスポート</string>
@@ -428,21 +423,6 @@
     <string name="set">設定</string>
     <!-- Languages -->
     <string name="app_language_system">システム言語（既定）</string>
-    <!-- Proxy -->
-    <string name="proxy_direct">ダイレクト</string>
-    <string name="proxy_system">システムプロキシ</string>
-    <string name="proxy_host_or_ip">ホスト名又はIP</string>
-    <string name="proxy_port">ポート</string>
-    <string name="proxy_invalid_port">入力したポートは無効です</string>
-    <!-- Hosts Activity -->
-    <string name="hosts">カスタムhosts.txt</string>
-    <string name="add_host">ホストを追加</string>
-    <string name="add_host_add">追加</string>
-    <string name="edit_host">ホストを編集</string>
-    <string name="edit_host_confirm">適用</string>
-    <string name="edit_host_delete">削除</string>
-    <string name="invalid_host">無効なホストです</string>
-    <string name="invalid_ip">無効なIPです</string>
 
     <!-- Errors -->
     <string name="error_bad_status_code">無効なステータスコード：%d</string>
@@ -457,7 +437,6 @@
     <string name="error_empty">空</string>
     <string name="error_reading_failed">読み込めませんでした。</string>
     <string name="error_out_of_range">範囲外です。</string>
-    <string name="error_write_failed">書き込めませんでした</string>
     <string name="error_parse_error">ファイル解析に失敗しました。</string>
     <string name="error_invalid_url">無効なリンクです。</string>
     <string name="error_get_ptoken_error">pTokenの取得に失敗しました。</string>
