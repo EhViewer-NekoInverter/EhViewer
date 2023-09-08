@@ -15,6 +15,7 @@
  */
 package com.hippo.ehviewer.client.parser
 
+import com.hippo.ehviewer.client.exception.ParseException
 import org.jsoup.Jsoup
 import java.util.regex.Pattern
 
@@ -37,6 +38,8 @@ object TorrentParser {
                 val url = ParserUtils.trim(m.group(7))
                 val name = ParserUtils.trim(m.group(8))
                 torrentList.add(Result(posted, size, seeds, peers, downloads, url, name))
+            } else {
+                throw ParseException("Can't parse torrent list")
             }
         }
         return torrentList

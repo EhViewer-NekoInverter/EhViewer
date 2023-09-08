@@ -27,7 +27,7 @@ object RateGalleryParser {
             val ratingCount = jsonObject.getInt("rating_cnt")
             Result(rating, ratingCount)
         } catch (e: JSONException) {
-            throw ParseException("Can't parse rate gallery", body, e)
+            throw ParseException("Can't parse rate gallery", e)
         }
     }
 

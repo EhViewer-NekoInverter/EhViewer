@@ -34,7 +34,7 @@ object HomeParser {
                 return Limits(current, maximum, resetCost)
             }
         }
-        throw ParseException("Parse image limits error", body)
+        throw ParseException("Parse image limits error")
     }
 
     fun parseResetLimits(body: String): Limits {
@@ -50,7 +50,7 @@ object HomeParser {
             val fundsGP = ParserUtils.parseInt(get(2), 0) * 1000
             return Funds(fundsGP, fundsC)
         }
-        throw ParseException("Parse funds error", body)
+        throw ParseException("Parse funds error")
     }
 
     data class Limits(val current: Int = 0, val maximum: Int, val resetCost: Int = 0)

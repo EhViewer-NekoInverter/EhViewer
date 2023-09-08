@@ -97,7 +97,7 @@ object GalleryDetailParser {
         parseDetail(galleryDetail, document, body)
         galleryDetail.tags = parseTagGroups(document)
         galleryDetail.comments = parseComments(document)
-        galleryDetail.previewPages = parsePreviewPages(document, body)
+        galleryDetail.previewPages = parsePreviewPages(document)
         galleryDetail.previewSet = parsePreviewSet(document, body)
 
         // Generate simpleLanguage for local favorites
@@ -112,9 +112,9 @@ object GalleryDetailParser {
             gd.token = groupValues[2]
             gd.apiUid = groupValues[3].toLongOrNull() ?: -1L
             gd.apiKey = groupValues[4]
-        } ?: throw ParseException("Can't parse gallery detail", body)
+        } ?: throw ParseException("Can't parse gallery detail")
         if (gd.gid == -1L) {
-            throw ParseException("Can't parse gallery detail", body)
+            throw ParseException("Can't parse gallery detail")
         }
         PATTERN_TORRENT.find(body)?.run {
             gd.torrentUrl = groupValues[1].trim().unescapeXml()
@@ -220,7 +220,7 @@ object GalleryDetailParser {
             }
         } catch (e: Throwable) {
             ExceptionUtils.throwIfFatal(e)
-            throw ParseException("Can't parse gallery detail", body)
+            throw ParseException("Can't parse gallery detail")
         }
 
         // Newer version
@@ -466,7 +466,7 @@ object GalleryDetailParser {
      * Parse preview pages with html parser
      */
     @Throws(ParseException::class)
-    fun parsePreviewPages(document: Document, body: String?): Int {
+    fun parsePreviewPages(document: Document): Int {
         return try {
             val ptt = document.getElementsByClass("ptt").first()!!
             val elements = ptt.child(0).child(0).children()
@@ -474,7 +474,7 @@ object GalleryDetailParser {
         } catch (e: Throwable) {
             ExceptionUtils.throwIfFatal(e)
             e.printStackTrace()
-            throw ParseException("Can't parse preview pages", body!!)
+            throw ParseException("Can't parse preview pages")
         }
     }
 
@@ -485,7 +485,7 @@ object GalleryDetailParser {
     @Throws(ParseException::class)
     fun parsePreviewPages(body: String): Int {
         return PATTERN_PREVIEW_PAGES.find(body)?.groupValues?.get(1)?.toIntOrNull()
-            ?: throw ParseException("Parse preview page count error", body)
+            ?: throw ParseException("Parse preview page count error")
     }
 
     /**
@@ -495,13 +495,13 @@ object GalleryDetailParser {
     @Throws(ParseException::class)
     fun parsePages(body: String): Int {
         return PATTERN_PAGES.find(body)?.groupValues?.get(1)?.toIntOrNull()
-            ?: throw ParseException("Parse pages error", body)
+            ?: throw ParseException("Parse pages error")
     }
 
     @Throws(ParseException::class)
     fun parsePreviewSet(d: Document, body: String): PreviewSet {
         return try {
-            parseLargePreviewSet(d, body)
+            parseLargePreviewSet(d)
         } catch (e: ParseException) {
             parseNormalPreviewSet(body)
         }
@@ -521,14 +521,14 @@ object GalleryDetailParser {
      * Parse large previews with regular expressions
      */
     @Throws(ParseException::class)
-    private fun parseLargePreviewSet(d: Document, body: String): LargePreviewSet {
+    private fun parseLargePreviewSet(d: Document): LargePreviewSet {
         return try {
             val largePreviewSet = LargePreviewSet()
             val gdt = d.getElementById("gdt")!!
             val gdtls = gdt.getElementsByClass("gdtl")
             val n = gdtls.size
             if (n == 0) {
-                throw ParseException("Can't parse large preview", body)
+                throw ParseException("Can't parse large preview")
             }
             for (i in 0 until n) {
                 var element = gdtls[i].child(0)
@@ -541,7 +541,7 @@ object GalleryDetailParser {
             largePreviewSet
         } catch (e: Throwable) {
             ExceptionUtils.throwIfFatal(e)
-            throw ParseException("Can't parse large preview", body)
+            throw ParseException("Can't parse large preview")
         }
     }
 
@@ -558,7 +558,7 @@ object GalleryDetailParser {
             largePreviewSet.addItem(index, imageUrl, pageUrl)
         }
         if (largePreviewSet.size() == 0) {
-            throw ParseException("Can't parse large preview", body)
+            throw ParseException("Can't parse large preview")
         }
         return largePreviewSet
     }
@@ -580,7 +580,7 @@ object GalleryDetailParser {
             normalPreviewSet.addItem(position, imageUrl, xOffset, yOffset, width, height, pageUrl)
         }
         if (normalPreviewSet.size() == 0) {
-            throw ParseException("Can't parse normal preview", body)
+            throw ParseException("Can't parse normal preview")
         }
         return normalPreviewSet
     }

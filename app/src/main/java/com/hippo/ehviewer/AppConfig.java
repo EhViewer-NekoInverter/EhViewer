@@ -133,7 +133,7 @@ public class AppConfig {
         return FileUtils.createTempFile(getTempDir(), null);
     }
 
-    public static void saveParseErrorBody(ParseException e) {
+    public static void saveParseErrorBody(ParseException e, String body) {
         File dir = getExternalParseErrorDir();
         if (null == dir) {
             return;
@@ -144,7 +144,6 @@ public class AppConfig {
         try {
             os = new FileOutputStream(file);
             String message = e.getMessage();
-            String body = e.getBody();
             if (null != message) {
                 os.write(message.getBytes(StandardCharsets.UTF_8));
                 os.write('\n');
