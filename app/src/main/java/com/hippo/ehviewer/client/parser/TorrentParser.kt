@@ -21,25 +21,28 @@ import java.util.regex.Pattern
 
 object TorrentParser {
     private val PATTERN_TORRENT =
-        Pattern.compile("</span> ([0-9-]+) [0-9:]+</td>[\\s\\S]+</span> ([0-9.]+ [KMGT]B)</td>[\\s\\S]+</span> ([0-9]+)</td>[\\s\\S]+</span> ([0-9]+)</td>[\\s\\S]+</span> ([0-9]+)</td>[\\s\\S]+</span>([^<]+)</td>[\\s\\S]+onclick=\"document.location='([^\"]+)'[^<]+>([^<]+)</a>")
+        Pattern.compile("</span> ([0-9-]+) [0-9:]+</td>[\\s\\S]+</span> ([0-9.]+ [KMGT]iB)</td>[\\s\\S]+</span> ([0-9]+)</td>[\\s\\S]+</span> ([0-9]+)</td>[\\s\\S]+</span> ([0-9]+)</td>[\\s\\S]+</span>([^<]+)</td>[\\s\\S]+onclick=\"document.location='([^\"]+)'[^<]+>([^<]+)</a>")
 
     fun parse(body: String): List<Result> {
         val torrentList = ArrayList<Result>()
         val d = Jsoup.parse(body)
         val es = d.select("form>div>table")
         for (e in es) {
-            val m = PATTERN_TORRENT.matcher(e.html())
-            if (m.find()) {
-                val posted = m.group(1)!!
-                val size = m.group(2)!!
-                val seeds = m.group(3)!!.toInt()
-                val peers = m.group(4)!!.toInt()
-                val downloads = m.group(5)!!.toInt()
-                val url = ParserUtils.trim(m.group(7))
-                val name = ParserUtils.trim(m.group(8))
-                torrentList.add(Result(posted, size, seeds, peers, downloads, url, name))
-            } else {
-                throw ParseException("Can't parse torrent list")
+            val html = e.html()
+            if (!html.contains("Expunged")) {
+                val m = PATTERN_TORRENT.matcher(html)
+                if (m.find()) {
+                    val posted = m.group(1)!!
+                    val size = m.group(2)!!
+                    val seeds = m.group(3)!!.toInt()
+                    val peers = m.group(4)!!.toInt()
+                    val downloads = m.group(5)!!.toInt()
+                    val url = ParserUtils.trim(m.group(7))
+                    val name = ParserUtils.trim(m.group(8))
+                    torrentList.add(Result(posted, size, seeds, peers, downloads, url, name))
+                } else {
+                    throw ParseException("Can't parse torrent list")
+                }
             }
         }
         return torrentList
