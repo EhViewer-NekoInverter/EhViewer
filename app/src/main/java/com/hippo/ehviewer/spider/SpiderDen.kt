@@ -66,7 +66,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
 
     private fun containInCache(index: Int): Boolean {
         val key = EhCacheKeyFactory.getImageKey(mGid, index)
-        return sCache[key]?.use { true } ?: false
+        return sCache.openSnapshot(key)?.use { true } ?: false
     }
 
     private fun containInDownloadDir(index: Int): Boolean {
@@ -209,7 +209,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
             val key = EhCacheKeyFactory.getImageKey(mGid, index)
 
             // Read from diskCache first
-            sCache[key]?.use { snapshot ->
+            sCache.openSnapshot(key)?.use { snapshot ->
                 runCatching {
                     UniFile.fromFile(snapshot.data.toFile())!!.openFileDescriptor("r").use {
                         it sendTo toFd
@@ -241,7 +241,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
 
     fun getExtension(index: Int): String? {
         val key = EhCacheKeyFactory.getImageKey(mGid, index)
-        return sCache[key]?.use { it.metadata.toNioPath().readText() }
+        return sCache.openSnapshot(key)?.use { it.metadata.toNioPath().readText() }
             ?: downloadDir?.let { findImageFile(it, index).first }
                 ?.name.let { FileUtils.getExtensionFromFilename(it) }
     }
@@ -249,7 +249,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
     fun getImageSource(index: Int): CloseableSource? {
         if (mode == SpiderQueen.MODE_READ) {
             val key = EhCacheKeyFactory.getImageKey(mGid, index)
-            sCache[key]?.let {
+            sCache.openSnapshot(key)?.let {
                 val source = ImageDecoder.createSource(it.data.toFile())
                 return object : CloseableSource, AutoCloseable by it {
                     override val source = source

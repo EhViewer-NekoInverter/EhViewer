@@ -159,7 +159,7 @@ class SpiderInfo @JvmOverloads constructor(
 
         @JvmStatic
         fun readFromCache(gid: Long): SpiderInfo? {
-            val snapshot = spiderInfoCache[gid.toString()] ?: return null
+            val snapshot = spiderInfoCache.openSnapshot(gid.toString()) ?: return null
             return runCatching {
                 snapshot.use { snapShot ->
                     return snapShot.data.toFile().inputStream().use { inputStream ->

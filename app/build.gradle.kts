@@ -139,17 +139,17 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.biometric:biometric-ktx:1.2.0-alpha05")
     implementation("androidx.browser:browser:1.6.0")
-    implementation("androidx.collection:collection-ktx:1.3.0-beta01")
+    implementation("androidx.collection:collection-ktx:1.3.0-rc01")
 
-    implementation("androidx.core:core-ktx:1.12.0-rc01")
+    implementation("androidx.core:core-ktx:1.12.0")
 
     implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
     implementation("androidx.fragment:fragment-ktx:1.6.1")
     // https://developer.android.com/jetpack/androidx/releases/lifecycle
-    implementation("androidx.lifecycle:lifecycle-process:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-process:2.6.2")
 
     // https://developer.android.com/jetpack/androidx/releases/paging
-    implementation("androidx.paging:paging-runtime-ktx:3.2.0")
+    implementation("androidx.paging:paging-runtime-ktx:3.2.1")
     implementation("androidx.preference:preference-ktx:1.2.1")
     implementation("androidx.recyclerview:recyclerview:1.3.1")
 
