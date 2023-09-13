@@ -48,7 +48,7 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
 本分支为自用性质，不接受功能请求，如果您有什么好想法或者发现什么问题欢迎直接提交 PR，软件常见使用问题和其他分支链接请参阅 [Q&A](https://github.com/EhViewer-NekoInverter/EhViewer/issues/18)
 
-如果您可以接受 MD3 风格，那使用 [彩E](https://github.com/Ehviewer-Overhauled/Ehviewer) 应该是更好的选择，我建立本仓库就是因为实在不能接受 MD3！不要大圆角！不要大色块！😡😡
+如果您可以接受 MD3 风格，那使用 [彩E](https://github.com/FooIbar/EhViewer) 应该是更好的选择，我建立本仓库就是因为实在不能接受 MD3！不要大圆角！不要大色块！😡😡
 
 # 下载
 
