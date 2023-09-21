@@ -156,7 +156,7 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.1")
 
     // https://developer.android.com/jetpack/androidx/releases/room
-    val room_version = "2.6.0-beta01"
+    val room_version = "2.6.0-rc01"
     ksp("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-paging:$room_version")
 
