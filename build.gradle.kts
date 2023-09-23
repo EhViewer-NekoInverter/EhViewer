@@ -2,10 +2,7 @@ plugins {
     id("com.android.application") version "8.1.1" apply false
     kotlin("android") version "1.9.10" apply false
     id("com.google.devtools.ksp") version "1.9.10-1.0.13" apply false
-}
-
-allprojects {
-    apply(from = "$rootDir/ktlint.gradle.kts")
+    id("com.diffplug.spotless") version "6.21.0" apply false
 }
 
 tasks.register("Delete", Delete::class) {
