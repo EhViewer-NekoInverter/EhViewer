@@ -8,6 +8,7 @@ plugins {
     kotlin("android")
     id("kotlin-parcelize")
     id("com.google.devtools.ksp")
+    id("com.diffplug.spotless")
 }
 
 android {
@@ -191,4 +192,13 @@ configurations.all {
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
     arg("room.generateKotlin", "true")
+}
+
+spotless {
+    kotlin {
+        ktlint()
+    }
+    kotlinGradle {
+        ktlint()
+    }
 }
