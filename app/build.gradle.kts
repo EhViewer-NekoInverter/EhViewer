@@ -68,7 +68,6 @@ android {
         )
         buildConfigField("String", "VERSION_CODE", "\"${defaultConfig.versionCode}\"")
         buildConfigField("String", "COMMIT_SHA", "\"$commitSha\"")
-        buildConfigField("String", "BUILD_TIME", "\"$buildTime\"")
     }
 
     externalNativeBuild {
@@ -120,9 +119,11 @@ android {
             isShrinkResources = true
             proguardFiles("proguard-rules.pro")
             signingConfig = signConfig
+            buildConfigField("String", "BUILD_TIME", "\"$buildTime\"")
         }
         debug {
             applicationIdSuffix = ".debug"
+            buildConfigField("String", "BUILD_TIME", "\"\"")
         }
     }
 
