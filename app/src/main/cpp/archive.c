@@ -32,7 +32,9 @@
 
 #define LOG_TAG "libarchive_wrapper"
 
+#include "natsort/strnatcmp.h"
 #include "ehviewer.h"
+#include "spinlock.h"
 
 typedef struct {
     int using;
@@ -47,7 +49,7 @@ typedef struct {
     size_t size;
 } entry;
 
-pthread_mutex_t ctx_lock;
+_Atomic mcs_lock ctx_lock;
 static archive_ctx **ctx_pool;
 #define CTX_POOL_SIZE 20
 
@@ -97,22 +99,7 @@ static inline int filename_is_playable_file(const char *name) {
 static inline int compare_entries(const void *a, const void *b) {
     const char *fa = ((entry *) a)->filename;
     const char *fb = ((entry *) b)->filename;
-    int i, na, nb;
-    for (i = 0; fa[i] || fb[i]; i++) {
-        if (fa[i] > '0' && fa[i] <= '9' && fb[i] > '0' && fb[i] <= '9') {
-            sscanf(fa + i, "%d", &na);
-            sscanf(fb + i, "%d", &nb);
-            if (na > nb)
-                return 1;
-            else if (na < nb)
-                return -1;
-        } else if (fa[i] > fb[i]) {
-            return 1;
-        } else if (fa[i] < fb[i]) {
-            return -1;
-        }
-    }
-    return 0;
+    return strnatcmp(fa, fb);
 }
 
 static long archive_map_entries_index(archive_ctx *ctx) {
@@ -237,7 +224,8 @@ static int archive_skip_to_index(archive_ctx *ctx, int index) {
 static int archive_get_ctx(archive_ctx **ctxptr, int idx) {
     int ret;
     archive_ctx *ctx = NULL;
-    pthread_mutex_lock(&ctx_lock);
+    mcs_lock_t local_lock;
+    lock_mcs(&ctx_lock, &local_lock);
     for (int i = 0; i < CTX_POOL_SIZE; i++) {
         if (!ctx_pool[i])
             continue;
@@ -252,7 +240,7 @@ static int archive_get_ctx(archive_ctx **ctxptr, int idx) {
     }
     if (ctx)
         ctx->using = 1;
-    pthread_mutex_unlock(&ctx_lock);
+    unlock_mcs(&ctx_lock, &local_lock);
 
     if (!ctx) {
         archive_ctx *victimCtx = NULL;
@@ -261,7 +249,7 @@ static int archive_get_ctx(archive_ctx **ctxptr, int idx) {
         ret = archive_alloc_ctx(&ctx);
         if (ret)
             return ret;
-        pthread_mutex_lock(&ctx_lock);
+        lock_mcs(&ctx_lock, &local_lock);
         for (int i = 0; i < CTX_POOL_SIZE; i++) {
             if (!ctx_pool[i]) {
                 ctx_pool[i] = ctx;
@@ -275,11 +263,9 @@ static int archive_get_ctx(archive_ctx **ctxptr, int idx) {
                 victimIdx = i;
             }
         }
-        if (replace) {
-            archive_release_ctx(victimCtx);
-            ctx_pool[victimIdx] = ctx;
-        }
-        pthread_mutex_unlock(&ctx_lock);
+        if (replace) ctx_pool[victimIdx] = ctx;
+        unlock_mcs(&ctx_lock, &local_lock);
+        if (replace) archive_release_ctx(victimCtx);
     }
     ret = archive_skip_to_index(ctx, idx);
     if (ret != idx) {
@@ -306,7 +292,6 @@ Java_com_hippo_ehviewer_gallery_ArchiveGalleryProviderKt_openArchive(JNIEnv *env
     }
     archiveSize = size;
     madvise_log_if_error(archiveAddr, archiveSize, MADV_WILLNEED);
-    pthread_mutex_init(&ctx_lock, 0);
     ctx_pool = calloc(CTX_POOL_SIZE, sizeof(archive_ctx **));
     if (!ctx_pool) {
         LOGE("Allocate archive ctx pool failed:ENOMEM");
@@ -412,7 +397,6 @@ Java_com_hippo_ehviewer_gallery_ArchiveGalleryProviderKt_closeArchive(JNIEnv *en
         archive_release_ctx(ctx_pool[i]);
     free(passwd);
     free(ctx_pool);
-    pthread_mutex_destroy(&ctx_lock);
     passwd = NULL;
     need_encrypt = false;
     munmap(archiveAddr, archiveSize);
