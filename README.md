@@ -1,6 +1,6 @@
 <h1 align="center">
-  <img src="https://github.com/EhViewer-NekoInverter/Arts/blob/main/launcher_icon-web.webp" width="150">
-  <br>EhViewer-NekoInverter<br>
+  <img src="https://github.com/EhViewer-NekoInverter/Arts/blob/main/launcher_icon-web.webp" width="150"><br>
+  EhViewer-NekoInverter
 </h1>
 
 <p align="center">
@@ -49,6 +49,8 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 本分支为自用性质，不接受功能请求，如果您有什么好想法或者发现什么问题欢迎直接提交 PR，软件常见使用问题和其他分支链接请参阅 [Q&A](https://github.com/EhViewer-NekoInverter/EhViewer/issues/18)
 
 如果您可以接受 MD3 风格，那使用 [彩E](https://github.com/FooIbar/EhViewer) 应该是更好的选择，我建立本仓库就是因为实在不能接受 MD3！不要大圆角！不要大色块！😡😡
+
+**![sticker](https://github.com/EhViewer-NekoInverter/Arts/blob/main/sticker.webp) 🐭🐭 最近沉迷看 V，关注 B 站 [昨日青子](https://space.bilibili.com/3493284812950114) 喵，关注 B 站 [昨日青子](https://live.bilibili.com/27700995) 谢谢喵！**
 
 # 下载
 
