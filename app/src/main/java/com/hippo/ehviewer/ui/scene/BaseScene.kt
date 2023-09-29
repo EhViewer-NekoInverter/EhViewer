@@ -16,6 +16,7 @@
 package com.hippo.ehviewer.ui.scene
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.content.res.Resources.Theme
 import android.os.Bundle
@@ -29,6 +30,7 @@ import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.core.view.GravityCompat
 import androidx.core.view.SoftwareKeyboardControllerCompat
+import androidx.core.view.WindowCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.hippo.ehviewer.ui.MainActivity
 import com.hippo.scene.SceneFragment
@@ -161,6 +163,10 @@ abstract class BaseScene : SceneFragment() {
     }
 
     fun setLightStatusBar(set: Boolean) {
+        val activity = requireActivity()
+        val insetsController = WindowCompat.getInsetsController(activity.window, activity.window.decorView)
+        insetsController.isAppearanceLightStatusBars =
+            set && (activity.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES <= 0)
         needWhiteStatusBar = set
     }
 
