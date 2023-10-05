@@ -137,11 +137,11 @@ android {
 
 dependencies {
     // https://developer.android.com/jetpack/androidx/releases/activity
-    implementation("androidx.activity:activity-ktx:1.7.2")
+    implementation("androidx.activity:activity-ktx:1.8.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.biometric:biometric-ktx:1.2.0-alpha05")
     implementation("androidx.browser:browser:1.6.0")
-    implementation("androidx.collection:collection-ktx:1.3.0-rc01")
+    implementation("androidx.collection:collection-ktx:1.3.0")
 
     implementation("androidx.core:core-ktx:1.12.0")
 
@@ -168,7 +168,7 @@ dependencies {
     implementation(platform("com.squareup.okhttp3:okhttp-bom:5.0.0-alpha.11"))
     implementation("com.squareup.okhttp3:okhttp-coroutines")
 
-    implementation("com.squareup.okio:okio-jvm:3.5.0")
+    implementation("com.squareup.okio:okio-jvm:3.6.0")
 
     // https://github.com/RikkaApps/RikkaX
     implementation("dev.rikka.rikkax.core:core-ktx:1.4.1")
