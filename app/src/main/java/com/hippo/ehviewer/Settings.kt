@@ -49,8 +49,6 @@ object Settings {
     private const val DEFAULT_DETAIL_SIZE = 8
     const val KEY_LIST_THUMB_SIZE = "list_tile_size"
     private const val DEFAULT_LIST_THUMB_SIZE = 40
-    var LIST_THUMB_SIZE_INITED = false
-    private var LIST_THUMB_SIZE = 40
     const val KEY_THUMB_SIZE = "thumb_size_"
     private const val DEFAULT_THUMB_SIZE = 4
     const val KEY_THUMB_SHOW_TITLE = "thumb_show_title"
@@ -389,14 +387,16 @@ object Settings {
     val detailSize: Int
         get() = dip2px(40 * getInt(KEY_DETAIL_SIZE, DEFAULT_DETAIL_SIZE))
 
+    var listThumbSizeInited = false
+    private var _listThumbSize = 40
     val listThumbSize: Int
         get() {
-            if (LIST_THUMB_SIZE_INITED) {
-                return LIST_THUMB_SIZE
+            if (listThumbSizeInited) {
+                return _listThumbSize
             }
             val size = 3 * getInt(KEY_LIST_THUMB_SIZE, DEFAULT_LIST_THUMB_SIZE)
-            LIST_THUMB_SIZE = size
-            LIST_THUMB_SIZE_INITED = true
+            _listThumbSize = size
+            listThumbSizeInited = true
             return size
         }
 

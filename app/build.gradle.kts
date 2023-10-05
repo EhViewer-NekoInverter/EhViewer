@@ -196,13 +196,11 @@ ksp {
 
 spotless {
     kotlin {
+        // https://github.com/diffplug/spotless/issues/111
+        target("src/**/*.kt")
         ktlint()
     }
     kotlinGradle {
-        ktlint().editorConfigOverride(
-            mapOf(
-                "ktlint_standard_multiline-expression-wrapping" to "disabled",
-            ),
-        )
+        ktlint()
     }
 }

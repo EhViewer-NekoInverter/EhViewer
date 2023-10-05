@@ -856,7 +856,8 @@ class FavoritesScene :
 
     private inner class GetFavoritesListener(
         context: Context,
-        private val mTaskId: Int, // Local fav is shown now, but operation need be done for cloud fav
+        private val mTaskId: Int,
+        // Local fav is shown now, but operation need be done for cloud fav
         private val mLocal: Boolean,
         private val mKeyword: String?,
         private val mGidArray: LongArray?,
