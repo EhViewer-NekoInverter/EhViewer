@@ -4,11 +4,11 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 plugins {
-    id("com.android.application")
-    kotlin("android")
-    id("kotlin-parcelize")
-    id("com.google.devtools.ksp")
-    id("com.diffplug.spotless")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.spotless)
 }
 
 android {
@@ -137,52 +137,46 @@ android {
 
 dependencies {
     // https://developer.android.com/jetpack/androidx/releases/activity
-    implementation("androidx.activity:activity-ktx:1.8.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("androidx.biometric:biometric-ktx:1.2.0-alpha05")
-    implementation("androidx.browser:browser:1.6.0")
-    implementation("androidx.collection:collection-ktx:1.3.0")
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.biometric)
+    implementation(libs.androidx.browser)
+    implementation(libs.androidx.collection)
 
-    implementation("androidx.core:core-ktx:1.12.0")
+    implementation(libs.androidx.core)
 
-    implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
-    implementation("androidx.fragment:fragment-ktx:1.6.1")
+    implementation(libs.androidx.coordinatorlayout)
+    implementation(libs.androidx.fragment)
     // https://developer.android.com/jetpack/androidx/releases/lifecycle
-    implementation("androidx.lifecycle:lifecycle-process:2.6.2")
+    implementation(libs.androidx.lifecycle.process)
 
     // https://developer.android.com/jetpack/androidx/releases/paging
-    implementation("androidx.paging:paging-runtime-ktx:3.2.1")
-    implementation("androidx.preference:preference-ktx:1.2.1")
-    implementation("androidx.recyclerview:recyclerview:1.3.1")
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.preference)
+    implementation(libs.androidx.recyclerview)
 
     // https://developer.android.com/jetpack/androidx/releases/room
-    val room = "2.6.0-rc01"
-    ksp("androidx.room:room-compiler:$room")
-    implementation("androidx.room:room-paging:$room")
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.paging)
 
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
-    implementation("com.drakeet.drawer:drawer:1.0.3")
-    implementation("com.google.android.material:material:1.9.0")
+    implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.drawer)
+    implementation(libs.material)
 
     // https://square.github.io/okhttp/changelogs/changelog/
-    implementation(platform("com.squareup.okhttp3:okhttp-bom:5.0.0-alpha.11"))
-    implementation("com.squareup.okhttp3:okhttp-coroutines")
+    implementation(platform(libs.okhttp.bom))
+    implementation(libs.okhttp.coroutines)
 
-    implementation("com.squareup.okio:okio-jvm:3.6.0")
+    implementation(libs.okio.jvm)
 
     // https://github.com/RikkaApps/RikkaX
-    implementation("dev.rikka.rikkax.core:core-ktx:1.4.1")
-    implementation("dev.rikka.rikkax.insets:insets:1.3.0")
-    implementation("dev.rikka.rikkax.layoutinflater:layoutinflater:1.3.0")
-    //noinspection GradleDependency
-    implementation("dev.rikka.rikkax.material:material:1.6.6")
-    implementation("dev.rikka.rikkax.preference:simplemenu-preference:1.0.3")
+    implementation(libs.bundles.rikkax)
 
     // https://coil-kt.github.io/coil/changelog/
-    implementation("io.coil-kt:coil:2.4.0")
+    implementation(libs.coil)
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    implementation("org.jsoup:jsoup:1.16.1")
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.jsoup)
 }
 
 configurations.all {
