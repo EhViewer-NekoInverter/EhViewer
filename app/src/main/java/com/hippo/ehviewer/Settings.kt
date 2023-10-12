@@ -132,8 +132,8 @@ object Settings {
     private const val DEFAULT_MEDIA_SCAN = false
     const val KEY_MULTI_THREAD_DOWNLOAD = "download_thread"
     private const val DEFAULT_MULTI_THREAD_DOWNLOAD = 3
-    const val KEY_DOWNLOAD_DELAY = "download_delay"
-    private const val DEFAULT_DOWNLOAD_DELAY = 0
+    const val KEY_DOWNLOAD_DELAY = "download_delay_2"
+    private const val DEFAULT_DOWNLOAD_DELAY = 1000
     const val KEY_PRELOAD_IMAGE = "preload_image"
     private const val DEFAULT_PRELOAD_IMAGE = 5
     const val KEY_DOWNLOAD_ORIGIN_IMAGE = "download_origin_image_"
