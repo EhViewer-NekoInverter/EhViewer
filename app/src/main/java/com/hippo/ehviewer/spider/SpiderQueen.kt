@@ -619,13 +619,13 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
             var error: String? = null
             var forceHtml = false
             var leakSkipHathKey = false
-            loop@ for (i in 1..3) {
+            loop@ for (i in 1..7) {
                 var imageUrl: String? = null
                 var localShowKey: String?
 
                 showKeyLock.withLock {
                     localShowKey = showKey
-                    if (localShowKey == null || forceHtml) {
+                    if (localShowKey == null || (forceHtml && i == 5)) {
                         if (leakSkipHathKey) break
                         var pageUrl = EhUrl.getPageUrl(mSpiderInfo.gid, index, pToken)
                         // Add skipHathKey
