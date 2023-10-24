@@ -70,10 +70,14 @@ object EhUrl {
         }
 
     val apiUrl: String
-        get() = when (Settings.gallerySite) {
-            SITE_E -> API_E
-            SITE_EX -> API_EX
-            else -> API_E
+        get() = if (Settings.forceEhThumb) {
+            API_E
+        } else {
+            when (Settings.gallerySite) {
+                SITE_E -> API_E
+                SITE_EX -> API_EX
+                else -> API_E
+            }
         }
 
     @JvmStatic
@@ -168,10 +172,14 @@ object EhUrl {
     }
 
     fun getThumbUrlPrefix(): String {
-        return when (Settings.gallerySite) {
-            SITE_E -> URL_PREFIX_THUMB_E
-            SITE_EX -> URL_PREFIX_THUMB_EX
-            else -> URL_PREFIX_THUMB_E
+        return if (Settings.forceEhThumb) {
+            URL_PREFIX_THUMB_E
+        } else {
+            when (Settings.gallerySite) {
+                SITE_E -> URL_PREFIX_THUMB_E
+                SITE_EX -> URL_PREFIX_THUMB_EX
+                else -> URL_PREFIX_THUMB_E
+            }
         }
     }
 }

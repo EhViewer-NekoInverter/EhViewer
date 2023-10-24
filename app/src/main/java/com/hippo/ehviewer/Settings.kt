@@ -55,6 +55,8 @@ object Settings {
     private const val DEFAULT_THUMB_SHOW_TITLE = true
     const val KEY_THUMB_RESOLUTION = "thumb_resolution"
     private const val DEFAULT_THUMB_RESOLUTION = 0
+    private const val KEY_FORCE_EH_THUMB = "force_eh_thumb"
+    private const val DEFAULT_FORCE_EH_THUMB = false
     private const val KEY_SHOW_JPN_TITLE = "show_jpn_title"
     private const val DEFAULT_SHOW_JPN_TITLE = false
     private const val KEY_SHOW_GALLERY_PAGES = "show_gallery_pages"
@@ -80,6 +82,7 @@ object Settings {
         KEY_IMAGE_LIMITS,
         KEY_U_CONFIG,
         KEY_MY_TAGS,
+        KEY_FORCE_EH_THUMB,
         KEY_SHOW_JPN_TITLE,
         KEY_REQUEST_NEWS,
         KEY_HIDE_HV_EVENTS,
@@ -408,6 +411,9 @@ object Settings {
 
     val thumbResolution: Int
         get() = getIntFromStr(KEY_THUMB_RESOLUTION, DEFAULT_THUMB_RESOLUTION)
+
+    val forceEhThumb: Boolean
+        get() = getBoolean(KEY_FORCE_EH_THUMB, DEFAULT_FORCE_EH_THUMB)
 
     val showJpnTitle: Boolean
         get() = getBoolean(KEY_SHOW_JPN_TITLE, DEFAULT_SHOW_JPN_TITLE)
