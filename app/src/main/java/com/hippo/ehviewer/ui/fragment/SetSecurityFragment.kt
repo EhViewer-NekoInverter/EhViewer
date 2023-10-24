@@ -67,6 +67,7 @@ class SetSecurityFragment : BaseFragment(), View.OnClickListener {
         mPatternView = null
     }
 
+    @Suppress("DEPRECATION")
     override fun onClick(v: View) {
         if (v == mCancel) {
             requireActivity().onBackPressed()
