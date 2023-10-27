@@ -49,8 +49,7 @@ object GalleryPageApiParser {
             } else {
                 null
             }
-            val i7 = jo.getString("i7")
-            m = PATTERN_ORIGIN_IMAGE_URL.matcher(i7)
+            m = PATTERN_ORIGIN_IMAGE_URL.matcher(i6)
             val originImageUrl = if (m.find()) {
                 StringUtils.unescapeXml(m.group(1)) + "fullimg.php" +
                     StringUtils.unescapeXml(m.group(2))
