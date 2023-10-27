@@ -46,6 +46,16 @@
         app:entryValues="@array/download_delay_entry_values"
         app:iconSpaceReserved="false" />
 
+    <SeekBarPreference
+        android:defaultValue="60"
+        android:key="download_timeout"
+        android:max="120"
+        android:title="@string/settings_download_download_timeout"
+        app:iconSpaceReserved="false"
+        app:min="20"
+        app:showSeekBarValue="true"
+        app:singleLineTitle="false" />
+
     <rikka.preference.SimpleMenuPreference
         android:defaultValue="5"
         android:key="preload_image"

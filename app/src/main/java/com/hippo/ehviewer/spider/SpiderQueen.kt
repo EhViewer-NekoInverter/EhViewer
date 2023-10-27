@@ -30,8 +30,7 @@ import com.hippo.ehviewer.client.EhUrl.getGalleryDetailUrl
 import com.hippo.ehviewer.client.EhUrl.getGalleryMultiPageViewerUrl
 import com.hippo.ehviewer.client.EhUrl.referer
 import com.hippo.ehviewer.client.data.GalleryInfo
-import com.hippo.ehviewer.client.exception.EhException
-import com.hippo.ehviewer.client.exception.ParseException
+import com.hippo.ehviewer.client.exception.QuotaExceededException
 import com.hippo.ehviewer.client.parser.GalleryDetailParser.parsePages
 import com.hippo.ehviewer.client.parser.GalleryDetailParser.parsePreviewPages
 import com.hippo.ehviewer.client.parser.GalleryDetailParser.parsePreviewSet
@@ -42,9 +41,11 @@ import com.hippo.unifile.UniFile
 import com.hippo.util.ExceptionUtils
 import com.hippo.util.launchIO
 import com.hippo.util.runSuspendCatching
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
@@ -54,10 +55,11 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.sync.withPermit
+import kotlinx.coroutines.withTimeout
 import okhttp3.executeAsync
 import java.time.Instant
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.time.Duration.Companion.seconds
 import com.hippo.ehviewer.EhApplication.Companion.okHttpClient as plainTextOkHttpClient
 
 class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineScope {
@@ -68,11 +70,9 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
     lateinit var mSpiderInfo: SpiderInfo
 
     val mSpiderDen: SpiderDen = SpiderDen(galleryInfo)
-    val mPagePercentMap = ConcurrentHashMap<Int, Float>()
     private val mPageStateLock = Any()
     private val mDownloadedPages = AtomicInteger(0)
     private val mFinishedPages = AtomicInteger(0)
-    private val mPageErrorMap = ConcurrentHashMap<Int, String>()
     private val mSpiderListeners: MutableList<OnSpiderListener> = ArrayList()
 
     private var mReadReference = 0
@@ -197,8 +197,6 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
                 }
                 mDownloadedPages.lazySet(0)
                 mFinishedPages.lazySet(0)
-                mPageErrorMap.clear()
-                mPagePercentMap.clear()
             }
             mWorkerScope.enterDownloadMode()
         }
@@ -339,7 +337,6 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
             ?: SpiderInfo.readFromCache(galleryInfo.gid)?.takeIf { it.gid == galleryInfo.gid && it.token == galleryInfo.token }
     }
 
-    @Throws(ParseException::class)
     private fun readPreviews(body: String, index: Int, spiderInfo: SpiderInfo) {
         spiderInfo.previewPages = parsePreviewPages(body)
         val previewSet = parsePreviewSet(body)
@@ -455,7 +452,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
     @JvmOverloads
     fun updatePageState(index: Int, @State state: Int, error: String? = null) {
         var oldState: Int
-        synchronized(mPageStateLock) {
+        synchronized<Unit>(mPageStateLock) {
             oldState = mPageStateArray[index]
             mPageStateArray[index] = state
             if (!isStateDone(oldState) && isStateDone(state)) {
@@ -467,18 +464,6 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
                 mFinishedPages.incrementAndGet()
             } else if (oldState == STATE_FINISHED && state != STATE_FINISHED) {
                 mFinishedPages.decrementAndGet()
-            }
-
-            // Clear
-            if (state == STATE_DOWNLOADING) {
-                mPageErrorMap.remove(index)
-            } else if (isStateDone(state)) {
-                mPagePercentMap.remove(index)
-            }
-
-            // Get default error
-            if (state == STATE_FAILED) {
-                mPageErrorMap[index] = error ?: GetText.getString(R.string.error_unknown)
             }
         }
 
@@ -516,6 +501,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
         private var showKey: String? = null
         private val showKeyLock = Mutex()
         private val mDownloadDelay = Settings.downloadDelay.toLong()
+        private val downloadTimeout = Settings.downloadTimeout.seconds
         private val delayLock = Mutex()
         private var delayedTime = 0L
         private var isDownloadMode = false
@@ -556,13 +542,6 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
                 mFetcherJobMap[index] = launch {
                     mSemaphore.withPermit {
                         doInJob(index, force)
-                    }
-                }.apply {
-                    invokeOnCompletion {
-                        if (getPageState(index) == STATE_DOWNLOADING) {
-                            Log.d(WORKER_DEBUG_TAG, "Download image cancelled $index")
-                            mSpiderDen.remove(index)
-                        }
                     }
                 }
             }
@@ -614,151 +593,115 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
             }
 
             var skipHathKey: String? = null
-            val skipHathKeys = mutableListOf<String>()
             var originImageUrl: String? = null
             var error: String? = null
             var forceHtml = false
-            var leakSkipHathKey = false
-            loop@ for (i in 1..7) {
-                var imageUrl: String? = null
-                var localShowKey: String?
+            runCatching {
+                repeat(2) {
+                    var imageUrl: String? = null
+                    var localShowKey: String?
 
-                showKeyLock.withLock {
-                    localShowKey = showKey
-                    if (localShowKey == null || (forceHtml && i == 5)) {
-                        if (leakSkipHathKey) break
-                        var pageUrl = EhUrl.getPageUrl(mSpiderInfo.gid, index, pToken)
-                        // Add skipHathKey
-                        if (skipHathKey != null) {
-                            pageUrl += if ("?" in pageUrl) {
-                                "&nl=$skipHathKey"
-                            } else {
-                                "?nl=$skipHathKey"
-                            }
-                        }
-                        runSuspendCatching {
-                            EhEngine.getGalleryPage(pageUrl, mSpiderInfo.gid, mSpiderInfo.token)
-                                .also {
-                                    if (check509(it.imageUrl)) {
-                                        // Get 509
-                                        notifyGet509(index)
-                                        error = ERROR_509
-                                        break@loop
-                                    }
-                                }
-                        }.onSuccess { result ->
-                            imageUrl = result.imageUrl
-                            skipHathKey = result.skipHathKey?.takeIf { it.isNotBlank() }
-                            originImageUrl = result.originImageUrl
-                            localShowKey = result.showKey
-
+                    showKeyLock.withLock {
+                        localShowKey = showKey
+                        if (localShowKey == null || forceHtml) {
+                            var pageUrl = EhUrl.getPageUrl(mSpiderInfo.gid, index, pToken)
+                            // Skipping H@H costs 50 points, only use it as last resort
                             if (skipHathKey != null) {
-                                if (skipHathKey in skipHathKeys) {
-                                    // Duplicate skip hath key
-                                    leakSkipHathKey = true
+                                pageUrl += if ("?" in pageUrl) {
+                                    "&nl=$skipHathKey"
                                 } else {
-                                    skipHathKeys.add(skipHathKey!!)
+                                    "?nl=$skipHathKey"
                                 }
-                            } else {
-                                leakSkipHathKey = true
                             }
+                            EhEngine.getGalleryPage(pageUrl, mSpiderInfo.gid, mSpiderInfo.token)
+                                .let { result ->
+                                    check509(result.imageUrl)
+                                    imageUrl = result.imageUrl
+                                    skipHathKey = result.skipHathKey
+                                    originImageUrl = result.originImageUrl
+                                    localShowKey = result.showKey
+                                    showKey = result.showKey
+                                }
+                        }
+                    }
 
-                            showKey = result.showKey
+                    if (imageUrl == null) {
+                        runSuspendCatching {
+                            EhEngine.getGalleryPageApi(
+                                mSpiderInfo.gid,
+                                index,
+                                pToken,
+                                localShowKey,
+                                previousPToken,
+                            ).let {
+                                check509(it.imageUrl)
+                                imageUrl = it.imageUrl
+                                skipHathKey = it.skipHathKey
+                                originImageUrl = it.originImageUrl
+                            }
                         }.onFailure {
-                            error = ExceptionUtils.getReadableString(it)
-                            break
+                            forceHtml = true
+                            return@repeat
                         }
                     }
-                }
 
-                if (imageUrl == null) {
-                    if (localShowKey == null) {
-                        error = "ShowKey error"
-                        break
+                    val targetImageUrl: String?
+                    val referer: String?
+
+                    if (Settings.getDownloadOriginImage(mSpiderDen.downloadDir != null) && !originImageUrl.isNullOrBlank()) {
+                        val pageUrl = EhUrl.getPageUrl(mSpiderInfo.gid, index, pToken)
+                        targetImageUrl = EhEngine.getOriginalImageUrl(originImageUrl!!, pageUrl)
+                        referer = EhUrl.referer
+                    } else {
+                        // Original image url won't change, so only set forceHtml in this case
+                        forceHtml = true
+                        targetImageUrl = imageUrl
+                        referer = null
                     }
-                    runSuspendCatching {
-                        EhEngine.getGalleryPageApi(
-                            mSpiderInfo.gid,
-                            index,
-                            pToken,
-                            localShowKey,
-                            previousPToken,
-                        ).also {
-                            if (check509(it.imageUrl)) {
-                                // Get 509
-                                notifyGet509(index)
-                                error = ERROR_509
-                                break@loop
+                    checkNotNull(targetImageUrl)
+                    Log.d(WORKER_DEBUG_TAG, targetImageUrl)
+
+                    repeat(3) { times ->
+                        runCatching {
+                            Log.d(WORKER_DEBUG_TAG, "Start download image $index attempt #$times")
+                            val success = withTimeout(downloadTimeout) {
+                                mSpiderDen.makeHttpCallAndSaveImage(
+                                    index,
+                                    targetImageUrl,
+                                    referer,
+                                ) { contentLength: Long, receivedSize: Long, bytesRead: Int ->
+                                    notifyPageDownload(index, contentLength, receivedSize, bytesRead)
+                                }
+                            }
+
+                            check(success)
+                            Log.d(WORKER_DEBUG_TAG, "Download image $index succeed")
+                            updatePageState(index, STATE_FINISHED)
+                            return
+                        }.onFailure {
+                            mSpiderDen.remove(index)
+                            Log.d(WORKER_DEBUG_TAG, "Download image $index attempt #$times failed")
+                            error = when (it) {
+                                is TimeoutCancellationException -> ERROR_TIMEOUT
+                                is CancellationException -> throw it
+                                else -> ExceptionUtils.getReadableString(it)
                             }
                         }
-                    }.onFailure {
-                        if (it is ParseException && "Key mismatch" == it.message) {
-                            // Show key is wrong, enter a new loop to get the new show key
-                            if (showKey == localShowKey) showKey = null
-                            continue
-                        } else {
-                            error = ExceptionUtils.getReadableString(it)
-                            break
-                        }
-                    }.onSuccess {
-                        imageUrl = it.imageUrl
-                        skipHathKey = it.skipHathKey
-                        originImageUrl = it.originImageUrl
                     }
                 }
-
-                val targetImageUrl: String?
-                val referer: String?
-
-                if (Settings.getDownloadOriginImage(mSpiderDen.downloadDir != null) && !originImageUrl.isNullOrBlank()) {
-                    val pageUrl = EhUrl.getPageUrl(mSpiderInfo.gid, index, pToken)
-                    targetImageUrl = runSuspendCatching {
-                        EhEngine.getOriginalImageUrl(originImageUrl!!, pageUrl)
-                    }.getOrElse {
-                        error = ExceptionUtils.getReadableString(it)
-                        if (it is EhException) break else continue
-                    }
-                    referer = EhUrl.referer
-                } else {
-                    targetImageUrl = imageUrl
-                    referer = null
-                }
-                if (targetImageUrl == null) {
-                    error = "TargetImageUrl error"
-                    break
-                }
-                Log.d(WORKER_DEBUG_TAG, targetImageUrl)
-
-                runSuspendCatching {
-                    Log.d(WORKER_DEBUG_TAG, "Start download image $index")
-                    val success: Boolean = mSpiderDen.makeHttpCallAndSaveImage(
-                        index,
-                        targetImageUrl,
-                        referer,
-                    ) { contentLength: Long, receivedSize: Long, bytesRead: Int ->
-                        mPagePercentMap[index] = receivedSize.toFloat() / contentLength
-                        notifyPageDownload(index, contentLength, receivedSize, bytesRead)
+            }.onFailure {
+                when (it) {
+                    is CancellationException -> {
+                        Log.d(WORKER_DEBUG_TAG, "Download image $index cancelled")
+                        error = "Cancelled"
+                        updatePageState(index, STATE_FAILED, error)
+                        throw it
                     }
 
-                    if (!success) {
-                        Log.e(WORKER_DEBUG_TAG, "Can't download all of image data")
-                        error = "Incomplete"
-                        forceHtml = true
-                        continue@loop
-                    }
-
-                    Log.d(WORKER_DEBUG_TAG, "Download image succeed $index")
-
-                    updatePageState(index, STATE_FINISHED)
-                    return
-                }.onFailure {
-                    it.printStackTrace()
-                    error = NETWORK_ERROR
-                    forceHtml = true
+                    is QuotaExceededException -> notifyGet509(index)
                 }
-                Log.d(WORKER_DEBUG_TAG, "End download image $index")
+                error = ExceptionUtils.getReadableString(it)
             }
-            mSpiderDen.remove(index)
             updatePageState(index, STATE_FAILED, error)
         }
 
@@ -812,8 +755,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
         const val SPIDER_INFO_FILENAME = ".ehviewer"
         private val sQueenMap = LongSparseArray<SpiderQueen>()
         private val PTOKEN_FAILED_MESSAGE = GetText.getString(R.string.error_get_ptoken_error)
-        private val ERROR_509 = GetText.getString(R.string.error_509)
-        private val NETWORK_ERROR = GetText.getString(R.string.error_socket)
+        private val ERROR_TIMEOUT = GetText.getString(R.string.error_timeout)
         private val DECODE_ERROR = GetText.getString(R.string.error_decoding_failed)
         private val URL_509_ARRAY = arrayOf(
             "https://ehgt.org/g/509.gif",
@@ -823,7 +765,9 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
         )
         private const val WORKER_DEBUG_TAG = "SpiderQueenWorker"
 
-        private fun check509(url: String) = url in URL_509_ARRAY
+        private fun check509(url: String) {
+            if (url in URL_509_ARRAY) throw QuotaExceededException()
+        }
 
         @JvmStatic
         fun obtainSpiderQueen(galleryInfo: GalleryInfo, @Mode mode: Int): SpiderQueen {

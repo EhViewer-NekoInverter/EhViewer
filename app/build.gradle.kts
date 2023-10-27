@@ -87,7 +87,6 @@ android {
         freeCompilerArgs = listOf(
             // https://kotlinlang.org/docs/compiler-reference.html#progressive
             "-progressive",
-            "-XXLanguage:+BreakContinueInInlineLambdas",
 
             "-opt-in=coil.annotation.ExperimentalCoilApi",
             "-opt-in=kotlin.contracts.ExperimentalContracts",

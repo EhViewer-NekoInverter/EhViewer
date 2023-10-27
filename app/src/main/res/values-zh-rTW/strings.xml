@@ -468,6 +468,7 @@
     <string name="settings_download_concurrency_summary">最多同時下載 %s 張圖片</string>
     <string name="settings_download_download_delay">下載延時</string>
     <string name="settings_download_download_delay_summary">每次下載延時 %s 毫秒</string>
+    <string name="settings_download_download_timeout">下載超時（秒）</string>
     <string name="settings_download_preload_image">預載圖片</string>
     <string name="settings_download_preload_image_summary">向後預載 %s 張圖片</string>
     <string name="settings_download_download_origin_image">載入原圖</string>
