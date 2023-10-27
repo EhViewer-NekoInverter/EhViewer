@@ -249,6 +249,13 @@
         <item>https://raw.githubusercontent.com/EhViewer-NekoInverter/EhTagTranslation/tag-translations/tag-translations/tag-translations-zh-rCN.json</item>
     </string-array>
 
+    <string-array name="proxy_types">
+        <item>@string/proxy_direct</item>
+        <item>@string/proxy_system</item>
+        <item>HTTP</item>
+        <item>SOCKS</item>
+    </string-array>
+
     <string-array name="night_mode_entries" translatable="false">
         <item>@string/dark_theme_follow_system</item>
         <item>@string/dark_theme_off</item>

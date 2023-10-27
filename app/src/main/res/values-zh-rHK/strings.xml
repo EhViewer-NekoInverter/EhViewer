@@ -502,6 +502,11 @@
     <string name="settings_advanced_thumb_cache_size">縮略圖緩存大小</string>
     <string name="settings_advanced_read_cache_size">閲讀緩存大小</string>
     <string name="settings_advanced_app_language_title">App 界面語言</string>
+    <string name="settings_advanced_proxy">代理</string>
+    <string name="settings_advanced_built_in_hosts_title">內置 hosts.txt</string>
+    <string name="settings_advanced_built_in_hosts_summary">應用提供的主機到 IP 的映射\n可被自定義 hosts.txt 覆蓋</string>
+    <string name="settings_advanced_custom_hosts_title">自定義 hosts.txt</string>
+    <string name="settings_advanced_custom_hosts_summary">將主機名稱映射到相應的 IP 地址\n可覆蓋內置 hosts.txt</string>
     <string name="settings_advanced_backup_favorite">備份收藏列表</string>
     <string name="settings_advanced_backup_favorite_summary">備份雲端收藏列表到本地</string>
     <string name="settings_advanced_backup_favorite_start">正在備份收藏列表 %s</string>
@@ -552,6 +557,21 @@
     <string name="set">設置</string>
     <!-- Languages -->
     <string name="app_language_system">系統語言（默認）</string>
+    <!-- Proxy -->
+    <string name="proxy_direct">直接連接</string>
+    <string name="proxy_system">系統代理</string>
+    <string name="proxy_host_or_ip">主機或 IP</string>
+    <string name="proxy_port">端口</string>
+    <string name="proxy_invalid_port">無效的端口</string>
+    <!-- Hosts Activity -->
+    <string name="hosts">自定義 hosts.txt</string>
+    <string name="add_host">添加 host</string>
+    <string name="add_host_add">添加</string>
+    <string name="edit_host">編輯 host</string>
+    <string name="edit_host_confirm">確認</string>
+    <string name="edit_host_delete">刪除</string>
+    <string name="invalid_host">無效的 host</string>
+    <string name="invalid_ip">無效的 IP</string>
 
     <!-- Errors -->
     <string name="error_bad_status_code">錯誤狀態碼：%d</string>
@@ -566,6 +586,7 @@
     <string name="error_empty">空</string>
     <string name="error_reading_failed">讀取失敗</string>
     <string name="error_out_of_range">越界</string>
+    <string name="error_write_failed">寫入失敗</string>
     <string name="error_parse_error">解析失敗</string>
     <string name="error_invalid_url">無效鏈接</string>
     <string name="error_get_ptoken_error">獲取 pToken 錯誤</string>

@@ -21,6 +21,7 @@
     <dimen name="drawer_max_width">280dp</dimen>
 
     <!-- Text size -->
+    <dimen name="text_super_large">24sp</dimen>
     <dimen name="text_little_large">20sp</dimen>
     <dimen name="text_little_small">16sp</dimen>
     <dimen name="text_small">14sp</dimen>

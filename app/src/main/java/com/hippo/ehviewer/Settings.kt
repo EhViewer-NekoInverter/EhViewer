@@ -165,6 +165,14 @@ object Settings {
     private const val DEFAULT_READ_CACHE_SIZE = 320
     const val KEY_APP_LANGUAGE = "app_language"
     private const val DEFAULT_APP_LANGUAGE = "system"
+    private const val KEY_PROXY_TYPE = "proxy_type"
+    private const val DEFAULT_PROXY_TYPE = EhProxySelector.TYPE_SYSTEM
+    private const val KEY_PROXY_IP = "proxy_ip"
+    private val DEFAULT_PROXY_IP: String? = null
+    private const val KEY_PROXY_PORT = "proxy_port"
+    private const val DEFAULT_PROXY_PORT = -1
+    private const val KEY_BUILT_IN_HOSTS = "built_in_hosts_2"
+    private const val DEFAULT_BUILT_IN_HOSTS = false
     private const val KEY_APP_LINK_VERIFY_TIP = "app_link_verify_tip"
     private const val DEFAULT_APP_LINK_VERIFY_TIP = false
 
@@ -617,6 +625,27 @@ object Settings {
 
     val appLanguage: String?
         get() = getString(KEY_APP_LANGUAGE, DEFAULT_APP_LANGUAGE)
+
+    val proxyType: Int
+        get() = getInt(KEY_PROXY_TYPE, DEFAULT_PROXY_TYPE)
+    fun putProxyType(value: Int) {
+        putInt(KEY_PROXY_TYPE, value)
+    }
+
+    val proxyIp: String?
+        get() = getString(KEY_PROXY_IP, DEFAULT_PROXY_IP)
+    fun putProxyIp(value: String?) {
+        putString(KEY_PROXY_IP, value)
+    }
+
+    val proxyPort: Int
+        get() = getInt(KEY_PROXY_PORT, DEFAULT_PROXY_PORT)
+    fun putProxyPort(value: Int) {
+        putInt(KEY_PROXY_PORT, value)
+    }
+
+    val builtInHosts: Boolean
+        get() = getBoolean(KEY_BUILT_IN_HOSTS, DEFAULT_BUILT_IN_HOSTS)
 
     val appLinkVerifyTip: Boolean
         get() = getBoolean(KEY_APP_LINK_VERIFY_TIP, DEFAULT_APP_LINK_VERIFY_TIP)

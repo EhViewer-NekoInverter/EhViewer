@@ -60,6 +60,7 @@ open class BasePreferenceFragment :
             "mytags" -> MyTagsFragment()
             "filter" -> FilterFragment()
             "security" -> SetSecurityFragment()
+            "hosts" -> HostsFragment()
             else -> null
         }
         fragment?.let {
