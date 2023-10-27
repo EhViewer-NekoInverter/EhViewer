@@ -65,7 +65,7 @@ class GalleryInfoScene : ToolbarScene() {
             mKeys.add(getString(R.string.key_title_jpn))
             mValues.add(it.titleJpn)
             mKeys.add(getString(R.string.key_thumb))
-            mValues.add(it.thumb)
+            mValues.add(EhUtils.fixThumbUrl(it.thumb!!))
             mKeys.add(getString(R.string.key_category))
             mValues.add(EhUtils.getCategory(it.category))
             mKeys.add(getString(R.string.key_uploader))
