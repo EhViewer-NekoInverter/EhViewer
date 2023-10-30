@@ -408,6 +408,8 @@
     <string name="settings_eh_show_gallery_pages_summary">在畫廊列表中顯示頁數</string>
     <string name="settings_eh_show_gallery_comments">顯示畫廊評論</string>
     <string name="settings_eh_show_gallery_comments_summary">在畫廊詳情頁中顯示評論</string>
+    <string name="settings_eh_comment_threshold">評論分數閾值</string>
+    <string name="settings_eh_comment_threshold_summary">隱藏低於或等於此分數的評論（-101 停用）</string>
     <string name="settings_eh_preview_num">畫廊詳情頁預覽圖最大數量</string>
     <string name="settings_eh_preview_size">畫廊詳情頁預覽圖大小</string>
     <string name="settings_eh_show_tag_translations">顯示標籤翻譯</string>

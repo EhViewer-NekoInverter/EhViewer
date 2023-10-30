@@ -157,6 +157,17 @@
         app:iconSpaceReserved="false" />
 
     <SeekBarPreference
+        android:defaultValue="-101"
+        android:key="comment_threshold"
+        android:max="100"
+        android:summary="@string/settings_eh_comment_threshold_summary"
+        android:title="@string/settings_eh_comment_threshold"
+        app:iconSpaceReserved="false"
+        app:min="-101"
+        app:showSeekBarValue="true"
+        app:singleLineTitle="false" />
+
+    <SeekBarPreference
         android:defaultValue="60"
         android:key="preview_num"
         android:max="200"

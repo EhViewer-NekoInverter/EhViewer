@@ -63,6 +63,8 @@ object Settings {
     private const val DEFAULT_SHOW_GALLERY_PAGES = true
     private const val KEY_SHOW_COMMENTS = "show_gallery_comments"
     private const val DEFAULT_SHOW_COMMENTS = true
+    private const val KEY_COMMENT_THRESHOLD = "comment_threshold"
+    private const val DEFAULT_COMMENT_THRESHOLD = -101
     private const val KEY_PREVIEW_NUM = "preview_num"
     private const val DEFAULT_PREVIEW_NUM = 60
     private const val KEY_PREVIEW_SIZE = "preview_size"
@@ -433,6 +435,9 @@ object Settings {
 
     val showComments: Boolean
         get() = getBoolean(KEY_SHOW_COMMENTS, DEFAULT_SHOW_COMMENTS)
+
+    val commentThreshold: Int
+        get() = getInt(KEY_COMMENT_THRESHOLD, DEFAULT_COMMENT_THRESHOLD)
 
     val previewNum: Int
         get() = getInt(KEY_PREVIEW_NUM, DEFAULT_PREVIEW_NUM)
