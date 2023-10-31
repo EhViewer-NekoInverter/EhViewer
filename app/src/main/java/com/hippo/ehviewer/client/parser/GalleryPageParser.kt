@@ -23,7 +23,7 @@ object GalleryPageParser {
     private val PATTERN_IMAGE_URL = Pattern.compile("<img[^>]*src=\"([^\"]+)\" style")
     private val PATTERN_SKIP_HATH_KEY = Pattern.compile("onclick=\"return nl\\('([^)]+)'\\)")
     private val PATTERN_ORIGIN_IMAGE_URL =
-        Pattern.compile("<a href=\"([^\"]+)fullimg.php([^\"]+)\">")
+        Pattern.compile("<a href=\"([^\"]+)fullimg([^\"]+)\">")
 
     // TODO Not sure about the size of show keys
     private val PATTERN_SHOW_KEY = Pattern.compile("var showkey=\"([0-9a-z]+)\";")
@@ -43,7 +43,7 @@ object GalleryPageParser {
         }
         m = PATTERN_ORIGIN_IMAGE_URL.matcher(body)
         val originImageUrl = if (m.find()) {
-            StringUtils.unescapeXml(m.group(1)) + "fullimg.php" +
+            StringUtils.unescapeXml(m.group(1)) + "fullimg" +
                 StringUtils.unescapeXml(m.group(2))
         } else {
             null

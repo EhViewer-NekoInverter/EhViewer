@@ -26,7 +26,7 @@ object GalleryPageApiParser {
     private val PATTERN_IMAGE_URL = Pattern.compile("<img[^>]*src=\"([^\"]+)\" style")
     private val PATTERN_SKIP_HATH_KEY = Pattern.compile("onclick=\"return nl\\('([^)]+)'\\)")
     private val PATTERN_ORIGIN_IMAGE_URL =
-        Pattern.compile("<a href=\"([^\"]+)fullimg.php([^\"]+)\">")
+        Pattern.compile("<a href=\"([^\"]+)fullimg([^\"]+)\">")
 
     fun parse(body: String): Result {
         return try {
@@ -51,7 +51,7 @@ object GalleryPageApiParser {
             }
             m = PATTERN_ORIGIN_IMAGE_URL.matcher(i6)
             val originImageUrl = if (m.find()) {
-                StringUtils.unescapeXml(m.group(1)) + "fullimg.php" +
+                StringUtils.unescapeXml(m.group(1)) + "fullimg" +
                     StringUtils.unescapeXml(m.group(2))
             } else {
                 null
