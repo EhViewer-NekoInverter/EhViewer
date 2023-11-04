@@ -140,7 +140,9 @@ object EhDB {
         val toTime = list[end].time
         var i = end
         while (if (reverse) i < start else i > 0) {
-            list[i].time = list[i + step].time
+            val aTime = list[i].time
+            val bTime = list[i + step].time
+            list[i].time = if (aTime == bTime) bTime + step else bTime
             i += step
         }
         list[start].time = toTime
@@ -256,7 +258,9 @@ object EhDB {
         val toTime = list[end].time
         var i = end
         while (if (reverse) i < start else i > 0) {
-            list[i].time = list[i + step].time
+            val aTime = list[i].time
+            val bTime = list[i + step].time
+            list[i].time = if (aTime == bTime) bTime + step else bTime
             i += step
         }
         list[start].time = toTime
