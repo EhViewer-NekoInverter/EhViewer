@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright 2022 Moedog
+  ~ Copyright 2023 Moedog
   ~
   ~ This file is part of EhViewer
   ~
@@ -20,12 +20,9 @@
     android:width="24dp"
     android:height="24dp"
     android:tint="?attr/colorControlNormal"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
+    android:viewportWidth="1024"
+    android:viewportHeight="1024">
     <path
         android:fillColor="@android:color/white"
-        android:pathData="M6,17.59l1.41,1.41l4.59,-4.58l4.59,4.58l1.41,-1.41l-6,-6z" />
-    <path
-        android:fillColor="@android:color/white"
-        android:pathData="M6,11l1.41,1.41l4.59,-4.58l4.59,4.58l1.41,-1.41l-6,-6z" />
+        android:pathData="M818.3,102.1H205.7a51,51 0,0 1,0 -102.1h612.6a51,51 0,0 1,0 102.1zM243,594.2L461,373.7v599.3a51,51 0,0 0,102.1 0V373.7l218,220a51,51 0,0 0,72 0,46.5 46.5,0 0,0 0,-67.9l-306.3,-309.3a55.1,55.1 0,0 0,-74.5 0l-306.3,309.3a46.5,46.5 0,0 0,0 67.9,51 51,0 0,0 77.1,0.5z" />
 </vector>

@@ -100,9 +100,10 @@ class DownloadsScene :
     private var mViewTransition: ViewTransition? = null
     private var mFabLayout: FabLayout? = null
     private var mAdapter: DownloadAdapter? = null
+    private var mItemTouchHelper: ItemTouchHelper? = null
     private var mLayoutManager: AutoStaggeredGridLayoutManager? = null
     private var mLabelAdapter: DownloadLabelAdapter? = null
-    private var mItemTouchHelper: ItemTouchHelper? = null
+    private var mLabelItemTouchHelper: ItemTouchHelper? = null
     private var mKeyword: String? = null
     private var mSort = 0
     private var mType = -1
@@ -289,6 +290,8 @@ class DownloadsScene :
             mRecyclerView!!.scrollToPosition(mInitPosition)
             mInitPosition = -1
         }
+        mItemTouchHelper = ItemTouchHelper(DownloadItemTouchHelperCallback())
+        mItemTouchHelper!!.attachToRecyclerView(mRecyclerView)
         mFastScroller!!.attachToRecyclerView(mRecyclerView)
         val handlerDrawable = HandlerDrawable()
         handlerDrawable.setColor(theme.resolveColor(R.attr.widgetColorThemeAccent))
@@ -516,8 +519,8 @@ class DownloadsScene :
         )
         decoration.setShowLastDivider(true)
         mLabelAdapter!!.setHasStableIds(true)
-        mItemTouchHelper = ItemTouchHelper(DownloadLabelItemTouchHelperCallback())
-        mItemTouchHelper!!.attachToRecyclerView(recyclerView)
+        mLabelItemTouchHelper = ItemTouchHelper(DownloadLabelItemTouchHelperCallback())
+        mLabelItemTouchHelper!!.attachToRecyclerView(recyclerView)
         recyclerView.adapter = mLabelAdapter
         return view
     }
@@ -540,37 +543,6 @@ class DownloadsScene :
         if (null != mRecyclerView && !mRecyclerView!!.isInCustomChoice) {
             setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.END)
         }
-    }
-
-    fun onItemClick(position: Int): Boolean {
-        val activity: Activity? = mainActivity
-        val recyclerView = mRecyclerView
-        if (null == activity || null == recyclerView) {
-            return false
-        }
-        return if (recyclerView.isInCustomChoice) {
-            recyclerView.toggleItemChecked(position)
-            true
-        } else {
-            val list = mList ?: return false
-            if (position < 0 || position >= list.size) {
-                return false
-            }
-            val intent = Intent(activity, GalleryActivity::class.java)
-            intent.action = GalleryActivity.ACTION_EH
-            intent.putExtra(GalleryActivity.KEY_GALLERY_INFO, list[position])
-            startActivity(intent)
-            true
-        }
-    }
-
-    fun onItemLongClick(position: Int): Boolean {
-        val recyclerView = mRecyclerView ?: return false
-        if (!recyclerView.isInCustomChoice) {
-            recyclerView.intoCustomChoiceMode()
-        }
-        recyclerView.toggleItemChecked(position)
-        return true
     }
 
     override fun onClickPrimaryFab(view: FabLayout, fab: FloatingActionButton) {
@@ -830,8 +802,8 @@ class DownloadsScene :
         }
 
         override fun onTouch(v: View, event: MotionEvent): Boolean {
-            if (mItemTouchHelper != null && event.action == MotionEvent.ACTION_DOWN) {
-                mItemTouchHelper!!.startDrag(this)
+            if (mLabelItemTouchHelper != null && event.action == MotionEvent.ACTION_DOWN) {
+                mLabelItemTouchHelper!!.startDrag(this)
             }
             return false
         }
@@ -1001,9 +973,11 @@ class DownloadsScene :
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private inner class DownloadHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView),
-        View.OnClickListener {
+        View.OnClickListener,
+        View.OnTouchListener {
         val thumb: LoadImageView
         val title: TextView
         val uploader: TextView
@@ -1011,6 +985,7 @@ class DownloadsScene :
         val category: TextView
         val start: View
         val stop: View
+        val move: View
         val state: TextView
         val progressBar: ProgressBar
         val percent: TextView
@@ -1024,6 +999,7 @@ class DownloadsScene :
             category = itemView.findViewById(R.id.category)
             start = itemView.findViewById(R.id.start)
             stop = itemView.findViewById(R.id.stop)
+            move = itemView.findViewById(R.id.move)
             state = itemView.findViewById(R.id.state)
             progressBar = itemView.findViewById(R.id.progress_bar)
             percent = itemView.findViewById(R.id.percent)
@@ -1033,6 +1009,7 @@ class DownloadsScene :
             thumb.setOnClickListener(this)
             start.setOnClickListener(this)
             stop.setOnClickListener(this)
+            move.setOnTouchListener(this)
         }
 
         override fun onClick(v: View) {
@@ -1067,6 +1044,13 @@ class DownloadsScene :
                 // DownloadManager Actions
                 mDownloadManager.stopDownload(list[index].gid)
             }
+        }
+
+        override fun onTouch(v: View, event: MotionEvent): Boolean {
+            if (mItemTouchHelper != null && event.action == MotionEvent.ACTION_DOWN) {
+                mItemTouchHelper!!.startDrag(this)
+            }
+            return false
         }
     }
 
@@ -1105,7 +1089,7 @@ class DownloadsScene :
             if (mList == null) {
                 return
             }
-            val info = mList!![position]
+            val info = mList!![holder.bindingAdapterPosition]
             info.thumb?.let {
                 holder.thumb.load(EhCacheKeyFactory.getThumbKey(info.gid), EhUtils.fixThumbUrl(it))
             }
@@ -1125,8 +1109,31 @@ class DownloadsScene :
                 holder.thumb,
                 TransitionNameFactory.getThumbTransitionName(info.gid),
             )
-            holder.itemView.setOnClickListener { onItemClick(position) }
-            holder.itemView.setOnLongClickListener { onItemLongClick(position) }
+            holder.itemView.setOnClickListener {
+                if (mainActivity != null && mRecyclerView != null && mList != null) {
+                    val index = holder.bindingAdapterPosition
+                    if (mRecyclerView!!.isInCustomChoice) {
+                        mRecyclerView!!.toggleItemChecked(index)
+                    } else {
+                        if (index in 0..mList!!.size) {
+                            val intent = Intent(mainActivity!!, GalleryActivity::class.java)
+                            intent.action = GalleryActivity.ACTION_EH
+                            intent.putExtra(GalleryActivity.KEY_GALLERY_INFO, mList!![index])
+                            startActivity(intent)
+                        }
+                    }
+                }
+            }
+            holder.itemView.setOnLongClickListener {
+                if (mRecyclerView != null) {
+                    if (!mRecyclerView!!.isInCustomChoice) {
+                        mRecyclerView!!.intoCustomChoiceMode()
+                    }
+                    mRecyclerView!!.toggleItemChecked(holder.bindingAdapterPosition)
+                    return@setOnLongClickListener true
+                }
+                return@setOnLongClickListener false
+            }
         }
 
         override fun onBindViewHolder(
@@ -1274,6 +1281,52 @@ class DownloadsScene :
             val item = mLabels.removeAt(fromPosition)
             mLabels.add(toPosition, item)
             mLabelAdapter?.notifyItemMoved(fromPosition, toPosition)
+            return true
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
+    }
+
+    private inner class DownloadItemTouchHelperCallback : ItemTouchHelper.Callback() {
+        override fun getMovementFlags(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+        ): Int {
+            return makeMovementFlags(
+                ItemTouchHelper.UP or ItemTouchHelper.DOWN,
+                0,
+            )
+        }
+
+        override fun isLongPressDragEnabled(): Boolean {
+            return false
+        }
+
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder,
+        ): Boolean {
+            val fromPosition = viewHolder.bindingAdapterPosition
+            val toPosition = target.bindingAdapterPosition
+            if (fromPosition == toPosition) {
+                return false
+            }
+            // DownloadManager Actions
+            when (mLabel) {
+                null -> {
+                    mDownloadManager.moveDownload(fromPosition, toPosition)
+                }
+
+                getString(R.string.default_download_label_name) -> {
+                    mDownloadManager.moveDownload(null, fromPosition, toPosition)
+                }
+
+                else -> {
+                    mDownloadManager.moveDownload(mLabel, fromPosition, toPosition)
+                }
+            }
+            mAdapter!!.notifyItemMoved(fromPosition, toPosition)
             return true
         }
 
