@@ -49,7 +49,7 @@ import kotlin.io.path.readText
 
 class SpiderDen(private val mGalleryInfo: GalleryInfo) {
     private val mGid = mGalleryInfo.gid
-    var downloadDir: UniFile? = getGalleryDownloadDir(mGid)?.takeIf { it.isDirectory }
+    var downloadDir: UniFile? = null
 
     @Volatile
     @SpiderQueen.Mode

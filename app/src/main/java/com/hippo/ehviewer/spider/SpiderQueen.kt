@@ -222,6 +222,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
     private val prepareJob = launchIO { doPrepare() }
 
     private suspend fun doPrepare() {
+        mSpiderDen.downloadDir = SpiderDen.getGalleryDownloadDir(galleryInfo.gid)?.takeIf { it.isDirectory }
         mSpiderInfo = readSpiderInfoFromLocal() ?: readSpiderInfoFromInternet() ?: return
         mPageStateArray = IntArray(mSpiderInfo.pages)
         notifyGetPages(mSpiderInfo.pages)

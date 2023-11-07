@@ -754,6 +754,11 @@ class DownloadsScene :
             holder.stop.visibility = View.GONE
         }
         holder.state.text = state
+        if (mSort == 0 && mType == -1) {
+            holder.move.visibility = View.VISIBLE
+        } else {
+            holder.move.visibility = View.GONE
+        }
     }
 
     @SuppressLint("SetTextI18n")
