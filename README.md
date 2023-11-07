@@ -11,10 +11,10 @@
     <img src="https://img.shields.io/github/license/EhViewer-NekoInverter/EhViewer?style=flat-square" alt="LICENSE">
   </a>
   <a href="https://github.com/EhViewer-NekoInverter/Ehviewer/releases">
-    <img src="https://img.shields.io/github/downloads/EhViewer-NekoInverter/EhViewer/total.svg?style=flat-square" alt="Downloads">
+    <img src="https://img.shields.io/github/v/release/EhViewer-NekoInverter/Ehviewer?style=flat-square&include_prereleases" alt="Releases">
   </a>
-  <a href="https://github.com/EhViewer-NekoInverter/Ehviewer/releases">
-    <img src="https://img.shields.io/github/v/release/EhViewer-NekoInverter/Ehviewer?style=flat-square&include_prereleases" alt="Release">
+  <a href="https://github.com/EhViewer-NekoInverter/EhViewer/issues">
+    <img src="https://img.shields.io/github/issues/EhViewer-NekoInverter/EhViewer?style=flat-square" alt="Issues">
   </a>
 </p>
 
@@ -44,13 +44,15 @@
 
 # 描述
 
-NekoInverter 版的 EhViewer [白E]，原作者已不再维护
+NekoInverter 版的 EhViewer，复刻自 [https://gitlab.com/NekoInverter/EhViewer](https://gitlab.com/NekoInverter/EhViewer)，原作者已不再维护
 
 本分支为自用性质，不接受功能请求，如果您有什么好想法或者发现什么问题欢迎直接提交 PR，软件常见使用问题和其他分支链接请参阅 [Q&A](https://github.com/EhViewer-NekoInverter/EhViewer/issues/18)
 
 如果您可以接受 MD3 风格，那使用 [彩E](https://github.com/FooIbar/EhViewer) 应该是更好的选择，我建立本仓库就是因为实在不能接受 MD3！不要大圆角！不要大色块！😡😡
 
 **![sticker](https://github.com/EhViewer-NekoInverter/Arts/blob/main/sticker.webp) 🐭🐭 最近沉迷看 V，关注 B 站 [昨日青子](https://space.bilibili.com/3493284812950114) 喵，关注 B 站 [昨日青子](https://live.bilibili.com/27700995) 谢谢喵！**
+
+(给语文不太好的人翻译一下：我是她的粉丝，我觉得她很可爱所以你们都应该看看，下载地址在下面，别找她要了，她什么都不知道)
 
 # 下载
 
@@ -73,9 +75,9 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 - [Kotlin & KotlinX](https://kotlinlang.org/)
 - [Coil](https://coil-kt.github.io/coil/)
 - [FullDraggableDrawer](https://github.com/PureWriter/FullDraggableDrawer)
-- [jsoup](https://jsoup.org/)
-- [libarchive](http://www.libarchive.org/)
-- [Material Components for Android](https://github.com/material-components/material-components-android)
+- [Jsoup](https://jsoup.org/)
+- [Libarchive](http://www.libarchive.org/)
+- [MDC-Android](https://github.com/material-components/material-components-android)
 - [Nettle](https://www.lysator.liu.se/~nisse/nettle/)
 - [OkHttp](https://square.github.io/okhttp/)
 - [RikkaX](https://github.com/RikkaApps/RikkaX)
@@ -91,7 +93,7 @@ NekoInverter 版的 EhViewer [白E]，原作者已不再维护
 
     Copyright 2014-2019 Hippo Seven
     Copyright 2020-2022 NekoInverter
-    Copyright 2022-2023 Moedog, Tarsin Norbin, and other contributors
+    Copyright 2022-2023 Moedog
 
     EhViewer is free software:
     you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
