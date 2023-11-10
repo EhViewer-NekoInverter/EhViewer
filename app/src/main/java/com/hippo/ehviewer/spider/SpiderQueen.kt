@@ -598,7 +598,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
             var error: String? = null
             var forceHtml = false
             runCatching {
-                repeat(2) {
+                repeat(2) { retries ->
                     var imageUrl: String? = null
                     var localShowKey: String?
 
@@ -649,7 +649,14 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
                     val targetImageUrl: String?
                     val referer: String?
 
-                    if (Settings.getDownloadOriginImage(mSpiderDen.downloadDir != null) && !originImageUrl.isNullOrBlank()) {
+                    if (Settings.getDownloadOriginImage(mSpiderDen.downloadDir != null) && originImageUrl != null) {
+                        if (retries == 1 && skipHathKey != null) {
+                            originImageUrl += if ("?" in originImageUrl!!) {
+                                "&nl=$skipHathKey"
+                            } else {
+                                "?nl=$skipHathKey"
+                            }
+                        }
                         val pageUrl = EhUrl.getPageUrl(mSpiderInfo.gid, index, pToken)
                         targetImageUrl = EhEngine.getOriginalImageUrl(originImageUrl!!, pageUrl)
                         referer = EhUrl.referer
@@ -758,16 +765,11 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
         private val PTOKEN_FAILED_MESSAGE = GetText.getString(R.string.error_get_ptoken_error)
         private val ERROR_TIMEOUT = GetText.getString(R.string.error_timeout)
         private val DECODE_ERROR = GetText.getString(R.string.error_decoding_failed)
-        private val URL_509_ARRAY = arrayOf(
-            "https://ehgt.org/g/509.gif",
-            "https://ehgt.org/g/509s.gif",
-            "https://exhentai.org/img/509.gif",
-            "https://exhentai.org/img/509s.gif",
-        )
+        private val URL_509_PATTERN = Regex("\\.org/.+/509s?\\.gif")
         private const val WORKER_DEBUG_TAG = "SpiderQueenWorker"
 
         private fun check509(url: String) {
-            if (url in URL_509_ARRAY) throw QuotaExceededException()
+            if (URL_509_PATTERN in url) throw QuotaExceededException()
         }
 
         @JvmStatic
