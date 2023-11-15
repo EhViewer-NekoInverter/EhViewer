@@ -25,7 +25,13 @@ import androidx.core.content.ContextCompat
 import coil.load
 import coil.size.Size
 import com.hippo.drawable.PreciselyClipDrawable
+import com.hippo.ehviewer.EhApplication.Companion.thumbCache
 import com.hippo.ehviewer.R
+import com.hippo.ehviewer.coil.read
+import com.hippo.unifile.UniFile
+import com.hippo.util.launchIO
+import com.hippo.util.sendTo
+import kotlinx.coroutines.DelicateCoroutinesApi
 
 open class LoadImageView @JvmOverloads constructor(
     context: Context,
@@ -77,11 +83,13 @@ open class LoadImageView @JvmOverloads constructor(
         mClipHeight = Int.MIN_VALUE
     }
 
-    fun load(key: String, url: String, crossfade: Boolean = true) {
+    @OptIn(DelicateCoroutinesApi::class)
+    fun load(key: String, url: String, crossfade: Boolean = true, path: UniFile? = null) {
         mKey = key
         mUrl = url
-        load(url) {
-            data(url)
+        val uri = path?.takeIf { it.isFile }?.uri?.toString() ?: url
+        load(uri) {
+            data(uri)
             memoryCacheKey(key)
             diskCacheKey(key)
             size(Size.ORIGINAL)
@@ -94,8 +102,32 @@ open class LoadImageView @JvmOverloads constructor(
                     onPreSetImageDrawable(errorDrawable, true)
                     super.setImageDrawable(errorDrawable)
                     setRetry(true)
+                    path?.let {
+                        launchIO {
+                            if (path.exists()) path.delete()
+                        }
+                    }
                 },
-                { _, _ -> setRetry(false) },
+                { _, _ ->
+                    setRetry(false)
+                    path?.let {
+                        launchIO {
+                            runCatching {
+                                if (!path.exists() && path.ensureFile()) {
+                                    thumbCache.read(key) {
+                                        UniFile.fromFile(data.toFile())!!.openFileDescriptor("r").use { src ->
+                                            path.openFileDescriptor("w").use { dst ->
+                                                src sendTo dst
+                                            }
+                                        }
+                                    }
+                                }
+                            }.onFailure {
+                                it.printStackTrace()
+                            }
+                        }
+                    }
+                },
             )
         }
     }
