@@ -38,15 +38,6 @@
         app:iconSpaceReserved="false" />
 
     <rikka.preference.SimpleMenuPreference
-        android:defaultValue="160"
-        android:key="thumb_cache_size"
-        android:title="@string/settings_advanced_thumb_cache_size"
-        app:entries="@array/read_cache_size_entries"
-        app:entryValues="@array/read_cache_size_entry_values"
-        app:useSimpleSummaryProvider="true"
-        app:iconSpaceReserved="false" />
-
-    <rikka.preference.SimpleMenuPreference
         android:defaultValue="320"
         android:key="read_cache_size"
         android:title="@string/settings_advanced_read_cache_size"

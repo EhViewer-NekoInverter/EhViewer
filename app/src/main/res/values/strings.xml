@@ -528,7 +528,6 @@
     <string name="settings_advanced_dump_logcat_summary">Save logcat to external storage</string>
     <string name="settings_advanced_dump_logcat_failed">Dump logcat failed</string>
     <string name="settings_advanced_dump_logcat_to">Logcat dumped to %s</string>
-    <string name="settings_advanced_thumb_cache_size">Thumb cache size</string>
     <string name="settings_advanced_read_cache_size">Read cache size</string>
     <string name="settings_advanced_app_language_title">App language</string>
     <string name="settings_advanced_proxy">Proxy</string>

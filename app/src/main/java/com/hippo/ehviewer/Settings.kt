@@ -163,8 +163,6 @@ object Settings {
     private const val DEFAULT_SAVE_PARSE_ERROR_BODY = true
     private const val KEY_SAVE_CRASH_LOG = "save_crash_log"
     private const val DEFAULT_SAVE_CRASH_LOG = true
-    private const val KEY_THUMB_CACHE_SIZE = "thumb_cache_size"
-    private const val DEFAULT_THUMB_CACHE_SIZE = 160
     private const val KEY_READ_CACHE_SIZE = "read_cache_size"
     private const val DEFAULT_READ_CACHE_SIZE = 320
     const val KEY_APP_LANGUAGE = "app_language"
@@ -626,9 +624,6 @@ object Settings {
 
     val saveCrashLog: Boolean
         get() = getBoolean(KEY_SAVE_CRASH_LOG, DEFAULT_SAVE_CRASH_LOG)
-
-    val thumbCacheSize: Int
-        get() = getIntFromStr(KEY_THUMB_CACHE_SIZE, DEFAULT_THUMB_CACHE_SIZE)
 
     val readCacheSize: Int
         get() = getIntFromStr(KEY_READ_CACHE_SIZE, DEFAULT_READ_CACHE_SIZE)

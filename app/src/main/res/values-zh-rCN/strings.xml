@@ -502,7 +502,6 @@
     <string name="settings_advanced_dump_logcat_summary">保存日志至外置存储器</string>
     <string name="settings_advanced_dump_logcat_failed">导出日志失败</string>
     <string name="settings_advanced_dump_logcat_to">已保存日志至 %s</string>
-    <string name="settings_advanced_thumb_cache_size">缩略图缓存大小</string>
     <string name="settings_advanced_read_cache_size">阅读缓存大小</string>
     <string name="settings_advanced_app_language_title">App 界面语言</string>
     <string name="settings_advanced_proxy">代理</string>

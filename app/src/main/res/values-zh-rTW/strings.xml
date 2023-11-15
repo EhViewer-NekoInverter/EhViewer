@@ -502,7 +502,6 @@
     <string name="settings_advanced_dump_logcat_summary">儲存 log 紀錄至外接儲存裝置中</string>
     <string name="settings_advanced_dump_logcat_failed">無法傾印 log 紀錄</string>
     <string name="settings_advanced_dump_logcat_to">已儲存 log 紀錄至 %s</string>
-    <string name="settings_advanced_thumb_cache_size">縮圖快取大小</string>
     <string name="settings_advanced_read_cache_size">閱讀快取大小</string>
     <string name="settings_advanced_app_language_title">App 介面語言</string>
     <string name="settings_advanced_proxy">代理</string>

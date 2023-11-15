@@ -279,7 +279,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
         private val sCache by lazy {
             DiskCache.Builder()
                 .directory(File(application.cacheDir, "image"))
-                .maxSizeBytes(Settings.readCacheSize.coerceIn(160, 5120).toLong() * 1024 * 1024)
+                .maxSizeBytes((Settings.readCacheSize / 5 * 4).coerceIn(256, 4096).toLong() * 1024 * 1024)
                 .build()
         }
 
