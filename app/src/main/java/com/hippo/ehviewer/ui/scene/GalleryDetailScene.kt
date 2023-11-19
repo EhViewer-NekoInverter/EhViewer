@@ -1106,21 +1106,17 @@ class GalleryDetailScene :
                 // DB Actions
                 // CommonOperations Actions
                 if (!mModifyingFavorites) {
-                    var remove = false
+                    mModifyingFavorites = true
                     val isLocalFavorites = EhDB.containLocalFavorites(galleryDetail.gid)
                     val isOnlineFavorites = galleryDetail.isFavorited
                     if (isLocalFavorites || isOnlineFavorites) {
-                        mModifyingFavorites = true
                         CommonOperations.removeFromFavorites(
                             activity,
                             galleryDetail,
                             ModifyFavoritesListener(context, true),
                             isLocalFavorites && !isOnlineFavorites,
                         )
-                        remove = true
-                    }
-                    if (!remove) {
-                        mModifyingFavorites = true
+                    } else {
                         CommonOperations.addToFavorites(
                             activity,
                             galleryDetail,
@@ -1370,29 +1366,15 @@ class GalleryDetailScene :
             // DB Actions
             // CommonOperations Actions
             if (mGalleryDetail != null && !mModifyingFavorites) {
-                var removeOrEdit = false
+                mModifyingFavorites = true
                 if (EhDB.containLocalFavorites(mGalleryDetail!!.gid)) {
-                    mModifyingFavorites = true
                     CommonOperations.removeFromFavorites(
                         activity,
                         mGalleryDetail!!,
                         ModifyFavoritesListener(activity, true),
                         true,
                     )
-                    removeOrEdit = true
-                } else if (mGalleryDetail!!.isFavorited) {
-                    mModifyingFavorites = true
-                    CommonOperations.doAddToFavorites(
-                        activity,
-                        mGalleryDetail!!,
-                        mGalleryDetail!!.favoriteSlot,
-                        ModifyFavoritesListener(activity, false),
-                        true,
-                    )
-                    removeOrEdit = true
-                }
-                if (!removeOrEdit) {
-                    mModifyingFavorites = true
+                } else {
                     CommonOperations.addToFavorites(
                         activity,
                         mGalleryDetail!!,

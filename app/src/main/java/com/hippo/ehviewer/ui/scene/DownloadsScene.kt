@@ -1125,7 +1125,7 @@ class DownloadsScene :
                     if (mRecyclerView!!.isInCustomChoice) {
                         mRecyclerView!!.toggleItemChecked(index)
                     } else {
-                        if (index in 0..mList!!.size) {
+                        if (index in 0 until mList!!.size) {
                             val intent = Intent(mainActivity!!, GalleryActivity::class.java)
                             intent.action = GalleryActivity.ACTION_EH
                             intent.putExtra(GalleryActivity.KEY_GALLERY_INFO, mList!![index])

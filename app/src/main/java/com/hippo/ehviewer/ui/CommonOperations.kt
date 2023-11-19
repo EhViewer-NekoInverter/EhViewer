@@ -104,7 +104,7 @@ object CommonOperations {
         val slot = Settings.defaultFavSlot
         val localFav = activity.getString(R.string.local_favorites)
         val items = Settings.favCat.toMutableList().apply { add(0, localFav) }
-        if (!foreSelect && slot >= -1 && slot <= 9) {
+        if (!foreSelect && slot in -1..9) {
             val newFavoriteName = if (slot >= 0) items[slot + 1] else null
             doAddToFavorites(
                 activity,
@@ -125,7 +125,7 @@ object CommonOperations {
                         galleryInfo,
                         slot1,
                         DelegateFavoriteCallback(listener, galleryInfo, newFavoriteName, slot1),
-                        false,
+                        foreSelect,
                     )
                     if (builder?.isChecked == true) {
                         Settings.putDefaultFavSlot(slot1)
