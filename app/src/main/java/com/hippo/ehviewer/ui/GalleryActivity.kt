@@ -181,6 +181,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
     private var mProgress: TextView? = null
     private var mBattery: View? = null
     private var mSeekBarPanel: View? = null
+    private var mGLLoading: View? = null
     private var mLeftText: TextView? = null
     private var mRightText: TextView? = null
     private var mSeekBar: ReversibleSeekBar? = null
@@ -364,6 +365,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         mProgress = ViewUtils.`$$`(this, R.id.progress) as TextView
         mBattery = ViewUtils.`$$`(this, R.id.battery)
         mSeekBarPanel = ViewUtils.`$$`(this, R.id.seek_bar_panel)
+        mGLLoading = ViewUtils.`$$`(this, R.id.gl_loading)
         mLeftText = ViewUtils.`$$`(mSeekBarPanel, R.id.left) as TextView
         mRightText = ViewUtils.`$$`(mSeekBarPanel, R.id.right) as TextView
         mSeekBar = ViewUtils.`$$`(mSeekBarPanel, R.id.seek_bar) as ReversibleSeekBar
@@ -465,6 +467,8 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         // TODO: Not well place to call it
         dialog.dismiss()
 
+        mGLLoading?.visibility = View.GONE
+        mGLRootView?.visibility = View.VISIBLE
         // Get start page
         if (mCurrentIndex == 0) mCurrentIndex = if (mPage >= 0) mPage else mGalleryProvider!!.startPage
         mGalleryAdapter = GalleryAdapter(mGLRootView!!, mGalleryProvider!!)
@@ -517,6 +521,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         mProgress = null
         mBattery = null
         mSeekBarPanel = null
+        mGLLoading = null
         mLeftText = null
         mRightText = null
         mSeekBar = null
