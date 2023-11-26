@@ -1,13 +1,14 @@
 [versions]
-android-tools-r8 = "8.3.15-dev"
-androidx-activity = "1.8.0"
+agp = "8.1.4"
+android-tools-r8 = "8.3.16-dev"
+androidx-activity = "1.8.1"
 androidx-appcompat = "1.6.1"
 androidx-biometric = "1.2.0-alpha05"
-androidx-browser = "1.6.0"
+androidx-browser = "1.7.0"
 androidx-collection = "1.3.0"
 androidx-coordinatorlayout = "1.2.0"
 androidx-core = "1.12.0"
-androidx-fragment = "1.6.1"
+androidx-fragment = "1.6.2"
 androidx-lifecycle = "2.6.2"
 androidx-paging = "3.2.1"
 androidx-preference = "1.2.1"
@@ -16,8 +17,9 @@ androidx-room = "2.6.0"
 androidx-swiperefreshlayout = "1.2.0-alpha01"
 coil = "2.5.0"
 google-android-material = "1.10.0"
-kotlin = "1.9.10"
+kotlin = "1.9.21"
 kotlinx-coroutines = "1.7.3"
+ksp = "1.9.20-1.0.14"
 okhttp3 = "5.0.0-alpha.11"
 okio = "3.6.0"
 rikkax-material = { strictly = "1.6.6" }
@@ -42,7 +44,7 @@ androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "an
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "androidx-swiperefreshlayout" }
 coil = { module = "io.coil-kt:coil", version.ref = "coil" }
 drawer = "com.drakeet.drawer:drawer:1.0.3"
-jsoup = "org.jsoup:jsoup:1.16.1"
+jsoup = "org.jsoup:jsoup:1.16.2"
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 material = { module = "com.google.android.material:material", version.ref = "google-android-material" }
 
@@ -62,8 +64,8 @@ rikkax-simplemenu-preference = "dev.rikka.rikkax.preference:simplemenu-preferenc
 rikkax = ["rikkax-core", "rikkax-insets", "rikkax-layoutinflater", "rikkax-material", "rikkax-simplemenu-preference"]
 
 [plugins]
-android-application = { id = "com.android.application", version = "8.1.2" }
+android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
-ksp = { id = "com.google.devtools.ksp", version = "1.9.10-1.0.13" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 spotless = { id = "com.diffplug.spotless", version = "6.22.0" }
