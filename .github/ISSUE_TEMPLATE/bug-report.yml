@@ -54,6 +54,17 @@ body:
       required: true
 
   - type: textarea
+    id: log
+    attributes:
+      label: 应用日志 / App logs
+      description: |
+        您可以通过设置-高级-导出日志 来获得日志文件，请确保日志完整，过长的日志请以文件形式上传
+        You can get logs file in Settings - Advanced - Dump logcat
+      placeholder: 06-15 17:44:53.704 23382 23382 E ...
+    validations:
+      required: true
+
+  - type: textarea
     id: more
     attributes:
       label: 备注 / Additional details
@@ -65,6 +76,15 @@ body:
         Additional details and attachments
     validations:
       required: false
+
+  - type: input
+    id: site
+    attributes:
+      label: 浏览站点 / Browsing site
+      description: E-Hentai / ExHentai
+      placeholder: E-Hentai
+    validations:
+      required: true
 
   - type: input
     id: version
@@ -112,17 +132,6 @@ body:
       label: SoC 型号 / SoC model
       description: 在此填入 SoC 型号 / Put SoC model here
       placeholder: 骁龙 8+ Gen 1, Snapdragon 8+ Gen 1
-    validations:
-      required: true
-
-  - type: textarea
-    id: log
-    attributes:
-      label: 应用日志 / App logs
-      description: |
-        您可以通过设置-高级-导出日志 来获得日志文件，请确保日志完整，过长的日志请以文件形式上传
-        You can get logs file in Settings - Advanced - Dump logcat
-      placeholder: 06-15 17:44:53.704 23382 23382 E ...
     validations:
       required: true
 
