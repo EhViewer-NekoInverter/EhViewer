@@ -82,7 +82,7 @@ private fun rethrowExactly(code: Int, body: String, e: Throwable) {
         if (EhUtils.isExHentai) {
             throw EhException("Sad Panda\n(without panda)")
         } else {
-            throw EhException("No data received\nMaybe your IP address has been banned")
+            throw EhException("IP banned")
         }
     }
 
