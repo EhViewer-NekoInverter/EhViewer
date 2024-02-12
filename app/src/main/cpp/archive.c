@@ -240,7 +240,7 @@ static int archive_get_ctx(archive_ctx **ctxptr, int idx) {
     }
     if (ctx)
         ctx->using = 1;
-    unlock_mcs(&ctx_lock, &local_lock);
+    unlock_mcs((mcs_lock *) &ctx_lock, &local_lock);
 
     if (!ctx) {
         archive_ctx *victimCtx = NULL;
@@ -264,7 +264,7 @@ static int archive_get_ctx(archive_ctx **ctxptr, int idx) {
             }
         }
         if (replace) ctx_pool[victimIdx] = ctx;
-        unlock_mcs(&ctx_lock, &local_lock);
+        unlock_mcs((mcs_lock *) &ctx_lock, &local_lock);
         if (replace) archive_release_ctx(victimCtx);
     }
     ret = archive_skip_to_index(ctx, idx);

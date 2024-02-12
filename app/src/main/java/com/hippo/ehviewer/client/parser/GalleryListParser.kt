@@ -229,11 +229,9 @@ object GalleryListParser {
             val children = gl.children()
             if (children.size > uploaderIndex) {
                 val div = children[uploaderIndex]
-                if (div != null) {
-                    gi.disowned = div.attr("style").contains("opacity:0.5")
-                    val a = div.children().first()
-                    gi.uploader = a?.text()?.trim { it <= ' ' } ?: div.text().trim { it <= ' ' }
-                }
+                gi.disowned = div.attr("style").contains("opacity:0.5")
+                val a = div.children().first()
+                gi.uploader = a?.text()?.trim { it <= ' ' } ?: div.text().trim { it <= ' ' }
             }
             if (children.size > pagesIndex) {
                 val matcher = PATTERN_PAGES.matcher(children[pagesIndex].text())
@@ -295,15 +293,11 @@ object GalleryListParser {
                 val es = ptt.child(0).child(0).children()
                 result.pages = es[es.size - 2].text().trim { it <= ' ' }.toInt()
                 var e = es[es.size - 1]
-                if (e != null) {
-                    e = e.children().first()
-                    if (e != null) {
-                        val href = e.attr("href")
-                        val matcher = PATTERN_NEXT_PAGE.matcher(href)
-                        if (matcher.find()) {
-                            result.nextPage = NumberUtils.parseIntSafely(matcher.group(1), 0)
-                        }
-                    }
+                e = e.children().first() as Element
+                val href = e.attr("href")
+                val matcher = PATTERN_NEXT_PAGE.matcher(href)
+                if (matcher.find()) {
+                    result.nextPage = NumberUtils.parseIntSafely(matcher.group(1), 0)
                 }
             }
         } catch (e: Throwable) {

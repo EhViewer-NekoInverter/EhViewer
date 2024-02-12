@@ -848,7 +848,13 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
         EhCallback<GalleryCommentsScene?, VoteCommentParser.Result>(context) {
         override fun onSuccess(result: VoteCommentParser.Result) {
             showTip(
-                if (result.expectVote > 0) (if (0 != result.vote) R.string.vote_up_successfully else R.string.cancel_vote_up_successfully) else if (0 != result.vote) R.string.vote_down_successfully else R.string.cancel_vote_down_successfully,
+                if (result.expectVote > 0) {
+                    if (0 != result.vote) R.string.vote_up_successfully else R.string.cancel_vote_up_successfully
+                } else if (0 != result.vote) {
+                    R.string.vote_down_successfully
+                } else {
+                    R.string.cancel_vote_down_successfully
+                },
                 LENGTH_SHORT,
             )
             val scene = this@GalleryCommentsScene

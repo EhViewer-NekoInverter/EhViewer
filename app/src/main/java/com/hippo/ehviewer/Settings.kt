@@ -335,7 +335,11 @@ object Settings {
         if (set == null) {
             set =
                 mutableSetOf(value)
-        } else if (set.contains(value)) return else set.add(value)
+        } else if (set.contains(value)) {
+            return
+        } else {
+            set.add(value)
+        }
         sSettingsPre.edit().putStringSet(key, set).apply()
     }
 
