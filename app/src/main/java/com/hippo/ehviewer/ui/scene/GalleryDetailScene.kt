@@ -19,7 +19,9 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
+import android.app.DownloadManager
 import android.app.assist.AssistContent
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -94,7 +96,6 @@ import com.hippo.ehviewer.client.parser.RateGalleryParser
 import com.hippo.ehviewer.client.parser.TorrentParser
 import com.hippo.ehviewer.dao.DownloadInfo
 import com.hippo.ehviewer.dao.Filter
-import com.hippo.ehviewer.download.DownloadManager
 import com.hippo.ehviewer.download.DownloadManager.DownloadInfoListener
 import com.hippo.ehviewer.spider.SpiderDen
 import com.hippo.ehviewer.spider.SpiderQueen
@@ -130,14 +131,13 @@ import kotlin.math.abs
 import kotlin.math.hypot
 import kotlin.math.max
 import kotlin.math.roundToInt
-import android.app.DownloadManager as AndroidDownloadManager
+import com.hippo.ehviewer.download.DownloadManager as EhDownloadManager
 
 class GalleryDetailScene :
     BaseScene(),
     View.OnClickListener,
     DownloadInfoListener,
     OnLongClickListener {
-    private val mDownloadManager = DownloadManager
     private var mTip: TextView? = null
     private var mViewTransition: ViewTransition? = null
 
@@ -450,7 +450,7 @@ class GalleryDetailScene :
         // Get download state
         val gid = gid
         mDownloadState = if (gid != -1L) {
-            mDownloadManager.getDownloadState(gid)
+            EhDownloadManager.getDownloadState(gid)
         } else {
             DownloadInfo.STATE_INVALID
         }
@@ -556,13 +556,13 @@ class GalleryDetailScene :
             mTip!!.setText(R.string.error_cannot_find_gallery)
             adjustViewVisibility(STATE_FAILED, false)
         }
-        mDownloadManager.addDownloadInfoListener(this)
+        EhDownloadManager.addDownloadInfoListener(this)
         return view
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        mDownloadManager.removeDownloadInfoListener(this)
+        EhDownloadManager.removeDownloadInfoListener(this)
         mTip = null
         mViewTransition = null
         mHeader = null
@@ -1053,7 +1053,7 @@ class GalleryDetailScene :
                 GalleryListScene.startScene(this, lub)
             }
             mDownload -> {
-                if (mDownloadManager.getDownloadState(galleryDetail.gid) == DownloadInfo.STATE_INVALID) {
+                if (EhDownloadManager.getDownloadState(galleryDetail.gid) == DownloadInfo.STATE_INVALID) {
                     // CommonOperations Actions
                     CommonOperations.startDownload(activity, galleryDetail, false)
                 } else {
@@ -1446,7 +1446,7 @@ class GalleryDetailScene :
         if (null == context || -1L == gid) {
             return
         }
-        val downloadState = mDownloadManager.getDownloadState(gid)
+        val downloadState = EhDownloadManager.getDownloadState(gid)
         if (downloadState == mDownloadState) {
             return
         }
@@ -1590,17 +1590,25 @@ class GalleryDetailScene :
     ) : EhCallback<GalleryDetailScene?, String?>(context) {
         override fun onSuccess(result: String?) {
             result?.let {
-                // TODO: Don't use buggy system download service
-                val r = AndroidDownloadManager.Request(Uri.parse(result))
+                val uri = Uri.parse(it)
+                val intent = Intent().apply {
+                    action = Intent.ACTION_VIEW
+                    setDataAndType(uri, "application/zip")
+                }
                 val name = "${info.gid}-${EhUtils.getSuitableTitle(info)}.zip"
-                r.setDestinationInExternalPublicDir(
-                    Environment.DIRECTORY_DOWNLOADS,
-                    FileUtils.sanitizeFilename(name),
-                )
-                r.setNotificationVisibility(AndroidDownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                val dm = application.getSystemService<AndroidDownloadManager>()!!
                 try {
-                    dm.enqueue(r)
+                    try {
+                        application.topActivity!!.startActivity(intent)
+                        application.topActivity!!.addTextToClipboard(name, false)
+                    } catch (_: ActivityNotFoundException) {
+                        val r = DownloadManager.Request(uri)
+                        r.setDestinationInExternalPublicDir(
+                            Environment.DIRECTORY_DOWNLOADS,
+                            FileUtils.sanitizeFilename(name),
+                        )
+                        r.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                        application.getSystemService<DownloadManager>()!!.enqueue(r)
+                    }
                 } catch (e: Throwable) {
                     e.printStackTrace()
                     ExceptionUtils.throwIfFatal(e)
@@ -1631,7 +1639,7 @@ class GalleryDetailScene :
             }
             // Delete
             // DownloadManager Actions
-            mDownloadManager.deleteDownload(mGalleryInfo.gid)
+            EhDownloadManager.deleteDownload(mGalleryInfo.gid)
             // Delete image files
             val checked = mBuilder.isChecked
             Settings.putRemoveImageFiles(checked)
@@ -1908,14 +1916,14 @@ class GalleryDetailScene :
                 val name = mTorrentList!![position].name
                 // TODO: Don't use buggy system download service
                 val r =
-                    AndroidDownloadManager.Request(Uri.parse(url.replace("exhentai.org", "ehtracker.org")))
+                    DownloadManager.Request(Uri.parse(url.replace("exhentai.org", "ehtracker.org")))
                 r.setDestinationInExternalPublicDir(
                     Environment.DIRECTORY_DOWNLOADS,
                     FileUtils.sanitizeFilename("$name.torrent"),
                 )
-                r.setNotificationVisibility(AndroidDownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                r.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 r.addRequestHeader("Cookie", EhCookieStore.getCookieHeader(url.toHttpUrl()))
-                val dm = context.getSystemService(Context.DOWNLOAD_SERVICE) as AndroidDownloadManager
+                val dm = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
                 try {
                     dm.enqueue(r)
                     showTip(R.string.download_torrent_started, LENGTH_SHORT)
