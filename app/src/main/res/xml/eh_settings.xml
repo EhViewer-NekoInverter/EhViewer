@@ -220,7 +220,6 @@
 
     <SwitchPreferenceCompat
         android:defaultValue="false"
-        android:dependency="request_news"
         android:key="hide_hv_events"
         android:title="@string/settings_eh_hide_hv_events"
         app:iconSpaceReserved="false" />

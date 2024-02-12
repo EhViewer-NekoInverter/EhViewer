@@ -38,7 +38,7 @@
 
     <!-- Select Site Scene -->
     <string name="select_scene">您希望访问哪个画廊站点？</string>
-    <string name="select_scene_explain">e-hentai：对任何人开放\nexhentai：仅对登录用户开放</string>
+    <string name="select_scene_explain">E-Hentai：对任何人开放\nExHentai：仅对登录用户开放</string>
 
     <!-- Guide -->
     <string name="guide_gallery_left">翻页</string>
@@ -384,10 +384,10 @@
     <string name="settings_eh_current_limits">当前已用：%1$s\n重置花费：%2$d GP</string>
     <string name="settings_eh_reset">重置</string>
     <string name="settings_eh_reset_limits_succeed">成功重置图片配额</string>
-    <string name="settings_eh_u_config">EHentai 设置</string>
-    <string name="settings_eh_u_config_summary">EHentai 网站上的设置</string>
+    <string name="settings_eh_u_config">E-Hentai 设置</string>
+    <string name="settings_eh_u_config_summary">E-Hentai 网站上的设置</string>
     <string name="settings_eh_my_tags">我的标签</string>
-    <string name="settings_eh_my_tags_summary">EHentai 网站上的我的标签</string>
+    <string name="settings_eh_my_tags_summary">E-Hentai 网站上的我的标签</string>
     <string name="settings_eh_black_dark_theme">纯黑深色主题</string>
     <string name="settings_eh_launch_page">启动页</string>
     <string name="settings_eh_list_mode">列表模式</string>
@@ -400,10 +400,10 @@
     <string name="settings_eh_thumb_resolution">缩略图分辨率</string>
     <string name="settings_eh_thumb_resolution_summary">%s，指定分辨率可能使获取缩略图失败</string>
     <string name="settings_eh_thumb_resolution_auto">自动</string>
-    <string name="settings_eh_force_eh_thumb">强制使用 e-hentai 缩略图/API 服务器</string>
-    <string name="settings_eh_force_eh_thumb_summary">若 exhentai 加载失败可尝试此项\n注意：此项将使用 e-hentai 设置加载图像</string>
+    <string name="settings_eh_force_eh_thumb">强制使用 E-Hentai 缩略图/API 服务器</string>
+    <string name="settings_eh_force_eh_thumb_summary">若 ExHentai 加载失败可尝试此项\n注意：此项将使用 E-Hentai 设置加载图像</string>
     <string name="settings_eh_show_jpn_title">显示日文标题</string>
-    <string name="settings_eh_show_jpn_title_summary">需同时在 EHentai 网站设置中启用 Japanese Title</string>
+    <string name="settings_eh_show_jpn_title_summary">需同时在 E-Hentai 网站设置中启用 Japanese Title</string>
     <string name="settings_eh_show_gallery_pages">显示画廊页数</string>
     <string name="settings_eh_show_gallery_pages_summary">在画廊列表中显示页数</string>
     <string name="settings_eh_show_gallery_comments">显示画廊评论</string>
@@ -598,7 +598,7 @@
     <string name="error_please_login_first">请先登录</string>
     <string name="error_cannot_find_gallery">找不到画廊</string>
     <string name="error_something_wrong_happened">被玩坏了</string>
-    <string name="kokomade_tip">设置-&gt;Eh-&gt;画廊站点-&gt;e-hentai</string>
+    <string name="kokomade_tip">设置-&gt;Eh-&gt;画廊站点-&gt;E-Hentai</string>
     <string name="no_browser_installed">请安装一个浏览器。</string>
     <string name="cloudflare_bypass_failed">未能绕过 Cloudflare 验证</string>
     <string name="open_in_webview">在 WebView 中打开链接以通过验证？</string>

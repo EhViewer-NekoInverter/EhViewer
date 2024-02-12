@@ -81,8 +81,6 @@
                 <data android:scheme="https" />
                 <data android:host="exhentai.org" />
                 <data android:host="e-hentai.org" />
-                <data android:host="g.e-hentai.org" />
-                <data android:host="lofi.e-hentai.org" />
             </intent-filter>
 
             <intent-filter android:label="@string/keyword_search">

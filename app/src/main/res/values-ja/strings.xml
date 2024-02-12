@@ -35,7 +35,7 @@
 
     <!-- Select Site Scene -->
     <string name="select_scene">ギャラリーサイトを選択してください</string>
-    <string name="select_scene_explain">e-hentai：誰にも公開です\nexhentai：ログインしないとアクセスできません</string>
+    <string name="select_scene_explain">E-Hentai：誰にも公開です\nExHentai：ログインしないとアクセスできません</string>
 
     <!-- Guide -->
     <string name="guide_gallery_left">ページをめくる</string>
