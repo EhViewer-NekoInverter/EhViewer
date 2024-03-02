@@ -43,9 +43,9 @@ public class FastScroller extends View {
     private static final int INVALID = -1;
 
     private static final int SCROLL_BAR_FADE_DURATION = 500;
-    private static final int SCROLL_BAR_DELAY = 1000;
+    private static final int SCROLL_BAR_DELAY = 1500;
 
-    private static final int MIN_HANDLER_HEIGHT_DP = 32;
+    private static final int MIN_HANDLER_HEIGHT_DP = 48;
 
     private Handler mSimpleHandler;
 
@@ -160,13 +160,13 @@ public class FastScroller extends View {
             return;
         }
 
-        int endOffset = height * offset / range;
+        long endOffset = (long) height * offset / range;
         int endHeight = height * extent / range;
 
         endHeight = Math.max(endHeight, mMinHandlerHeight);
         endOffset = Math.min(endOffset, height - endHeight);
 
-        mHandlerOffset = endOffset + paddingTop;
+        mHandlerOffset = (int) (endOffset + paddingTop);
         mHandlerHeight = endHeight;
 
         if (show) {
@@ -221,10 +221,6 @@ public class FastScroller extends View {
 
         mRecyclerView = recyclerView;
         mOnScrollChangeListener = new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-            }
-
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 updatePosition(true);
@@ -294,7 +290,7 @@ public class FastScroller extends View {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(@NonNull Canvas canvas) {
         if (mRecyclerView == null || mHandler == null) {
             return;
         }
@@ -358,7 +354,7 @@ public class FastScroller extends View {
                         // Update mLastMotionY
                         if (mDownY < mHandlerOffset || mDownY >= mHandlerOffset + mHandlerHeight) {
                             // the point out of handler, make the point in handler center
-                            mLastMotionY = mHandlerOffset + mHandlerHeight / 2;
+                            mLastMotionY = mHandlerOffset + (float) mHandlerHeight / 2;
                         } else {
                             mLastMotionY = mDownY;
                         }
