@@ -20,6 +20,7 @@ import android.content.DialogInterface
 import android.text.Html
 import android.util.AttributeSet
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.EhUrl
@@ -28,6 +29,8 @@ import com.hippo.ehviewer.ui.SettingsActivity
 import com.hippo.ehviewer.ui.scene.BaseScene
 import com.hippo.preference.MessagePreference
 import com.hippo.util.addTextToClipboard
+import com.hippo.util.launchIO
+import com.hippo.util.withUIContext
 import okhttp3.Cookie
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import java.util.LinkedList
@@ -40,26 +43,25 @@ class AccountPreference @JvmOverloads constructor(
     private var message: String? = null
 
     init {
-        val store = EhCookieStore
-        val eCookies = store.getCookies(EhUrl.HOST_E.toHttpUrl())
-        val exCookies = store.getCookies(EhUrl.HOST_EX.toHttpUrl())
+        updateMessage()
+    }
+
+    private fun updateMessage() {
+        val eCookies = EhCookieStore.getCookies(EhUrl.HOST_E.toHttpUrl())
+        val exCookies = EhCookieStore.getCookies(EhUrl.HOST_EX.toHttpUrl())
         val cookies: MutableList<Cookie> = LinkedList(eCookies)
         cookies.addAll(exCookies)
         var ipbMemberId: String? = null
         var ipbPassHash: String? = null
         var igneous: String? = null
-        var i = 0
-        val n = cookies.size
-        while (i < n) {
-            val cookie = cookies[i]
-            when (cookie.name) {
-                EhCookieStore.KEY_IPB_MEMBER_ID -> ipbMemberId = cookie.value
-                EhCookieStore.KEY_IPB_PASS_HASH -> ipbPassHash = cookie.value
-                EhCookieStore.KEY_IGNEOUS -> igneous = cookie.value
+        cookies.forEach {
+            when (it.name) {
+                EhCookieStore.KEY_IPB_MEMBER_ID -> ipbMemberId = it.value
+                EhCookieStore.KEY_IPB_PASS_HASH -> ipbPassHash = it.value
+                EhCookieStore.KEY_IGNEOUS -> igneous = it.value
             }
-            i++
         }
-        if (ipbMemberId != null || ipbPassHash != null || igneous != null) {
+        if (ipbMemberId != null && ipbPassHash != null) {
             message = (
                 EhCookieStore.KEY_IPB_MEMBER_ID + ": " + ipbMemberId + "<br>" +
                     EhCookieStore.KEY_IPB_PASS_HASH + ": " + ipbPassHash + "<br>" +
@@ -86,6 +88,17 @@ class AccountPreference @JvmOverloads constructor(
             builder.setNeutralButton(R.string.settings_eh_account_identity_cookies_copy) { dialog: DialogInterface?, which: Int ->
                 mActivity.addTextToClipboard(message, true)
                 this@AccountPreference.onClick(dialog, which)
+            }
+            builder.setNegativeButton(R.string.settings_eh_account_clear_igneous) { _: DialogInterface?, _: Int ->
+                mActivity.lifecycleScope.launchIO {
+                    EhCookieStore.deleteCookie(
+                        EhUrl.HOST_EX.toHttpUrl(),
+                        EhCookieStore.KEY_IGNEOUS,
+                    )
+                    withUIContext {
+                        updateMessage()
+                    }
+                }
             }
         }
         builder.setPositiveButton(R.string.settings_eh_account_sign_out) { _: DialogInterface?, _: Int ->
