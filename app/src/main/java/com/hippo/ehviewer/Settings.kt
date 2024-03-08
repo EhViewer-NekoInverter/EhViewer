@@ -113,6 +113,8 @@ object Settings {
     private const val DEFAULT_SHOW_BATTERY = true
     private const val KEY_SHOW_PAGE_INTERVAL = "gallery_show_page_interval"
     private const val DEFAULT_SHOW_PAGE_INTERVAL = false
+    private const val KEY_TURN_PAGE_INTERVAL = "turn_page_interval"
+    private const val DEFAULT_TURN_PAGE_INTERVAL = 5
     private const val KEY_VOLUME_PAGE = "volume_page"
     private const val DEFAULT_VOLUME_PAGE = false
     private const val KEY_REVERSE_VOLUME_PAGE = "reserve_volume_page"
@@ -529,6 +531,12 @@ object Settings {
         get() = getBoolean(KEY_SHOW_PAGE_INTERVAL, DEFAULT_SHOW_PAGE_INTERVAL)
     fun putShowPageInterval(value: Boolean) {
         putBoolean(KEY_SHOW_PAGE_INTERVAL, value)
+    }
+
+    val turnPageInterval: Int
+        get() = getInt(KEY_TURN_PAGE_INTERVAL, DEFAULT_TURN_PAGE_INTERVAL)
+    fun putTurnPageInterval(value: Int) {
+        putInt(KEY_TURN_PAGE_INTERVAL, value)
     }
 
     val volumePage: Boolean

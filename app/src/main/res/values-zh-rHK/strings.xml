@@ -453,6 +453,7 @@
     <string name="settings_read_show_progress">顯示進度</string>
     <string name="settings_read_show_battery">顯示電量</string>
     <string name="settings_read_show_page_interval">顯示頁面間隔</string>
+    <string name="settings_read_turn_page_interval">自動翻頁間隔（秒）</string>
     <string name="settings_read_volume_page">使用音量鍵翻頁</string>
     <string name="settings_read_reverse_volume">翻轉音量鍵</string>
     <string name="settings_read_reading_fullscreen">全屏</string>

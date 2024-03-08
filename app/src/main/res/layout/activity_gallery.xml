@@ -107,6 +107,14 @@
             android:layout_gravity="center_vertical"
             android:gravity="center_horizontal" />
 
+        <ImageView
+            android:id="@+id/auto_transfer"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            app:srcCompat="@drawable/v_play_x24"
+            app:tint="?attr/colorPrimary" />
+
     </com.hippo.ehviewer.widget.SeekBarPanel>
 
     <com.hippo.widget.ColorView

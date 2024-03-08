@@ -46,6 +46,7 @@ import android.view.WindowManager
 import android.webkit.MimeTypeMap
 import android.widget.CompoundButton
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Spinner
@@ -62,7 +63,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.hippo.app.EditTextDialogBuilder
 import com.hippo.ehviewer.AppConfig
 import com.hippo.ehviewer.BuildConfig
@@ -96,9 +99,12 @@ import com.hippo.yorozuya.ResourcesUtils
 import com.hippo.yorozuya.SimpleAnimatorListener
 import com.hippo.yorozuya.SimpleHandler
 import com.hippo.yorozuya.ViewUtils
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import rikka.core.res.isNight
 import rikka.core.res.resolveColor
@@ -185,6 +191,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
     private var mLeftText: TextView? = null
     private var mRightText: TextView? = null
     private var mSeekBar: ReversibleSeekBar? = null
+    private var mAutoTransfer: ImageView? = null
     private var mSeekBarPanelAnimator: ObjectAnimator? = null
     private var mLayoutMode = 0
     private var mSize = 0
@@ -193,6 +200,8 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
     private lateinit var builder: EditTextDialogBuilder
     private lateinit var dialog: AlertDialog
     private var dialogShown = false
+    private var mAutoTransferJob: Job? = null
+    private var mTurnPageIntervalVal = Settings.turnPageInterval
 
     private val galleryDetailUrl: String?
         get() {
@@ -369,6 +378,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         mLeftText = ViewUtils.`$$`(mSeekBarPanel, R.id.left) as TextView
         mRightText = ViewUtils.`$$`(mSeekBarPanel, R.id.right) as TextView
         mSeekBar = ViewUtils.`$$`(mSeekBarPanel, R.id.seek_bar) as ReversibleSeekBar
+        mAutoTransfer = ViewUtils.`$$`(mSeekBarPanel, R.id.auto_transfer) as ImageView
         mClock!!.visibility = if (Settings.showClock) View.VISIBLE else View.GONE
         mProgress!!.visibility = if (Settings.showProgress) View.VISIBLE else View.GONE
         mBattery!!.visibility = if (Settings.showBattery) View.VISIBLE else View.GONE
@@ -407,6 +417,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
             false
         }
         mSeekBar!!.setOnSeekBarChangeListener(this)
+        mAutoTransfer!!.setOnClickListener { autoTransfer() }
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
         insetsController = WindowCompat.getInsetsController(window, window.decorView)
@@ -503,6 +514,28 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         updateSlider()
     }
 
+    private fun autoTransfer() {
+        if (mAutoTransferJob == null && mCurrentIndex + 1 != mSize) {
+            mAutoTransfer?.setImageResource(R.drawable.v_pause_x24)
+            mAutoTransferJob = lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                    repeat(Int.MAX_VALUE) {
+                        delay(mTurnPageIntervalVal * 1000L)
+                        if (mLayoutMode == GalleryView.LAYOUT_RIGHT_TO_LEFT) {
+                            mGalleryView!!.pageLeft()
+                        } else {
+                            mGalleryView!!.pageRight()
+                        }
+                    }
+                }
+            }
+        } else if (mAutoTransferJob != null) {
+            mAutoTransfer?.setImageResource(R.drawable.v_play_x24)
+            if (mAutoTransferJob!!.isActive) mAutoTransferJob!!.cancel()
+            mAutoTransferJob = null
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         mGLRootView = null
@@ -525,6 +558,8 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         mLeftText = null
         mRightText = null
         mSeekBar = null
+        mAutoTransfer = null
+        mAutoTransferJob = null
         SimpleHandler.getInstance().removeCallbacks(mHideSliderRunnable)
     }
 
@@ -635,6 +670,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
 
     @SuppressLint("SetTextI18n")
     private fun updateProgress() {
+        if (mCurrentIndex + 1 == mSize) autoTransfer()
         mProgress?.text =
             if (mSize <= 0 || mCurrentIndex < 0) null else (mCurrentIndex + 1).toString() + "/" + mSize
     }
@@ -1010,7 +1046,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
     }
 
     @SuppressLint("InflateParams", "UseSwitchCompatOrMaterialCode")
-    private inner class GalleryMenuHelper constructor(context: Context?) :
+    private inner class GalleryMenuHelper(context: Context?) :
         DialogInterface.OnClickListener {
         val view: View
         private val mScreenRotation: Spinner
@@ -1023,6 +1059,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         private val mShowProgress: Switch
         private val mShowBattery: Switch
         private val mShowPageInterval: Switch
+        private val mTurnPageInterval: SeekBar
         private val mVolumePage: Switch
         private val mReverseVolumePage: Switch
         private val mReadingFullscreen: Switch
@@ -1041,6 +1078,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
             mShowProgress = view.findViewById(R.id.show_progress)
             mShowBattery = view.findViewById(R.id.show_battery)
             mShowPageInterval = view.findViewById(R.id.show_page_interval)
+            mTurnPageInterval = view.findViewById(R.id.turn_page_interval)
             mVolumePage = view.findViewById(R.id.volume_page)
             mReverseVolumePage = view.findViewById(R.id.reverse_volume_page)
             mReadingFullscreen = view.findViewById(R.id.reading_fullscreen)
@@ -1056,19 +1094,20 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
             mShowProgress.isChecked = Settings.showProgress
             mShowBattery.isChecked = Settings.showBattery
             mShowPageInterval.isChecked = Settings.showPageInterval
+            mTurnPageInterval.progress = Settings.turnPageInterval
             mVolumePage.isChecked = Settings.volumePage
             mVolumePage.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-                mReverseVolumePage.isEnabled = isChecked
+                mReverseVolumePage.visibility = if (isChecked) View.VISIBLE else View.GONE
             }
-            mReverseVolumePage.isEnabled = mVolumePage.isChecked
+            mReverseVolumePage.visibility = if (Settings.volumePage) View.VISIBLE else View.GONE
             mReverseVolumePage.isChecked = Settings.reverseVolumePage
             mReadingFullscreen.isChecked = Settings.readingFullscreen
             mCustomScreenLightness.isChecked = Settings.customScreenLightness
-            mScreenLightness.progress = Settings.screenLightness
-            mScreenLightness.isEnabled = Settings.customScreenLightness
             mCustomScreenLightness.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-                mScreenLightness.isEnabled = isChecked
+                mScreenLightness.visibility = if (isChecked) View.VISIBLE else View.GONE
             }
+            mScreenLightness.progress = Settings.screenLightness
+            mScreenLightness.visibility = if (Settings.customScreenLightness) View.VISIBLE else View.GONE
         }
 
         override fun onClick(dialog: DialogInterface, which: Int) {
@@ -1086,6 +1125,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
             val showProgress = mShowProgress.isChecked
             val showBattery = mShowBattery.isChecked
             val showPageInterval = mShowPageInterval.isChecked
+            val turnPageInterval = mTurnPageInterval.progress
             val volumePage = mVolumePage.isChecked
             val reverseVolumePage = mReverseVolumePage.isChecked
             val readingFullscreen = mReadingFullscreen.isChecked
@@ -1103,6 +1143,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
             Settings.putShowProgress(showProgress)
             Settings.putShowBattery(showBattery)
             Settings.putShowPageInterval(showPageInterval)
+            Settings.putTurnPageInterval(turnPageInterval)
             Settings.putVolumePage(volumePage)
             Settings.putReverseVolumePage(reverseVolumePage)
             Settings.putReadingFullscreen(readingFullscreen)
@@ -1144,6 +1185,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
                     0
                 },
             )
+            mTurnPageIntervalVal = turnPageInterval
             setScreenLightness(customScreenLightness, screenLightness)
             // Update slider
             mLayoutMode = layoutMode

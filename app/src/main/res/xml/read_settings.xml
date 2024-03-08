@@ -92,6 +92,15 @@
         android:title="@string/settings_read_show_page_interval"
         app:iconSpaceReserved="false" />
 
+    <SeekBarPreference
+        android:defaultValue="5"
+        android:key="turn_page_interval"
+        android:max="15"
+        android:title="@string/settings_read_turn_page_interval"
+        app:iconSpaceReserved="false"
+        app:min="2"
+        app:showSeekBarValue="true" />
+
     <SwitchPreferenceCompat
         android:defaultValue="false"
         android:key="volume_page"
