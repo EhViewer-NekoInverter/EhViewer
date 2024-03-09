@@ -20,6 +20,7 @@ endif (NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
 get_filename_component(deps "../_deps" REALPATH BASE_DIR "${CMAKE_BINARY_DIR}")
 set(FETCHCONTENT_BASE_DIR ${deps})
 
+set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 set(BUILD_TESTING 0)
 
 FetchContent_Declare(liblzma
