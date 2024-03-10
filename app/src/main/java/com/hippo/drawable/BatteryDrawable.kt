@@ -13,163 +13,147 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.drawable
 
-package com.hippo.drawable;
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.ColorFilter
+import android.graphics.Paint
+import android.graphics.PixelFormat
+import android.graphics.Rect
+import android.graphics.drawable.Drawable
+import com.hippo.yorozuya.MathUtils
+import kotlin.math.sqrt
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.Paint;
-import android.graphics.PixelFormat;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
+class BatteryDrawable : Drawable() {
+    private val mPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.DITHER_FLAG)
+    private val mTopRect: Rect
+    private val mBottomRect: Rect
+    private val mRightRect: Rect
+    private val mHeadRect: Rect
+    private val mElectRect: Rect
+    private var mColor = Color.WHITE
+    private var mWarningColor = Color.RED
+    private var mElect = -1
+    private var mStart = 0
+    private var mStop = 0
 
-import com.hippo.yorozuya.MathUtils;
-
-public class BatteryDrawable extends Drawable {
-    public static final int WARN_LIMIT = 15;
-    @SuppressWarnings("unused")
-    private static final String TAG = BatteryDrawable.class.getSimpleName();
-    private final Paint mPaint;
-    private final Rect mTopRect;
-    private final Rect mBottomRect;
-    private final Rect mRightRect;
-    private final Rect mHeadRect;
-    private final Rect mElectRect;
-    private int mColor = Color.WHITE;
-    private int mWarningColor = Color.RED;
-    private int mElect = -1;
-    private int mStart;
-    private int mStop;
-
-    public BatteryDrawable() {
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-        mPaint.setStyle(Paint.Style.FILL);
-
-        mTopRect = new Rect();
-        mBottomRect = new Rect();
-        mRightRect = new Rect();
-        mHeadRect = new Rect();
-        mElectRect = new Rect();
-        updatePaint();
+    init {
+        mPaint.style = Paint.Style.FILL
+        mTopRect = Rect()
+        mBottomRect = Rect()
+        mRightRect = Rect()
+        mHeadRect = Rect()
+        mElectRect = Rect()
+        updatePaint()
     }
 
-    @Override
-    @SuppressWarnings("SuspiciousNameCombination")
-    protected void onBoundsChange(Rect bounds) {
-        int width = bounds.width();
-        int height = bounds.height();
-        int strokeWidth = (int) (Math.sqrt(width * width + height * height) * 0.06f);
-        int turn1 = width * 6 / 7;
-        int turn2 = height / 3;
-        int secBottom = height - strokeWidth;
-        mStart = strokeWidth;
-        mStop = turn1 - strokeWidth;
-
-        mTopRect.set(0, 0, turn1, strokeWidth);
-        mBottomRect.set(0, secBottom, turn1, height);
-        mRightRect.set(turn1 - strokeWidth, strokeWidth, turn1, secBottom);
-        mHeadRect.set(turn1, turn2, width, height - turn2);
-        mElectRect.set(0, strokeWidth, mStop, secBottom);
+    override fun onBoundsChange(bounds: Rect) {
+        val width = bounds.width()
+        val height = bounds.height()
+        val strokeWidth = (sqrt((width * width + height * height).toDouble()) * 0.06f).toInt()
+        val turn1 = width * 6 / 7
+        val turn2 = height / 3
+        val secBottom = height - strokeWidth
+        mStart = strokeWidth
+        mStop = turn1 - strokeWidth
+        mTopRect[0, 0, turn1] = strokeWidth
+        mBottomRect[0, secBottom, turn1] = height
+        mRightRect[turn1 - strokeWidth, strokeWidth, turn1] = secBottom
+        mHeadRect[turn1, turn2, width] = height - turn2
+        mElectRect[0, strokeWidth, mStop] = secBottom
     }
 
     /**
-     * How to draw:<br>
-     * |------------------------------|<br>
-     * |\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\|<br>
-     * |------------------------------|---|<br>
-     * |/////////////////|         |//|\\\|<br>
-     * |/////////////////|         |//|\\\|<br>
-     * |------------------------------|---|<br>
-     * |\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\|<br>
+     * How to draw:
+     * |------------------------------|
+     * |\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\|
+     * |------------------------------|---|
+     * |/////////////////|         |//|\\\|
+     * |/////////////////|         |//|\\\|
+     * |------------------------------|---|
+     * |\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\|
      * |------------------------------|
      */
-    @Override
-    public void draw(Canvas canvas) {
+    override fun draw(canvas: Canvas) {
         if (mElect == -1) {
-            return;
+            return
         }
-
-        mElectRect.right = MathUtils.lerp(mStart, mStop, mElect / 100.0f);
-
-        canvas.drawRect(mTopRect, mPaint);
-        canvas.drawRect(mBottomRect, mPaint);
-        canvas.drawRect(mRightRect, mPaint);
-        canvas.drawRect(mHeadRect, mPaint);
-        canvas.drawRect(mElectRect, mPaint);
+        mElectRect.right = MathUtils.lerp(mStart, mStop, mElect / 100.0f)
+        canvas.drawRect(mTopRect, mPaint)
+        canvas.drawRect(mBottomRect, mPaint)
+        canvas.drawRect(mRightRect, mPaint)
+        canvas.drawRect(mHeadRect, mPaint)
+        canvas.drawRect(mElectRect, mPaint)
     }
 
-    private boolean isWarn() {
-        return mElect <= WARN_LIMIT;
-    }
+    private val isWarn: Boolean
+        get() = mElect <= WARN_LIMIT
 
-    public void setColor(int color) {
+    fun setColor(color: Int) {
         if (mColor == color) {
-            return;
+            return
         }
-
-        mColor = color;
-        if (!isWarn()) {
-            mPaint.setColor(mColor);
-            invalidateSelf();
+        mColor = color
+        if (!isWarn) {
+            mPaint.setColor(mColor)
+            invalidateSelf()
         }
     }
 
-    public void setWarningColor(int color) {
+    fun setWarningColor(color: Int) {
         if (mWarningColor == color) {
-            return;
+            return
         }
-
-        mWarningColor = color;
-        if (isWarn()) {
-            mPaint.setColor(mWarningColor);
-            invalidateSelf();
+        mWarningColor = color
+        if (isWarn) {
+            mPaint.setColor(mWarningColor)
+            invalidateSelf()
         }
     }
 
-    public void setElect(int elect) {
+    fun setElect(elect: Int) {
         if (mElect == elect) {
-            return;
+            return
         }
-
-        mElect = elect;
-        updatePaint();
+        mElect = elect
+        updatePaint()
     }
 
-    public void setElect(int elect, boolean warn) {
+    fun setElect(elect: Int, warn: Boolean) {
         if (mElect == elect) {
-            return;
+            return
         }
-
-        mElect = elect;
-        updatePaint(warn);
+        mElect = elect
+        updatePaint(warn)
     }
 
-    private void updatePaint() {
-        updatePaint(isWarn());
-    }
-
-    private void updatePaint(boolean warn) {
+    private fun updatePaint(warn: Boolean = isWarn) {
         if (warn) {
-            mPaint.setColor(mWarningColor);
+            mPaint.setColor(mWarningColor)
         } else {
-            mPaint.setColor(mColor);
+            mPaint.setColor(mColor)
         }
-        invalidateSelf();
+        invalidateSelf()
     }
 
-    @Override
-    public void setAlpha(int alpha) {
-        mPaint.setAlpha(alpha);
+    override fun setAlpha(alpha: Int) {
+        mPaint.setAlpha(alpha)
     }
 
-    @Override
-    public void setColorFilter(ColorFilter cf) {
-        mPaint.setColorFilter(cf);
+    override fun setColorFilter(cf: ColorFilter?) {
+        mPaint.setColorFilter(cf)
     }
 
-    @Override
-    public int getOpacity() {
-        return PixelFormat.TRANSLUCENT;
+    @Deprecated(
+        "Deprecated in Java",
+        ReplaceWith("PixelFormat.TRANSLUCENT", "android.graphics.PixelFormat"),
+    )
+    override fun getOpacity(): Int {
+        return PixelFormat.TRANSLUCENT
+    }
+
+    companion object {
+        const val WARN_LIMIT = 15
     }
 }

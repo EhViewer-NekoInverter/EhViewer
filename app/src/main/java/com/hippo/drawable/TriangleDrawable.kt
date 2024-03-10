@@ -13,59 +13,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.drawable
 
-package com.hippo.drawable;
+import android.graphics.Canvas
+import android.graphics.ColorFilter
+import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.PixelFormat
+import android.graphics.Rect
+import android.graphics.drawable.Drawable
 
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.PixelFormat;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
+class TriangleDrawable(color: Int) : Drawable() {
+    private val mPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.DITHER_FLAG)
+    private val mPath: Path
 
-public class TriangleDrawable extends Drawable {
-    private final Paint mPaint;
-    private final Path mPath;
-
-    public TriangleDrawable(int color) {
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-        mPaint.setColor(color);
-        mPath = new Path();
+    init {
+        mPaint.setColor(color)
+        mPath = Path()
     }
 
-    public void setColor(int color) {
-        mPaint.setColor(color);
-        invalidateSelf();
+    fun setColor(color: Int) {
+        mPaint.setColor(color)
+        invalidateSelf()
     }
 
-    @Override
-    protected void onBoundsChange(Rect bounds) {
-        super.onBoundsChange(bounds);
-        mPath.reset();
-        mPath.moveTo(bounds.left, bounds.top);
-        mPath.lineTo(bounds.right, bounds.top);
-        mPath.lineTo(bounds.right, bounds.bottom);
-        mPath.close();
+    override fun onBoundsChange(bounds: Rect) {
+        super.onBoundsChange(bounds)
+        mPath.reset()
+        mPath.moveTo(bounds.left.toFloat(), bounds.top.toFloat())
+        mPath.lineTo(bounds.right.toFloat(), bounds.top.toFloat())
+        mPath.lineTo(bounds.right.toFloat(), bounds.bottom.toFloat())
+        mPath.close()
     }
 
-    @Override
-    public void draw(Canvas canvas) {
-        canvas.drawPath(mPath, mPaint);
+    override fun draw(canvas: Canvas) {
+        canvas.drawPath(mPath, mPaint)
     }
 
-    @Override
-    public void setAlpha(int alpha) {
-        mPaint.setAlpha(alpha);
+    override fun setAlpha(alpha: Int) {
+        mPaint.setAlpha(alpha)
     }
 
-    @Override
-    public void setColorFilter(ColorFilter colorFilter) {
-        mPaint.setColorFilter(colorFilter);
+    override fun setColorFilter(colorFilter: ColorFilter?) {
+        mPaint.setColorFilter(colorFilter)
     }
 
-    @Override
-    public int getOpacity() {
-        return PixelFormat.OPAQUE;
+    @Deprecated(
+        "Deprecated in Java",
+        ReplaceWith("PixelFormat.OPAQUE", "android.graphics.PixelFormat"),
+    )
+    override fun getOpacity(): Int {
+        return PixelFormat.OPAQUE
     }
 }
