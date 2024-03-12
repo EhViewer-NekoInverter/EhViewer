@@ -1,6 +1,6 @@
 [versions]
 agp = "8.2.2"
-android-tools-r8 = "8.3.31"
+android-tools-r8 = "8.3.37"
 androidx-activity = "1.8.2"
 androidx-appcompat = "1.6.1"
 androidx-biometric = "1.2.0-alpha05"
@@ -17,11 +17,11 @@ androidx-room = "2.6.1"
 androidx-swiperefreshlayout = "1.2.0-alpha01"
 coil = "2.5.0"
 google-android-material = "1.11.0"
-kotlin = "1.9.22"
+kotlin = "1.9.23"
 kotlinx-coroutines = "1.8.0"
-ksp = "1.9.22-1.0.17"
+ksp = "1.9.23-1.0.19"
 okhttp3 = "5.0.0-alpha.11"
-okio = "3.8.0"
+okio = "3.9.0"
 rikkax-material = { strictly = "1.6.6" }
 
 [libraries]

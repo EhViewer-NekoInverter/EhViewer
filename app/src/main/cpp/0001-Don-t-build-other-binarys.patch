@@ -1,34 +1,49 @@
-From 2bda36800a5424c44378bbc0cc8bb5d26a0f34fa Mon Sep 17 00:00:00 2001
-From: tarsin <yuanqingxiang233@163.com>
-Date: Sat, 22 Jul 2023 08:30:20 +0800
-Subject: [PATCH] Don't build other binarys
+From 65859186be23927bcde9ebf214bdad1997da9254 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E5=B0=8F=E7=99=BD-=E7=99=BD?= <i@moedog.org>
+Date: Tue, 12 Mar 2024 14:45:57 +0800
+Subject: [PATCH] Don't build other binaries
 
 ---
- CMakeLists.txt | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ CMakeLists.txt | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 55cd358..52b57aa 100644
+index a346dd02..52b5d0d8 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -962,7 +962,7 @@ check_symbol_exists(getopt_long getopt.h HAVE_GETOPT_LONG)
- # xzdec
+@@ -1567,7 +1567,7 @@ endif()
+ # xzdec and lzmadec
  #############################################################################
- 
--if(HAVE_GETOPT_LONG AND HAVE_DECODERS)
+
+-if(HAVE_DECODERS AND (NOT MSVC OR MSVC_VERSION GREATER_EQUAL 1900))
 +if(0)
-     add_executable(xzdec
+     foreach(XZDEC xzdec lzmadec)
+         add_executable("${XZDEC}"
+             src/common/sysdefs.h
+@@ -1624,7 +1624,7 @@ endif()
+ # lzmainfo
+ #############################################################################
+
+-if(HAVE_DECODERS AND (NOT MSVC OR MSVC_VERSION GREATER_EQUAL 1900))
++if(0)
+     add_executable(lzmainfo
          src/common/sysdefs.h
          src/common/tuklib_common.h
-@@ -1008,7 +1008,7 @@ endif()
+@@ -1680,7 +1680,7 @@ endif()
  # xz
  #############################################################################
- 
--if(NOT MSVC AND HAVE_GETOPT_LONG)
+
+-if(NOT MSVC OR MSVC_VERSION GREATER_EQUAL 1900)
 +if(0)
      add_executable(xz
          src/common/mythread.h
          src/common/sysdefs.h
--- 
-2.41.0
+@@ -1914,7 +1914,7 @@ endif()
+ # Scripts
+ #############################################################################
 
+-if(UNIX)
++if(0)
+     # NOTE: This isn't as sophisticated as in the Autotools build which
+     # uses posix-shell.m4 but hopefully this doesn't need to be either.
+     # CMake likely won't be used on as many (old) obscure systems as the
