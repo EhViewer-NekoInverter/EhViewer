@@ -13,385 +13,324 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.easyrecyclerview
 
-package com.hippo.easyrecyclerview;
+import android.animation.Animator
+import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
+import android.os.Handler
+import android.util.AttributeSet
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewConfiguration
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
+import com.hippo.ehviewer.R
+import com.hippo.yorozuya.AnimationUtils
+import com.hippo.yorozuya.LayoutUtils
+import com.hippo.yorozuya.MathUtils
+import com.hippo.yorozuya.SimpleAnimatorListener
+import com.hippo.yorozuya.SimpleHandler
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
-import android.os.Handler;
-import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewConfiguration;
+class FastScroller @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
+) : View(
+    context,
+    attrs,
+    defStyleAttr,
+) {
+    private var mSimpleHandler: Handler? = null
+    private var mDraggable = false
+    private var mMinHandlerHeight = 0
+    private var mRecyclerView: RecyclerView? = null
+    private var mOnScrollChangeListener: RecyclerView.OnScrollListener? = null
+    private var mAdapter: RecyclerView.Adapter<*>? = null
+    private var mAdapterDataObserver: AdapterDataObserver? = null
+    private var mHandler: Drawable? = null
+    private var mHandlerOffset = INVALID
+    private var mHandlerHeight = INVALID
+    private var mDownX = INVALID.toFloat()
+    private var mDownY = INVALID.toFloat()
+    private var mLastMotionY = INVALID.toFloat()
+    private var mDragged = false
+    private var mCantDrag = false
+    private var mTouchSlop = 0
+    private var mListener: OnDragHandlerListener? = null
+    private var mShowAnimator: ObjectAnimator? = null
+    private var mHideAnimator: ObjectAnimator? = null
+    private val mHideRunnable = Runnable { mHideAnimator!!.start() }
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.hippo.ehviewer.R;
-import com.hippo.yorozuya.AnimationUtils;
-import com.hippo.yorozuya.LayoutUtils;
-import com.hippo.yorozuya.MathUtils;
-import com.hippo.yorozuya.SimpleAnimatorListener;
-import com.hippo.yorozuya.SimpleHandler;
-
-public class FastScroller extends View {
-    private static final int INVALID = -1;
-
-    private static final int SCROLL_BAR_FADE_DURATION = 500;
-    private static final int SCROLL_BAR_DELAY = 1500;
-
-    private static final int MIN_HANDLER_HEIGHT_DP = 48;
-
-    private Handler mSimpleHandler;
-
-    private boolean mDraggable;
-
-    private int mMinHandlerHeight;
-
-    private RecyclerView mRecyclerView;
-    private RecyclerView.OnScrollListener mOnScrollChangeListener;
-    private RecyclerView.Adapter<?> mAdapter;
-    private RecyclerView.AdapterDataObserver mAdapterDataObserver;
-
-    private Drawable mHandler;
-    private int mHandlerOffset = INVALID;
-    private int mHandlerHeight = INVALID;
-
-    private float mDownX = INVALID;
-    private float mDownY = INVALID;
-
-    private float mLastMotionY = INVALID;
-
-    private boolean mDragged = false;
-
-    private boolean mCantDrag = false;
-
-    private int mTouchSlop;
-
-    private OnDragHandlerListener mListener;
-
-    private ObjectAnimator mShowAnimator;
-    private ObjectAnimator mHideAnimator;
-
-    private final Runnable mHideRunnable = new Runnable() {
-        @Override
-        public void run() {
-            mHideAnimator.start();
-        }
-    };
-
-    public FastScroller(Context context) {
-        super(context);
-        init(context, null, 0);
+    init {
+        init(context, attrs, defStyleAttr)
     }
 
-    public FastScroller(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context, attrs, 0);
-    }
-
-    public FastScroller(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context, attrs, defStyleAttr);
-    }
-
-    private void init(Context context, AttributeSet attrs, int defStyleAttr) {
-        mSimpleHandler = SimpleHandler.getInstance();
-
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FastScroller, defStyleAttr, 0);
-        mHandler = a.getDrawable(R.styleable.FastScroller_handler);
-        mDraggable = a.getBoolean(R.styleable.FastScroller_draggable, true);
-        a.recycle();
-
-        setAlpha(0.0f);
-        setVisibility(INVISIBLE);
-
-        mMinHandlerHeight = LayoutUtils.dp2pix(context, MIN_HANDLER_HEIGHT_DP);
-        mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
-
-        mShowAnimator = ObjectAnimator.ofFloat(this, "alpha", 1.0f);
-        mShowAnimator.setInterpolator(AnimationUtils.FAST_SLOW_INTERPOLATOR);
-        mShowAnimator.setDuration(SCROLL_BAR_FADE_DURATION);
-
-        mHideAnimator = ObjectAnimator.ofFloat(this, "alpha", 0.0f);
-        mHideAnimator.setInterpolator(AnimationUtils.SLOW_FAST_INTERPOLATOR);
-        mHideAnimator.setDuration(SCROLL_BAR_FADE_DURATION);
-        mHideAnimator.addListener(new SimpleAnimatorListener() {
-            private boolean mCancel;
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                mCancel = true;
+    private fun init(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
+        mSimpleHandler = SimpleHandler.getInstance()
+        val a = context.obtainStyledAttributes(attrs, R.styleable.FastScroller, defStyleAttr, 0)
+        mHandler = a.getDrawable(R.styleable.FastScroller_handler)
+        mDraggable = a.getBoolean(R.styleable.FastScroller_draggable, true)
+        a.recycle()
+        setAlpha(0.0f)
+        visibility = INVISIBLE
+        mMinHandlerHeight = LayoutUtils.dp2pix(context, MIN_HANDLER_HEIGHT_DP.toFloat())
+        mTouchSlop = ViewConfiguration.get(context).scaledTouchSlop
+        mShowAnimator = ObjectAnimator.ofFloat(this, "alpha", 1.0f)
+        mShowAnimator!!.interpolator = AnimationUtils.FAST_SLOW_INTERPOLATOR
+        mShowAnimator!!.setDuration(SCROLL_BAR_FADE_DURATION.toLong())
+        mHideAnimator = ObjectAnimator.ofFloat(this, "alpha", 0.0f)
+        mHideAnimator!!.interpolator = AnimationUtils.SLOW_FAST_INTERPOLATOR
+        mHideAnimator!!.setDuration(SCROLL_BAR_FADE_DURATION.toLong())
+        mHideAnimator!!.addListener(object : SimpleAnimatorListener() {
+            private var mCancel = false
+            override fun onAnimationCancel(animation: Animator) {
+                mCancel = true
             }
 
-            @Override
-            public void onAnimationEnd(Animator animation) {
+            override fun onAnimationEnd(animation: Animator) {
                 if (mCancel) {
-                    mCancel = false;
+                    mCancel = false
                 } else {
-                    setVisibility(INVISIBLE);
+                    visibility = INVISIBLE
                 }
             }
-        });
+        })
     }
 
-    public void setOnDragHandlerListener(OnDragHandlerListener listener) {
-        mListener = listener;
+    fun setOnDragHandlerListener(listener: OnDragHandlerListener?) {
+        mListener = listener
     }
 
-    private void updatePosition(boolean show) {
+    private fun updatePosition(show: Boolean) {
         if (mRecyclerView == null) {
-            return;
+            return
         }
-
-        int paddingTop = getPaddingTop();
-        int paddingBottom = getPaddingBottom();
-        int height = getHeight() - paddingTop - paddingBottom;
-        int offset = mRecyclerView.computeVerticalScrollOffset();
-        int extent = mRecyclerView.computeVerticalScrollExtent();
-        int range = mRecyclerView.computeVerticalScrollRange();
-
+        val paddingTop = paddingTop
+        val paddingBottom = paddingBottom
+        val height = height - paddingTop - paddingBottom
+        val offset = mRecyclerView!!.computeVerticalScrollOffset()
+        val extent = mRecyclerView!!.computeVerticalScrollExtent()
+        val range = mRecyclerView!!.computeVerticalScrollRange()
         if (height <= 0 || extent >= range || extent <= 0) {
-            return;
+            return
         }
-
-        long endOffset = (long) height * offset / range;
-        int endHeight = height * extent / range;
-
-        endHeight = Math.max(endHeight, mMinHandlerHeight);
-        endOffset = Math.min(endOffset, height - endHeight);
-
-        mHandlerOffset = (int) (endOffset + paddingTop);
-        mHandlerHeight = endHeight;
-
+        var endOffset = height.toLong() * offset / range
+        var endHeight = height * extent / range
+        endHeight = max(endHeight.toDouble(), mMinHandlerHeight.toDouble()).toInt()
+        endOffset = min(endOffset.toDouble(), (height - endHeight).toDouble()).toLong()
+        mHandlerOffset = (endOffset + paddingTop).toInt()
+        mHandlerHeight = endHeight
         if (show) {
-            if (mHideAnimator.isRunning()) {
-                mHideAnimator.cancel();
-                mShowAnimator.start();
-            } else if (getVisibility() != VISIBLE && !mShowAnimator.isRunning()) {
-                setVisibility(VISIBLE);
-                mShowAnimator.start();
+            if (mHideAnimator!!.isRunning) {
+                mHideAnimator!!.cancel()
+                mShowAnimator!!.start()
+            } else if (visibility != VISIBLE && !mShowAnimator!!.isRunning) {
+                visibility = VISIBLE
+                mShowAnimator!!.start()
             }
-
-            Handler handler = mSimpleHandler;
-            handler.removeCallbacks(mHideRunnable);
-
+            val handler = mSimpleHandler
+            handler!!.removeCallbacks(mHideRunnable)
             if (!mDragged) {
-                handler.postDelayed(mHideRunnable, SCROLL_BAR_DELAY);
+                handler.postDelayed(mHideRunnable, SCROLL_BAR_DELAY.toLong())
             }
         }
     }
 
-    public void setHandlerDrawable(Drawable drawable) {
-        mHandler = drawable;
-        invalidate();
+    fun setHandlerDrawable(drawable: Drawable?) {
+        mHandler = drawable
+        invalidate()
     }
 
-    public boolean isDraggable() {
-        return mDraggable;
-    }
-
-    public void setDraggable(boolean draggable) {
-        mDraggable = draggable;
-        if (mDragged) {
-            mDragged = false;
+    var isDraggable: Boolean
+        get() = mDraggable
+        set(draggable) {
+            mDraggable = draggable
+            if (mDragged) {
+                mDragged = false
+            }
+            mSimpleHandler!!.removeCallbacks(mHideRunnable)
+            mHideRunnable.run()
         }
-        mSimpleHandler.removeCallbacks(mHideRunnable);
-        mHideRunnable.run();
-    }
 
-    public boolean isAttached() {
-        return mRecyclerView != null;
-    }
+    val isAttached: Boolean
+        get() = mRecyclerView != null
 
-    public void attachToRecyclerView(RecyclerView recyclerView) {
+    fun attachToRecyclerView(recyclerView: RecyclerView?) {
         if (recyclerView == null) {
-            return;
+            return
         }
-
-        if (mRecyclerView != null) {
-            throw new IllegalStateException("The FastScroller is already attached to a RecyclerView, " +
-                    "call detachedFromRecyclerView first");
+        check(mRecyclerView == null) {
+            "The FastScroller is already attached to a RecyclerView, " +
+                "call detachedFromRecyclerView first"
         }
-
-        mRecyclerView = recyclerView;
-        mOnScrollChangeListener = new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                updatePosition(true);
-                invalidate();
+        mRecyclerView = recyclerView
+        mOnScrollChangeListener = object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                updatePosition(true)
+                invalidate()
             }
-        };
-
-        recyclerView.addOnScrollListener(mOnScrollChangeListener);
-
-        mAdapter = recyclerView.getAdapter();
+        }
+        recyclerView.addOnScrollListener(mOnScrollChangeListener!!)
+        mAdapter = recyclerView.adapter
         if (mAdapter != null) {
-            mAdapterDataObserver = new RecyclerView.AdapterDataObserver() {
-                @Override
-                public void onItemRangeChanged(int positionStart, int itemCount) {
-                    super.onItemRangeChanged(positionStart, itemCount);
-                    updatePosition(false);
-                    invalidate();
+            mAdapterDataObserver = object : AdapterDataObserver() {
+                override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+                    super.onItemRangeChanged(positionStart, itemCount)
+                    updatePosition(false)
+                    invalidate()
                 }
 
-                @Override
-                public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
-                    super.onItemRangeChanged(positionStart, itemCount, payload);
-                    updatePosition(false);
-                    invalidate();
+                override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
+                    super.onItemRangeChanged(positionStart, itemCount, payload)
+                    updatePosition(false)
+                    invalidate()
                 }
 
-                @Override
-                public void onItemRangeInserted(int positionStart, int itemCount) {
-                    super.onItemRangeInserted(positionStart, itemCount);
-                    updatePosition(false);
-                    invalidate();
+                override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                    super.onItemRangeInserted(positionStart, itemCount)
+                    updatePosition(false)
+                    invalidate()
                 }
 
-                @Override
-                public void onItemRangeRemoved(int positionStart, int itemCount) {
-                    super.onItemRangeRemoved(positionStart, itemCount);
-                    updatePosition(false);
-                    invalidate();
+                override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+                    super.onItemRangeRemoved(positionStart, itemCount)
+                    updatePosition(false)
+                    invalidate()
                 }
 
-                @Override
-                public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
-                    super.onItemRangeMoved(fromPosition, toPosition, itemCount);
-                    updatePosition(false);
-                    invalidate();
+                override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
+                    super.onItemRangeMoved(fromPosition, toPosition, itemCount)
+                    updatePosition(false)
+                    invalidate()
                 }
-            };
-            mAdapter.registerAdapterDataObserver(mAdapterDataObserver);
+            }
+            mAdapter!!.registerAdapterDataObserver(mAdapterDataObserver!!)
         }
     }
 
-    public void detachedFromRecyclerView() {
+    fun detachedFromRecyclerView() {
         if (mRecyclerView != null && mOnScrollChangeListener != null) {
-            mRecyclerView.removeOnScrollListener(mOnScrollChangeListener);
+            mRecyclerView!!.removeOnScrollListener(mOnScrollChangeListener!!)
         }
-        mRecyclerView = null;
-        mOnScrollChangeListener = null;
-
+        mRecyclerView = null
+        mOnScrollChangeListener = null
         if (mAdapter != null && mAdapterDataObserver != null) {
-            mAdapter.unregisterAdapterDataObserver(mAdapterDataObserver);
+            mAdapter!!.unregisterAdapterDataObserver(mAdapterDataObserver!!)
         }
-        mAdapter = null;
-        mAdapterDataObserver = null;
-
-        setAlpha(0.0f);
-        setVisibility(INVISIBLE);
+        mAdapter = null
+        mAdapterDataObserver = null
+        setAlpha(0.0f)
+        visibility = INVISIBLE
     }
 
-    @Override
-    protected void onDraw(@NonNull Canvas canvas) {
+    override fun onDraw(canvas: Canvas) {
         if (mRecyclerView == null || mHandler == null) {
-            return;
+            return
         }
         if (mHandlerHeight == INVALID) {
-            updatePosition(false);
+            updatePosition(false)
         }
         if (mHandlerHeight == INVALID) {
-            return;
+            return
         }
-
-        int paddingLeft = getPaddingLeft();
-        int saved = canvas.save();
-        canvas.translate(paddingLeft, mHandlerOffset);
-        mHandler.setBounds(0, 0, getWidth() - paddingLeft - getPaddingRight(), mHandlerHeight);
-        mHandler.draw(canvas);
-        canvas.restoreToCount(saved);
+        val paddingLeft = getPaddingLeft()
+        val saved = canvas.save()
+        canvas.translate(paddingLeft.toFloat(), mHandlerOffset.toFloat())
+        mHandler!!.setBounds(0, 0, width - paddingLeft - getPaddingRight(), mHandlerHeight)
+        mHandler!!.draw(canvas)
+        canvas.restoreToCount(saved)
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (!mDraggable || getVisibility() != VISIBLE || mRecyclerView == null || mHandlerHeight == INVALID) {
-            return false;
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (!mDraggable || visibility != VISIBLE || mRecyclerView == null || mHandlerHeight == INVALID) {
+            return false
         }
-
-        int action = event.getAction();
+        val action = event.action
         if (action == MotionEvent.ACTION_DOWN) {
-            mCantDrag = false;
+            mCantDrag = false
         }
-
         if (mCantDrag) {
-            return false;
+            return false
         }
-
-        switch (action) {
-            case MotionEvent.ACTION_DOWN: {
-                mDragged = false;
-                mDownX = event.getX();
-                mDownY = event.getY();
+        when (action) {
+            MotionEvent.ACTION_DOWN -> {
+                mDragged = false
+                mDownX = event.x
+                mDownY = event.y
                 if (mDownY < mHandlerOffset || mDownY > mHandlerOffset + mHandlerHeight) {
-                    mCantDrag = true;
-                    return false;
+                    mCantDrag = true
+                    return false
                 }
-                break;
             }
-            case MotionEvent.ACTION_MOVE: {
+
+            MotionEvent.ACTION_MOVE -> {
                 if (!mDragged) {
-                    float x = event.getX();
-                    float y = event.getY();
+                    val x = event.x
+                    val y = event.y
                     // Check touch slop
                     if (MathUtils.dist(x, y, mDownX, mDownY) < mTouchSlop) {
-                        return true;
+                        return true
                     }
-                    if (Math.abs(x - mDownX) > Math.abs(y - mDownY) ||
-                            y < mHandlerOffset || y > mHandlerOffset + mHandlerHeight) {
-                        mCantDrag = true;
-                        return false;
+                    if (abs((x - mDownX).toDouble()) > abs((y - mDownY).toDouble()) || y < mHandlerOffset || y > mHandlerOffset + mHandlerHeight) {
+                        mCantDrag = true
+                        return false
                     } else {
-                        mDragged = true;
-                        mSimpleHandler.removeCallbacks(mHideRunnable);
+                        mDragged = true
+                        mSimpleHandler!!.removeCallbacks(mHideRunnable)
                         // Update mLastMotionY
-                        if (mDownY < mHandlerOffset || mDownY >= mHandlerOffset + mHandlerHeight) {
-                            // the point out of handler, make the point in handler center
-                            mLastMotionY = mHandlerOffset + (float) mHandlerHeight / 2;
-                        } else {
-                            mLastMotionY = mDownY;
-                        }
+                        mLastMotionY =
+                            if (mDownY < mHandlerOffset || mDownY >= mHandlerOffset + mHandlerHeight) {
+                                // the point out of handler, make the point in handler center
+                                mHandlerOffset + mHandlerHeight.toFloat() / 2
+                            } else {
+                                mDownY
+                            }
                         // Notify
                         if (mListener != null) {
-                            mListener.onStartDragHandler();
+                            mListener!!.onStartDragHandler()
                         }
                     }
                 }
-
-                int range = mRecyclerView.computeVerticalScrollRange();
+                val range = mRecyclerView!!.computeVerticalScrollRange()
                 if (range <= 0) {
-                    break;
+                    return true
                 }
-                float y = event.getY();
-                int scroll = (int) (range * (y - mLastMotionY) / (getHeight() - getPaddingTop() - getPaddingBottom()));
-                mRecyclerView.scrollBy(0, scroll);
-                mLastMotionY = y;
-                break;
+                val y = event.y
+                val scroll =
+                    (range * (y - mLastMotionY) / (height - paddingTop - paddingBottom)).toInt()
+                mRecyclerView!!.scrollBy(0, scroll)
+                mLastMotionY = y
             }
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
+
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 // Notify
                 if (mDragged && mListener != null) {
-                    mListener.onEndDragHandler();
+                    mListener!!.onEndDragHandler()
                 }
-                mDragged = false;
-                mSimpleHandler.postDelayed(mHideRunnable, SCROLL_BAR_DELAY);
-                break;
+                mDragged = false
+                mSimpleHandler!!.postDelayed(mHideRunnable, SCROLL_BAR_DELAY.toLong())
+            }
         }
-
-        return true;
+        return true
     }
 
-    public interface OnDragHandlerListener {
-        void onStartDragHandler();
+    interface OnDragHandlerListener {
+        fun onStartDragHandler()
+        fun onEndDragHandler()
+    }
 
-        void onEndDragHandler();
+    companion object {
+        private const val INVALID = -1
+        private const val SCROLL_BAR_FADE_DURATION = 500
+        private const val SCROLL_BAR_DELAY = 1500
+        private const val MIN_HANDLER_HEIGHT_DP = 48
     }
 }

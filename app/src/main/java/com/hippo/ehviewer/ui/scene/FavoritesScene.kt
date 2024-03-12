@@ -428,10 +428,10 @@ class FavoritesScene :
         if (mDrawerLayout != null && mDrawerLayout!!.isDrawerOpen(GravityCompat.END)) {
             // Skip if in search mode
             if (mRecyclerView != null && mRecyclerView!!.isInCustomChoice) {
-                return true
+                return false
             }
             if (mUrlBuilder == null || mHelper == null) {
-                return true
+                return false
             }
 
             // Local favorite position is 0, All favorite position is 1, so position - 2 is OK
@@ -452,7 +452,7 @@ class FavoritesScene :
             if (mRecyclerView != null && mRecyclerView!!.isInCustomChoice) {
                 mRecyclerView!!.toggleItemChecked(position)
             } else if (mHelper != null) {
-                val gi = mHelper!!.getDataAtEx(position) ?: return true
+                val gi = mHelper!!.getDataAtEx(position) ?: return false
                 val args = Bundle()
                 args.putString(
                     GalleryDetailScene.KEY_ACTION,
@@ -630,16 +630,14 @@ class FavoritesScene :
             return
         }
         mModifyGiList.clear()
-        val stateArray = mRecyclerView!!.checkedItemPositions
-        var i = 0
-        val n = stateArray.size()
-        while (i < n) {
-            if (stateArray.valueAt(i)) {
-                mHelper!!.getDataAtEx(stateArray.keyAt(i))?.let {
-                    mModifyGiList.add(it)
+        mRecyclerView!!.checkedItemPositions?.let {
+            for (i in 0 until it.size()) {
+                if (it.valueAt(i)) {
+                    mHelper!!.getDataAtEx(it.keyAt(i))?.let { gi ->
+                        mModifyGiList.add(gi)
+                    }
                 }
             }
-            i++
         }
         when (position) {
             // Check all

@@ -344,7 +344,7 @@ class ContentLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout
         }
 
         val firstVisibleItem: E?
-            get() = getDataAtEx(LayoutManagerUtils.getFirstVisibleItemPosition(mRecyclerView!!.layoutManager))
+            get() = getDataAtEx(LayoutManagerUtils.getFirstVisibleItemPosition(mRecyclerView!!.layoutManager!!))
 
         fun size(): Int {
             return mData.size
@@ -413,7 +413,7 @@ class ContentLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout
                             if (mRecyclerView!!.isAttachedToWindow) {
                                 mRecyclerView!!.stopScroll()
                                 LayoutManagerUtils.scrollToPositionWithOffset(
-                                    mRecyclerView!!.layoutManager,
+                                    mRecyclerView!!.layoutManager!!,
                                     0,
                                     0,
                                 )
@@ -452,7 +452,7 @@ class ContentLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout
                                     // RecyclerView scroll, to top
                                     mRecyclerView!!.stopScroll()
                                     LayoutManagerUtils.scrollToPositionWithOffset(
-                                        mRecyclerView!!.layoutManager,
+                                        mRecyclerView!!.layoutManager!!,
                                         0,
                                         0,
                                     )
@@ -473,7 +473,7 @@ class ContentLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout
                                 if (mCurrentTaskType == TYPE_PRE_PAGE_KEEP_POS) {
                                     mRecyclerView!!.stopScroll()
                                     LayoutManagerUtils.scrollToPositionProperly(
-                                        mRecyclerView!!.layoutManager,
+                                        mRecyclerView!!.layoutManager!!,
                                         context,
                                         dataSize - 1,
                                         mOnScrollToPositionListener,
@@ -481,7 +481,7 @@ class ContentLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout
                                 } else {
                                     mRecyclerView!!.stopScroll()
                                     LayoutManagerUtils.scrollToPositionWithOffset(
-                                        mRecyclerView!!.layoutManager,
+                                        mRecyclerView!!.layoutManager!!,
                                         0,
                                         0,
                                     )
@@ -516,7 +516,7 @@ class ContentLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout
                                     // RecyclerView scroll
                                     mRecyclerView!!.stopScroll()
                                     LayoutManagerUtils.scrollToPositionWithOffset(
-                                        mRecyclerView!!.layoutManager,
+                                        mRecyclerView!!.layoutManager!!,
                                         oldDataSize,
                                         0,
                                     )
@@ -539,7 +539,7 @@ class ContentLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout
                                 } else {
                                     mRecyclerView!!.stopScroll()
                                     LayoutManagerUtils.scrollToPositionWithOffset(
-                                        mRecyclerView!!.layoutManager,
+                                        mRecyclerView!!.layoutManager!!,
                                         oldDataSize,
                                         0,
                                     )
@@ -583,7 +583,7 @@ class ContentLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout
                                 // RecyclerView scroll
                                 mRecyclerView!!.stopScroll()
                                 LayoutManagerUtils.scrollToPositionWithOffset(
-                                    mRecyclerView!!.layoutManager,
+                                    mRecyclerView!!.layoutManager!!,
                                     0,
                                     0,
                                 )
@@ -641,7 +641,7 @@ class ContentLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout
                             if (newIndexEnd > oldIndexEnd && newIndexEnd > 0 && mRecyclerView!!.isAttachedToWindow) {
                                 mRecyclerView!!.stopScroll()
                                 LayoutManagerUtils.scrollToPositionWithOffset(
-                                    mRecyclerView!!.layoutManager,
+                                    mRecyclerView!!.layoutManager!!,
                                     newIndexEnd - 1,
                                     0,
                                 )
@@ -751,9 +751,9 @@ class ContentLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout
         }
 
         val pageForTop: Int
-            get() = getPageForPosition(LayoutManagerUtils.getFirstVisibleItemPosition(mRecyclerView!!.layoutManager))
+            get() = getPageForPosition(LayoutManagerUtils.getFirstVisibleItemPosition(mRecyclerView!!.layoutManager!!))
         val pageForBottom: Int
-            get() = getPageForPosition(LayoutManagerUtils.getLastVisibleItemPosition(mRecyclerView!!.layoutManager))
+            get() = getPageForPosition(LayoutManagerUtils.getLastVisibleItemPosition(mRecyclerView!!.layoutManager!!))
 
         fun canGoTo(): Boolean {
             return isContentShowing
@@ -774,7 +774,7 @@ class ContentLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout
                 val position = getPageStart(page)
                 mRecyclerView!!.stopScroll()
                 LayoutManagerUtils.scrollToPositionWithOffset(
-                    mRecyclerView!!.layoutManager,
+                    mRecyclerView!!.layoutManager!!,
                     position,
                     0,
                 )
@@ -815,7 +815,7 @@ class ContentLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout
         fun scrollTo(position: Int) {
             cancelCurrentTask()
             mRecyclerView!!.stopScroll()
-            LayoutManagerUtils.scrollToPositionWithOffset(mRecyclerView!!.layoutManager, position, 0)
+            LayoutManagerUtils.scrollToPositionWithOffset(mRecyclerView!!.layoutManager!!, position, 0)
             onScrollToPosition(position)
         }
 

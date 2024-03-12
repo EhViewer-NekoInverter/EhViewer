@@ -572,15 +572,16 @@ class DownloadsScene :
             if (collectDownloadInfo) {
                 downloadInfoList = LinkedList()
             }
-            val stateArray = recyclerView.checkedItemPositions
-            for (i in 0 until stateArray.size()) {
-                if (stateArray.valueAt(i)) {
-                    val info = list[stateArray.keyAt(i)]
-                    if (collectDownloadInfo) {
-                        downloadInfoList!!.add(info)
-                    }
-                    if (collectGid) {
-                        gidList!!.add(info.gid)
+            recyclerView.checkedItemPositions?.let {
+                for (i in 0 until it.size()) {
+                    if (it.valueAt(i)) {
+                        val info = list[it.keyAt(i)]
+                        if (collectDownloadInfo) {
+                            downloadInfoList!!.add(info)
+                        }
+                        if (collectGid) {
+                            gidList!!.add(info.gid)
+                        }
                     }
                 }
             }

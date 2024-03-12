@@ -13,15 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.easyrecyclerview
 
-package com.hippo.easyrecyclerview;
+import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 
-import android.view.View;
-
-import androidx.recyclerview.widget.RecyclerView;
-
-public class SimpleHolder extends RecyclerView.ViewHolder {
-    public SimpleHolder(View itemView) {
-        super(itemView);
-    }
-}
+class SimpleHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
