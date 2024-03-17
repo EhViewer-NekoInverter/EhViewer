@@ -40,47 +40,6 @@
                 android:padding="32dp"
                 app:srcCompat="@mipmap/ic_launcher" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/username_layout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:hint="@string/username"
-                android:minWidth="@dimen/single_max_width">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:autofillHints="username"
-                    android:imeOptions="actionNext"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:singleLine="true" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/password_layout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:hint="@string/password"
-                android:minWidth="@dimen/single_max_width"
-                app:passwordToggleEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:autofillHints="password"
-                    android:imeOptions="actionDone"
-                    android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:singleLine="true" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -109,7 +68,7 @@
                 android:paddingVertical="4dp">
 
                 <Button
-                    android:id="@+id/sign_in"
+                    android:id="@+id/sign_in_via_webview"
                     style="@style/Widget.MaterialComponents.Button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -135,15 +94,6 @@
                 android:paddingVertical="4dp">
 
                 <TextView
-                    android:id="@+id/sign_in_via_webview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="?selectableItemBackground"
-                    android:paddingHorizontal="8dp"
-                    android:text="@string/sign_in_via_webview"
-                    android:textColor="?attr/textColorThemeAccent" />
-
-                <TextView
                     android:id="@+id/sign_in_via_cookies"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -152,18 +102,20 @@
                     android:text="@string/sign_in_via_cookies"
                     android:textColor="?attr/textColorThemeAccent" />
 
+                <TextView
+                    android:id="@+id/tourist_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="?selectableItemBackground"
+                    android:paddingHorizontal="8dp"
+                    android:text="@string/tourist_mode"
+                    android:textColor="?attr/textColorThemeAccent" />
+
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/tourist_mode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:background="?selectableItemBackground"
-                android:paddingHorizontal="8dp"
-                android:text="@string/tourist_mode"
-                android:textColor="?attr/textColorThemeAccent" />
         </LinearLayout>
+
     </ScrollView>
 
     <FrameLayout

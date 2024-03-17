@@ -44,7 +44,6 @@ import com.hippo.ehviewer.client.parser.GalleryTokenApiParser
 import com.hippo.ehviewer.client.parser.HomeParser
 import com.hippo.ehviewer.client.parser.ProfileParser
 import com.hippo.ehviewer.client.parser.RateGalleryParser
-import com.hippo.ehviewer.client.parser.SignInParser
 import com.hippo.ehviewer.client.parser.TorrentParser
 import com.hippo.ehviewer.client.parser.VoteCommentParser
 import com.hippo.ehviewer.client.parser.VoteTagParser
@@ -143,23 +142,6 @@ object EhEngine {
                 }
             } ?: throw InsufficientFundsException()
         }
-    }
-
-    suspend fun signIn(username: String, password: String): String {
-        val referer = "https://forums.e-hentai.org/index.php?act=Login&CODE=00"
-        val builder = FormBody.Builder()
-            .add("referer", referer)
-            .add("b", "")
-            .add("bt", "")
-            .add("UserName", username)
-            .add("PassWord", password)
-            .add("CookieDate", "1")
-        val url = EhUrl.API_SIGN_IN
-        val origin = "https://forums.e-hentai.org"
-        Log.d(TAG, url)
-        return EhRequestBuilder(url, referer, origin)
-            .post(builder.build())
-            .executeAndParsingWith(SignInParser::parse)
     }
 
     private suspend fun fillGalleryList(
