@@ -93,7 +93,7 @@ NekoInverter 版的 EhViewer，复刻自 [https://gitlab.com/NekoInverter/EhView
 
     Copyright 2014-2019 Hippo Seven
     Copyright 2020-2022 NekoInverter
-    Copyright 2022-2023 Moedog
+    Copyright 2022-2024 Moedog
 
     EhViewer is free software:
     you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
