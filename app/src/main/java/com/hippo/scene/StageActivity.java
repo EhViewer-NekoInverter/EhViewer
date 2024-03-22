@@ -48,14 +48,12 @@ public abstract class StageActivity extends EhActivity {
     private static final String KEY_STAGE_ID = "stage_activity_stage_id";
     private static final String KEY_SCENE_TAG_LIST = "stage_activity_scene_tag_list";
     private static final String KEY_NEXT_ID = "stage_activity_next_id";
-    private static final long ANIMATE_TIME = 400L;
     private static final Map<Class<?>, Integer> sLaunchModeMap = new HashMap<>();
     private final ArrayList<String> mSceneTagList = new ArrayList<>();
     private final ArrayList<String> mDelaySceneTagList = new ArrayList<>();
     private final AtomicInteger mIdGenerator = new AtomicInteger();
     private final SceneViewComparator mSceneViewComparator = new SceneViewComparator();
     private int mStageId = IntIdGenerator.INVALID_ID;
-    private long mFinishTime = 0;
 
     public static void registerLaunchMode(Class<?> clazz, @SceneFragment.LaunchMode int launchMode) {
         if (launchMode != SceneFragment.LAUNCH_MODE_STANDARD &&
@@ -487,15 +485,6 @@ public abstract class StageActivity extends EhActivity {
     }
 
     private void finishScene(String tag, TransitionHelper transitionHelper) {
-        long delay = System.currentTimeMillis() - mFinishTime;
-        if (delay < ANIMATE_TIME) {
-            try {
-                Thread.sleep(ANIMATE_TIME - delay);
-            } catch (InterruptedException e) {
-                // Ignore
-            }
-        }
-
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         // Get scene
@@ -555,7 +544,6 @@ public abstract class StageActivity extends EhActivity {
         if (scene instanceof SceneFragment) {
             ((SceneFragment) scene).returnResult(this);
         }
-        mFinishTime = System.currentTimeMillis();
     }
 
     public void refreshTopScene() {
