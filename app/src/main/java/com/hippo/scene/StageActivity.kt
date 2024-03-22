@@ -13,631 +13,582 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.scene
 
-package com.hippo.scene;
+import android.annotation.SuppressLint
+import android.app.assist.AssistContent
+import android.content.Intent
+import android.os.Bundle
+import android.util.Log
+import android.view.View
+import androidx.fragment.app.Fragment
+import com.hippo.ehviewer.R
+import com.hippo.ehviewer.ui.EhActivity
+import com.hippo.scene.SceneFragment.LaunchMode
+import com.hippo.yorozuya.AssertUtils
+import com.hippo.yorozuya.IntIdGenerator
+import java.util.concurrent.atomic.AtomicInteger
 
-import android.app.assist.AssistContent;
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-import com.hippo.ehviewer.R;
-import com.hippo.ehviewer.ui.EhActivity;
-import com.hippo.yorozuya.AssertUtils;
-import com.hippo.yorozuya.IntIdGenerator;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-
-public abstract class StageActivity extends EhActivity {
-    public static final String ACTION_START_SCENE = "start_scene";
-    public static final String KEY_SCENE_NAME = "stage_activity_scene_name";
-    public static final String KEY_SCENE_ARGS = "stage_activity_scene_args";
-    private static final String TAG = StageActivity.class.getSimpleName();
-    private static final String KEY_STAGE_ID = "stage_activity_stage_id";
-    private static final String KEY_SCENE_TAG_LIST = "stage_activity_scene_tag_list";
-    private static final String KEY_NEXT_ID = "stage_activity_next_id";
-    private static final Map<Class<?>, Integer> sLaunchModeMap = new HashMap<>();
-    private final ArrayList<String> mSceneTagList = new ArrayList<>();
-    private final ArrayList<String> mDelaySceneTagList = new ArrayList<>();
-    private final AtomicInteger mIdGenerator = new AtomicInteger();
-    private final SceneViewComparator mSceneViewComparator = new SceneViewComparator();
-    private int mStageId = IntIdGenerator.INVALID_ID;
-
-    public static void registerLaunchMode(Class<?> clazz, @SceneFragment.LaunchMode int launchMode) {
-        if (launchMode != SceneFragment.LAUNCH_MODE_STANDARD &&
-                launchMode != SceneFragment.LAUNCH_MODE_SINGLE_TOP &&
-                launchMode != SceneFragment.LAUNCH_MODE_SINGLE_TASK) {
-            throw new IllegalStateException("Invalid launch mode: " + launchMode);
-        }
-        sLaunchModeMap.put(clazz, launchMode);
-    }
-
-    public abstract int getContainerViewId();
+abstract class StageActivity : EhActivity() {
+    private val mSceneTagList = ArrayList<String?>()
+    private val mDelaySceneTagList = ArrayList<String?>()
+    private val mIdGenerator = AtomicInteger()
+    private val mSceneViewComparator = SceneViewComparator()
+    private var stageId = IntIdGenerator.INVALID_ID
+    abstract val containerViewId: Int
 
     /**
-     * @return {@code true} for start scene
+     * @return `true` for start scene
      */
-    private boolean startSceneFromIntent(Intent intent) {
-        String clazzStr = intent.getStringExtra(KEY_SCENE_NAME);
-        if (null == clazzStr) {
-            return false;
+    private fun startSceneFromIntent(intent: Intent): Boolean {
+        val clazzStr = intent.getStringExtra(KEY_SCENE_NAME) ?: return false
+        val clazz: Class<*> = try {
+            Class.forName(clazzStr)
+        } catch (e: ClassNotFoundException) {
+            Log.e(TAG, "Can't find class $clazzStr", e)
+            return false
         }
-
-        Class<?> clazz;
-        try {
-            clazz = Class.forName(clazzStr);
-        } catch (ClassNotFoundException e) {
-            Log.e(TAG, "Can't find class " + clazzStr, e);
-            return false;
-        }
-
-        Bundle args = intent.getBundleExtra(KEY_SCENE_ARGS);
-
-        Announcer announcer = onStartSceneFromIntent(clazz, args);
-        if (announcer == null) {
-            return false;
-        }
-
-        startScene(announcer);
-        return true;
+        val args = intent.getBundleExtra(KEY_SCENE_ARGS)
+        val announcer = onStartSceneFromIntent(clazz, args) ?: return false
+        startScene(announcer)
+        return true
     }
 
     /**
-     * Start scene from {@code Intent}, it might be not safe,
+     * Start scene from `Intent`, it might be not safe,
      * Correct it here.
      *
-     * @return {@code null} for do not start scene
+     * @return `null` for do not start scene
      */
-    @Nullable
-    protected Announcer onStartSceneFromIntent(@NonNull Class<?> clazz, @Nullable Bundle args) {
-        return new Announcer(clazz).setArgs(args);
+    protected open fun onStartSceneFromIntent(clazz: Class<*>, args: Bundle?): Announcer? {
+        return Announcer(clazz).setArgs(args)
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-
-        if (intent == null || !ACTION_START_SCENE.equals(intent.getAction()) ||
-                !startSceneFromIntent(intent)) {
-            onUnrecognizedIntent(intent);
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (ACTION_START_SCENE != intent.action || !startSceneFromIntent(intent)
+        ) {
+            onUnrecognizedIntent(intent)
         }
     }
 
-    /**
-     * Called when launch with action {@code android.intent.action.MAIN}
-     */
-    @Nullable
-    protected abstract Announcer getLaunchAnnouncer();
+    protected abstract val launchAnnouncer: Announcer?
 
     /**
-     * Can't recognize intent in first time {@code onCreate} and {@code onNewIntent},
+     * Can't recognize intent in first time `onCreate` and `onNewIntent`,
      * null included.
      */
-    protected void onUnrecognizedIntent(@Nullable Intent intent) {
-    }
+    protected open fun onUnrecognizedIntent(intent: Intent?) {}
 
     /**
-     * Call {@code setContentView} here. Do <b>NOT</b> call {@code startScene} here
+     * Call `setContentView` here. Do **NOT** call `startScene` here
      */
-    protected abstract void onCreate2(@Nullable Bundle savedInstanceState);
+    protected abstract fun onCreate2(savedInstanceState: Bundle?)
 
-    @Override
-    protected final void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         if (savedInstanceState != null) {
-            mStageId = savedInstanceState.getInt(KEY_STAGE_ID, IntIdGenerator.INVALID_ID);
-            ArrayList<String> list = savedInstanceState.getStringArrayList(KEY_SCENE_TAG_LIST);
+            stageId = savedInstanceState.getInt(KEY_STAGE_ID, IntIdGenerator.INVALID_ID)
+            val list = savedInstanceState.getStringArrayList(KEY_SCENE_TAG_LIST)
             if (list != null) {
-                mSceneTagList.addAll(list);
-                mDelaySceneTagList.addAll(list);
+                mSceneTagList.addAll(list)
+                mDelaySceneTagList.addAll(list)
             }
-            mIdGenerator.lazySet(savedInstanceState.getInt(KEY_NEXT_ID));
+            mIdGenerator.lazySet(savedInstanceState.getInt(KEY_NEXT_ID))
         }
-
-        if (mStageId == IntIdGenerator.INVALID_ID) {
-            ((SceneApplication) getApplicationContext()).registerStageActivity(this);
+        if (stageId == IntIdGenerator.INVALID_ID) {
+            (applicationContext as SceneApplication).registerStageActivity(this)
         } else {
-            ((SceneApplication) getApplicationContext()).registerStageActivity(this, mStageId);
+            (applicationContext as SceneApplication).registerStageActivity(this, stageId)
         }
 
         // Create layout
-        onCreate2(savedInstanceState);
-
-        Intent intent = getIntent();
+        onCreate2(savedInstanceState)
+        val intent = intent
         if (savedInstanceState == null) {
             if (intent != null) {
-                String action = intent.getAction();
-                if (Intent.ACTION_MAIN.equals(action)) {
-                    Announcer announcer = getLaunchAnnouncer();
+                val action = intent.action
+                if (Intent.ACTION_MAIN == action) {
+                    val announcer = launchAnnouncer
                     if (announcer != null) {
-                        startScene(announcer);
-                        return;
+                        startScene(announcer)
+                        return
                     }
-                } else if (ACTION_START_SCENE.equals(action)) {
+                } else if (ACTION_START_SCENE == action) {
                     if (startSceneFromIntent(intent)) {
-                        return;
+                        return
                     }
                 }
             }
 
             // Can't recognize intent
-            onUnrecognizedIntent(intent);
+            onUnrecognizedIntent(intent)
         }
     }
 
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(KEY_STAGE_ID, mStageId);
-        outState.putStringArrayList(KEY_SCENE_TAG_LIST, mSceneTagList);
-        outState.putInt(KEY_NEXT_ID, mIdGenerator.getAndIncrement());
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(KEY_STAGE_ID, stageId)
+        outState.putStringArrayList(KEY_SCENE_TAG_LIST, mSceneTagList)
+        outState.putInt(KEY_NEXT_ID, mIdGenerator.getAndIncrement())
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ((SceneApplication) getApplicationContext()).unregisterStageActivity(mStageId);
+    override fun onDestroy() {
+        super.onDestroy()
+        (applicationContext as SceneApplication).unregisterStageActivity(stageId)
     }
 
-    public void onSceneViewCreated(SceneFragment scene, Bundle savedInstanceState) {
+    open fun onSceneViewCreated(scene: SceneFragment, savedInstanceState: Bundle?) {}
+
+    open fun onSceneViewDestroyed(scene: SceneFragment) {}
+
+    fun onSceneDestroyed(scene: SceneFragment) {
+        mDelaySceneTagList.remove(scene.tag)
     }
 
-    public void onSceneViewDestroyed(SceneFragment scene) {
+    internal fun onRegister(id: Int) {
+        stageId = id
     }
 
-    void onSceneDestroyed(SceneFragment scene) {
-        mDelaySceneTagList.remove(scene.getTag());
+    internal fun onUnregister() {}
+
+    protected open fun onTransactScene() {}
+
+    val sceneCount: Int
+        get() = mSceneTagList.size
+
+    private fun getSceneLaunchMode(clazz: Class<*>): Int {
+        val integer = sLaunchModeMap[clazz]
+        return integer ?: throw RuntimeException("Not register " + clazz.getName())
     }
 
-    protected void onRegister(int id) {
-        mStageId = id;
-    }
-
-    protected void onUnregister() {
-    }
-
-    protected void onTransactScene() {
-    }
-
-    public int getStageId() {
-        return mStageId;
-    }
-
-    public int getSceneCount() {
-        return mSceneTagList.size();
-    }
-
-    public int getSceneLaunchMode(Class<?> clazz) {
-        Integer integer = sLaunchModeMap.get(clazz);
-        if (integer == null) {
-            throw new RuntimeException("Not register " + clazz.getName());
-        } else {
-            return integer;
+    private fun newSceneInstance(clazz: Class<*>): SceneFragment {
+        return try {
+            clazz.getDeclaredConstructor().newInstance() as SceneFragment
+        } catch (e: InstantiationException) {
+            throw IllegalStateException("Can't instance " + clazz.getName(), e)
+        } catch (e: IllegalAccessException) {
+            throw IllegalStateException(
+                "The constructor of " +
+                    clazz.getName() + " is not visible",
+                e,
+            )
+        } catch (e: ClassCastException) {
+            throw IllegalStateException(clazz.getName() + " can not cast to scene", e)
         }
     }
 
-    private SceneFragment newSceneInstance(Class<?> clazz) {
-        try {
-            return (SceneFragment) clazz.newInstance();
-        } catch (InstantiationException e) {
-            throw new IllegalStateException("Can't instance " + clazz.getName(), e);
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException("The constructor of " +
-                    clazz.getName() + " is not visible", e);
-        } catch (ClassCastException e) {
-            throw new IllegalStateException(clazz.getName() + " can not cast to scene", e);
-        }
-    }
-
-    public void startScene(Announcer announcer) {
-        startScene(announcer, false);
-    }
-
-    public void startScene(Announcer announcer, boolean horizontal) {
-        Class<?> clazz = announcer.clazz;
-        Bundle args = announcer.args;
-        TransitionHelper tranHelper = announcer.tranHelper;
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        int launchMode = getSceneLaunchMode(clazz);
+    @JvmOverloads
+    fun startScene(announcer: Announcer, horizontal: Boolean = false) {
+        val clazz = announcer.clazz
+        val args = announcer.args
+        val tranHelper = announcer.tranHelper
+        val fragmentManager = supportFragmentManager
+        val launchMode = getSceneLaunchMode(clazz)
 
         // Check LAUNCH_MODE_SINGLE_TASK
         if (launchMode == SceneFragment.LAUNCH_MODE_SINGLE_TASK) {
-            for (int i = 0, n = mSceneTagList.size(); i < n; i++) {
-                String tag = mSceneTagList.get(i);
-                Fragment fragment = fragmentManager.findFragmentByTag(tag);
+            var i = 0
+            val n = mSceneTagList.size
+            while (i < n) {
+                val tag = mSceneTagList[i]
+                val fragment = fragmentManager.findFragmentByTag(tag)
                 if (fragment == null) {
-                    Log.e(TAG, "Can't find fragment with tag: " + tag);
-                    continue;
+                    Log.e(TAG, "Can't find fragment with tag: $tag")
+                    i++
+                    continue
                 }
-
                 if (clazz.isInstance(fragment)) { // Get it
-                    FragmentTransaction transaction = fragmentManager.beginTransaction();
+                    val transaction = fragmentManager.beginTransaction()
 
                     // Use default animation
                     if (horizontal) {
-                        transaction.setCustomAnimations(R.anim.scene_open_enter_horizontal, R.anim.scene_open_exit);
+                        transaction.setCustomAnimations(
+                            R.anim.scene_open_enter_horizontal,
+                            R.anim.scene_open_exit,
+                        )
                     } else {
-                        transaction.setCustomAnimations(R.anim.scene_open_enter, R.anim.scene_open_exit);
+                        transaction.setCustomAnimations(
+                            R.anim.scene_open_enter,
+                            R.anim.scene_open_exit,
+                        )
                     }
 
                     // Remove top fragments
-                    for (int j = i + 1; j < n; j++) {
-                        String topTag = mSceneTagList.get(j);
-                        Fragment topFragment = fragmentManager.findFragmentByTag(topTag);
+                    for (j in i + 1 until n) {
+                        val topTag = mSceneTagList[j]
+                        val topFragment = fragmentManager.findFragmentByTag(topTag)
                         if (null == topFragment) {
-                            Log.e(TAG, "Can't find fragment with tag: " + topTag);
-                            continue;
+                            Log.e(TAG, "Can't find fragment with tag: $topTag")
+                            continue
                         }
                         // Clear shared element
-                        topFragment.setSharedElementEnterTransition(null);
-                        topFragment.setSharedElementReturnTransition(null);
-                        topFragment.setEnterTransition(null);
-                        topFragment.setExitTransition(null);
+                        topFragment.sharedElementEnterTransition = null
+                        topFragment.sharedElementReturnTransition = null
+                        topFragment.enterTransition = null
+                        topFragment.exitTransition = null
                         // Remove it
-                        transaction.remove(topFragment);
+                        transaction.remove(topFragment)
                     }
 
                     // Remove tag from index i+1
-                    mSceneTagList.subList(i + 1, mSceneTagList.size()).clear();
-                    mDelaySceneTagList.subList(i + 1, mDelaySceneTagList.size()).clear();
+                    mSceneTagList.subList(i + 1, mSceneTagList.size).clear()
+                    mDelaySceneTagList.subList(i + 1, mDelaySceneTagList.size).clear()
 
                     // Attach fragment
-                    if (fragment.isDetached()) {
-                        transaction.attach(fragment);
+                    if (fragment.isDetached) {
+                        transaction.attach(fragment)
                     }
 
                     // Commit
-                    transaction.commitAllowingStateLoss();
-                    onTransactScene();
+                    transaction.commitAllowingStateLoss()
+                    onTransactScene()
 
                     // New arguments
-                    if (args != null && fragment instanceof SceneFragment) {
+                    if (args != null && fragment is SceneFragment) {
                         // TODO Call onNewArguments when view created ?
-                        ((SceneFragment) fragment).onNewArguments(args);
+                        fragment.onNewArguments(args)
                     }
-
-                    return;
+                    return
                 }
+                i++
             }
         }
 
         // Get current fragment
-        SceneFragment currentScene = null;
-        if (mSceneTagList.size() > 0) {
+        var currentScene: SceneFragment? = null
+        if (mSceneTagList.isNotEmpty()) {
             // Get last tag
-            String tag = mSceneTagList.get(mSceneTagList.size() - 1);
-            Fragment fragment = fragmentManager.findFragmentByTag(tag);
+            val tag = mSceneTagList[mSceneTagList.size - 1]
+            val fragment = fragmentManager.findFragmentByTag(tag)
             if (fragment != null) {
-                AssertUtils.assertTrue(fragment instanceof SceneFragment);
-                currentScene = (SceneFragment) fragment;
+                AssertUtils.assertTrue(fragment is SceneFragment)
+                currentScene = fragment as SceneFragment?
             }
         }
 
         // Check LAUNCH_MODE_SINGLE_TASK
         if (clazz.isInstance(currentScene) && launchMode == SceneFragment.LAUNCH_MODE_SINGLE_TOP) {
             if (args != null) {
-                currentScene.onNewArguments(args);
+                currentScene!!.onNewArguments(args)
             }
-            return;
+            return
         }
 
         // Create new scene
-        SceneFragment newScene = newSceneInstance(clazz);
-        newScene.setArguments(args);
+        val newScene = newSceneInstance(clazz)
+        newScene.setArguments(args)
 
         // Create new scene tag
-        String newTag = Integer.toString(mIdGenerator.getAndIncrement());
+        val newTag = mIdGenerator.getAndIncrement().toString()
 
         // Add new tag to list
-        mSceneTagList.add(newTag);
-        mDelaySceneTagList.add(newTag);
-
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        mSceneTagList.add(newTag)
+        mDelaySceneTagList.add(newTag)
+        val transaction = fragmentManager.beginTransaction()
         // Animation
         if (currentScene != null) {
             if (tranHelper == null || !tranHelper.onTransition(
-                    this, transaction, currentScene, newScene)) {
+                    this,
+                    transaction,
+                    currentScene,
+                    newScene,
+                )
+            ) {
                 // Clear shared item
-                currentScene.setSharedElementEnterTransition(null);
-                currentScene.setSharedElementReturnTransition(null);
-                currentScene.setEnterTransition(null);
-                currentScene.setExitTransition(null);
-                newScene.setSharedElementEnterTransition(null);
-                newScene.setSharedElementReturnTransition(null);
-                newScene.setEnterTransition(null);
-                newScene.setExitTransition(null);
+                currentScene.sharedElementEnterTransition = null
+                currentScene.sharedElementReturnTransition = null
+                currentScene.enterTransition = null
+                currentScene.exitTransition = null
+                newScene.sharedElementEnterTransition = null
+                newScene.sharedElementReturnTransition = null
+                newScene.enterTransition = null
+                newScene.exitTransition = null
                 // Set default animation
                 if (horizontal) {
-                    transaction.setCustomAnimations(R.anim.scene_open_enter_horizontal, R.anim.scene_open_exit);
+                    transaction.setCustomAnimations(
+                        R.anim.scene_open_enter_horizontal,
+                        R.anim.scene_open_exit,
+                    )
                 } else {
-                    transaction.setCustomAnimations(R.anim.scene_open_enter, R.anim.scene_open_exit);
+                    transaction.setCustomAnimations(R.anim.scene_open_enter, R.anim.scene_open_exit)
                 }
             }
             // Detach current scene
-            if (!currentScene.isDetached()) {
-                transaction.detach(currentScene);
+            if (!currentScene.isDetached) {
+                transaction.detach(currentScene)
             } else {
-                Log.e(TAG, "Current scene is detached");
+                Log.e(TAG, "Current scene is detached")
             }
         }
 
         // Add new scene
-        transaction.add(getContainerViewId(), newScene, newTag);
+        transaction.add(containerViewId, newScene, newTag)
 
         // Commit
-        transaction.commitAllowingStateLoss();
-        onTransactScene();
+        transaction.commitAllowingStateLoss()
+        onTransactScene()
 
         // Check request
-        if (announcer.requestFrom != null) {
-            newScene.addRequest(announcer.requestFrom.getTag(), announcer.requestCode);
+        if (announcer.requestFrom != null && announcer.requestFrom!!.tag != null) {
+            newScene.addRequest(announcer.requestFrom!!.tag!!, announcer.requestCode)
         }
     }
 
-    public void startSceneFirstly(Announcer announcer) {
-        Class<?> clazz = announcer.clazz;
-        Bundle args = announcer.args;
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        int launchMode = getSceneLaunchMode(clazz);
-        boolean forceNewScene = launchMode == SceneFragment.LAUNCH_MODE_STANDARD;
-        boolean createNewScene = true;
-        boolean findScene = false;
-        SceneFragment scene = null;
-
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
+    fun startSceneFirstly(announcer: Announcer) {
+        val clazz = announcer.clazz
+        val args = announcer.args
+        val fragmentManager = supportFragmentManager
+        val launchMode = getSceneLaunchMode(clazz)
+        val forceNewScene = launchMode == SceneFragment.LAUNCH_MODE_STANDARD
+        var createNewScene = true
+        var findScene = false
+        var scene: SceneFragment? = null
+        val transaction = fragmentManager.beginTransaction()
 
         // Set default animation
-        transaction.setCustomAnimations(R.anim.scene_open_enter, R.anim.scene_open_exit);
-
-        String findSceneTag = null;
-        for (int i = 0, n = mSceneTagList.size(); i < n; i++) {
-            String tag = mSceneTagList.get(i);
-            Fragment fragment = fragmentManager.findFragmentByTag(tag);
+        transaction.setCustomAnimations(R.anim.scene_open_enter, R.anim.scene_open_exit)
+        var findSceneTag: String? = null
+        var i = 0
+        val n = mSceneTagList.size
+        while (i < n) {
+            val tag = mSceneTagList[i]
+            val fragment = fragmentManager.findFragmentByTag(tag)
             if (fragment == null) {
-                Log.e(TAG, "Can't find fragment with tag: " + tag);
-                continue;
+                Log.e(TAG, "Can't find fragment with tag: $tag")
+                i++
+                continue
             }
 
             // Clear shared element
-            fragment.setSharedElementEnterTransition(null);
-            fragment.setSharedElementReturnTransition(null);
-            fragment.setEnterTransition(null);
-            fragment.setExitTransition(null);
+            fragment.sharedElementEnterTransition = null
+            fragment.sharedElementReturnTransition = null
+            fragment.enterTransition = null
+            fragment.exitTransition = null
 
             // Check is target scene
             if (!forceNewScene && !findScene && clazz.isInstance(fragment) &&
-                    (launchMode == SceneFragment.LAUNCH_MODE_SINGLE_TASK || !fragment.isDetached())) {
-                scene = (SceneFragment) fragment;
-                findScene = true;
-                createNewScene = false;
-                findSceneTag = tag;
+                (launchMode == SceneFragment.LAUNCH_MODE_SINGLE_TASK || !fragment.isDetached)
+            ) {
+                scene = fragment as SceneFragment?
+                findScene = true
+                createNewScene = false
+                findSceneTag = tag
                 if (fragment.isDetached()) {
-                    transaction.attach(fragment);
+                    transaction.attach(fragment)
                 }
             } else {
                 // Remove it
-                transaction.remove(fragment);
+                transaction.remove(fragment)
             }
+            i++
         }
 
         // Handle tag list
-        mSceneTagList.clear();
+        mSceneTagList.clear()
         if (null != findSceneTag) {
-            mSceneTagList.add(findSceneTag);
+            mSceneTagList.add(findSceneTag)
         }
-
         if (createNewScene) {
-            scene = newSceneInstance(clazz);
-            scene.setArguments(args);
+            scene = newSceneInstance(clazz)
+            scene.setArguments(args)
 
             // Create scene tag
-            String tag = Integer.toString(mIdGenerator.getAndIncrement());
+            val tag = mIdGenerator.getAndIncrement().toString()
 
             // Add tag to list
-            mSceneTagList.add(tag);
-            mDelaySceneTagList.add(tag);
+            mSceneTagList.add(tag)
+            mDelaySceneTagList.add(tag)
 
             // Add scene
-            transaction.add(getContainerViewId(), scene, tag);
+            transaction.add(containerViewId, scene, tag)
         }
 
         // Commit
-        transaction.commitAllowingStateLoss();
-        onTransactScene();
-
+        transaction.commitAllowingStateLoss()
+        onTransactScene()
         if (!createNewScene && args != null) {
             // TODO Call onNewArguments when view created ?
-            scene.onNewArguments(args);
+            scene!!.onNewArguments(args)
         }
     }
 
-    int getSceneIndex(SceneFragment scene) {
-        return getTagIndex(scene.getTag());
+    fun getSceneIndex(scene: SceneFragment): Int {
+        return getTagIndex(scene.tag)
     }
 
-    int getTagIndex(String tag) {
-        return mSceneTagList.indexOf(tag);
+    private fun getTagIndex(tag: String?): Int {
+        return mSceneTagList.indexOf(tag)
     }
 
-    void sortSceneViews(List<View> views) {
-        views.sort(mSceneViewComparator);
+    fun sortSceneViews(views: ArrayList<View>) {
+        views.sortWith(mSceneViewComparator)
     }
 
-    public void finishScene(SceneFragment scene) {
-        finishScene(scene, null);
+    @JvmOverloads
+    fun finishScene(scene: SceneFragment, transitionHelper: TransitionHelper? = null) {
+        finishScene(scene.tag, transitionHelper)
     }
 
-    public void finishScene(SceneFragment scene, TransitionHelper transitionHelper) {
-        finishScene(scene.getTag(), transitionHelper);
-    }
-
-    private void finishScene(String tag, TransitionHelper transitionHelper) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
+    private fun finishScene(tag: String?, transitionHelper: TransitionHelper?) {
+        val fragmentManager = supportFragmentManager
 
         // Get scene
-        Fragment scene = fragmentManager.findFragmentByTag(tag);
+        val scene = fragmentManager.findFragmentByTag(tag)
         if (scene == null) {
-            Log.e(TAG, "finishScene: Can't find scene by tag: " + tag);
-            return;
+            Log.e(TAG, "finishScene: Can't find scene by tag: $tag")
+            return
         }
 
         // Get scene index
-        int index = mSceneTagList.indexOf(tag);
+        val index = mSceneTagList.indexOf(tag)
         if (index < 0) {
-            Log.e(TAG, "finishScene: Can't find the tag in tag list: " + tag);
-            return;
+            Log.e(TAG, "finishScene: Can't find the tag in tag list: $tag")
+            return
         }
-
-        if (mSceneTagList.size() == 1) {
+        if (mSceneTagList.size == 1) {
             // It is the last fragment, finish Activity now
-            Log.i(TAG, "finishScene: It is the last scene, finish activity now");
-            finish();
-            return;
+            Log.i(TAG, "finishScene: It is the last scene, finish activity now")
+            finish()
+            return
         }
-
-        Fragment next = null;
-        if (index == mSceneTagList.size() - 1) {
+        var next: Fragment? = null
+        if (index == mSceneTagList.size - 1) {
             // It is first fragment, show the next one
-            next = fragmentManager.findFragmentByTag(mSceneTagList.get(index - 1));
+            next = fragmentManager.findFragmentByTag(mSceneTagList[index - 1])
         }
-
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        val transaction = fragmentManager.beginTransaction()
         if (next != null) {
             if (transitionHelper == null || !transitionHelper.onTransition(
-                    this, transaction, scene, next)) {
+                    this,
+                    transaction,
+                    scene,
+                    next,
+                )
+            ) {
                 // Clear shared item
-                scene.setSharedElementEnterTransition(null);
-                scene.setSharedElementReturnTransition(null);
-                scene.setEnterTransition(null);
-                scene.setExitTransition(null);
-                next.setSharedElementEnterTransition(null);
-                next.setSharedElementReturnTransition(null);
-                next.setEnterTransition(null);
-                next.setExitTransition(null);
+                scene.sharedElementEnterTransition = null
+                scene.sharedElementReturnTransition = null
+                scene.enterTransition = null
+                scene.exitTransition = null
+                next.sharedElementEnterTransition = null
+                next.sharedElementReturnTransition = null
+                next.enterTransition = null
+                next.exitTransition = null
                 // Do not show animate if it is not the first fragment
-                transaction.setCustomAnimations(R.anim.scene_close_enter, R.anim.scene_close_exit);
+                transaction.setCustomAnimations(R.anim.scene_close_enter, R.anim.scene_close_exit)
             }
             // Attach fragment
-            transaction.attach(next);
+            transaction.attach(next)
         }
-        transaction.remove(scene);
-        transaction.commitAllowingStateLoss();
-        onTransactScene();
+        transaction.remove(scene)
+        transaction.commitAllowingStateLoss()
+        onTransactScene()
 
         // Remove tag
-        mSceneTagList.remove(index);
+        mSceneTagList.removeAt(index)
 
         // Return result
-        if (scene instanceof SceneFragment) {
-            ((SceneFragment) scene).returnResult(this);
+        if (scene is SceneFragment) {
+            scene.returnResult(this)
         }
     }
 
-    public void refreshTopScene() {
-        int index = mSceneTagList.size() - 1;
+    fun refreshTopScene() {
+        val index = mSceneTagList.size - 1
         if (index < 0) {
-            return;
+            return
         }
-        String tag = mSceneTagList.get(index);
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentByTag(tag);
-
-        if (fragment == null) {
-            return;
-        }
-
-        fragmentManager.beginTransaction().detach(fragment).commitAllowingStateLoss();
-        fragmentManager.beginTransaction().attach(fragment).commitAllowingStateLoss();
+        val tag = mSceneTagList[index]
+        val fragmentManager = supportFragmentManager
+        val fragment = fragmentManager.findFragmentByTag(tag) ?: return
+        fragmentManager.beginTransaction().detach(fragment).commitAllowingStateLoss()
+        fragmentManager.beginTransaction().attach(fragment).commitAllowingStateLoss()
     }
 
-    @Override
-    public void onBackPressed() {
-        int size = mSceneTagList.size();
-        String tag = mSceneTagList.get(size - 1);
-        SceneFragment scene;
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+    @Deprecated("Deprecated in Java")
+    @SuppressLint("MissingSuperCall")
+    override fun onBackPressed() {
+        val size = mSceneTagList.size
+        val tag = mSceneTagList[size - 1]
+        val scene: SceneFragment
+        val fragment = supportFragmentManager.findFragmentByTag(tag)
         if (fragment == null) {
-            Log.e(TAG, "onBackPressed: Can't find scene by tag: " + tag);
-            return;
+            Log.e(TAG, "onBackPressed: Can't find scene by tag: $tag")
+            return
         }
-        if (!(fragment instanceof SceneFragment)) {
-            Log.e(TAG, "onBackPressed: The fragment is not SceneFragment");
-            return;
+        if (fragment !is SceneFragment) {
+            Log.e(TAG, "onBackPressed: The fragment is not SceneFragment")
+            return
         }
-
-        scene = (SceneFragment) fragment;
-        scene.onBackPressed();
+        scene = fragment
+        scene.onBackPressed()
     }
 
-    @Override
-    public void onProvideAssistContent(AssistContent outContent) {
-        super.onProvideAssistContent(outContent);
-        int size = mSceneTagList.size();
-        String tag = mSceneTagList.get(size - 1);
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+    override fun onProvideAssistContent(outContent: AssistContent) {
+        super.onProvideAssistContent(outContent)
+        val size = mSceneTagList.size
+        val tag = mSceneTagList[size - 1]
+        val fragment = supportFragmentManager.findFragmentByTag(tag)
         if (fragment == null) {
-            Log.e(TAG, "onProvideAssistContent: Can't find scene by tag: " + tag);
-            return;
+            Log.e(TAG, "onProvideAssistContent: Can't find scene by tag: $tag")
+            return
         }
+        (fragment as? SceneFragment)?.onProvideAssistContent(outContent)
+            ?: Log.e(
+                TAG,
+                "onProvideAssistContent: The fragment is not SceneFragment",
+            )
+    }
 
-        if (fragment instanceof SceneFragment scene) {
-            scene.onProvideAssistContent(outContent);
+    fun findSceneByTag(tag: String?): SceneFragment? {
+        val fragmentManager = supportFragmentManager
+        val fragment = fragmentManager.findFragmentByTag(tag)
+        return if (fragment != null) {
+            fragment as SceneFragment?
         } else {
-            Log.e(TAG, "onProvideAssistContent: The fragment is not SceneFragment");
+            null
         }
     }
 
-    public SceneFragment findSceneByTag(String tag) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentByTag(tag);
-        if (fragment != null) {
-            return (SceneFragment) fragment;
-        } else {
-            return null;
+    val topSceneClass: Class<*>?
+        get() {
+            val index = mSceneTagList.size - 1
+            if (index < 0) {
+                return null
+            }
+            val tag = mSceneTagList[index]
+            val fragment = supportFragmentManager.findFragmentByTag(tag) ?: return null
+            return fragment.javaClass
         }
-    }
 
-    @Nullable
-    public Class<?> getTopSceneClass() {
-        int index = mSceneTagList.size() - 1;
-        if (index < 0) {
-            return null;
-        }
-        String tag = mSceneTagList.get(index);
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
-        if (null == fragment) {
-            return null;
-        }
-        return fragment.getClass();
-    }
-
-    private final class SceneViewComparator implements Comparator<View> {
-        private int getIndex(View view) {
-            Object o = view.getTag(R.id.fragment_tag);
-            if (o instanceof String) {
-                return mDelaySceneTagList.indexOf(o);
+    private inner class SceneViewComparator : Comparator<View> {
+        private fun getIndex(view: View): Int {
+            val o = view.getTag(R.id.fragment_tag)
+            return if (o is String) {
+                mDelaySceneTagList.indexOf(o)
             } else {
-                return -1;
+                -1
             }
         }
 
-        @Override
-        public int compare(View lhs, View rhs) {
-            return getIndex(lhs) - getIndex(rhs);
+        override fun compare(lhs: View, rhs: View): Int {
+            return getIndex(lhs) - getIndex(rhs)
+        }
+    }
+
+    companion object {
+        const val ACTION_START_SCENE = "start_scene"
+        const val KEY_SCENE_NAME = "stage_activity_scene_name"
+        const val KEY_SCENE_ARGS = "stage_activity_scene_args"
+        private val TAG = StageActivity::class.java.getSimpleName()
+        private const val KEY_STAGE_ID = "stage_activity_stage_id"
+        private const val KEY_SCENE_TAG_LIST = "stage_activity_scene_tag_list"
+        private const val KEY_NEXT_ID = "stage_activity_next_id"
+        private val sLaunchModeMap: MutableMap<Class<*>, Int> = HashMap()
+        fun registerLaunchMode(clazz: Class<*>, @LaunchMode launchMode: Int) {
+            check(!(launchMode != SceneFragment.LAUNCH_MODE_STANDARD && launchMode != SceneFragment.LAUNCH_MODE_SINGLE_TOP && launchMode != SceneFragment.LAUNCH_MODE_SINGLE_TASK)) { "Invalid launch mode: $launchMode" }
+            sLaunchModeMap[clazz] = launchMode
         }
     }
 }

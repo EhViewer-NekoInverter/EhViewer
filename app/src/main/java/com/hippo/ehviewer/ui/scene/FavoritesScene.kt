@@ -245,7 +245,7 @@ class FavoritesScene :
         mFabLayout!!.setHidePrimaryFab(false)
         mFabLayout!!.setOnClickFabListener(this)
         mFabLayout!!.setOnExpandListener(this)
-        addAboveSnackView(mFabLayout)
+        addAboveSnackView(mFabLayout!!)
 
         // Restore search mode
         if (mSearchMode) {
@@ -336,7 +336,7 @@ class FavoritesScene :
             mRecyclerView = null
         }
         if (null != mFabLayout) {
-            removeAboveSnackView(mFabLayout)
+            removeAboveSnackView(mFabLayout!!)
             mFabLayout = null
         }
         mAdapter = null

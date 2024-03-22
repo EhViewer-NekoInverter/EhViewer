@@ -13,43 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.scene
 
-package com.hippo.scene;
+import android.app.Application
+import android.util.SparseArray
+import com.hippo.yorozuya.IntIdGenerator
 
-import android.app.Application;
-import android.util.SparseArray;
+abstract class SceneApplication : Application() {
+    private val mIdGenerator = IntIdGenerator()
+    private val mStageMap = SparseArray<StageActivity>()
 
-import com.hippo.yorozuya.IntIdGenerator;
-
-public abstract class SceneApplication extends Application {
-    private final IntIdGenerator mIdGenerator = new IntIdGenerator();
-    private final SparseArray<StageActivity> mStageMap = new SparseArray<>();
-
-    void registerStageActivity(StageActivity stage) {
-        int id = mIdGenerator.nextId();
-        mStageMap.put(id, stage);
-        stage.onRegister(id);
+    fun registerStageActivity(stage: StageActivity) {
+        val id = mIdGenerator.nextId()
+        mStageMap.put(id, stage)
+        stage.onRegister(id)
     }
 
-    void registerStageActivity(StageActivity stage, int id) {
-        if (mStageMap.indexOfKey(id) >= 0) {
-            throw new IllegalStateException("The id exists: " + id);
-        }
-
-        mStageMap.put(id, stage);
-        stage.onRegister(id);
+    fun registerStageActivity(stage: StageActivity, id: Int) {
+        check(mStageMap.indexOfKey(id) < 0) { "The id exists: $id" }
+        mStageMap.put(id, stage)
+        stage.onRegister(id)
     }
 
-    void unregisterStageActivity(int id) {
-        int index = mStageMap.indexOfKey(id);
+    fun unregisterStageActivity(id: Int) {
+        val index = mStageMap.indexOfKey(id)
         if (index >= 0) {
-            StageActivity stage = mStageMap.valueAt(index);
-            mStageMap.remove(id);
-            stage.onUnregister();
+            val stage = mStageMap.valueAt(index)
+            mStageMap.remove(id)
+            stage.onUnregister()
         }
     }
 
-    public StageActivity findStageActivityById(int id) {
-        return mStageMap.get(id);
+    fun findStageActivityById(id: Int): StageActivity {
+        return mStageMap[id]
     }
 }

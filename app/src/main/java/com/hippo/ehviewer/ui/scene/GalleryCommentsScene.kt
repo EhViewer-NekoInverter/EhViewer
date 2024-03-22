@@ -278,8 +278,8 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
             }
         }
         mFab!!.setOnClickListener(this)
-        addAboveSnackView(mEditPanel)
-        addAboveSnackView(mFabLayout)
+        addAboveSnackView(mEditPanel!!)
+        addAboveSnackView(mFabLayout!!)
         mViewTransition = ViewTransition(mRecyclerView, tip)
         updateView(false)
         return view
@@ -307,11 +307,11 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
             mRecyclerView = null
         }
         if (null != mEditPanel) {
-            removeAboveSnackView(mEditPanel)
+            removeAboveSnackView(mEditPanel!!)
             mEditPanel = null
         }
         if (null != mFabLayout) {
-            removeAboveSnackView(mFabLayout)
+            removeAboveSnackView(mFabLayout!!)
             mFabLayout = null
         }
         mFab = null

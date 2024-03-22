@@ -13,163 +13,143 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.scene
 
-package com.hippo.scene;
+import android.app.assist.AssistContent
+import android.os.Bundle
+import android.view.View
+import androidx.annotation.IntDef
+import androidx.fragment.app.Fragment
+import com.hippo.ehviewer.R
+import com.hippo.yorozuya.collect.IntList
+import rikka.core.res.resolveDrawable
+import kotlin.math.min
 
-import android.app.assist.AssistContent;
-import android.os.Bundle;
-import android.view.View;
+open class SceneFragment : Fragment() {
+    var result: Bundle? = null
+    private var resultCode = RESULT_CANCELED
+    private var mRequestSceneTagList: MutableList<String> = ArrayList(0)
+    private var mRequestCodeList = IntList()
 
-import androidx.annotation.IntDef;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
+    open fun onNewArguments(args: Bundle) {}
 
-import com.hippo.ehviewer.R;
-import com.hippo.yorozuya.collect.IntList;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.util.ArrayList;
-import java.util.List;
-
-import rikka.core.res.ResourcesKt;
-
-public class SceneFragment extends Fragment {
-    public static final int LAUNCH_MODE_STANDARD = 0;
-    public static final int LAUNCH_MODE_SINGLE_TOP = 1;
-    public static final int LAUNCH_MODE_SINGLE_TASK = 2;
-    /**
-     * Standard scene result: operation canceled.
-     */
-    public static final int RESULT_CANCELED = 0;
-    /**
-     * Standard scene result: operation succeeded.
-     */
-    public static final int RESULT_OK = -1;
-    int resultCode = RESULT_CANCELED;
-    Bundle result = null;
-    List<String> mRequestSceneTagList = new ArrayList<>(0);
-    IntList mRequestCodeList = new IntList();
-
-    public void onNewArguments(@NonNull Bundle args) {
-    }
-
-    public void startScene(Announcer announcer, boolean horizontal) {
-        FragmentActivity activity = getActivity();
-        if (activity instanceof StageActivity) {
-            ((StageActivity) activity).startScene(announcer, horizontal);
+    fun startScene(announcer: Announcer, horizontal: Boolean) {
+        val activity = activity
+        if (activity is StageActivity) {
+            activity.startScene(announcer, horizontal)
         }
     }
 
-    public void startScene(Announcer announcer) {
-        FragmentActivity activity = getActivity();
-        if (activity instanceof StageActivity) {
-            ((StageActivity) activity).startScene(announcer);
+    fun startScene(announcer: Announcer) {
+        val activity = activity
+        if (activity is StageActivity) {
+            activity.startScene(announcer)
         }
     }
 
-    public void finish() {
-        finish(null);
-    }
-
-    public void finish(TransitionHelper transitionHelper) {
-        FragmentActivity activity = getActivity();
-        if (activity instanceof StageActivity) {
-            ((StageActivity) activity).finishScene(this, transitionHelper);
+    @JvmOverloads
+    fun finish(transitionHelper: TransitionHelper? = null) {
+        val activity = activity
+        if (activity is StageActivity) {
+            activity.finishScene(this, transitionHelper)
         }
     }
 
-    public void finishStage() {
-        FragmentActivity activity = getActivity();
-        if (activity != null) {
-            activity.finish();
-        }
+    fun finishStage() {
+        val activity = activity
+        activity?.finish()
     }
 
-    /**
-     * @return negative for error
-     */
-    public int getStackIndex() {
-        FragmentActivity activity = getActivity();
-        if (activity instanceof StageActivity) {
-            return ((StageActivity) activity).getSceneIndex(this);
-        } else {
-            return -1;
-        }
-    }
-
-    public void onBackPressed() {
-        finish();
-    }
-
-    public void onProvideAssistContent(AssistContent outContent) {
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        view.setTag(R.id.fragment_tag, getTag());
-        view.setBackground(ResourcesKt.resolveDrawable(requireActivity().getTheme(), android.R.attr.windowBackground));
-
-        // Notify
-        FragmentActivity activity = getActivity();
-        if (activity instanceof StageActivity) {
-            ((StageActivity) activity).onSceneViewCreated(this, savedInstanceState);
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
-        // Notify
-        FragmentActivity activity = getActivity();
-        if (activity instanceof StageActivity) {
-            ((StageActivity) activity).onSceneViewDestroyed(this);
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        FragmentActivity activity = getActivity();
-        if (activity instanceof StageActivity) {
-            ((StageActivity) activity).onSceneDestroyed(this);
-        }
-    }
-
-    void addRequest(String requestSceneTag, int requestCode) {
-        mRequestSceneTagList.add(requestSceneTag);
-        mRequestCodeList.add(requestCode);
-    }
-
-    void returnResult(StageActivity stage) {
-        for (int i = 0, size = Math.min(mRequestSceneTagList.size(), mRequestCodeList.size()); i < size; i++) {
-            String tag = mRequestSceneTagList.get(i);
-            int code = mRequestCodeList.get(i);
-            SceneFragment scene = stage.findSceneByTag(tag);
-            if (scene != null) {
-                scene.onSceneResult(code, resultCode, result);
+    val stackIndex: Int
+        /**
+         * @return negative for error
+         */
+        get() {
+            val activity = activity
+            return if (activity is StageActivity) {
+                activity.getSceneIndex(this)
+            } else {
+                -1
             }
         }
-        mRequestSceneTagList.clear();
-        mRequestCodeList.clear();
+
+    open fun onBackPressed() {
+        finish()
     }
 
-    protected void onSceneResult(int requestCode, int resultCode, Bundle data) {
+    open fun onProvideAssistContent(outContent: AssistContent) {}
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        view.setTag(R.id.fragment_tag, tag)
+        view.background =
+            requireActivity().getTheme().resolveDrawable(android.R.attr.windowBackground)
+        // Notify
+        val activity = activity
+        if (activity is StageActivity) {
+            activity.onSceneViewCreated(this, savedInstanceState)
+        }
     }
 
-    public void setResult(int resultCode, Bundle result) {
-        this.resultCode = resultCode;
-        this.result = result;
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Notify
+        val activity = activity
+        if (activity is StageActivity) {
+            activity.onSceneViewDestroyed(this)
+        }
     }
 
-    @IntDef({LAUNCH_MODE_STANDARD, LAUNCH_MODE_SINGLE_TOP, LAUNCH_MODE_SINGLE_TASK})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface LaunchMode {
+    override fun onDestroy() {
+        super.onDestroy()
+        val activity = activity
+        if (activity is StageActivity) {
+            activity.onSceneDestroyed(this)
+        }
+    }
+
+    fun addRequest(requestSceneTag: String, requestCode: Int) {
+        mRequestSceneTagList.add(requestSceneTag)
+        mRequestCodeList.add(requestCode)
+    }
+
+    fun returnResult(stage: StageActivity) {
+        for (i in 0 until min(mRequestSceneTagList.size.toDouble(), mRequestCodeList.size.toDouble()).toInt()) {
+            val tag = mRequestSceneTagList[i]
+            val code = mRequestCodeList[i]
+            val scene = stage.findSceneByTag(tag)
+            scene?.onSceneResult(code, resultCode, result)
+        }
+        mRequestSceneTagList.clear()
+        mRequestCodeList.clear()
+    }
+
+    protected open fun onSceneResult(requestCode: Int, resultCode: Int, data: Bundle?) {}
+
+    fun setResult(resultCode: Int, result: Bundle?) {
+        this.resultCode = resultCode
+        this.result = result
+    }
+
+    @IntDef(LAUNCH_MODE_STANDARD, LAUNCH_MODE_SINGLE_TOP, LAUNCH_MODE_SINGLE_TASK)
+    @Retention(
+        AnnotationRetention.SOURCE,
+    )
+    annotation class LaunchMode
+
+    companion object {
+        const val LAUNCH_MODE_STANDARD = 0
+        const val LAUNCH_MODE_SINGLE_TOP = 1
+        const val LAUNCH_MODE_SINGLE_TASK = 2
+
+        /**
+         * Standard scene result: operation canceled.
+         */
+        const val RESULT_CANCELED = 0
+
+        /**
+         * Standard scene result: operation succeeded.
+         */
+        const val RESULT_OK = -1
     }
 }

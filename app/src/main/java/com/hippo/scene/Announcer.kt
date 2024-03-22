@@ -13,43 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.scene
 
-package com.hippo.scene;
+import android.os.Bundle
 
-import android.os.Bundle;
+class Announcer(@JvmField var clazz: Class<*>) {
+    @JvmField
+    var args: Bundle? = null
 
-public final class Announcer {
-    Class<?> clazz;
-    Bundle args;
-    TransitionHelper tranHelper;
-    SceneFragment requestFrom;
-    int requestCode;
+    @JvmField
+    var tranHelper: TransitionHelper? = null
 
-    public Announcer(Class<?> clazz) {
-        this.clazz = clazz;
+    @JvmField
+    var requestFrom: SceneFragment? = null
+
+    @JvmField
+    var requestCode = 0
+
+    fun setArgs(args: Bundle?): Announcer {
+        this.args = args
+        return this
     }
 
-    public Class<?> getClazz() {
-        return clazz;
+    fun setTranHelper(tranHelper: TransitionHelper?): Announcer {
+        this.tranHelper = tranHelper
+        return this
     }
 
-    public Bundle getArgs() {
-        return args;
-    }
-
-    public Announcer setArgs(Bundle args) {
-        this.args = args;
-        return this;
-    }
-
-    public Announcer setTranHelper(TransitionHelper tranHelper) {
-        this.tranHelper = tranHelper;
-        return this;
-    }
-
-    public Announcer setRequestCode(SceneFragment requestFrom, int requestCode) {
-        this.requestFrom = requestFrom;
-        this.requestCode = requestCode;
-        return this;
+    fun setRequestCode(requestFrom: SceneFragment?, requestCode: Int): Announcer {
+        this.requestFrom = requestFrom
+        this.requestCode = requestCode
+        return this
     }
 }

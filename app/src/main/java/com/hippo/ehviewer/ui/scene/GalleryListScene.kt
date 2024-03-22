@@ -456,7 +456,7 @@ class GalleryListScene :
         mFabLayout!!.setHidePrimaryFab(false)
         mFabLayout!!.setOnClickFabListener(this)
         mFabLayout!!.setOnExpandListener(this)
-        addAboveSnackView(mFabLayout)
+        addAboveSnackView(mFabLayout!!)
         mActionFabDrawable = AddDeleteDrawable(context, context.getColor(R.color.primary_drawable_dark))
         mFabLayout!!.primaryFab!!.setImageDrawable(mActionFabDrawable)
         mSearchFab!!.setOnClickListener(this)
@@ -495,7 +495,7 @@ class GalleryListScene :
             mRecyclerView = null
         }
         if (null != mFabLayout) {
-            removeAboveSnackView(mFabLayout)
+            removeAboveSnackView(mFabLayout!!)
             mFabLayout = null
         }
         mAdapter = null
@@ -1523,14 +1523,14 @@ class GalleryListScene :
             }
         }
 
-        abstract fun createAnnouncer(): Announcer?
+        abstract fun createAnnouncer(): Announcer
     }
 
     private inner class GalleryDetailUrlSuggestion(
         private val mGid: Long,
         private val mToken: String,
     ) : UrlSuggestion() {
-        override fun createAnnouncer(): Announcer? {
+        override fun createAnnouncer(): Announcer {
             val args = Bundle()
             args.putString(GalleryDetailScene.KEY_ACTION, GalleryDetailScene.ACTION_GID_TOKEN)
             args.putLong(GalleryDetailScene.KEY_GID, mGid)
@@ -1544,7 +1544,7 @@ class GalleryListScene :
         private val mPToken: String,
         private val mPage: Int,
     ) : UrlSuggestion() {
-        override fun createAnnouncer(): Announcer? {
+        override fun createAnnouncer(): Announcer {
             val args = Bundle()
             args.putString(ProgressScene.KEY_ACTION, ProgressScene.ACTION_GALLERY_TOKEN)
             args.putLong(ProgressScene.KEY_GID, mGid)

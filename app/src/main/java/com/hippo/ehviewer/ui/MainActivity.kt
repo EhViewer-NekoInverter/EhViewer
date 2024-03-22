@@ -104,12 +104,10 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
     private var mDisplayName: TextView? = null
     private var mNavCheckedItem = 0
 
-    override fun getContainerViewId(): Int {
-        return R.id.fragment_container
-    }
+    override var containerViewId: Int = R.id.fragment_container
 
-    override fun getLaunchAnnouncer(): Announcer {
-        return if (!TextUtils.isEmpty(Settings.security)) {
+    override var launchAnnouncer: Announcer =
+        if (!TextUtils.isEmpty(Settings.security)) {
             Announcer(SecurityScene::class.java)
         } else if (EhUtils.needSignedIn()) {
             Announcer(SignInScene::class.java)
@@ -123,7 +121,6 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
             )
             Announcer(GalleryListScene::class.java).setArgs(args)
         }
-    }
 
     // Sometimes scene can't show directly
     private fun processAnnouncer(announcer: Announcer): Announcer {
@@ -502,11 +499,11 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
         }
     }
 
-    fun addAboveSnackView(view: View?) {
+    fun addAboveSnackView(view: View) {
         mStageLayout?.addAboveSnackView(view)
     }
 
-    fun removeAboveSnackView(view: View?) {
+    fun removeAboveSnackView(view: View) {
         mStageLayout?.removeAboveSnackView(view)
     }
 
@@ -564,6 +561,7 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
         ).show()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (mDrawerLayout != null && (
                 mDrawerLayout!!.isDrawerOpen(GravityCompat.START) ||
@@ -572,6 +570,7 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
         ) {
             mDrawerLayout!!.closeDrawers()
         } else {
+            @Suppress("DEPRECATION")
             super.onBackPressed()
         }
     }

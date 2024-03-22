@@ -15,94 +15,106 @@
  * You should have received a copy of the GNU General Public License along with EhViewer.
  * If not, see <https://www.gnu.org/licenses/>.
  */
+package com.hippo.ehviewer.widget
 
-package com.hippo.ehviewer.widget;
+import android.annotation.SuppressLint
+import android.content.Context
+import android.util.AttributeSet
+import android.view.View
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout.AttachedBehavior
+import androidx.core.view.ViewCompat
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import com.google.android.material.snackbar.Snackbar.SnackbarLayout
+import com.hippo.scene.StageLayout
+import com.hippo.yorozuya.LayoutUtils
+import kotlin.math.min
 
-import android.content.Context;
-import android.util.AttributeSet;
-import android.view.View;
+class EhStageLayout @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0,
+) : StageLayout(
+    context,
+    attrs,
+    defStyle,
+),
+    AttachedBehavior {
+    private var mAboveSnackViewList: MutableList<View>? = null
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.view.ViewCompat;
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
-
-import com.google.android.material.snackbar.Snackbar;
-import com.hippo.scene.StageLayout;
-import com.hippo.yorozuya.LayoutUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class EhStageLayout extends StageLayout implements CoordinatorLayout.AttachedBehavior {
-    private List<View> mAboveSnackViewList;
-
-    public EhStageLayout(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public EhStageLayout(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-    }
-
-    public void addAboveSnackView(View view) {
+    fun addAboveSnackView(view: View) {
         if (null == mAboveSnackViewList) {
-            mAboveSnackViewList = new ArrayList<>();
+            mAboveSnackViewList = ArrayList()
         }
-        mAboveSnackViewList.add(view);
+        mAboveSnackViewList!!.add(view)
     }
 
-    public void removeAboveSnackView(View view) {
+    fun removeAboveSnackView(view: View) {
         if (null == mAboveSnackViewList) {
-            return;
+            return
         }
-        mAboveSnackViewList.remove(view);
+        mAboveSnackViewList!!.remove(view)
     }
 
-    public int getAboveSnackViewCount() {
-        return null == mAboveSnackViewList ? 0 : mAboveSnackViewList.size();
-    }
+    val aboveSnackViewCount: Int
+        get() = if (null == mAboveSnackViewList) 0 else mAboveSnackViewList!!.size
 
-    @Nullable
-    public View getAboveSnackViewAt(int index) {
-        if (null == mAboveSnackViewList || index < 0 || index >= mAboveSnackViewList.size()) {
-            return null;
+    fun getAboveSnackViewAt(index: Int): View? {
+        return if (null == mAboveSnackViewList || index < 0 || index >= mAboveSnackViewList!!.size) {
+            null
         } else {
-            return mAboveSnackViewList.get(index);
+            mAboveSnackViewList!![index]
         }
     }
 
-    @NonNull
-    @Override
-    public EhStageLayout.Behavior getBehavior() {
-        return new EhStageLayout.Behavior();
+    override fun getBehavior(): Behavior {
+        return Behavior()
     }
 
-    public static class Behavior extends CoordinatorLayout.Behavior<EhStageLayout> {
-        @Override
-        public boolean layoutDependsOn(@NonNull CoordinatorLayout parent, @NonNull EhStageLayout child, @NonNull View dependency) {
-            return dependency instanceof Snackbar.SnackbarLayout;
+    class Behavior : CoordinatorLayout.Behavior<EhStageLayout?>() {
+        @SuppressLint("RestrictedApi")
+        override fun layoutDependsOn(
+            parent: CoordinatorLayout,
+            child: EhStageLayout,
+            dependency: View,
+        ): Boolean {
+            return dependency is SnackbarLayout
         }
 
-        @Override
-        public boolean onDependentViewChanged(@NonNull CoordinatorLayout parent, EhStageLayout child, @NonNull View dependency) {
-            for (int i = 0, n = child.getAboveSnackViewCount(); i < n; i++) {
-                View view = child.getAboveSnackViewAt(i);
+        override fun onDependentViewChanged(
+            parent: CoordinatorLayout,
+            child: EhStageLayout,
+            dependency: View,
+        ): Boolean {
+            for (i in 0 until child.aboveSnackViewCount) {
+                val view = child.getAboveSnackViewAt(i)
                 if (view != null) {
-                    float translationY = Math.min(0, dependency.getTranslationY() - dependency.getHeight() - LayoutUtils.dp2pix(view.getContext(), 8));
-                    ViewCompat.animate(view).setInterpolator(new FastOutSlowInInterpolator()).translationY(translationY).setDuration(150).start();
+                    val translationY = min(
+                        0.0,
+                        (
+                            dependency.translationY - dependency.height - LayoutUtils.dp2pix(
+                                view.context,
+                                8f,
+                            )
+                            ).toDouble(),
+                    ).toFloat()
+                    ViewCompat.animate(view).setInterpolator(FastOutSlowInInterpolator())
+                        .translationY(translationY).setDuration(150).start()
                 }
             }
-            return false;
+            return false
         }
 
-        @Override
-        public void onDependentViewRemoved(@NonNull CoordinatorLayout parent, @NonNull EhStageLayout child, @NonNull View dependency) {
-            for (int i = 0, n = child.getAboveSnackViewCount(); i < n; i++) {
-                View view = child.getAboveSnackViewAt(i);
+        override fun onDependentViewRemoved(
+            parent: CoordinatorLayout,
+            child: EhStageLayout,
+            dependency: View,
+        ) {
+            for (i in 0 until child.aboveSnackViewCount) {
+                val view = child.getAboveSnackViewAt(i)
                 if (view != null) {
-                    ViewCompat.animate(view).setInterpolator(new FastOutSlowInInterpolator()).translationY(0).setDuration(75).start();
+                    ViewCompat.animate(view).setInterpolator(FastOutSlowInInterpolator())
+                        .translationY(0f).setDuration(75).start()
                 }
             }
         }

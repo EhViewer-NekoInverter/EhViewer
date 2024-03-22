@@ -301,7 +301,7 @@ class DownloadsScene :
         mFabLayout!!.setHidePrimaryFab(true)
         mFabLayout!!.setAutoCancel(false)
         mFabLayout!!.setOnClickFabListener(this)
-        addAboveSnackView(mFabLayout)
+        addAboveSnackView(mFabLayout!!)
         updateView()
         return view
     }
@@ -319,7 +319,7 @@ class DownloadsScene :
             mRecyclerView = null
         }
         if (null != mFabLayout) {
-            removeAboveSnackView(mFabLayout)
+            removeAboveSnackView(mFabLayout!!)
             mFabLayout = null
         }
         mRecyclerView = null
