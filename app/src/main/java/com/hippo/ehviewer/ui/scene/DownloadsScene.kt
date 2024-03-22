@@ -1102,6 +1102,7 @@ class DownloadsScene :
                     EhUtils.fixThumbUrl(it),
                     true,
                     SpiderDen.getGalleryDownloadDir(info.gid)?.subFile(".thumb"),
+                    false,
                 )
             }
             holder.title.text = EhUtils.getSuitableTitle(info)

@@ -195,7 +195,7 @@ internal abstract class GalleryAdapter(
         }
         when (mType) {
             TYPE_LIST -> {
-                holder.thumb.load(EhCacheKeyFactory.getThumbKey(gi.gid), gi.thumb!!)
+                holder.thumb.load(EhCacheKeyFactory.getThumbKey(gi.gid), gi.thumb!!, hardware = false)
                 holder.title.text = EhUtils.getSuitableTitle(gi)
                 holder.uploader!!.alpha = if (gi.disowned) .5f else 1f
                 if (TextUtils.isEmpty(gi.uploader)) {
@@ -235,7 +235,7 @@ internal abstract class GalleryAdapter(
             }
             TYPE_GRID -> {
                 (holder.thumb as TileThumb).setThumbSize(gi.thumbWidth, gi.thumbHeight)
-                holder.thumb.load(EhCacheKeyFactory.getThumbKey(gi.gid), gi.thumb!!)
+                holder.thumb.load(EhCacheKeyFactory.getThumbKey(gi.gid), gi.thumb!!, hardware = false)
                 if (Settings.thumbShowTitle) {
                     holder.title.text = EhUtils.getSuitableTitle(gi)
                     holder.title.visibility = View.VISIBLE

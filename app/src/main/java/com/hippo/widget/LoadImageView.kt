@@ -84,11 +84,19 @@ open class LoadImageView @JvmOverloads constructor(
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    fun load(key: String, url: String, crossfade: Boolean = true, path: UniFile? = null) {
+    fun load(
+        key: String,
+        url: String,
+        crossfade: Boolean = true,
+        path: UniFile? = null,
+        hardware: Boolean = true,
+    ) {
         mKey = key
         mUrl = url
         val uri = path?.takeIf { it.isFile }?.uri?.toString() ?: url
         load(uri) {
+            // https://coil-kt.github.io/coil/recipes/#shared-element-transitions
+            allowHardware(hardware)
             data(uri)
             memoryCacheKey(key)
             diskCacheKey(key)

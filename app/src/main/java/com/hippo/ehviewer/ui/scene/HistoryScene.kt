@@ -454,7 +454,7 @@ class HistoryScene : ToolbarScene() {
             val gi: GalleryInfo? = getItem(position)
             gi ?: return
             gi.thumb?.let {
-                holder.thumb.load(EhCacheKeyFactory.getThumbKey(gi.gid), EhUtils.fixThumbUrl(it))
+                holder.thumb.load(EhCacheKeyFactory.getThumbKey(gi.gid), EhUtils.fixThumbUrl(it), hardware = false)
             }
             holder.title.text = EhUtils.getSuitableTitle(gi)
             holder.uploader.text = gi.uploader
