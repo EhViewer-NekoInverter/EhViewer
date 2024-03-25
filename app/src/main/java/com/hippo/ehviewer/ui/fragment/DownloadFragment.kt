@@ -42,7 +42,7 @@ class DownloadFragment : BasePreferenceFragment() {
                 treeUri,
                 Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION,
             )
-            val uniFile = UniFile.fromTreeUri(activity, treeUri)
+            val uniFile = UniFile.fromTreeUri(requireActivity(), treeUri)
             if (uniFile != null) {
                 Settings.putDownloadLocation(uniFile)
                 lifecycleScope.launchNonCancellable {
