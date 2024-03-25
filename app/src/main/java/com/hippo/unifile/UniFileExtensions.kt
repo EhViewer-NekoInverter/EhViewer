@@ -19,6 +19,10 @@ package com.hippo.unifile
 
 import android.os.ParcelFileDescriptor.AutoCloseInputStream
 import android.os.ParcelFileDescriptor.AutoCloseOutputStream
+import okio.HashingSink
+import okio.blackholeSink
+import okio.buffer
+import okio.source
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
@@ -34,4 +38,16 @@ fun UniFile.openInputStream(): FileInputStream {
  */
 fun UniFile.openOutputStream(): FileOutputStream {
     return AutoCloseOutputStream(openFileDescriptor("w"))
+}
+
+fun UniFile.sha1() = runCatching {
+    openInputStream().source().buffer().use { source ->
+        HashingSink.sha1(blackholeSink()).use {
+            source.readAll(it)
+            it.hash.hex()
+        }
+    }
+}.getOrElse {
+    it.printStackTrace()
+    null
 }

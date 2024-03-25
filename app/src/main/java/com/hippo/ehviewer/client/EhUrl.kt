@@ -43,7 +43,6 @@ object EhUrl {
     const val URL_FORUMS = "https://forums.e-hentai.org/"
     const val URL_SIGN_IN = URL_FORUMS + "index.php?act=Login"
     const val URL_REGISTER = URL_FORUMS + "index.php?act=Reg&CODE=00"
-    const val API_SIGN_IN = "$URL_SIGN_IN&CODE=01"
     const val URL_FUNDS = HOST_E + "exchange.php?t=gp"
     const val URL_HOME = HOST_E + "home.php"
     const val URL_NEWS = HOST_E + "news.php"

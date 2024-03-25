@@ -21,6 +21,8 @@ import com.hippo.ehviewer.EhApplication
 import com.hippo.ehviewer.EhApplication.Companion.nonCacheOkHttpClient
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
+import com.hippo.unifile.UniFile
+import com.hippo.unifile.sha1
 import com.hippo.yorozuya.FileUtils
 import com.hippo.yorozuya.copyToFile
 import kotlinx.coroutines.flow.Flow
@@ -30,8 +32,6 @@ import kotlinx.coroutines.sync.withLock
 import okhttp3.Request
 import okhttp3.executeAsync
 import okio.BufferedSource
-import okio.HashingSink.Companion.sha1
-import okio.blackholeSink
 import okio.buffer
 import okio.source
 import org.json.JSONException
@@ -208,19 +208,8 @@ object EhTagDatabase {
         }.getOrNull()
     }
 
-    private fun getFileSha1(file: File): String? {
-        return runCatching {
-            file.source().buffer().use { source ->
-                sha1(blackholeSink()).use {
-                    source.readAll(it)
-                    it.hash.hex()
-                }
-            }
-        }.getOrNull()
-    }
-
     private fun checkData(sha1: String?, data: File): Boolean {
-        return sha1 != null && sha1 == getFileSha1(data)
+        return sha1 != null && sha1 == UniFile.fromFile(data)?.sha1()
     }
 
     private suspend fun save(url: String, file: File): Boolean {
