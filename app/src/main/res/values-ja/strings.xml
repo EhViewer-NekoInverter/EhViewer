@@ -138,8 +138,6 @@
     <string name="search_sft">タグ</string>
     <string name="search_image">画像検索</string>
     <string name="select_image">画像を選択</string>
-    <string name="search_uss">類似検索を有効化</string>
-    <string name="search_osc">カバーのみを検索</string>
     <string name="select_image_first">画像を選択してください</string>
     <string name="keyword_search">キーワードで検索</string>
     <string name="image_search">画像で検索</string>

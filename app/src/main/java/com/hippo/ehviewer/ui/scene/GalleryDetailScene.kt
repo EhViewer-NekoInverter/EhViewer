@@ -62,7 +62,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.TransitionInflater
-import coil.Coil.imageLoader
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.snackbar.Snackbar
 import com.hippo.app.CheckBoxDialogBuilder
@@ -996,22 +995,11 @@ class GalleryDetailScene :
     }
 
     private fun showCoverGalleryList() {
-        val context = context ?: return
-        val gid = gid
-        if (-1L == gid) {
-            return
-        }
-        try {
-            val key = EhCacheKeyFactory.getThumbKey(gid)
-            val path = imageLoader(context).diskCache!!.openSnapshot(key)!!.use { it.data }
-            val lub = ListUrlBuilder()
-            lub.mode = ListUrlBuilder.MODE_IMAGE_SEARCH
-            lub.imagePath = path.toString()
-            lub.isUseSimilarityScan = true
-            GalleryListScene.startScene(this, lub)
-        } catch (e: Throwable) {
-            e.printStackTrace()
-        }
+        val uri = mGalleryInfo?.thumb ?: mGalleryDetail?.thumb ?: return
+        val lub = ListUrlBuilder()
+        lub.mode = ListUrlBuilder.MODE_IMAGE_SEARCH
+        lub.hash = uri.substringAfterLast('/').substringBefore('-')
+        GalleryListScene.startScene(this, lub)
     }
 
     override fun onClick(v: View) {

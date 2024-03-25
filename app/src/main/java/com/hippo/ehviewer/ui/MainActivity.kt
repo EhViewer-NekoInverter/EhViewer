@@ -23,8 +23,6 @@ import android.content.pm.PackageManager
 import android.content.pm.verify.domain.DomainVerificationManager
 import android.content.pm.verify.domain.DomainVerificationUserState
 import android.content.res.Configuration
-import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
@@ -47,7 +45,6 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.hippo.app.EditTextDialogBuilder
-import com.hippo.ehviewer.AppConfig
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.client.EhUrlOpener
@@ -72,23 +69,19 @@ import com.hippo.ehviewer.ui.scene.SignInScene
 import com.hippo.ehviewer.ui.scene.SolidScene
 import com.hippo.ehviewer.ui.scene.WebViewSignInScene
 import com.hippo.ehviewer.widget.EhStageLayout
-import com.hippo.image.Image
 import com.hippo.scene.Announcer
 import com.hippo.scene.SceneFragment
 import com.hippo.scene.StageActivity
+import com.hippo.unifile.UniFile
+import com.hippo.unifile.sha1
 import com.hippo.util.addTextToClipboard
 import com.hippo.util.getClipboardManager
 import com.hippo.util.getParcelableExtraCompat
 import com.hippo.util.getUrlFromClipboard
 import com.hippo.widget.DrawerView
 import com.hippo.widget.LoadImageView
-import com.hippo.yorozuya.IOUtils
 import com.hippo.yorozuya.SimpleHandler
 import com.hippo.yorozuya.ViewUtils
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.OutputStream
 
 class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedListener {
     private val settingsLauncher =
@@ -139,22 +132,6 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
         return announcer
     }
 
-    private fun saveImageToTempFile(uri: Uri): File? {
-        val src = ImageDecoder.createSource(contentResolver, uri)
-        val bitmap = runCatching { ImageDecoder.decodeBitmap(src, Image.imageSearchDecoderSampleListener) }.getOrNull() ?: return null
-        val temp = AppConfig.createTempFile() ?: return null
-        var os: OutputStream? = null
-        return try {
-            os = FileOutputStream(temp)
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, os)
-            temp
-        } catch (e: IOException) {
-            null
-        } finally {
-            IOUtils.closeQuietly(os)
-        }
-    }
-
     private fun handleIntent(intent: Intent?): Boolean {
         if (intent == null) {
             return false
@@ -177,12 +154,10 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
             } else if (type != null && type.startsWith("image/")) {
                 val uri = intent.getParcelableExtraCompat<Uri>(Intent.EXTRA_STREAM)
                 if (null != uri) {
-                    val temp = saveImageToTempFile(uri)
-                    if (null != temp) {
+                    UniFile.fromUri(this, uri)?.sha1()?.let {
                         val builder = ListUrlBuilder()
                         builder.mode = ListUrlBuilder.MODE_IMAGE_SEARCH
-                        builder.imagePath = temp.path
-                        builder.isUseSimilarityScan = true
+                        builder.hash = it
                         startScene(processAnnouncer(GalleryListScene.getStartAnnouncer(builder)))
                         return true
                     }

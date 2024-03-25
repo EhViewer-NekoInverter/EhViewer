@@ -114,10 +114,8 @@ import com.hippo.yorozuya.AnimationUtils
 import com.hippo.yorozuya.LayoutUtils
 import com.hippo.yorozuya.MathUtils
 import com.hippo.yorozuya.SimpleAnimatorListener
-import com.hippo.yorozuya.StringUtils
 import com.hippo.yorozuya.ViewUtils
 import rikka.core.res.resolveColor
-import java.io.File
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
@@ -1595,29 +1593,14 @@ class GalleryListScene :
                 mUrlBuilder.setIndex(index, isNext)
                 mUrlBuilder.setJumpTo(jumpTo)
             }
-            if (ListUrlBuilder.MODE_IMAGE_SEARCH == mUrlBuilder.mode) {
-                val request = EhRequest()
-                request.setMethod(EhClient.METHOD_IMAGE_SEARCH)
-                request.setCallback(
-                    GetGalleryListListener(context, taskId),
-                )
-                request.setArgs(
-                    File(StringUtils.avoidNull(mUrlBuilder.imagePath)),
-                    mUrlBuilder.isUseSimilarityScan,
-                    mUrlBuilder.isOnlySearchCovers,
-                    mUrlBuilder.isShowExpunged,
-                )
-                request.enqueue(this@GalleryListScene)
-            } else {
-                val url = mUrlBuilder.build()
-                val request = EhRequest()
-                request.setMethod(EhClient.METHOD_GET_GALLERY_LIST)
-                request.setCallback(
-                    GetGalleryListListener(context, taskId),
-                )
-                request.setArgs(url)
-                request.enqueue(this@GalleryListScene)
-            }
+            val url = mUrlBuilder.build()
+            val request = EhRequest()
+            request.setMethod(EhClient.METHOD_GET_GALLERY_LIST)
+            request.setCallback(
+                GetGalleryListListener(context, taskId),
+            )
+            request.setArgs(url)
+            request.enqueue(this@GalleryListScene)
         }
 
         override val context

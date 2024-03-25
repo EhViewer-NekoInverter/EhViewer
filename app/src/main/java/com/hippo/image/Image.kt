@@ -31,7 +31,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.drawable.toDrawable
 import com.hippo.ehviewer.EhApplication
-import com.hippo.ehviewer.R
 import java.nio.ByteBuffer
 import kotlin.math.min
 
@@ -134,17 +133,6 @@ class Image private constructor(
                 info.size.height / targetHeight,
             ).coerceAtLeast(1)
         }
-
-        private val imageSearchMaxSize =
-            EhApplication.application.resources.getDimensionPixelOffset(R.dimen.image_search_max_size)
-
-        @JvmStatic
-        val imageSearchDecoderSampleListener =
-            ImageDecoder.OnHeaderDecodedListener { decoder, info, _ ->
-                decoder.setTargetSampleSize(
-                    calculateSampleSize(info, imageSearchMaxSize, imageSearchMaxSize),
-                )
-            }
 
         val screenWidth = EhApplication.application.resources.displayMetrics.widthPixels
         val screenHeight = EhApplication.application.resources.displayMetrics.heightPixels

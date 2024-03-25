@@ -16,9 +16,7 @@
 package com.hippo.ehviewer.widget
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
@@ -26,19 +24,17 @@ import android.util.AttributeSet
 import android.view.AbsSavedState
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
-import com.hippo.ehviewer.AppConfig
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.client.data.ListUrlBuilder
 import com.hippo.ehviewer.client.exception.EhException
-import com.hippo.image.Image.Companion.imageSearchDecoderSampleListener
 import com.hippo.unifile.UniFile
+import com.hippo.unifile.openInputStream
+import com.hippo.unifile.sha1
 import com.hippo.yorozuya.ViewUtils
 import java.io.FileInputStream
-import java.io.IOException
 
 class ImageSearchLayout @JvmOverloads constructor(
     context: Context,
@@ -52,10 +48,8 @@ class ImageSearchLayout @JvmOverloads constructor(
     View.OnClickListener {
     private var mPreview: ImageView? = null
     private var mSelectImage: View? = null
-    private var mSearchUSS: CheckBox? = null
-    private var mSearchOSC: CheckBox? = null
     private var mHelper: Helper? = null
-    private var mImagePath: String? = null
+    private var mImageUri: Uri? = null
 
     init {
         orientation = VERTICAL
@@ -66,8 +60,6 @@ class ImageSearchLayout @JvmOverloads constructor(
         LayoutInflater.from(context).inflate(R.layout.widget_image_search, this)
         mPreview = ViewUtils.`$$`(this, R.id.preview) as ImageView
         mSelectImage = ViewUtils.`$$`(this, R.id.select_image)
-        mSearchUSS = ViewUtils.`$$`(this, R.id.search_uss) as CheckBox
-        mSearchOSC = ViewUtils.`$$`(this, R.id.search_osc) as CheckBox
         mSelectImage!!.setOnClickListener(this)
     }
 
@@ -88,22 +80,11 @@ class ImageSearchLayout @JvmOverloads constructor(
             return
         }
         val context = context
-        UniFile.fromUri(context, imageUri) ?: return
-        try {
-            val src = ImageDecoder.createSource(context.contentResolver, imageUri)
-            val bitmap = ImageDecoder.decodeBitmap(src, imageSearchDecoderSampleListener)
-            val temp = AppConfig.createTempFile() ?: return
-
-            // TODO ehentai image search is bad when I'm writing this line.
-            // Re-compress image will make image search failed.
-            temp.outputStream().use {
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, it)
-                mImagePath = temp.path
-                mPreview!!.setImageBitmap(bitmap)
-                mPreview!!.setVisibility(VISIBLE)
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
+        UniFile.fromUri(context, imageUri)?.openInputStream().use {
+            val bitmap = BitmapFactory.decodeStream(it) ?: return
+            mImageUri = imageUri
+            mPreview!!.setImageBitmap(bitmap)
+            mPreview!!.setVisibility(VISIBLE)
         }
     }
 
@@ -113,25 +94,25 @@ class ImageSearchLayout @JvmOverloads constructor(
         }
         FileInputStream(imagePath).use {
             val bitmap = BitmapFactory.decodeStream(it) ?: return
-            mImagePath = imagePath
+            mImageUri = Uri.parse(imagePath)
             mPreview!!.setImageBitmap(bitmap)
             mPreview!!.setVisibility(VISIBLE)
         }
     }
 
     fun formatListUrlBuilder(builder: ListUrlBuilder) {
-        if (null == mImagePath) {
+        if (null == mImageUri) {
             throw EhException(context.getString(R.string.select_image_first))
         }
-        builder.imagePath = mImagePath
-        builder.isUseSimilarityScan = mSearchUSS!!.isChecked
-        builder.isOnlySearchCovers = mSearchOSC!!.isChecked
+        UniFile.fromUri(context, mImageUri!!)?.sha1()?.let {
+            builder.hash = it
+        }
     }
 
     override fun onSaveInstanceState(): Parcelable {
         val superState = super.onSaveInstanceState()
         val ss = SavedState(superState)
-        ss.imagePath = mImagePath
+        ss.imagePath = mImageUri.toString()
         return ss
     }
 

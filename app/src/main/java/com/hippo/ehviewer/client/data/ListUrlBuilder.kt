@@ -39,14 +39,11 @@ data class ListUrlBuilder(
     private var mJumpTo: String? = null,
     var category: Int = EhUtils.NONE,
     private var mKeyword: String? = null,
-    private var mSHash: String? = null,
+    var hash: String? = null,
     var advanceSearch: Int = -1,
     var minRating: Int = -1,
     var pageFrom: Int = -1,
     var pageTo: Int = -1,
-    var imagePath: String? = null,
-    var isUseSimilarityScan: Boolean = false,
-    var isOnlySearchCovers: Boolean = false,
     var isShowExpunged: Boolean = false,
 ) : Parcelable {
     fun reset() {
@@ -60,11 +57,8 @@ data class ListUrlBuilder(
         minRating = -1
         pageFrom = -1
         pageTo = -1
-        imagePath = null
-        isUseSimilarityScan = false
-        isOnlySearchCovers = false
         isShowExpunged = false
-        mSHash = null
+        hash = null
     }
 
     fun setIndex(index: String?, isNext: Boolean = true) {
@@ -90,9 +84,6 @@ data class ListUrlBuilder(
         minRating = q.minRating
         pageFrom = q.pageFrom
         pageTo = q.pageTo
-        imagePath = null
-        isUseSimilarityScan = false
-        isOnlySearchCovers = false
         isShowExpunged = false
     }
 
@@ -248,7 +239,7 @@ data class ListUrlBuilder(
 
                 "f_spf" -> pageFrom = NumberUtils.parseIntSafely(value, -1)
                 "f_spt" -> pageTo = NumberUtils.parseIntSafely(value, -1)
-                "f_shash" -> mSHash = value
+                "f_shash" -> hash = value
             }
         }
         this.category = category
@@ -291,7 +282,7 @@ data class ListUrlBuilder(
                         ub.addQuery("f_search", encodeUTF8(this))
                     }
                 }
-                mSHash?.let {
+                hash?.let {
                     ub.addQuery("f_shash", it)
                 }
                 mJumpTo?.let {
@@ -363,7 +354,15 @@ data class ListUrlBuilder(
             }
 
             MODE_WHATS_HOT -> EhUrl.popularUrl
-            MODE_IMAGE_SEARCH -> EhUrl.imageSearchUrl
+
+            MODE_IMAGE_SEARCH -> {
+                val ub = UrlBuilder(EhUrl.host)
+                hash?.let {
+                    ub.addQuery("f_shash", it)
+                }
+                ub.build()
+            }
+
             MODE_TOPLIST -> {
                 val sb = StringBuilder(EhUrl.HOST_E)
                 sb.append("toplist.php?tl=")

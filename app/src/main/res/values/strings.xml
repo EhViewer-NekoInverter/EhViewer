@@ -171,8 +171,6 @@
     <string name="search_sft">Tags</string>
     <string name="search_image">Image Search</string>
     <string name="select_image">Select image</string>
-    <string name="search_uss">Use similarity scan</string>
-    <string name="search_osc">Only search covers</string>
     <string name="select_image_first">Please select image first</string>
     <string name="keyword_search">Keyword search</string>
     <string name="image_search">Image search</string>

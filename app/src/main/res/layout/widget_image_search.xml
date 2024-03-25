@@ -34,44 +34,4 @@
         android:layout_gravity="center_horizontal"
         android:text="@string/select_image" />
 
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TableRow>
-
-            <com.google.android.material.checkbox.MaterialCheckBox
-                android:id="@+id/search_uss"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/advance_search_table_item_margin"
-                android:layout_weight="1"
-                android:checked="true"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
-                android:text="@string/search_uss" />
-
-            <com.google.android.material.checkbox.MaterialCheckBox
-                android:id="@+id/search_osc"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/advance_search_table_item_margin"
-                android:layout_weight="1"
-                android:checked="false"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
-                android:text="@string/search_osc" />
-        </TableRow>
-
-        <TableRow>
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/advance_search_table_item_margin"
-                android:layout_weight="1"
-                android:checked="false" />
-
-        </TableRow>
-    </TableLayout>
 </merge>
