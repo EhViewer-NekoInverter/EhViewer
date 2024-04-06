@@ -64,8 +64,10 @@ abstract class GalleryProvider {
         mImageCache[index]?.let {
             notifyPageSucceed(index, it)
         } ?: onRequest(index)
-        val pagesAbsent =
-            ((index - 5).coerceAtLeast(0) until (mPreloads + index).coerceAtMost(size)).mapNotNull { it.takeIf { mImageCache[it] == null } }
+        val pagesAbsent = ((index - 5).coerceAtLeast(0) until (mPreloads + index).coerceAtMost(size))
+            .mapNotNullTo(mutableListOf()) { it.takeIf { it != index && mImageCache[it] == null } }
+        // Load forward first, then load backward from the nearest index
+        pagesAbsent.sortBy { (index - it).coerceAtLeast(0) }
         preloadPages(
             pagesAbsent,
             (index - 10).coerceAtLeast(0) to (mPreloads + index + 10).coerceAtMost(
