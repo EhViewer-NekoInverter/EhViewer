@@ -58,11 +58,16 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
             field = value
             if (field == SpiderQueen.MODE_DOWNLOAD && downloadDir == null) {
                 val title = getSuitableTitle(mGalleryInfo)
-                val dirname = FileUtils.sanitizeFilename("$mGid-$title")
-                EhDB.putDownloadDirname(mGid, dirname)
-                downloadDir = getGalleryDownloadDir(mGid)?.takeIf { it.ensureDir() }
+                val dirName = FileUtils.sanitizeFilename("$mGid-$title")
+                val safeDirName = dirName.replace("[^\\p{L}\\p{M}\\p{N}\\p{P}\\p{Z}\\p{Cf}\\p{Cs}\\s]".toRegex(), "")
+                downloadDir = perDownloadDir(dirName) ?: perDownloadDir(safeDirName)
             }
         }
+
+    private fun perDownloadDir(dirName: String): UniFile? {
+        EhDB.putDownloadDirname(mGid, dirName)
+        return getGalleryDownloadDir(mGid)?.takeIf { it.ensureDir() }
+    }
 
     private fun containInCache(index: Int): Boolean {
         val key = EhCacheKeyFactory.getImageKey(mGid, index)
