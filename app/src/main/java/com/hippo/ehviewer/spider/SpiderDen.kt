@@ -60,7 +60,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
                 val title = getSuitableTitle(mGalleryInfo)
                 val dirname = FileUtils.sanitizeFilename("$mGid-$title")
                 EhDB.putDownloadDirname(mGid, dirname)
-                downloadDir = getGalleryDownloadDir(mGid)!!.apply { check(ensureDir()) { "Download directory $uri is not valid directory!" } }
+                downloadDir = getGalleryDownloadDir(mGid)?.takeIf { it.ensureDir() }
             }
         }
 
@@ -291,7 +291,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
                 ?: SUPPORT_IMAGE_EXTENSIONS[0]
         }
 
-        private fun findImageFile(dir: UniFile, index: Int): Pair<UniFile?, Boolean> {
+        fun findImageFile(dir: UniFile, index: Int): Pair<UniFile?, Boolean> {
             for (extension in COMPAT_IMAGE_EXTENSIONS) {
                 val filename = perFilename(index, extension)
                 val file = dir.findFile(filename)

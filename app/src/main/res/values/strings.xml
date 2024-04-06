@@ -187,6 +187,8 @@
     <string name="misc" translatable="false">MISC</string>
 
     <!-- Gallery Detail Scene -->
+    <string name="download_upgradeable">Upgradeable</string>
+    <string name="download_existed">The gallery already exists, please delete it and try again</string>
     <string name="read_from">Read page %d</string>
     <plurals name="page_count">
         <item quantity="one">%d page</item>
@@ -194,7 +196,7 @@
     </plurals>
     <string name="favored_times">\u2665 %d</string>
     <string name="more_information">More information</string>
-    <string name="newer_version_avaliable">There are newer versions of this gallery available.</string>
+    <string name="newer_version_avaliable">There are newer versions of this gallery available</string>
     <string name="newer_version_title">%1$s, added %2$s</string>
     <string name="favorited">Favorited</string>
     <string name="not_favorited">Not favorited</string>

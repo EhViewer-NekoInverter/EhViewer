@@ -40,6 +40,7 @@ import com.hippo.ehviewer.client.parser.GalleryListParser
 import com.hippo.ehviewer.client.parser.GalleryNotAvailableParser
 import com.hippo.ehviewer.client.parser.GalleryPageApiParser
 import com.hippo.ehviewer.client.parser.GalleryPageParser
+import com.hippo.ehviewer.client.parser.GallerySha1Parser
 import com.hippo.ehviewer.client.parser.GalleryTokenApiParser
 import com.hippo.ehviewer.client.parser.HomeParser
 import com.hippo.ehviewer.client.parser.ProfileParser
@@ -707,5 +708,35 @@ object EhEngine {
         return EhRequestBuilder(url, referer, origin)
             .post(requestBody)
             .executeAndParsingWith(GalleryPageApiParser::parse)
+    }
+
+    private suspend fun getGallerySha1(
+        gid: Long,
+        token: String?,
+    ): List<String> {
+        val url = EhUrl.getGalleryMultiPageViewerUrl(gid, token!!)
+        val referer = EhUrl.getGalleryDetailUrl(gid, token)
+        Log.d(TAG, url)
+        return EhRequestBuilder(url, referer).executeAndParsingWith(GallerySha1Parser::parse)
+    }
+
+    suspend fun getGalleryDiff(
+        to: GalleryInfo,
+        from: GalleryInfo,
+    ): List<Pair<Int, Int>>? {
+        return runCatching {
+            val toSha1 = getGallerySha1(to.gid, to.token).toMutableList()
+            val info: MutableList<Pair<Int, Int>> = ArrayList()
+            getGallerySha1(from.gid, from.token).forEachIndexed { index, value ->
+                val idx = toSha1.indexOf(value)
+                // Avoid duplicate files
+                if (idx != -1) toSha1[idx] = ""
+                if (idx != index) info.add(Pair(index, idx))
+            }
+            info
+        }.getOrElse {
+            it.printStackTrace()
+            null
+        }
     }
 }

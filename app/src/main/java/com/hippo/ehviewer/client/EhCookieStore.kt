@@ -33,6 +33,7 @@ object EhCookieStore : CookieJar {
     private val db: CookieDatabase = CookieDatabase(EhApplication.application, "okhttp3-cookie.db")
     private val map: MutableMap<String, CookieSet> = db.allCookies
     const val KEY_CLOUDFLARE = "cf_clearance"
+    const val KEY_HATH_PERKS = "hath_perks"
     const val KEY_IPB_MEMBER_ID = "ipb_member_id"
     const val KEY_IPB_PASS_HASH = "ipb_pass_hash"
     const val KEY_IGNEOUS = "igneous"
@@ -171,17 +172,21 @@ object EhCookieStore : CookieJar {
     fun getCookieHeader(url: HttpUrl): String {
         val cookies = getCookies(url)
         val cookieHeader = StringBuilder()
-        var i = 0
-        val size = cookies.size
-        while (i < size) {
+        for (i in cookies.indices) {
             if (i > 0) {
                 cookieHeader.append("; ")
             }
             val cookie = cookies[i]
             cookieHeader.append(cookie.name).append('=').append(cookie.value)
-            i++
         }
         return cookieHeader.toString()
+    }
+
+    fun getCookieValue(url: HttpUrl, name: String): String? {
+        getCookies(url).forEach {
+            if (it.name == name) return it.value
+        }
+        return null
     }
 
     @Synchronized

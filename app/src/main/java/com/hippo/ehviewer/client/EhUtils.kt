@@ -17,7 +17,9 @@ package com.hippo.ehviewer.client
 
 import android.text.TextUtils
 import com.hippo.ehviewer.Settings
+import com.hippo.ehviewer.client.EhUrl.host
 import com.hippo.ehviewer.client.data.GalleryInfo
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import java.util.regex.Pattern
 
 object EhUtils {
@@ -79,6 +81,12 @@ object EhUtils {
     val isExHentai: Boolean
         get() = Settings.gallerySite == EhUrl.SITE_EX
 
+    val isMPVAvailable: Boolean
+        get() = EhCookieStore.getCookieValue(
+            host.toHttpUrl(),
+            EhCookieStore.KEY_HATH_PERKS,
+        )?.substringBefore("-")?.contains("q") ?: false
+
     @JvmStatic
     fun getCategory(type: String?): Int {
         for (entry in CATEGORY_STRINGS) {
@@ -91,7 +99,7 @@ object EhUtils {
     }
 
     fun getCategory(type: Int): String {
-        return CATEGORY_VALUES.getOrDefault(type, CATEGORY_VALUES[UNKNOWN])[0]
+        return CATEGORY_VALUES.getOrDefault(type, CATEGORY_VALUES[UNKNOWN]!!)[0]
     }
 
     fun getCategoryColor(category: Int): Int {

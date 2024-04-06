@@ -167,13 +167,15 @@
     <string name="image_search">圖片搜索</string>
 
     <!-- Gallery Detail Scene -->
+    <string name="download_upgradeable">可升級</string>
+    <string name="download_existed">目標畫廊已存在，請刪除後重試</string>
     <string name="read_from">從第 %d 頁閲讀</string>
     <plurals name="page_count">
         <item quantity="other">%d 頁</item>
     </plurals>
     <string name="favored_times">\u2665 %d</string>
     <string name="more_information">查看更多信息</string>
-    <string name="newer_version_avaliable">此畫廊有新版本可用。</string>
+    <string name="newer_version_avaliable">此畫廊有新版本可用</string>
     <string name="newer_version_title">%1$s, 添加於 %2$s</string>
     <string name="favorited">已收藏</string>
     <string name="not_favorited">未收藏</string>

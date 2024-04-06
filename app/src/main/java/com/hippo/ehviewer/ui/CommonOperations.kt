@@ -54,7 +54,7 @@ object CommonOperations {
         request.enqueue(activity)
     }
 
-    fun doAddToFavorites(
+    private fun doAddToFavorites(
         activity: Activity,
         galleryInfo: GalleryInfo,
         slot: Int,
@@ -161,8 +161,8 @@ object CommonOperations {
         }
     }
 
-    fun startDownload(activity: MainActivity?, galleryInfo: GalleryInfo, forceDefault: Boolean) {
-        startDownload(activity!!, listOf(galleryInfo), forceDefault)
+    fun startDownload(activity: MainActivity, galleryInfo: GalleryInfo, forceDefault: Boolean) {
+        startDownload(activity, listOf(galleryInfo), forceDefault)
     }
 
     fun startDownload(
