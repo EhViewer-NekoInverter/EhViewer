@@ -16,8 +16,6 @@
 package com.hippo.ehviewer.spider
 
 import android.graphics.ImageDecoder
-import android.os.ParcelFileDescriptor
-import android.os.ParcelFileDescriptor.MODE_READ_WRITE
 import coil.disk.DiskCache
 import com.hippo.ehviewer.EhApplication.Companion.application
 import com.hippo.ehviewer.EhApplication.Companion.nonCacheOkHttpClient
@@ -93,11 +91,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
                 }
                 // Copy from cache to download dir
                 val file = dir.createFile(perFilename(index, extension)) ?: return false
-                file.openFileDescriptor("w").use { outFd ->
-                    ParcelFileDescriptor.open(data.toFile(), MODE_READ_WRITE).use {
-                        it sendTo outFd
-                    }
-                }
+                UniFile.fromFile(data.toFile())!! sendTo file
             }
         }.getOrElse {
             it.printStackTrace()
@@ -210,36 +204,27 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
     }
 
     fun saveToUniFile(index: Int, file: UniFile): Boolean {
-        file.openFileDescriptor("w").use { toFd ->
-            val key = EhCacheKeyFactory.getImageKey(mGid, index)
+        val key = EhCacheKeyFactory.getImageKey(mGid, index)
 
-            // Read from diskCache first
-            sCache.openSnapshot(key)?.use { snapshot ->
-                runCatching {
-                    UniFile.fromFile(snapshot.data.toFile())!!.openFileDescriptor("r").use {
-                        it sendTo toFd
-                    }
-                }.onSuccess {
-                    return true
-                }.onFailure {
-                    it.printStackTrace()
-                    return false
-                }
+        // Read from diskCache first
+        sCache.read(key) {
+            runCatching {
+                UniFile.fromFile(data.toFile())!! sendTo file
+                return true
+            }.onFailure {
+                it.printStackTrace()
+                return false
             }
+        }
 
-            // Read from download dir
-            downloadDir?.let { uniFile ->
-                runCatching {
-                    findImageFile(uniFile, index).first?.openFileDescriptor("r")?.use {
-                        it sendTo toFd
-                    }
-                }.onFailure {
-                    it.printStackTrace()
-                    return false
-                }.onSuccess {
-                    return true
-                }
-            }
+        // Read from download dir
+        runCatching {
+            findImageFile(downloadDir!!, index).first!! sendTo file
+        }.onFailure {
+            it.printStackTrace()
+            return false
+        }.onSuccess {
+            return true
         }
         return false
     }

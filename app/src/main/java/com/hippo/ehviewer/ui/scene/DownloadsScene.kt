@@ -1101,7 +1101,7 @@ class DownloadsScene :
                     EhCacheKeyFactory.getThumbKey(info.gid),
                     EhUtils.fixThumbUrl(it),
                     true,
-                    SpiderDen.getGalleryDownloadDir(info.gid)?.subFile(".thumb"),
+                    SpiderDen.getGalleryDownloadDir(info.gid),
                     false,
                 )
             }

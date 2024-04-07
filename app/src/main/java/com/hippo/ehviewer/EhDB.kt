@@ -17,8 +17,6 @@ package com.hippo.ehviewer
 
 import android.content.Context
 import android.net.Uri
-import android.os.ParcelFileDescriptor
-import android.os.ParcelFileDescriptor.MODE_READ_ONLY
 import androidx.paging.PagingSource
 import androidx.room.Room.databaseBuilder
 import com.hippo.ehviewer.EhApplication.Companion.ehDatabase
@@ -33,6 +31,7 @@ import com.hippo.ehviewer.dao.HistoryInfo
 import com.hippo.ehviewer.dao.LocalFavoriteInfo
 import com.hippo.ehviewer.dao.QuickSearch
 import com.hippo.ehviewer.download.DownloadManager
+import com.hippo.unifile.UniFile
 import com.hippo.util.sendTo
 
 object EhDB {
@@ -378,11 +377,7 @@ object EhDB {
 
             // Copy export db to data dir
             val dbFile = context.getDatabasePath(ehExportName)
-            context.contentResolver.openFileDescriptor(uri, "rw")!!.use { toFd ->
-                ParcelFileDescriptor.open(dbFile, MODE_READ_ONLY).use { fromFd ->
-                    fromFd sendTo toFd
-                }
-            }
+            UniFile.fromFile(dbFile)!! sendTo UniFile.fromUri(context, uri)!!
             return true
         }.onFailure {
             it.printStackTrace()
