@@ -20,6 +20,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.app.DownloadManager
+import android.app.ForegroundServiceStartNotAllowedException
 import android.app.assist.AssistContent
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -1063,7 +1064,7 @@ class GalleryDetailScene :
                             .setItems(titles.toTypedArray()) { _: DialogInterface?, which: Int ->
                                 val newerVersion = galleryDetail.newerVersions[which]
                                 if (EhDownloadManager.containDownloadInfo(newerVersion.gid)) {
-                                    showTip(R.string.download_existed, LENGTH_SHORT)
+                                    showTip(R.string.download_upgrade_existed, LENGTH_SHORT)
                                 } else {
                                     val url = EhUrl.getGalleryDetailUrl(
                                         newerVersion.gid,
@@ -1766,11 +1767,32 @@ class GalleryDetailScene :
                         intent.action = DownloadService.ACTION_START
                         intent.putExtra(DownloadService.KEY_LABEL, label)
                         intent.putExtra(DownloadService.KEY_GALLERY_INFO, result)
-                        ContextCompat.startForegroundService(activity, intent)
                         success = true
-                        withUIContext {
-                            dialog.dismiss()
-                            activity.showTip(R.string.added_to_download_list, LENGTH_SHORT)
+                        try {
+                            ContextCompat.startForegroundService(activity, intent)
+                            withUIContext {
+                                dialog.dismiss()
+                                activity.showTip(R.string.added_to_download_list, LENGTH_SHORT)
+                            }
+                        } catch (e: Exception) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+                                e is ForegroundServiceStartNotAllowedException
+                            ) {
+                                // App not in a valid state to start foreground service
+                                withUIContext {
+                                    dialog.dismiss()
+                                    AlertDialog.Builder(activity)
+                                        .setMessage(R.string.download_upgrade_service_failed)
+                                        .setPositiveButton(android.R.string.ok) { _: DialogInterface?, _: Int ->
+                                            ContextCompat.startForegroundService(activity, intent)
+                                            activity.showTip(R.string.added_to_download_list, LENGTH_SHORT)
+                                        }
+                                        .show()
+                                }
+                            } else {
+                                success = false
+                                e.printStackTrace()
+                            }
                         }
                     } else {
                         EhDB.removeDownloadDirname(result.gid)

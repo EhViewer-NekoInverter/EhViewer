@@ -168,7 +168,8 @@
 
     <!-- Gallery Detail Scene -->
     <string name="download_upgradeable">可升级</string>
-    <string name="download_existed">目标画廊已存在，请删除后重试</string>
+    <string name="download_upgrade_existed">目标画廊已存在，请删除后重试</string>
+    <string name="download_upgrade_service_failed">由于系统限制，无法从后台启动下载服务，请点击确定开始下载</string>
     <string name="read_from">从第 %d 页阅读</string>
     <plurals name="page_count">
         <item quantity="other">%d 页</item>
