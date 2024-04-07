@@ -677,7 +677,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
                     }
                     checkNotNull(targetImageUrl)
 
-                    repeat(2) { times ->
+                    repeat(3) { times ->
                         runCatching {
                             Log.d(WORKER_DEBUG_TAG, "Start download image $index attempt #$times")
                             val success = withTimeout(downloadTimeout) {
