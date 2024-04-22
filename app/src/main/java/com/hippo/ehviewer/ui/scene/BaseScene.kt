@@ -19,6 +19,7 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.content.res.Resources.Theme
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.SparseArray
@@ -162,11 +163,22 @@ abstract class BaseScene : SceneFragment() {
         drawerView = null
     }
 
+    @Suppress("DEPRECATION")
     fun setLightStatusBar(set: Boolean) {
         val activity = requireActivity()
-        val insetsController = WindowCompat.getInsetsController(activity.window, activity.window.decorView)
-        insetsController.isAppearanceLightStatusBars =
-            set && (activity.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES <= 0)
+        val decorView = activity.window.decorView
+        val isLight = set && (activity.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES) <= 0
+        // https://github.com/EhViewer-NekoInverter/EhViewer/issues/55
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+            WindowCompat.getInsetsController(activity.window, decorView).isAppearanceLightStatusBars = isLight
+        } else {
+            val flags = decorView.systemUiVisibility
+            decorView.systemUiVisibility = if (isLight) {
+                flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            } else {
+                flags and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+            }
+        }
         needWhiteStatusBar = set
     }
 
