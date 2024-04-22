@@ -1100,9 +1100,8 @@ class DownloadsScene :
                 holder.thumb.load(
                     EhCacheKeyFactory.getThumbKey(info.gid),
                     EhUtils.fixThumbUrl(it),
-                    true,
-                    SpiderDen.getGalleryDownloadDir(info.gid),
-                    false,
+                    path = SpiderDen.getGalleryDownloadDir(info.gid),
+                    hardware = false,
                 )
             }
             holder.title.text = EhUtils.getSuitableTitle(info)

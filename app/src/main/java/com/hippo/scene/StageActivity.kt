@@ -476,7 +476,7 @@ abstract class StageActivity : EhActivity() {
                 next.enterTransition = null
                 next.exitTransition = null
                 // Do not show animate if it is not the first fragment
-                transaction.setCustomAnimations(R.anim.scene_close_enter, R.anim.scene_close_exit)
+                transaction.setCustomAnimations(0, R.anim.scene_close_exit)
             }
             // Attach fragment
             transaction.attach(next)

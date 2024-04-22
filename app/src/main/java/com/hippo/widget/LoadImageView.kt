@@ -46,6 +46,8 @@ open class LoadImageView @JvmOverloads constructor(
     private var mClipHeight = Int.MIN_VALUE
     private var mKey: String? = null
     private var mUrl: String? = null
+    private var mPath: UniFile? = null
+    private var mHardware = true
 
     @RetryType
     private val mRetryType: Int =
@@ -93,6 +95,8 @@ open class LoadImageView @JvmOverloads constructor(
     ) {
         mKey = key
         mUrl = url
+        mPath = path
+        mHardware = hardware
         val thumb = path?.takeIf { it.isDirectory }?.subFile(".thumb")
         val uri = thumb?.takeIf { it.isFile }?.uri?.toString() ?: url
         load(uri) {
@@ -139,7 +143,7 @@ open class LoadImageView @JvmOverloads constructor(
     }
 
     private fun reload() {
-        mKey?.let { this.load(it, mUrl!!) }
+        mKey?.let { this.load(it, mUrl!!, path = mPath, hardware = mHardware) }
     }
 
     override fun setImageDrawable(drawable: Drawable?) {

@@ -790,7 +790,7 @@ class GalleryDetailScene :
             return
         }
         val resources = resources
-        mThumb!!.load(EhCacheKeyFactory.getThumbKey(gd.gid), gd.thumb!!, false)
+        mThumb!!.load(EhCacheKeyFactory.getThumbKey(gd.gid), gd.thumb!!, false, hardware = false)
         mTitle!!.text = EhUtils.getSuitableTitle(gd)
         mUploader!!.text = gd.uploader
         mUploader!!.alpha = if (gd.disowned) .5f else 1f
