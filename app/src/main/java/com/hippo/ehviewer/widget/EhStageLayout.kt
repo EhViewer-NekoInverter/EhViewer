@@ -23,7 +23,6 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout.AttachedBehavior
-import androidx.core.view.ViewCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.google.android.material.snackbar.Snackbar.SnackbarLayout
 import com.hippo.scene.StageLayout
@@ -98,7 +97,7 @@ class EhStageLayout @JvmOverloads constructor(
                             )
                             ).toDouble(),
                     ).toFloat()
-                    ViewCompat.animate(view).setInterpolator(FastOutSlowInInterpolator())
+                    view.animate().setInterpolator(FastOutSlowInInterpolator())
                         .translationY(translationY).setDuration(150).start()
                 }
             }
@@ -111,11 +110,8 @@ class EhStageLayout @JvmOverloads constructor(
             dependency: View,
         ) {
             for (i in 0 until child.aboveSnackViewCount) {
-                val view = child.getAboveSnackViewAt(i)
-                if (view != null) {
-                    ViewCompat.animate(view).setInterpolator(FastOutSlowInInterpolator())
-                        .translationY(0f).setDuration(75).start()
-                }
+                child.getAboveSnackViewAt(i)?.animate()?.setInterpolator(FastOutSlowInInterpolator())?.translationY(0f)
+                    ?.setDuration(75)?.start()
             }
         }
     }

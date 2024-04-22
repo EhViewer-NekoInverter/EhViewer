@@ -118,7 +118,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
     private val requestStoragePermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission(),
     ) { result ->
-        if (result!! && mSavingPage != -1) {
+        if (result && mSavingPage != -1) {
             saveImage(mSavingPage)
         } else {
             Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show()
@@ -288,7 +288,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         buildProvider()
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         handleIntent(intent)
         buildProvider(true)

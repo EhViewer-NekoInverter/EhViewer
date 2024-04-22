@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okhttp3.Request
-import okhttp3.executeAsync
+import okhttp3.coroutines.executeAsync
 import okio.BufferedSource
 import okio.buffer
 import okio.source

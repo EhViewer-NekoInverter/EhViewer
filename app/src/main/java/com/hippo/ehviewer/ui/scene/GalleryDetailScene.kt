@@ -673,7 +673,7 @@ class GalleryDetailScene :
         }
         val w = mColorBg!!.width
         val h = mColorBg!!.height
-        return if (ViewCompat.isAttachedToWindow(mColorBg!!) && w != 0 && h != 0) {
+        return if (mColorBg!!.isAttachedToWindow && w != 0 && h != 0) {
             val resources = context.resources
             val keylineMargin = resources.getDimensionPixelSize(R.dimen.keyline_margin)
             val thumbWidth = resources.getDimensionPixelSize(R.dimen.gallery_detail_thumb_width)

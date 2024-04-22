@@ -37,7 +37,7 @@ import com.hippo.util.runSuspendCatching
 import com.hippo.util.sendTo
 import com.hippo.yorozuya.FileUtils
 import okhttp3.Response
-import okhttp3.executeAsync
+import okhttp3.coroutines.executeAsync
 import okio.buffer
 import okio.sink
 import java.io.File

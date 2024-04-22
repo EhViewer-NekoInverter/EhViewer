@@ -19,7 +19,6 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
 import android.view.View
-import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
@@ -152,7 +151,7 @@ class LinearDividerItemDecoration(orientation: Int, color: Int, thickness: Int) 
         val itemCount = adapter.itemCount
         val overlap = mOverlap
         if (mOrientation == VERTICAL) {
-            val isRtl = ViewCompat.getLayoutDirection(parent) == ViewCompat.LAYOUT_DIRECTION_RTL
+            val isRtl = parent.layoutDirection == View.LAYOUT_DIRECTION_RTL
             val mPaddingLeft: Int
             val mPaddingRight: Int
             if (isRtl) {

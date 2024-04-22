@@ -61,7 +61,7 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.executeAsync
+import okhttp3.coroutines.executeAsync
 import org.json.JSONArray
 import org.json.JSONObject
 import org.jsoup.Jsoup

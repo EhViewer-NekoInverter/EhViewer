@@ -19,9 +19,9 @@ import com.hippo.ehviewer.EhApplication.Companion.noRedirectOkHttpClient
 import com.hippo.okhttp.ChromeRequestBuilder
 import okhttp3.Request
 import okhttp3.Response
-import okhttp3.executeAsync
+import okhttp3.coroutines.executeAsync
 
-class EhRequestBuilder constructor(
+class EhRequestBuilder(
     url: String,
     referer: String? = null,
     origin: String? = null,
