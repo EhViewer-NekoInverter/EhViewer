@@ -19,7 +19,6 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.content.res.Resources.Theme
-import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.SparseArray
@@ -166,10 +165,9 @@ abstract class BaseScene : SceneFragment() {
     fun setLightStatusBar(set: Boolean) {
         val activity = requireActivity()
         val insetsController = WindowCompat.getInsetsController(activity.window, activity.window.decorView)
-        val state = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) set else true
         insetsController.isAppearanceLightStatusBars =
-            state && (activity.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES <= 0)
-        needWhiteStatusBar = state
+            set && (activity.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES <= 0)
+        needWhiteStatusBar = set
     }
 
     open fun onDestroyDrawerView() {}
