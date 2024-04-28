@@ -670,7 +670,7 @@ object Settings {
         putBoolean(KEY_APP_LINK_VERIFY_TIP, value)
     }
 
-    val favCat: Array<String>
+    var favCat: Array<String>
         get() = arrayOf(
             sSettingsPre.getString(KEY_FAV_CAT_0, DEFAULT_FAV_CAT_0)!!,
             sSettingsPre.getString(KEY_FAV_CAT_1, DEFAULT_FAV_CAT_1)!!,
@@ -683,23 +683,23 @@ object Settings {
             sSettingsPre.getString(KEY_FAV_CAT_8, DEFAULT_FAV_CAT_8)!!,
             sSettingsPre.getString(KEY_FAV_CAT_9, DEFAULT_FAV_CAT_9)!!,
         )
-    fun putFavCat(value: Array<String?>) {
-        check(value.size == 10)
-        sSettingsPre.edit()
-            .putString(KEY_FAV_CAT_0, value[0])
-            .putString(KEY_FAV_CAT_1, value[1])
-            .putString(KEY_FAV_CAT_2, value[2])
-            .putString(KEY_FAV_CAT_3, value[3])
-            .putString(KEY_FAV_CAT_4, value[4])
-            .putString(KEY_FAV_CAT_5, value[5])
-            .putString(KEY_FAV_CAT_6, value[6])
-            .putString(KEY_FAV_CAT_7, value[7])
-            .putString(KEY_FAV_CAT_8, value[8])
-            .putString(KEY_FAV_CAT_9, value[9])
-            .apply()
-    }
+        set(value) {
+            check(value.size == 10)
+            sSettingsPre.edit()
+                .putString(KEY_FAV_CAT_0, value[0])
+                .putString(KEY_FAV_CAT_1, value[1])
+                .putString(KEY_FAV_CAT_2, value[2])
+                .putString(KEY_FAV_CAT_3, value[3])
+                .putString(KEY_FAV_CAT_4, value[4])
+                .putString(KEY_FAV_CAT_5, value[5])
+                .putString(KEY_FAV_CAT_6, value[6])
+                .putString(KEY_FAV_CAT_7, value[7])
+                .putString(KEY_FAV_CAT_8, value[8])
+                .putString(KEY_FAV_CAT_9, value[9])
+                .apply()
+        }
 
-    val favCount: IntArray
+    var favCount: IntArray
         get() = intArrayOf(
             sSettingsPre.getInt(KEY_FAV_COUNT_0, DEFAULT_FAV_COUNT),
             sSettingsPre.getInt(KEY_FAV_COUNT_1, DEFAULT_FAV_COUNT),
@@ -712,21 +712,21 @@ object Settings {
             sSettingsPre.getInt(KEY_FAV_COUNT_8, DEFAULT_FAV_COUNT),
             sSettingsPre.getInt(KEY_FAV_COUNT_9, DEFAULT_FAV_COUNT),
         )
-    fun putFavCount(count: IntArray) {
-        check(count.size == 10)
-        sSettingsPre.edit()
-            .putInt(KEY_FAV_COUNT_0, count[0])
-            .putInt(KEY_FAV_COUNT_1, count[1])
-            .putInt(KEY_FAV_COUNT_2, count[2])
-            .putInt(KEY_FAV_COUNT_3, count[3])
-            .putInt(KEY_FAV_COUNT_4, count[4])
-            .putInt(KEY_FAV_COUNT_5, count[5])
-            .putInt(KEY_FAV_COUNT_6, count[6])
-            .putInt(KEY_FAV_COUNT_7, count[7])
-            .putInt(KEY_FAV_COUNT_8, count[8])
-            .putInt(KEY_FAV_COUNT_9, count[9])
-            .apply()
-    }
+        set(count) {
+            check(count.size == 10)
+            sSettingsPre.edit()
+                .putInt(KEY_FAV_COUNT_0, count[0])
+                .putInt(KEY_FAV_COUNT_1, count[1])
+                .putInt(KEY_FAV_COUNT_2, count[2])
+                .putInt(KEY_FAV_COUNT_3, count[3])
+                .putInt(KEY_FAV_COUNT_4, count[4])
+                .putInt(KEY_FAV_COUNT_5, count[5])
+                .putInt(KEY_FAV_COUNT_6, count[6])
+                .putInt(KEY_FAV_COUNT_7, count[7])
+                .putInt(KEY_FAV_COUNT_8, count[8])
+                .putInt(KEY_FAV_COUNT_9, count[9])
+                .apply()
+        }
 
     val favLocalCount: Int
         get() = sSettingsPre.getInt(KEY_FAV_LOCAL, DEFAULT_FAV_COUNT)
