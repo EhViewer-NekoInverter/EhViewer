@@ -863,8 +863,8 @@ class FavoritesScene :
     ) : EhCallback<FavoritesScene?, FavoritesParser.Result>(context) {
         override fun onSuccess(result: FavoritesParser.Result) {
             // Put fav cat
-            Settings.putFavCat(result.catArray)
-            Settings.putFavCount(result.countArray)
+            Settings.favCat = result.catArray
+            Settings.favCount = result.countArray
             val scene = this@FavoritesScene
             scene.updateHistoryFavSlot(mGidArray, mSlot)
             if (mLocal) {

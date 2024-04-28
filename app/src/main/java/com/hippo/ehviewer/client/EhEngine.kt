@@ -46,6 +46,7 @@ import com.hippo.ehviewer.client.parser.HomeParser
 import com.hippo.ehviewer.client.parser.ProfileParser
 import com.hippo.ehviewer.client.parser.RateGalleryParser
 import com.hippo.ehviewer.client.parser.TorrentParser
+import com.hippo.ehviewer.client.parser.UserConfigParser
 import com.hippo.ehviewer.client.parser.VoteCommentParser
 import com.hippo.ehviewer.client.parser.VoteTagParser
 import com.hippo.network.StatusCodeException
@@ -72,7 +73,6 @@ private val okHttpClient = EhApplication.okHttpClient
 private val MEDIA_TYPE_JSON: MediaType = "application/json; charset=utf-8".toMediaType()
 private const val TAG = "EhEngine"
 private const val MAX_REQUEST_SIZE = 25
-private const val U_CONFIG_TEXT = "Selected Profile"
 private val MEDIA_TYPE_JPEG: MediaType = "image/jpeg".toMediaType()
 private var sEhFilter = EhFilter
 
@@ -551,9 +551,7 @@ object EhEngine {
 
     private suspend fun getUConfigInternal(url: String) {
         Log.d(TAG, url)
-        EhRequestBuilder(url).executeAndParsingWith {
-            check(contains(U_CONFIG_TEXT)) { "U_CONFIG_TEXT not found!" }
-        }
+        EhRequestBuilder(url).executeAndParsingWith(UserConfigParser::parse)
     }
 
     suspend fun getUConfig(url: String = EhUrl.uConfigUrl) {
