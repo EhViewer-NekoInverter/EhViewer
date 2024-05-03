@@ -19,6 +19,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.text.Html
 import android.util.AttributeSet
+import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import com.hippo.ehviewer.R
@@ -105,5 +106,10 @@ class AccountPreference @JvmOverloads constructor(
             EhUtils.signOut()
             mActivity.showTip(R.string.settings_eh_account_sign_out_tip, BaseScene.LENGTH_SHORT)
         }
+    }
+
+    override fun onDialogCreated(dialog: AlertDialog?) {
+        super.onDialogCreated(dialog)
+        dialog!!.window!!.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
     }
 }
