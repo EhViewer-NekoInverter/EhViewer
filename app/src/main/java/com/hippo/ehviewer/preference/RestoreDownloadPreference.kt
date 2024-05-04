@@ -24,15 +24,18 @@ import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.client.EhEngine.fillGalleryListByApi
 import com.hippo.ehviewer.client.EhUrl
 import com.hippo.ehviewer.client.data.BaseGalleryInfo
-import com.hippo.ehviewer.client.data.GalleryInfo
+import com.hippo.ehviewer.client.parser.GalleryDetailUrlParser
 import com.hippo.ehviewer.spider.SpiderInfo
 import com.hippo.ehviewer.spider.SpiderQueen
 import com.hippo.unifile.UniFile
+import com.hippo.unifile.openInputStream
 import com.hippo.util.launchUI
 import com.hippo.util.runSuspendCatching
 import com.hippo.util.withUIContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import okio.buffer
+import okio.source
 import com.hippo.ehviewer.download.DownloadManager as downloadManager
 
 class RestoreDownloadPreference @JvmOverloads constructor(
@@ -41,13 +44,20 @@ class RestoreDownloadPreference @JvmOverloads constructor(
 ) : TaskPreference(context, attrs) {
     private val mManager = downloadManager
     private var restoreDirCount = 0
-    private fun getRestoreItem(file: UniFile?): RestoreItem? {
-        if (null == file || !file.isDirectory) return null
-        val siFile = file.findFile(SpiderQueen.SPIDER_INFO_FILENAME) ?: return null
+    private fun getRestoreItem(dir: UniFile): RestoreItem? {
+        if (!dir.isDirectory) return null
         return runCatching {
-            val spiderInfo = SpiderInfo.readCompatFromUniFile(siFile) ?: return null
-            val gid = spiderInfo.gid
-            val dirname = file.name
+            val result = dir.findFile(SpiderQueen.SPIDER_INFO_FILENAME)?.let {
+                SpiderInfo.readCompatFromUniFile(it)?.run {
+                    GalleryDetailUrlParser.Result(gid, token!!)
+                }
+            } ?: dir.findFile(COMIC_INFO_FILE)?.let { file ->
+                file.openInputStream().source().buffer().use {
+                    GalleryDetailUrlParser.parse(it.readUtf8())
+                }
+            } ?: return null
+            val gid = result.gid
+            val dirname = dir.name!!
             if (mManager.containDownloadInfo(gid)) {
                 // Restore download dir to avoid redownload
                 val dbdirname = EhDB.getDownloadDirname(gid)
@@ -57,31 +67,25 @@ class RestoreDownloadPreference @JvmOverloads constructor(
                 }
                 return null
             }
-            RestoreItem().also {
-                it.gid = spiderInfo.gid
-                it.token = spiderInfo.token
-                it.dirname = file.name
+            RestoreItem(dirname, gid, result.token)
+        }.onFailure {
+            it.printStackTrace()
+        }.getOrNull()
+    }
+
+    private suspend fun doRealWork(): List<RestoreItem>? {
+        val dir = Settings.downloadLocation ?: return null
+        val files = dir.listFiles() ?: return null
+        return runSuspendCatching {
+            files.mapNotNull { getRestoreItem(it) }.also {
+                fillGalleryListByApi(it, EhUrl.referer)
             }
         }.onFailure {
             it.printStackTrace()
         }.getOrNull()
     }
 
-    private suspend fun doRealWork(): List<GalleryInfo>? {
-        val dir = Settings.downloadLocation ?: return null
-        val files = dir.listFiles() ?: return null
-        val restoreItemList = files.mapNotNull { getRestoreItem(it) }
-        return runSuspendCatching {
-            fillGalleryListByApi(restoreItemList, EhUrl.referer)
-        }.onFailure {
-            it.printStackTrace()
-        }.getOrNull()
-    }
-
-    private class RestoreItem : BaseGalleryInfo() {
-        var dirname: String? = null
-    }
-
+    private class RestoreItem(val dirname: String, gid: Long, token: String) : BaseGalleryInfo(gid, token)
     override fun launchJob() {
         if (singletonJob?.isActive == true) {
             singletonJob?.invokeOnCompletion {
@@ -109,7 +113,7 @@ class RestoreDownloadPreference @JvmOverloads constructor(
                                     // Put to download
                                     mManager.addDownload(item, null)
                                     // Put download dir to DB
-                                    EhDB.putDownloadDirname(item.gid, (item as RestoreItem).dirname)
+                                    EhDB.putDownloadDirname(item.gid, item.dirname)
                                     count++
                                 }
                                 i++
@@ -131,4 +135,5 @@ class RestoreDownloadPreference @JvmOverloads constructor(
     }
 }
 
+private const val COMIC_INFO_FILE = "ComicInfo.xml"
 private var singletonJob: Job? = null
