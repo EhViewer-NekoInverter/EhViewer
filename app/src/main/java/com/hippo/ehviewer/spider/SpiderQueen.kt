@@ -331,12 +331,12 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
     private fun readSpiderInfoFromLocal(): SpiderInfo? {
         return mSpiderDen.downloadDir?.run {
             findFile(SPIDER_INFO_FILENAME)?.let { file ->
-                SpiderInfo.readCompatFromUniFile(file)?.takeIf {
+                readCompatFromUniFile(file)?.takeIf {
                     it.gid == galleryInfo.gid && it.token == galleryInfo.token
                 }
             }
         }
-            ?: SpiderInfo.readFromCache(galleryInfo.gid)?.takeIf { it.gid == galleryInfo.gid && it.token == galleryInfo.token }
+            ?: readFromCache(galleryInfo.gid)?.takeIf { it.gid == galleryInfo.gid && it.token == galleryInfo.token }
     }
 
     private fun readPreviews(body: String, index: Int, spiderInfo: SpiderInfo) {
@@ -371,8 +371,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
             plainTextOkHttpClient.newCall(request).executeAsync().use { response ->
                 val body = response.body.string()
                 val pages = parsePages(body)
-                val spiderInfo = SpiderInfo(galleryInfo.gid, pages)
-                spiderInfo.token = galleryInfo.token
+                val spiderInfo = SpiderInfo(galleryInfo.gid, galleryInfo.token, pages)
                 readPreviews(body, 0, spiderInfo)
                 spiderInfo
             }
@@ -576,7 +575,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
         private suspend fun doInJob(index: Int, force: Boolean, skipHath: Boolean) {
             suspend fun getPToken(index: Int): String? {
                 if (index !in 0 until size) return null
-                return mSpiderInfo.pTokenMap[index].takeIf { it != SpiderInfo.TOKEN_FAILED }
+                return mSpiderInfo.pTokenMap[index].takeIf { it != TOKEN_FAILED }
                     ?: getPTokenFromInternet(index)
                     ?: getPTokenFromInternet(index)
                     ?: getPTokenFromMultiPageViewer(index)
@@ -586,13 +585,13 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
             val pToken: String
             pTokenLock.withLock {
                 if (force) {
-                    if (mSpiderInfo.pTokenMap[index] == SpiderInfo.TOKEN_FAILED) {
+                    if (mSpiderInfo.pTokenMap[index] == TOKEN_FAILED) {
                         mSpiderInfo.pTokenMap.remove(index)
                     }
                 }
                 pToken = getPToken(index)
                     ?: return updatePageState(index, STATE_FAILED, PTOKEN_FAILED_MESSAGE).also {
-                        mSpiderInfo.pTokenMap[index] = SpiderInfo.TOKEN_FAILED
+                        mSpiderInfo.pTokenMap[index] = TOKEN_FAILED
                     }
                 previousPToken = getPToken(index - 1)
             }

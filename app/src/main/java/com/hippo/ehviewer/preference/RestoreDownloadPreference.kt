@@ -25,8 +25,8 @@ import com.hippo.ehviewer.client.EhEngine.fillGalleryListByApi
 import com.hippo.ehviewer.client.EhUrl
 import com.hippo.ehviewer.client.data.BaseGalleryInfo
 import com.hippo.ehviewer.client.parser.GalleryDetailUrlParser
-import com.hippo.ehviewer.spider.SpiderInfo
 import com.hippo.ehviewer.spider.SpiderQueen
+import com.hippo.ehviewer.spider.readCompatFromUniFile
 import com.hippo.unifile.UniFile
 import com.hippo.unifile.openInputStream
 import com.hippo.util.launchUI
@@ -48,7 +48,7 @@ class RestoreDownloadPreference @JvmOverloads constructor(
         if (!dir.isDirectory) return null
         return runCatching {
             val result = dir.findFile(SpiderQueen.SPIDER_INFO_FILENAME)?.let {
-                SpiderInfo.readCompatFromUniFile(it)?.run {
+                readCompatFromUniFile(it)?.run {
                     GalleryDetailUrlParser.Result(gid, token!!)
                 }
             } ?: dir.findFile(COMIC_INFO_FILE)?.let { file ->

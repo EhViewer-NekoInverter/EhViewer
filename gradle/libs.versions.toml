@@ -21,6 +21,7 @@ google-android-material = "1.12.0"
 jsoup = "1.17.2"
 kotlin = "1.9.23"
 kotlinx-coroutines = "1.8.1"
+kotlinx-serialization = "1.6.3"
 ksp = "1.9.23-1.0.20"
 okhttp3 = "5.0.0-alpha.14"
 okio = "3.9.0"
@@ -48,6 +49,7 @@ coil = { module = "io.coil-kt:coil", version.ref = "coil" }
 drawer = { module = "com.drakeet.drawer:drawer", version.ref = "drawer" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
+kotlinx-serialization-cbor = { module = "org.jetbrains.kotlinx:kotlinx-serialization-cbor", version.ref = "kotlinx-serialization" }
 material = { module = "com.google.android.material:material", version.ref = "google-android-material" }
 
 okhttp-bom = { module = "com.squareup.okhttp3:okhttp-bom", version.ref = "okhttp3" }
@@ -69,5 +71,6 @@ rikkax = ["rikkax-core", "rikkax-insets", "rikkax-layoutinflater", "rikkax-mater
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
