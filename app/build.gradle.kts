@@ -57,8 +57,8 @@ android {
         applicationId = "org.moedog.ehviewer"
         minSdk = 28
         targetSdk = 34
-        versionCode = 180006
-        versionName = "1.8.5"
+        versionCode = 180007
+        versionName = "1.8.6"
         resourceConfigurations.addAll(
             listOf(
                 "zh",
