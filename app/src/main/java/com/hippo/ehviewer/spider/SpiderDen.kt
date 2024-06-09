@@ -32,6 +32,7 @@ import com.hippo.image.Image.CloseableSource
 import com.hippo.image.rewriteGifSource2
 import com.hippo.unifile.UniFile
 import com.hippo.unifile.openOutputStream
+import com.hippo.unifile.sha1
 import com.hippo.util.runInterruptibleOkio
 import com.hippo.util.runSuspendCatching
 import com.hippo.util.sendTo
@@ -46,6 +47,8 @@ import java.util.Locale
 import kotlin.io.path.readText
 
 class SpiderDen(private val mGalleryInfo: GalleryInfo) {
+    private val fileHashRegex = Regex("/([0-9a-f]{40})(?:-\\d+){3}-\\w+")
+    private val safeDirNameRegex = Regex("[^\\p{L}\\p{M}\\p{N}\\p{P}\\p{Z}\\p{Cf}\\p{Cs}\\s]")
     private val mGid = mGalleryInfo.gid
     var downloadDir: UniFile? = null
 
@@ -57,7 +60,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
             if (field == SpiderQueen.MODE_DOWNLOAD && downloadDir == null) {
                 val title = getSuitableTitle(mGalleryInfo)
                 val dirName = FileUtils.sanitizeFilename("$mGid-$title")
-                val safeDirName = dirName.replace("[^\\p{L}\\p{M}\\p{N}\\p{P}\\p{Z}\\p{Cf}\\p{Cs}\\s]".toRegex(), "")
+                val safeDirName = dirName.replace(safeDirNameRegex, "")
                 downloadDir = perDownloadDir(dirName) ?: perDownloadDir(safeDirName)
             }
         }
@@ -150,8 +153,8 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
     }
 
     private suspend fun saveFromHttpResponse(index: Int, response: Response, notifyProgress: (Long, Long, Int) -> Unit): Boolean {
-        val contentType = response.body.contentType()
-        val extension = contentType?.subtype ?: "jpg"
+        val url = response.request.url.toString()
+        val extension = response.body.contentType()?.subtype ?: "jpg"
         val length = response.body.contentLength()
 
         suspend fun doSave(outFile: UniFile): Long {
@@ -168,6 +171,9 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
                         }
                     }
                 }
+                val expected = fileHashRegex.findAll(url).last().groupValues[1]
+                val actual = outFile.sha1()
+                check(expected == actual) { "File hash mismatch: expected $expected, but got $actual\nURL: $url" }
                 if (extension.lowercase() == "gif") {
                     outFile.openFileDescriptor("rw").use {
                         rewriteGifSource2(it.fd)
