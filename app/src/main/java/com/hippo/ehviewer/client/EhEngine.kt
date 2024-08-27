@@ -513,9 +513,9 @@ object EhEngine {
         HomeParser.Result(limitsDeferred.await(), fundsDeferred.await())
     }
 
-    suspend fun resetImageLimits(): HomeParser.Limits {
+    suspend fun resetImageLimits(unlock: Boolean = false): HomeParser.Limits {
         val builder = FormBody.Builder()
-            .add("reset_imagelimit", "Reset Limit")
+            .add("reset_imagelimit", if (unlock) "Unlock Quota" else "Reset Quota")
         val url = EhUrl.URL_HOME
         Log.d(TAG, url)
         return EhRequestBuilder(url)

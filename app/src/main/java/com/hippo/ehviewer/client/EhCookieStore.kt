@@ -39,6 +39,7 @@ object EhCookieStore : CookieJar {
     const val KEY_IGNEOUS = "igneous"
     const val KEY_SETTINGS_PROFILE = "sp"
     const val KEY_STAR = "star"
+    const val KEY_QUOTA = "iq"
     private const val KEY_CONTENT_WARNING = "nw"
     private const val CONTENT_WARNING_NOT_SHOW = "1"
     private val sTipsCookie: Cookie = Cookie.Builder()

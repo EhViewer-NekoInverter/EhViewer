@@ -23,7 +23,9 @@ import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import com.hippo.ehviewer.R
+import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.EhEngine
+import com.hippo.ehviewer.client.EhUrl
 import com.hippo.ehviewer.client.parser.HomeParser
 import com.hippo.ehviewer.ui.SettingsActivity
 import com.hippo.ehviewer.ui.scene.BaseScene
@@ -67,15 +69,19 @@ class ImageLimitsPreference(context: Context, attrs: AttributeSet) :
         }
     }
 
-    override fun onDialogClosed(positiveResult: Boolean) {
-        super.onDialogClosed(positiveResult)
-        if (this::mLimits.isInitialized) {
-            updateSummary()
+    private fun formatCurrent(): String {
+        val (current, maximum, _) = mLimits
+        return when (maximum) {
+            HomeParser.IP_NORMAL -> mActivity.getString(R.string.settings_eh_image_limits_summary_ip) +
+                mActivity.getString(R.string.settings_eh_image_limits_summary_ip_ok)
+            HomeParser.IP_RESTRICTED -> mActivity.getString(R.string.settings_eh_image_limits_summary_ip) +
+                mActivity.getString(R.string.settings_eh_image_limits_summary_ip_restricted)
+            else -> mActivity.getString(R.string.settings_eh_image_limits_summary_acc, current, maximum)
         }
     }
 
     private fun updateSummary() {
-        summary = mActivity.getString(R.string.settings_eh_image_limits_summary_2, mLimits.current, mLimits.maximum)
+        summary = formatCurrent()
     }
 
     private suspend fun getImageLimits(showError: Boolean = false, onSuccess: () -> Unit) {
@@ -98,16 +104,23 @@ class ImageLimitsPreference(context: Context, attrs: AttributeSet) :
     }
 
     private fun bind() {
-        val (current, maximum, resetCost) = mLimits
+        val (_, maximum, resetCost) = mLimits
         val (fundsGP, fundsC) = mFunds
-        val message = mActivity.getString(
-            R.string.settings_eh_current_limits,
-            "$current / $maximum",
-            resetCost,
-        ) +
+        val message = formatCurrent() +
+            "\n" + if (maximum < 0) {
+                mActivity.getString(R.string.settings_eh_unlock_cost, resetCost)
+            } else {
+                mActivity.getString(R.string.settings_eh_reset_cost, resetCost)
+            } +
             "\n" + mActivity.getString(R.string.current_funds, "$fundsGP+", fundsC)
         mDialog.setMessage(message)
+        resetButton.text = if (maximum < 0) {
+            mActivity.getString(R.string.settings_eh_unlock)
+        } else {
+            mActivity.getString(R.string.settings_eh_reset)
+        }
         resetButton.isEnabled = resetCost != 0
+        updateSummary()
     }
 
     override fun onClick(v: View) {
@@ -115,13 +128,14 @@ class ImageLimitsPreference(context: Context, attrs: AttributeSet) :
         mDialog.setMessage(placeholder)
         coroutineScope.launchIO {
             runCatching {
-                EhEngine.resetImageLimits()
+                EhEngine.resetImageLimits(mLimits.maximum < 0)
             }.onFailure {
                 it.printStackTrace()
                 withUIContext {
                     mDialog.setMessage(it.message)
                 }
             }.onSuccess {
+                EhCookieStore.copyCookie(EhUrl.DOMAIN_E, EhUrl.DOMAIN_EX, EhCookieStore.KEY_QUOTA)
                 withUIContext {
                     mLimits = it
                     mActivity.showTip(

@@ -20,9 +20,12 @@ import com.hippo.ehviewer.client.exception.ParseException
 import org.jsoup.Jsoup
 
 object HomeParser {
+    const val IP_NORMAL = -1
+    const val IP_RESTRICTED = -2
     private val PATTERN_FUNDS =
         Regex("Available: ([\\d,]+) Credits.*Available: ([\\d,]+) kGP", RegexOption.DOT_MATCHES_ALL)
     private const val INSUFFICIENT_FUNDS = "Insufficient funds."
+    private const val IP_RESTRICTED_STR = "Due to a high request rate, your IP is currently restricted to lower-resolution images."
 
     fun parse(body: String): Limits {
         Jsoup.parse(body).selectFirst("div.homebox")?.let {
@@ -32,6 +35,10 @@ object HomeParser {
                 val maximum = ParserUtils.parseInt(es[1].text(), 0)
                 val resetCost = ParserUtils.parseInt(es[2].text(), 0)
                 return Limits(current, maximum, resetCost)
+            } else if (es.size == 1) {
+                val maximum = if (body.contains(IP_RESTRICTED_STR)) IP_RESTRICTED else IP_NORMAL
+                val resetCost = ParserUtils.parseInt(es[0].text(), 0)
+                return Limits(0, maximum, resetCost)
             }
         }
         throw ParseException("Parse image limits error")

@@ -380,8 +380,13 @@
     <string name="settings_eh_gallery_site">圖庫站台</string>
     <string name="settings_eh_image_limits">圖片配額</string>
     <string name="settings_eh_image_limits_summary">載入中…</string>
-    <string name="settings_eh_image_limits_summary_2">當前已用：%1$d / %2$d</string>
-    <string name="settings_eh_current_limits">當前已用：%1$s\n重置花費：%2$d GP</string>
+    <string name="settings_eh_image_limits_summary_ip">基於 IP 的限制：</string>
+    <string name="settings_eh_image_limits_summary_ip_ok">未受限</string>
+    <string name="settings_eh_image_limits_summary_ip_restricted">高解析度圖片受限</string>
+    <string name="settings_eh_image_limits_summary_acc">當前已用：%1$d / %2$d</string>
+    <string name="settings_eh_unlock_cost">您可以花費 %1$d GP 來解鎖 24 小時高解析度配額</string>
+    <string name="settings_eh_unlock">解鎖</string>
+    <string name="settings_eh_reset_cost">重置花費：%1$d GP</string>
     <string name="settings_eh_reset">重置</string>
     <string name="settings_eh_reset_limits_succeed">成功重置圖片配額</string>
     <string name="settings_eh_u_config">E-Hentai 設定</string>

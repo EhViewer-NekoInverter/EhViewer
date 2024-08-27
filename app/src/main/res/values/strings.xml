@@ -406,8 +406,13 @@
     <string name="settings_eh_gallery_site">Gallery site</string>
     <string name="settings_eh_image_limits">Image Limits</string>
     <string name="settings_eh_image_limits_summary">Loading…</string>
-    <string name="settings_eh_image_limits_summary_2">Current: %1$d / %2$d</string>
-    <string name="settings_eh_current_limits">Current: %1$s\nReset Cost: %2$d GP</string>
+    <string name="settings_eh_image_limits_summary_ip">IP-based limits: </string>
+    <string name="settings_eh_image_limits_summary_ip_ok">no restrictions</string>
+    <string name="settings_eh_image_limits_summary_ip_restricted">lower-resolution images</string>
+    <string name="settings_eh_image_limits_summary_acc">Current: %1$d / %2$d</string>
+    <string name="settings_eh_unlock_cost">You can unlock a high-resolution quota for 24 hours by spending %1$d GP</string>
+    <string name="settings_eh_unlock">Unlock</string>
+    <string name="settings_eh_reset_cost">Reset Cost: %1$d GP</string>
     <string name="settings_eh_reset">Reset</string>
     <string name="settings_eh_reset_limits_succeed">Image limit was successfully reset</string>
     <string name="settings_eh_u_config">E-Hentai settings</string>
