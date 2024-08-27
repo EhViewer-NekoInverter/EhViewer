@@ -28,46 +28,56 @@ object EhDns : Dns {
 
     init {
         /* Pair(ip: String!, blockedByCCP: Boolean!) */
+        val ehHosts = arrayOf(
+            Pair("104.20.18.168", false),
+            Pair("104.20.19.168", false),
+            Pair("172.67.2.238", false),
+        )
         val ehgtHosts = arrayOf(
-            Pair("37.48.89.44", false),
             Pair("81.171.10.48", false),
             Pair("178.162.139.24", false),
-            Pair("178.162.140.212", false),
-            Pair("2001:1af8:4700:a062:8::47de", false),
-            Pair("2001:1af8:4700:a062:9::47de", true),
-            Pair("2001:1af8:4700:a0c9:4::47de", false),
-            Pair("2001:1af8:4700:a0c9:3::47de", true),
+            Pair("62.112.8.21", false),
+            Pair("89.39.106.43", false),
+            Pair("109.236.85.28", false),
+            Pair("2a00:7c80:0:123::3a85", false),
+            Pair("2a00:7c80:0:12d::38a1", false),
+            Pair("2a00:7c80:0:13b::37a4", false),
+        )
+        val exHosts = arrayOf(
+            Pair("178.175.128.251", false),
+            Pair("178.175.128.252", false),
+            Pair("178.175.128.253", false),
+            Pair("178.175.128.254", false),
+            Pair("178.175.129.251", false),
+            Pair("178.175.129.252", false),
+            Pair("178.175.129.253", false),
+            Pair("178.175.129.254", false),
+            Pair("178.175.132.19", false),
+            Pair("178.175.132.20", false),
+            Pair("178.175.132.21", false),
+            Pair("178.175.132.22", false),
         )
 
         put(
             "e-hentai.org",
-            Pair("104.20.134.21", false),
-            Pair("104.20.135.21", false),
-            Pair("172.67.0.127", false),
-        )
-        put(
-            "exhentai.org",
-            Pair("178.175.128.252", false),
-            Pair("178.175.129.252", false),
-            Pair("178.175.129.254", false),
-            Pair("178.175.128.254", false),
-            Pair("178.175.132.20", false),
-            Pair("178.175.132.22", false),
-        )
-        put(
-            "s.exhentai.org",
-            Pair("178.175.129.254", false),
-            Pair("178.175.128.254", false),
-            Pair("178.175.132.22", false),
-        )
-        put(
-            "repo.e-hentai.org",
-            Pair("94.100.28.57", true),
-            Pair("94.100.29.73", true),
+            *ehHosts,
         )
         put(
             "forums.e-hentai.org",
-            Pair("94.100.18.243", false),
+            *ehHosts,
+        )
+        put(
+            "repo.e-hentai.org",
+            *ehHosts,
+        )
+        put(
+            "api.e-hentai.org",
+            *ehHosts,
+            Pair("5.79.104.110", false),
+            Pair("37.48.81.204", false),
+            Pair("37.48.92.161", false),
+            Pair("212.7.200.104", false),
+            Pair("212.7.202.51", false),
         )
         put(
             "ehgt.org",
@@ -91,9 +101,18 @@ object EhDns : Dns {
         )
         put(
             "ul.ehgt.org",
-            Pair("94.100.24.82", true),
-            Pair("94.100.24.72", true),
+            *ehgtHosts,
         )
+
+        put(
+            "exhentai.org",
+            *exHosts,
+        )
+        put(
+            "s.exhentai.org",
+            *exHosts,
+        )
+
         put(
             "raw.githubusercontent.com",
             Pair("151.101.0.133", false),
@@ -114,7 +133,8 @@ object EhDns : Dns {
 
     @Throws(UnknownHostException::class)
     override fun lookup(hostname: String): List<InetAddress> {
-        return hosts[hostname] ?: builtInHosts[hostname].takeIf { Settings.builtInHosts }
+        val address = hosts[hostname] ?: builtInHosts[hostname].takeIf { Settings.builtInHosts }
             ?: Dns.SYSTEM.lookup(hostname)
+        return address.shuffled()
     }
 }
