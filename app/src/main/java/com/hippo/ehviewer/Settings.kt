@@ -23,6 +23,7 @@ import com.hippo.ehviewer.EhApplication.Companion.application
 import com.hippo.ehviewer.client.data.FavListUrlBuilder
 import com.hippo.ehviewer.ui.scene.GalleryListScene
 import com.hippo.glgallery.GalleryView
+import com.hippo.okhttp.ChromeRequestBuilder.Companion.CHROME_USER_AGENT
 import com.hippo.unifile.UniFile
 import com.hippo.yorozuya.NumberUtils
 import java.util.Locale
@@ -177,6 +178,7 @@ object Settings {
     private const val DEFAULT_PROXY_PORT = -1
     private const val KEY_BUILT_IN_HOSTS = "built_in_hosts_2"
     private const val DEFAULT_BUILT_IN_HOSTS = false
+    private const val KEY_USER_AGENT = "user_agent"
     private const val KEY_APP_LINK_VERIFY_TIP = "app_link_verify_tip"
     private const val DEFAULT_APP_LINK_VERIFY_TIP = false
 
@@ -663,6 +665,12 @@ object Settings {
 
     val builtInHosts: Boolean
         get() = getBoolean(KEY_BUILT_IN_HOSTS, DEFAULT_BUILT_IN_HOSTS)
+
+    val userAgent: String?
+        get() = getString(KEY_USER_AGENT, CHROME_USER_AGENT)
+    fun putUserAgent(value: String?) {
+        putString(KEY_USER_AGENT, value)
+    }
 
     val appLinkVerifyTip: Boolean
         get() = getBoolean(KEY_APP_LINK_VERIFY_TIP, DEFAULT_APP_LINK_VERIFY_TIP)
