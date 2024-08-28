@@ -13,72 +13,58 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.preference
 
-package com.hippo.preference;
+import android.content.Context
+import android.text.Html
+import android.text.method.LinkMovementMethod
+import android.util.AttributeSet
+import android.view.View
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import com.hippo.ehviewer.R
 
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
-import android.util.AttributeSet;
-import android.view.View;
-import android.widget.TextView;
+open class MessagePreference(
+    context: Context,
+    attrs: AttributeSet? = null,
+) : DialogPreference(
+    context,
+    attrs,
+) {
+    private var mDialogMessage: CharSequence? = null
+    private var mDialogMessageLinkify = false
 
-import androidx.appcompat.app.AlertDialog;
-
-import com.hippo.ehviewer.R;
-
-public class MessagePreference extends DialogPreference {
-    private CharSequence mDialogMessage;
-    private boolean mDialogMessageLinkify;
-
-    public MessagePreference(Context context) {
-        super(context);
-        init(context, null, 0, 0);
-    }
-
-    public MessagePreference(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context, attrs, 0, 0);
-    }
-
-    public MessagePreference(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context, attrs, defStyleAttr, 0);
-    }
-
-    public void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MessagePreference, defStyleAttr, defStyleRes);
-        String message = a.getString(R.styleable.MessagePreference_dialogMessage);
-        if (a.getBoolean(R.styleable.MessagePreference_dialogMessageHtml, false)) {
-            mDialogMessage = Html.fromHtml(message, Html.FROM_HTML_MODE_LEGACY);
+    init {
+        val a = context.obtainStyledAttributes(attrs, R.styleable.MessagePreference, 0, 0)
+        val message = a.getString(R.styleable.MessagePreference_dialogMessage)
+        mDialogMessage = if (a.getBoolean(R.styleable.MessagePreference_dialogMessageHtml, false)) {
+            Html.fromHtml(message, Html.FROM_HTML_MODE_LEGACY)
         } else {
-            mDialogMessage = message;
+            message
         }
-        mDialogMessageLinkify = a.getBoolean(R.styleable.MessagePreference_dialogMessageLinkify, false);
-        a.recycle();
+        mDialogMessageLinkify =
+            a.getBoolean(R.styleable.MessagePreference_dialogMessageLinkify, false)
+        a.recycle()
     }
 
-    public void setDialogMessage(CharSequence message) {
-        mDialogMessage = message;
+    fun setDialogMessage(message: CharSequence?) {
+        mDialogMessage = message
     }
 
-    @Override
-    protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
-        super.onPrepareDialogBuilder(builder);
-        builder.setMessage(mDialogMessage);
-        builder.setPositiveButton(android.R.string.ok, this);
-        builder.setNegativeButton(null, null);
+    override fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
+        super.onPrepareDialogBuilder(builder)
+        builder.setMessage(mDialogMessage)
+        builder.setPositiveButton(android.R.string.ok, this)
+        builder.setNegativeButton(null, null)
     }
 
-    @Override
-    protected void onDialogCreated(AlertDialog dialog) {
-        super.onDialogCreated(dialog);
+    override fun onDialogCreated(dialog: AlertDialog) {
+        super.onDialogCreated(dialog)
 
         if (mDialogMessageLinkify) {
-            final View messageView = dialog.findViewById(android.R.id.message);
-            if (messageView instanceof TextView) {
-                ((TextView) messageView).setMovementMethod(LinkMovementMethod.getInstance());
+            val messageView = dialog.findViewById<View>(android.R.id.message)
+            if (messageView is TextView) {
+                messageView.movementMethod = LinkMovementMethod.getInstance()
             }
         }
     }

@@ -34,7 +34,7 @@ import com.hippo.preference.DialogPreference
 import com.hippo.yorozuya.MathUtils
 import com.hippo.yorozuya.ViewUtils
 
-class ProxyPreference @JvmOverloads constructor(
+class ProxyPreference(
     context: Context,
     attrs: AttributeSet? = null,
 ) : DialogPreference(context, attrs), View.OnClickListener {
@@ -43,10 +43,9 @@ class ProxyPreference @JvmOverloads constructor(
     private var mIp: EditText? = null
     private var mPortInputLayout: TextInputLayout? = null
     private var mPort: EditText? = null
-    private val mArray: Array<String>
+    private val mArray: Array<String> = context.resources.getStringArray(R.array.proxy_types)
 
     init {
-        mArray = context.resources.getStringArray(R.array.proxy_types)
         dialogLayoutResource = R.layout.preference_dialog_proxy
         updateSummary(Settings.proxyType, Settings.proxyIp, Settings.proxyPort)
     }

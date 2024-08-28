@@ -13,129 +13,172 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.preference
 
-package com.hippo.preference;
-
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-
-import androidx.annotation.DrawableRes;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
-import androidx.preference.Preference;
-
-import com.hippo.ehviewer.R;
+import android.app.Dialog
+import android.content.Context
+import android.content.DialogInterface
+import android.content.SharedPreferences
+import android.graphics.drawable.Drawable
+import android.os.Bundle
+import android.os.Parcel
+import android.os.Parcelable
+import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.preference.Preference
+import com.hippo.ehviewer.R
 
 /**
- * A base class for {@link Preference} objects that are
+ * A base class for [Preference] objects that are
  * dialog-based. These preferences will, when clicked, open a dialog showing the
  * actual preference controls.
  */
-public abstract class DialogPreference extends Preference implements
-        DialogInterface.OnClickListener, DialogInterface.OnDismissListener {
-    private AlertDialog.Builder mBuilder;
-
-    private CharSequence mDialogTitle;
-    private Drawable mDialogIcon;
-    private CharSequence mPositiveButtonText;
-    private CharSequence mNegativeButtonText;
-    private int mDialogLayoutResId;
+abstract class DialogPreference(
+    context: Context,
+    attrs: AttributeSet? = null,
+) : Preference(
+    context,
+    attrs,
+),
+    DialogInterface.OnClickListener,
+    DialogInterface.OnDismissListener {
+    private var mBuilder: AlertDialog.Builder? = null
+    private var mDialogTitle: CharSequence? = null
+    private var mDialogIcon: Drawable? = null
+    private var mPositiveButtonText: CharSequence? = null
+    private var mNegativeButtonText: CharSequence? = null
+    private var mDialogLayoutResId: Int = 0
 
     /**
      * The dialog, if it is showing.
      */
-    private AlertDialog mDialog;
+    private var mDialog: AlertDialog? = null
 
     /**
      * Which button was clicked.
      */
-    private int mWhichButtonClicked;
+    private var mWhichButtonClicked = 0
 
-    public DialogPreference(Context context) {
-        super(context);
-        init(context, null, 0, 0);
-    }
-
-    public DialogPreference(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context, attrs, 0, 0);
-    }
-
-    public DialogPreference(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context, attrs, defStyleAttr, defStyleAttr);
-    }
-
-    private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DialogPreference, defStyleAttr, defStyleRes);
-        mDialogTitle = a.getString(R.styleable.DialogPreference_dialogTitle);
+    init {
+        val a = context.obtainStyledAttributes(attrs, R.styleable.DialogPreference, 0, 0)
+        mDialogTitle = a.getString(R.styleable.DialogPreference_dialogTitle)
         if (mDialogTitle == null) {
             // Fallback on the regular title of the preference
             // (the one that is seen in the list)
-            mDialogTitle = getTitle();
+            mDialogTitle = title
         }
-        mDialogIcon = a.getDrawable(R.styleable.DialogPreference_dialogIcon);
-        mPositiveButtonText = a.getString(R.styleable.DialogPreference_positiveButtonText);
-        mNegativeButtonText = a.getString(R.styleable.DialogPreference_negativeButtonText);
-        mDialogLayoutResId = a.getResourceId(R.styleable.DialogPreference_dialogLayout, mDialogLayoutResId);
-        a.recycle();
+        mDialogIcon = a.getDrawable(R.styleable.DialogPreference_dialogIcon)
+        mPositiveButtonText = a.getString(R.styleable.DialogPreference_positiveButtonText)
+        mNegativeButtonText = a.getString(R.styleable.DialogPreference_negativeButtonText)
+        mDialogLayoutResId =
+            a.getResourceId(R.styleable.DialogPreference_dialogLayout, mDialogLayoutResId)
+        a.recycle()
     }
 
-    /**
-     * Returns the title to be shown on subsequent dialogs.
-     *
-     * @return The title.
-     */
-    public CharSequence getDialogTitle() {
-        return mDialogTitle;
-    }
+    var dialogTitle: CharSequence?
+        /**
+         * Returns the title to be shown on subsequent dialogs.
+         *
+         * @return The title.
+         */
+        get() = mDialogTitle
 
-    /**
-     * Sets the title of the dialog. This will be shown on subsequent dialogs.
-     *
-     * @param dialogTitle The title.
-     */
-    public void setDialogTitle(CharSequence dialogTitle) {
-        mDialogTitle = dialogTitle;
-    }
+        /**
+         * Sets the title of the dialog. This will be shown on subsequent dialogs.
+         *
+         * @param dialogTitle The title.
+         */
+        set(dialogTitle) {
+            mDialogTitle = dialogTitle
+        }
+
+    var dialogIcon: Drawable?
+        /**
+         * Returns the icon to be shown on subsequent dialogs.
+         *
+         * @return The icon, as a [Drawable].
+         */
+        get() = mDialogIcon
+
+        /**
+         * Sets the icon of the dialog. This will be shown on subsequent dialogs.
+         *
+         * @param dialogIcon The icon, as a [Drawable].
+         */
+        set(dialogIcon) {
+            mDialogIcon = dialogIcon
+        }
+
+    var positiveButtonText: CharSequence?
+        /**
+         * Returns the text of the negative button to be shown on subsequent
+         * dialogs.
+         *
+         * @return The text of the positive button.
+         */
+        get() = mPositiveButtonText
+
+        /**
+         * Sets the text of the negative button of the dialog. This will be shown on
+         * subsequent dialogs.
+         *
+         * @param positiveButtonText The text of the negative button.
+         */
+        set(positiveButtonText) {
+            mPositiveButtonText = positiveButtonText
+        }
+
+    var negativeButtonText: CharSequence?
+        /**
+         * Returns the text of the negative button to be shown on subsequent
+         * dialogs.
+         *
+         * @return The text of the negative button.
+         */
+        get() = mNegativeButtonText
+
+        /**
+         * Sets the text of the negative button of the dialog. This will be shown on
+         * subsequent dialogs.
+         *
+         * @param negativeButtonText The text of the negative button.
+         */
+        set(negativeButtonText) {
+            mNegativeButtonText = negativeButtonText
+        }
+
+    var dialogLayoutResource: Int
+        /**
+         * Returns the layout resource that is used as the content View for
+         * subsequent dialogs.
+         *
+         * @return The layout resource.
+         */
+        get() = mDialogLayoutResId
+
+        /**
+         * Sets the layout resource that is inflated as the [View] to be shown
+         * as the content View of subsequent dialogs.
+         *
+         * @param dialogLayoutResId The layout resource ID to be inflated.
+         */
+        set(dialogLayoutResId) {
+            mDialogLayoutResId = dialogLayoutResId
+        }
 
     /**
      * @param dialogTitleResId The dialog title as a resource.
-     * @see #setDialogTitle(CharSequence)
+     * @see .setDialogTitle
      */
-    public void setDialogTitle(int dialogTitleResId) {
-        setDialogTitle(getContext().getString(dialogTitleResId));
-    }
-
-    /**
-     * Returns the icon to be shown on subsequent dialogs.
-     *
-     * @return The icon, as a {@link Drawable}.
-     */
-    public Drawable getDialogIcon() {
-        return mDialogIcon;
-    }
-
-    /**
-     * Sets the icon of the dialog. This will be shown on subsequent dialogs.
-     *
-     * @param dialogIcon The icon, as a {@link Drawable}.
-     */
-    public void setDialogIcon(Drawable dialogIcon) {
-        mDialogIcon = dialogIcon;
+    fun setDialogTitle(dialogTitleResId: Int) {
+        mDialogTitle = context.getString(dialogTitleResId)
     }
 
     /**
@@ -144,101 +187,38 @@ public abstract class DialogPreference extends Preference implements
      *
      * @param dialogIconRes The icon, as a resource ID.
      */
-    public void setDialogIcon(@DrawableRes int dialogIconRes) {
-        mDialogIcon = ContextCompat.getDrawable(getContext(), dialogIconRes);
-    }
-
-    /**
-     * Returns the text of the positive button to be shown on subsequent
-     * dialogs.
-     *
-     * @return The text of the positive button.
-     */
-    public CharSequence getPositiveButtonText() {
-        return mPositiveButtonText;
-    }
-
-    /**
-     * Sets the text of the positive button of the dialog. This will be shown on
-     * subsequent dialogs.
-     *
-     * @param positiveButtonText The text of the positive button.
-     */
-    public void setPositiveButtonText(CharSequence positiveButtonText) {
-        mPositiveButtonText = positiveButtonText;
+    fun setDialogIcon(@DrawableRes dialogIconRes: Int) {
+        mDialogIcon = ContextCompat.getDrawable(context, dialogIconRes)
     }
 
     /**
      * @param positiveButtonTextResId The positive button text as a resource.
-     * @see #setPositiveButtonText(CharSequence)
+     * @see .setPositiveButtonText
      */
-    public void setPositiveButtonText(@StringRes int positiveButtonTextResId) {
-        setPositiveButtonText(getContext().getString(positiveButtonTextResId));
-    }
-
-    /**
-     * Returns the text of the negative button to be shown on subsequent
-     * dialogs.
-     *
-     * @return The text of the negative button.
-     */
-    public CharSequence getNegativeButtonText() {
-        return mNegativeButtonText;
-    }
-
-    /**
-     * Sets the text of the negative button of the dialog. This will be shown on
-     * subsequent dialogs.
-     *
-     * @param negativeButtonText The text of the negative button.
-     */
-    public void setNegativeButtonText(CharSequence negativeButtonText) {
-        mNegativeButtonText = negativeButtonText;
+    fun setPositiveButtonText(@StringRes positiveButtonTextResId: Int) {
+        mPositiveButtonText = context.getString(positiveButtonTextResId)
     }
 
     /**
      * @param negativeButtonTextResId The negative button text as a resource.
-     * @see #setNegativeButtonText(CharSequence)
+     * @see .setNegativeButtonText
      */
-    public void setNegativeButtonText(@StringRes int negativeButtonTextResId) {
-        setNegativeButtonText(getContext().getString(negativeButtonTextResId));
-    }
-
-    /**
-     * Returns the layout resource that is used as the content View for
-     * subsequent dialogs.
-     *
-     * @return The layout resource.
-     */
-    public int getDialogLayoutResource() {
-        return mDialogLayoutResId;
-    }
-
-    /**
-     * Sets the layout resource that is inflated as the {@link View} to be shown
-     * as the content View of subsequent dialogs.
-     *
-     * @param dialogLayoutResId The layout resource ID to be inflated.
-     */
-    public void setDialogLayoutResource(int dialogLayoutResId) {
-        mDialogLayoutResId = dialogLayoutResId;
+    fun setNegativeButtonText(@StringRes negativeButtonTextResId: Int) {
+        mNegativeButtonText = context.getString(negativeButtonTextResId)
     }
 
     /**
      * Prepares the dialog builder to be shown when the preference is clicked.
      * Use this to set custom properties on the dialog.
-     * <p>
-     * Do not {@link AlertDialog.Builder#create()} or
-     * {@link AlertDialog.Builder#show()}.
+     *
+     * Do not [AlertDialog.Builder.create] or
+     * [AlertDialog.Builder.show].
      */
-    protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
-    }
+    protected open fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {}
 
-    @Override
-    protected void onClick() {
-        if (mDialog != null && mDialog.isShowing()) return;
-
-        showDialog(null);
+    override fun onClick() {
+        if (mDialog != null && mDialog!!.isShowing) return
+        showDialog(null)
     }
 
     /**
@@ -248,39 +228,38 @@ public abstract class DialogPreference extends Preference implements
      *
      * @param state Optional instance state to restore on the dialog
      */
-    protected void showDialog(Bundle state) {
-        Context context = getContext();
+    protected open fun showDialog(state: Bundle?) {
+        val context = context
 
-        mWhichButtonClicked = DialogInterface.BUTTON_NEGATIVE;
+        mWhichButtonClicked = DialogInterface.BUTTON_NEGATIVE
+        mBuilder = AlertDialog.Builder(context)
+            .setTitle(mDialogTitle)
+            .setIcon(mDialogIcon)
+            .setPositiveButton(mPositiveButtonText, this)
+            .setNegativeButton(mNegativeButtonText, this)
 
-        mBuilder = new AlertDialog.Builder(context)
-                .setTitle(mDialogTitle)
-                .setIcon(mDialogIcon)
-                .setPositiveButton(mPositiveButtonText, this)
-                .setNegativeButton(mNegativeButtonText, this);
-
-        View contentView = onCreateDialogView();
-        if (contentView != null) {
-            onBindDialogView(contentView);
-            mBuilder.setView(contentView);
+        onCreateDialogView()?.let { view ->
+            view.parent?.let {
+                (it as ViewGroup).removeView(view)
+            }
+            onBindDialogView(view)
+            mBuilder!!.setView(view)
         }
 
-        onPrepareDialogBuilder(mBuilder);
-
-        //PreferenceUtils.registerOnActivityDestroyListener(this, this);
+        onPrepareDialogBuilder(mBuilder!!)
+        // PreferenceUtils.registerOnActivityDestroyListener(this, this);
 
         // Create the dialog
-        final AlertDialog dialog = mDialog = mBuilder.create();
-        if (state != null) {
-            dialog.onRestoreInstanceState(state);
+        mDialog = mBuilder!!.create()
+        val dialog = mDialog!!
+        state?.let { dialog.onRestoreInstanceState(it) }
+        if (needInputMethod) {
+            requestInputMethod(dialog)
         }
-        if (needInputMethod()) {
-            requestInputMethod(dialog);
-        }
-        dialog.setOnDismissListener(this);
-        dialog.show();
+        dialog.setOnDismissListener(this)
+        dialog.show()
 
-        onDialogCreated(dialog);
+        onDialogCreated(dialog)
     }
 
     /**
@@ -288,16 +267,13 @@ public abstract class DialogPreference extends Preference implements
      * is displayed. Default is false. Subclasses should override this method if they need
      * the soft input method brought up automatically.
      */
-    protected boolean needInputMethod() {
-        return false;
-    }
+    open val needInputMethod: Boolean = false
 
     /**
      * Sets the required flags on the dialog window to enable input method window to show up.
      */
-    private void requestInputMethod(Dialog dialog) {
-        Window window = dialog.getWindow();
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+    private fun requestInputMethod(dialog: Dialog) {
+        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
     }
 
     /**
@@ -306,15 +282,12 @@ public abstract class DialogPreference extends Preference implements
      * set.
      *
      * @return The content View for the dialog.
-     * @see #setLayoutResource(int)
+     * @see .setLayoutResource
      */
-    protected View onCreateDialogView() {
-        if (mDialogLayoutResId == 0) {
-            return null;
-        }
-
-        LayoutInflater inflater = LayoutInflater.from(mBuilder.getContext());
-        return inflater.inflate(mDialogLayoutResId, null);
+    protected open fun onCreateDialogView(): View? {
+        if (mDialogLayoutResId == 0) return null
+        val inflater = LayoutInflater.from(mBuilder!!.context)
+        return inflater.inflate(mDialogLayoutResId, null)
     }
 
     /**
@@ -322,101 +295,87 @@ public abstract class DialogPreference extends Preference implements
      *
      * @param view The content View of the dialog, if it is custom.
      */
-    protected void onBindDialogView(View view) {
+    protected open fun onBindDialogView(view: View) {}
+
+    protected open fun onDialogCreated(dialog: AlertDialog) {}
+
+    override fun onClick(dialog: DialogInterface, which: Int) {
+        mWhichButtonClicked = which
     }
 
-    protected void onDialogCreated(AlertDialog dialog) {
-    }
-
-    @Override
-    public void onClick(DialogInterface dialog, int which) {
-        mWhichButtonClicked = which;
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        mDialog = null;
-        onDialogClosed(mWhichButtonClicked == DialogInterface.BUTTON_POSITIVE);
+    override fun onDismiss(dialog: DialogInterface) {
+        mDialog = null
+        onDialogClosed(mWhichButtonClicked == DialogInterface.BUTTON_POSITIVE)
     }
 
     /**
      * Called when the dialog is dismissed and should be used to save data to
-     * the {@link SharedPreferences}.
+     * the [SharedPreferences].
      *
      * @param positiveResult Whether the positive button was clicked (true), or
-     *                       the negative button was clicked or the dialog was canceled (false).
+     * the negative button was clicked or the dialog was canceled (false).
      */
-    protected void onDialogClosed(boolean positiveResult) {
-    }
+    protected open fun onDialogClosed(positiveResult: Boolean) {}
 
-    /**
-     * Gets the dialog that is shown by this preference.
-     *
-     * @return The dialog, or null if a dialog is not being shown.
-     */
-    public Dialog getDialog() {
-        return mDialog;
-    }
+    val dialog: Dialog?
+        /**
+         * Gets the dialog that is shown by this preference.
+         *
+         * @return The dialog, or null if a dialog is not being shown.
+         */
+        get() = mDialog
 
-    @Override
-    protected Parcelable onSaveInstanceState() {
-        final Parcelable superState = super.onSaveInstanceState();
-        if (mDialog == null || !mDialog.isShowing()) {
-            return superState;
+    override fun onSaveInstanceState(): Parcelable? {
+        val superState = super.onSaveInstanceState()
+        if (mDialog == null || !mDialog!!.isShowing) {
+            return superState
         }
 
-        final SavedState myState = new SavedState(superState);
-        myState.isDialogShowing = true;
-        myState.dialogBundle = mDialog.onSaveInstanceState();
-        return myState;
+        val myState = SavedState(superState)
+        myState.isDialogShowing = true
+        myState.dialogBundle = mDialog!!.onSaveInstanceState()
+        return myState
     }
 
-    @Override
-    protected void onRestoreInstanceState(Parcelable state) {
-        if (state == null || !state.getClass().equals(SavedState.class)) {
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        if (state == null || state.javaClass != SavedState::class.java) {
             // Didn't save state for us in onSaveInstanceState
-            super.onRestoreInstanceState(state);
-            return;
+            super.onRestoreInstanceState(state)
+            return
         }
 
-        SavedState myState = (SavedState) state;
-        super.onRestoreInstanceState(myState.getSuperState());
+        val myState = state as SavedState
+        super.onRestoreInstanceState(myState.superState)
         if (myState.isDialogShowing) {
-            showDialog(myState.dialogBundle);
+            showDialog(myState.dialogBundle)
         }
     }
 
-    private static class SavedState extends BaseSavedState {
-        public static final Parcelable.Creator<SavedState> CREATOR =
-                new Parcelable.Creator<SavedState>() {
-                    @Override
-                    public SavedState createFromParcel(Parcel in) {
-                        return new SavedState(in);
-                    }
+    private class SavedState : BaseSavedState {
+        var isDialogShowing: Boolean = false
+        var dialogBundle: Bundle? = null
 
-                    @Override
-                    public SavedState[] newArray(int size) {
-                        return new SavedState[size];
-                    }
-                };
-        boolean isDialogShowing;
-        Bundle dialogBundle;
-
-        public SavedState(Parcel source) {
-            super(source);
-            isDialogShowing = source.readInt() == 1;
-            dialogBundle = source.readBundle(DialogPreference.class.getClassLoader());
+        constructor(source: Parcel) : super(source) {
+            isDialogShowing = source.readInt() == 1
+            dialogBundle = source.readBundle(DialogPreference::class.java.classLoader)
         }
 
-        public SavedState(Parcelable superState) {
-            super(superState);
+        constructor(superState: Parcelable?) : super(superState)
+
+        override fun writeToParcel(dest: Parcel, flags: Int) {
+            super.writeToParcel(dest, flags)
+            dest.writeInt(if (isDialogShowing) 1 else 0)
+            dest.writeBundle(dialogBundle)
         }
 
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            super.writeToParcel(dest, flags);
-            dest.writeInt(isDialogShowing ? 1 : 0);
-            dest.writeBundle(dialogBundle);
+        companion object CREATOR : Parcelable.Creator<SavedState> {
+            override fun createFromParcel(`in`: Parcel): SavedState {
+                return SavedState(`in`)
+            }
+
+            override fun newArray(size: Int): Array<SavedState?> {
+                return arrayOfNulls(size)
+            }
         }
     }
 }

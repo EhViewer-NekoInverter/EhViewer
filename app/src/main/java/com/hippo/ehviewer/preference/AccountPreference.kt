@@ -36,7 +36,7 @@ import okhttp3.Cookie
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import java.util.LinkedList
 
-class AccountPreference @JvmOverloads constructor(
+class AccountPreference(
     context: Context,
     attrs: AttributeSet? = null,
 ) : MessagePreference(context, attrs) {
@@ -86,7 +86,7 @@ class AccountPreference @JvmOverloads constructor(
     override fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
         super.onPrepareDialogBuilder(builder)
         if (message != null) {
-            builder.setNeutralButton(R.string.settings_eh_account_identity_cookies_copy) { dialog: DialogInterface?, which: Int ->
+            builder.setNeutralButton(R.string.settings_eh_account_identity_cookies_copy) { dialog: DialogInterface, which: Int ->
                 mActivity.addTextToClipboard(message, true)
                 this@AccountPreference.onClick(dialog, which)
             }
@@ -108,8 +108,8 @@ class AccountPreference @JvmOverloads constructor(
         }
     }
 
-    override fun onDialogCreated(dialog: AlertDialog?) {
+    override fun onDialogCreated(dialog: AlertDialog) {
         super.onDialogCreated(dialog)
-        dialog!!.window!!.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+        dialog.window!!.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
     }
 }

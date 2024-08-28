@@ -21,7 +21,7 @@ import androidx.preference.Preference
 import com.hippo.ehviewer.BuildConfig
 import com.hippo.ehviewer.R
 
-class VersionPreference @JvmOverloads constructor(
+class VersionPreference(
     context: Context,
     attrs: AttributeSet? = null,
 ) : Preference(context, attrs) {

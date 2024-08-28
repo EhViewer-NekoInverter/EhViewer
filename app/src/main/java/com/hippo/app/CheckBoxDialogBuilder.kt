@@ -23,7 +23,7 @@ import androidx.appcompat.app.AlertDialog
 import com.hippo.ehviewer.R
 
 @SuppressLint("InflateParams")
-class CheckBoxDialogBuilder constructor(
+class CheckBoxDialogBuilder(
     context: Context,
     message: String?,
     checkText: String?,

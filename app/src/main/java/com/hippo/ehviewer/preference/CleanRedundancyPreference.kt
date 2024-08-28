@@ -27,7 +27,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import com.hippo.ehviewer.download.DownloadManager as downloadManager
 
-class CleanRedundancyPreference @JvmOverloads constructor(
+class CleanRedundancyPreference(
     context: Context,
     attrs: AttributeSet? = null,
 ) : TaskPreference(context, attrs) {
@@ -53,7 +53,7 @@ class CleanRedundancyPreference @JvmOverloads constructor(
         if (singletonJob?.isActive == true) {
             singletonJob?.invokeOnCompletion {
                 launchUI {
-                    dialog.dismiss()
+                    dialog?.dismiss()
                 }
             }
         } else {
@@ -61,7 +61,7 @@ class CleanRedundancyPreference @JvmOverloads constructor(
                 val cnt = doRealWork()
                 withUIContext {
                     showTip(FINAL_CLEAR_REDUNDANCY_MSG(cnt))
-                    dialog.dismiss()
+                    dialog?.dismiss()
                 }
             }
         }

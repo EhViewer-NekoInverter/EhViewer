@@ -21,8 +21,10 @@ import androidx.preference.Preference
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.UrlOpener
 
-class UrlPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
-    Preference(context, attrs) {
+class UrlPreference(
+    context: Context,
+    attrs: AttributeSet? = null,
+) : Preference(context, attrs) {
     private val mUrl: String?
 
     init {

@@ -26,12 +26,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 
-abstract class TaskPreference @JvmOverloads constructor(
+abstract class TaskPreference(
     context: Context,
     attrs: AttributeSet? = null,
 ) : DialogPreference(context, attrs), CoroutineScope {
     override val coroutineContext = Dispatchers.IO + Job()
-    protected lateinit var dialog: AlertDialog
+    private lateinit var taskDialog: AlertDialog
     override fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
         builder.setTitle(null)
         builder.setView(R.layout.preference_dialog_task)
@@ -41,7 +41,7 @@ abstract class TaskPreference @JvmOverloads constructor(
     abstract fun launchJob()
 
     override fun onDialogCreated(dialog: AlertDialog) {
-        this.dialog = dialog
+        this.taskDialog = dialog
         launchJob()
     }
 

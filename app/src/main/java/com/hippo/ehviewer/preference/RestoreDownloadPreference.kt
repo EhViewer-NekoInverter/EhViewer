@@ -38,7 +38,7 @@ import okio.buffer
 import okio.source
 import com.hippo.ehviewer.download.DownloadManager as downloadManager
 
-class RestoreDownloadPreference @JvmOverloads constructor(
+class RestoreDownloadPreference(
     context: Context,
     attrs: AttributeSet? = null,
 ) : TaskPreference(context, attrs) {
@@ -90,7 +90,7 @@ class RestoreDownloadPreference @JvmOverloads constructor(
         if (singletonJob?.isActive == true) {
             singletonJob?.invokeOnCompletion {
                 launchUI {
-                    dialog.dismiss()
+                    dialog?.dismiss()
                 }
             }
         } else {
@@ -121,7 +121,7 @@ class RestoreDownloadPreference @JvmOverloads constructor(
                             showTip(RESTORE_COUNT_MSG(count + restoreDirCount))
                         }
                     }
-                    dialog.dismiss()
+                    dialog?.dismiss()
                 }
             }
         }

@@ -31,7 +31,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.hippo.ehviewer.R
 
 @SuppressLint("InflateParams")
-class EditTextCheckBoxDialogBuilder constructor(
+class EditTextCheckBoxDialogBuilder(
     context: Context,
     text: String?,
     hint: String?,

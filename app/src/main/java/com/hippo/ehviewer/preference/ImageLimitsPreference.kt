@@ -33,8 +33,10 @@ import com.hippo.preference.DialogPreference
 import com.hippo.util.launchIO
 import com.hippo.util.withUIContext
 
-class ImageLimitsPreference(context: Context, attrs: AttributeSet) :
-    DialogPreference(context, attrs), View.OnClickListener {
+class ImageLimitsPreference(
+    context: Context,
+    attrs: AttributeSet? = null,
+) : DialogPreference(context, attrs), View.OnClickListener {
     private val mActivity = context as SettingsActivity
     private val placeholder = context.getString(R.string.please_wait)
     private val coroutineScope = mActivity.lifecycleScope
