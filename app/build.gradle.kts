@@ -13,9 +13,9 @@ plugins {
 }
 
 android {
-    compileSdk = 34
-    buildToolsVersion = "34.0.0"
-    ndkVersion = "26.3.11579264"
+    compileSdk = 35
+    buildToolsVersion = "35.0.0"
+    ndkVersion = "27.0.12077973"
 
     splits {
         abi {
@@ -25,7 +25,7 @@ android {
                 include("arm64-v8a", "x86_64", "armeabi-v7a", "x86")
                 isUniversalApk = true
             } else {
-                include("arm64-v8a", "x86_64")
+                include("arm64-v8a")
             }
         }
     }
@@ -56,7 +56,7 @@ android {
     defaultConfig {
         applicationId = "org.moedog.ehviewer"
         minSdk = 28
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 180007
         versionName = "1.8.6"
         resourceConfigurations.addAll(
