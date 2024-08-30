@@ -224,13 +224,8 @@ class GalleryPreviewsScene : ToolbarScene() {
     }
 
     private class GalleryPreviewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var image: LoadImageView
-        var text: TextView
-
-        init {
-            image = itemView.findViewById(R.id.image)
-            text = itemView.findViewById(R.id.text)
-        }
+        var image: LoadImageView = itemView.findViewById(R.id.image)
+        var text: TextView = itemView.findViewById(R.id.text)
     }
 
     private inner class GetPreviewSetListener(
@@ -265,14 +260,11 @@ class GalleryPreviewsScene : ToolbarScene() {
 
         @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: GalleryPreviewHolder, position: Int) {
-            if (null != mHelper) {
-                val preview = mHelper!!.getDataAtEx(position)
-                if (preview != null) {
-                    preview.load(holder.image)
-                    holder.text.text = (preview.position + 1).toString()
-                }
+            mHelper?.getDataAtEx(position)?.let {
+                it.load(holder.image)
+                holder.text.text = (it.position + 1).toString()
             }
-            holder.itemView.setOnClickListener { onItemClick(position) }
+            holder.itemView.setOnClickListener { onItemClick(holder.bindingAdapterPosition) }
         }
 
         override fun getItemCount(): Int {
