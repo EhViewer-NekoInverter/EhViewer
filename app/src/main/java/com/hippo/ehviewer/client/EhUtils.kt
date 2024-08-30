@@ -119,7 +119,7 @@ object EhUtils {
     }
 
     fun signOut() {
-        EhCookieStore.signOut()
+        EhCookieStore.clear()
         Settings.putAvatar(null)
         Settings.putDisplayName(null)
         Settings.putGallerySite(EhUrl.SITE_E)

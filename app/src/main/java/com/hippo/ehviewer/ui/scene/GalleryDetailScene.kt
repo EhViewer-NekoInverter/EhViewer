@@ -1737,7 +1737,9 @@ class GalleryDetailScene :
                     if (dir != null && dir.renameTo(dirName)) {
                         // Delete old gallery
                         val label = EhDownloadManager.getDownloadInfo(from.gid)?.label
-                        EhDownloadManager.deleteDownload(from.gid)
+                        withUIContext {
+                            EhDownloadManager.deleteDownload(from.gid)
+                        }
                         EhDB.removeDownloadDirname(from.gid)
                         // Delete old files
                         dir.findFile(".thumb")?.delete()

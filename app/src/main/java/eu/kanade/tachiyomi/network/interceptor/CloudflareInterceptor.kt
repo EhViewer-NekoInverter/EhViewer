@@ -8,6 +8,8 @@ import android.webkit.WebViewClient
 import androidx.core.content.ContextCompat
 import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.exception.CloudflareBypassException
+import com.hippo.util.launchIO
+import kotlinx.coroutines.DelicateCoroutinesApi
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -21,6 +23,7 @@ class CloudflareInterceptor(context: Context) : WebViewInterceptor(context) {
         return response.header(HEADER_NAME) == HEADER_VALUE
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun intercept(
         chain: Interceptor.Chain,
         request: Request,
@@ -30,7 +33,7 @@ class CloudflareInterceptor(context: Context) : WebViewInterceptor(context) {
         // we don't crash the entire app
         return runCatching {
             response.close()
-            EhCookieStore.deleteCookie(request.url, COOKIE_NAME)
+            launchIO { EhCookieStore.deleteCookie(request.url, COOKIE_NAME) }
             resolveWithWebView(request)
             chain.proceed(request)
         }.getOrElse { throw IOException(it) }

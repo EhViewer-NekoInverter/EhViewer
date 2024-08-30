@@ -60,7 +60,7 @@ class WebViewSignInScene : SolidScene() {
             setBackgroundColor(theme.resolveColor(android.R.attr.colorBackground))
             settings.run {
                 builtInZoomControls = true
-                displayZoomControls = true
+                displayZoomControls = false
                 javaScriptEnabled = true
             }
             webViewClient = LoginWebViewClient()
@@ -94,7 +94,7 @@ class WebViewSignInScene : SolidScene() {
             return cookies ?: emptyList()
         }
 
-        private fun addCookie(domain: String, cookie: Cookie) {
+        private suspend fun addCookie(domain: String, cookie: Cookie) {
             EhCookieStore.addCookie(
                 EhCookieStore.newCookie(
                     cookie,

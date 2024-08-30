@@ -172,7 +172,7 @@ class CookieSignInScene : SolidScene(), OnEditorActionListener, View.OnClickList
     }
 
     private fun showResultErrorDialog(e: Throwable) {
-        EhCookieStore.signOut()
+        EhCookieStore.clear()
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.sign_in_failed)
             .setMessage("${ExceptionUtils.getReadableString(e)}\n\n${getString(R.string.wrong_cookie_warning)}")
@@ -180,7 +180,7 @@ class CookieSignInScene : SolidScene(), OnEditorActionListener, View.OnClickList
             .show()
     }
 
-    private fun storeCookie(id: String, hash: String, igneous: String) {
+    private suspend fun storeCookie(id: String, hash: String, igneous: String) {
         EhUtils.signOut()
         EhCookieStore.addCookie(newCookie(EhCookieStore.KEY_IPB_MEMBER_ID, id, EhUrl.DOMAIN_E))
         EhCookieStore.addCookie(newCookie(EhCookieStore.KEY_IPB_MEMBER_ID, id, EhUrl.DOMAIN_EX))

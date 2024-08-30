@@ -21,6 +21,8 @@ import com.hippo.network.CookieDatabase
 import com.hippo.network.CookieSet
 import com.hippo.util.launchIO
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import okhttp3.Cookie
 import okhttp3.CookieJar
 import okhttp3.HttpUrl
@@ -28,18 +30,21 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import java.util.Collections
 import java.util.regex.Pattern
 
+@OptIn(DelicateCoroutinesApi::class)
 object EhCookieStore : CookieJar {
     private val cookieManager = CookieManager.getInstance()
     private val db: CookieDatabase = CookieDatabase(EhApplication.application, "okhttp3-cookie.db")
     private val map: MutableMap<String, CookieSet> = db.allCookies
+    private val updateLock = Mutex()
     const val KEY_CLOUDFLARE = "cf_clearance"
     const val KEY_HATH_PERKS = "hath_perks"
     const val KEY_IPB_MEMBER_ID = "ipb_member_id"
     const val KEY_IPB_PASS_HASH = "ipb_pass_hash"
     const val KEY_IGNEOUS = "igneous"
+    const val KEY_QUOTA = "iq"
     const val KEY_SETTINGS_PROFILE = "sp"
     const val KEY_STAR = "star"
-    const val KEY_QUOTA = "iq"
+    private const val KEY_UTMP = "__utmp"
     private const val KEY_CONTENT_WARNING = "nw"
     private const val CONTENT_WARNING_NOT_SHOW = "1"
     private val sTipsCookie: Cookie = Cookie.Builder()
@@ -50,76 +55,17 @@ object EhCookieStore : CookieJar {
         .expiresAt(Long.MAX_VALUE)
         .build()
 
-    fun signOut() {
-        clear()
-    }
-
     fun hasSignedIn(): Boolean {
         val url = EhUrl.HOST_E.toHttpUrl()
         return contains(url, KEY_IPB_MEMBER_ID) && contains(url, KEY_IPB_PASS_HASH)
     }
 
-    fun loadForWebView(url: String, filter: (Cookie) -> Boolean) {
-        cookieManager.removeAllCookies(null)
-        getCookies(url.toHttpUrl()).forEach {
-            if (filter(it)) {
-                cookieManager.setCookie(url, it.toString())
-            }
-        }
-    }
-
-    fun saveFromWebView(url: String, filter: (Cookie) -> Boolean): Boolean {
-        val cookies = cookieManager.getCookie(url) ?: return false
-        var saved = false
-        cookies.split(';').forEach { header ->
-            Cookie.parse(url.toHttpUrl(), header)?.let {
-                if (filter(it)) {
-                    addCookie(it)
-                    saved = true
-                }
-            }
-        }
-        return saved
-    }
-
-    fun newCookie(
-        cookie: Cookie,
-        newDomain: String,
-        forcePersistent: Boolean = false,
-        forceLongLive: Boolean = false,
-        forceNotHostOnly: Boolean = false,
-    ): Cookie {
-        val builder = Cookie.Builder()
-        builder.name(cookie.name)
-        builder.value(cookie.value)
-        if (forceLongLive) {
-            builder.expiresAt(Long.MAX_VALUE)
-        } else if (cookie.persistent) {
-            builder.expiresAt(cookie.expiresAt)
-        } else if (forcePersistent) {
-            builder.expiresAt(Long.MAX_VALUE)
-        }
-        if (cookie.hostOnly && !forceNotHostOnly) {
-            builder.hostOnlyDomain(newDomain)
-        } else {
-            builder.domain(newDomain)
-        }
-        builder.path(cookie.path)
-        if (cookie.secure) {
-            builder.secure()
-        }
-        if (cookie.httpOnly) {
-            builder.httpOnly()
-        }
-        return builder.build()
-    }
-
-    fun copyCookie(domain: String, newDomain: String, name: String, path: String = "/") {
+    suspend fun copyCookie(domain: String, newDomain: String, name: String, path: String = "/") {
         val cookie = map[domain]?.get(name, domain, path)
         cookie?.let { addCookie(newCookie(it, newDomain)) }
     }
 
-    fun deleteCookie(url: HttpUrl, name: String) {
+    suspend fun deleteCookie(url: HttpUrl, name: String) {
         val deletedCookie = Cookie.Builder()
             .name(name)
             .value("deleted")
@@ -129,43 +75,44 @@ object EhCookieStore : CookieJar {
         addCookie(deletedCookie)
     }
 
-    @Synchronized
-    fun addCookie(cookie: Cookie) {
-        // For cookie database
-        var toAdd: Cookie? = null
-        var toUpdate: Cookie? = null
-        var toRemove: Cookie? = null
-        var set = map[cookie.domain]
-        if (set == null) {
-            set = CookieSet()
-            map[cookie.domain] = set
-        }
-        if (cookie.expiresAt <= System.currentTimeMillis()) {
-            toRemove = set.remove(cookie)
-            // If the cookie is not persistent, it's not in database
-            if (toRemove != null && !toRemove.persistent) {
-                toRemove = null
+    suspend fun addCookie(cookie: Cookie) {
+        updateLock.withLock {
+            // For cookie database
+            var toAdd: Cookie? = null
+            var toUpdate: Cookie? = null
+            var toRemove: Cookie? = null
+            var set = map[cookie.domain]
+            if (set == null) {
+                set = CookieSet()
+                map[cookie.domain] = set
             }
-        } else {
-            toAdd = cookie
-            toUpdate = set.add(cookie)
-            // If the cookie is not persistent, it's not in database
-            if (!toAdd.persistent) toAdd = null
-            if (toUpdate != null && !toUpdate.persistent) toUpdate = null
-            // Remove the cookie if it updates to null
-            if (toAdd == null && toUpdate != null) {
-                toRemove = toUpdate
-                toUpdate = null
-            }
-        }
-        if (toRemove != null) {
-            db.remove(toRemove)
-        }
-        if (toAdd != null) {
-            if (toUpdate != null) {
-                db.update(toUpdate, toAdd)
+            if (cookie.expiresAt <= System.currentTimeMillis()) {
+                toRemove = set.remove(cookie)
+                // If the cookie is not persistent, it's not in database
+                if (toRemove != null && !toRemove.persistent) {
+                    toRemove = null
+                }
             } else {
-                db.add(toAdd)
+                toAdd = cookie
+                toUpdate = set.add(cookie)
+                // If the cookie is not persistent, it's not in database
+                if (!toAdd.persistent) toAdd = null
+                if (toUpdate != null && !toUpdate.persistent) toUpdate = null
+                // Remove the cookie if it updates to null
+                if (toAdd == null && toUpdate != null) {
+                    toRemove = toUpdate
+                    toUpdate = null
+                }
+            }
+            if (toRemove != null) {
+                db.remove(toRemove)
+            }
+            if (toAdd != null) {
+                if (toUpdate != null) {
+                    db.update(toUpdate, toAdd)
+                } else {
+                    db.add(toAdd)
+                }
             }
         }
     }
@@ -212,19 +159,9 @@ object EhCookieStore : CookieJar {
         return accepted
     }
 
-    fun contains(url: HttpUrl, name: String?): Boolean {
-        for (cookie in getCookies(url)) {
-            if (cookie.name == name) {
-                return true
-            }
-        }
-        return false
-    }
-
     /**
      * Remove all cookies in this `CookieRepository`.
      */
-    @OptIn(DelicateCoroutinesApi::class)
     @Synchronized
     fun clear() {
         map.clear()
@@ -233,13 +170,36 @@ object EhCookieStore : CookieJar {
         }
     }
 
-    override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
-        for (cookie in cookies) {
-            // See https://github.com/Ehviewer-Overhauled/Ehviewer/issues/873
-            if (cookie.name != "__utmp") {
-                addCookie(cookie)
-            }
+    fun newCookie(
+        cookie: Cookie,
+        newDomain: String,
+        forcePersistent: Boolean = false,
+        forceLongLive: Boolean = false,
+        forceNotHostOnly: Boolean = false,
+    ): Cookie {
+        val builder = Cookie.Builder()
+        builder.name(cookie.name)
+        builder.value(cookie.value)
+        if (forceLongLive) {
+            builder.expiresAt(Long.MAX_VALUE)
+        } else if (cookie.persistent) {
+            builder.expiresAt(cookie.expiresAt)
+        } else if (forcePersistent) {
+            builder.expiresAt(Long.MAX_VALUE)
         }
+        if (cookie.hostOnly && !forceNotHostOnly) {
+            builder.hostOnlyDomain(newDomain)
+        } else {
+            builder.domain(newDomain)
+        }
+        builder.path(cookie.path)
+        if (cookie.secure) {
+            builder.secure()
+        }
+        if (cookie.httpOnly) {
+            builder.httpOnly()
+        }
+        return builder.build()
     }
 
     /**
@@ -264,8 +224,7 @@ object EhCookieStore : CookieJar {
     }
 
     // okhttp3.Cookie.domainMatch(HttpUrl, String)
-    @JvmStatic
-    fun domainMatch(url: HttpUrl, domain: String?): Boolean {
+    private fun domainMatch(url: HttpUrl, domain: String?): Boolean {
         val urlHost = url.host
         return if (urlHost == domain) {
             true // As in 'example.com' matching 'example.com'.
@@ -276,6 +235,38 @@ object EhCookieStore : CookieJar {
                 )
         }
         // As in 'example.com' matching 'www.example.com'.
+    }
+
+    private fun contains(url: HttpUrl, name: String?): Boolean {
+        for (cookie in getCookies(url)) {
+            if (cookie.name == name) {
+                return true
+            }
+        }
+        return false
+    }
+
+    fun loadForWebView(url: String, filter: (Cookie) -> Boolean) {
+        cookieManager.removeAllCookies(null)
+        getCookies(url.toHttpUrl()).forEach {
+            if (filter(it)) {
+                cookieManager.setCookie(url, it.toString())
+            }
+        }
+    }
+
+    fun saveFromWebView(url: String, filter: (Cookie) -> Boolean): Boolean {
+        val cookies = cookieManager.getCookie(url) ?: return false
+        var saved = false
+        cookies.split(';').forEach { header ->
+            Cookie.parse(url.toHttpUrl(), header)?.let {
+                if (filter(it)) {
+                    launchIO { addCookie(it) }
+                    saved = true
+                }
+            }
+        }
+        return saved
     }
 
     override fun loadForRequest(url: HttpUrl): List<Cookie> {
@@ -296,6 +287,15 @@ object EhCookieStore : CookieJar {
             Collections.unmodifiableList(result)
         } else {
             cookies
+        }
+    }
+
+    override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
+        for (cookie in cookies) {
+            // See https://github.com/Ehviewer-Overhauled/Ehviewer/issues/873
+            if (cookie.name != KEY_UTMP) {
+                launchIO { addCookie(cookie) }
+            }
         }
     }
 }

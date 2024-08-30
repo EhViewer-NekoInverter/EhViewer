@@ -32,7 +32,6 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.client.EhCookieStore
@@ -40,6 +39,7 @@ import com.hippo.ehviewer.client.EhUrl
 import com.hippo.ehviewer.ui.scene.BaseScene
 import com.hippo.ehviewer.widget.DialogWebChromeClient
 import com.hippo.util.launchIO
+import kotlinx.coroutines.DelicateCoroutinesApi
 import okhttp3.Cookie
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import rikka.core.res.resolveColor
@@ -83,9 +83,7 @@ class UConfigFragment : BaseFragment() {
 
                 override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                     if (menuItem.itemId == R.id.action_apply) {
-                        if (loaded) {
-                            apply()
-                        }
+                        if (loaded) apply()
                         return true
                     }
                     return false
@@ -106,19 +104,13 @@ class UConfigFragment : BaseFragment() {
         cookieManager.removeSessionCookies(null)
 
         // Copy cookies from okhttp cookie store to CookieManager
-        val store = EhCookieStore
-        for (cookie in store.getCookies(url.toHttpUrl())) {
+        for (cookie in EhCookieStore.getCookies(url.toHttpUrl())) {
             cookieManager.setCookie(url, cookie.toString())
         }
     }
 
     private fun apply() {
-        webView!!.loadUrl(
-            """javascript:(function() {
-    var apply = document.getElementById("apply").children[0];
-    apply.click();
-})();""",
-        )
+        webView?.loadUrl("javascript: document.getElementById('apply').children[0].click();")
     }
 
     private fun longLive(cookie: Cookie): Cookie {
@@ -131,23 +123,22 @@ class UConfigFragment : BaseFragment() {
             .build()
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onDestroyView() {
         super.onDestroyView()
-        webView!!.destroy()
+        webView?.destroy()
+        webView = null
 
-        // Put cookies back to okhttp cookie store
-        val cookieManager = CookieManager.getInstance()
-        val cookiesString = cookieManager.getCookie(url)
+        val cookiesString = CookieManager.getInstance().getCookie(url)
         if (!cookiesString.isNullOrEmpty()) {
-            val store = EhCookieStore
             val hostUrl = EhUrl.host.toHttpUrl()
-
-            lifecycleScope.launchIO {
-                store.deleteCookie(hostUrl, EhCookieStore.KEY_SETTINGS_PROFILE)
-                // The cookies saved in the uconfig page should not be shared between e and ex
+            launchIO {
+                EhCookieStore.deleteCookie(hostUrl, EhCookieStore.KEY_SETTINGS_PROFILE)
                 for (header in cookiesString.split(";".toRegex()).dropLastWhile { it.isEmpty() }) {
                     Cookie.parse(hostUrl, header)?.let {
-                        store.addCookie(longLive(it))
+                        if (it.name == EhCookieStore.KEY_CLOUDFLARE || it.name == EhCookieStore.KEY_SETTINGS_PROFILE) {
+                            EhCookieStore.addCookie(longLive(it))
+                        }
                     }
                 }
             }
