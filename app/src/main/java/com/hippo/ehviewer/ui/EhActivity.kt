@@ -50,6 +50,7 @@ abstract class EhActivity : AppCompatActivity() {
         theme.applyStyle(getThemeStyleRes(), true)
     }
 
+    @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         layoutInflater.factory2 =
             LayoutInflaterFactory(delegate).addOnViewCreatedListener(WindowInsetsHelper.LISTENER)

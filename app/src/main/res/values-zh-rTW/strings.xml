@@ -511,10 +511,6 @@
     <string name="settings_advanced_read_cache_size">閱讀快取大小</string>
     <string name="settings_advanced_app_language_title">App 介面語言</string>
     <string name="settings_advanced_proxy">代理</string>
-    <string name="settings_advanced_built_in_hosts_title">內建 hosts.txt</string>
-    <string name="settings_advanced_built_in_hosts_summary">應用提供的主機到 IP 的對映\n可被自定義 hosts.txt 覆蓋</string>
-    <string name="settings_advanced_custom_hosts_title">自定義 hosts.txt</string>
-    <string name="settings_advanced_custom_hosts_summary">將主機名稱對映到相應的 IP 位址\n可覆蓋內建 hosts.txt</string>
     <string name="settings_advanced_backup_favorite">備份收藏列表</string>
     <string name="settings_advanced_backup_favorite_summary">備份雲端收藏列表到本機</string>
     <string name="settings_advanced_backup_favorite_start">正在備份收藏列表 %s</string>
@@ -571,15 +567,6 @@
     <string name="proxy_host_or_ip">主機或 IP</string>
     <string name="proxy_port">通訊埠</string>
     <string name="proxy_invalid_port">無效的通訊埠</string>
-    <!-- Hosts Activity -->
-    <string name="hosts">自訂 hosts.txt</string>
-    <string name="add_host">加入 host</string>
-    <string name="add_host_add">加入</string>
-    <string name="edit_host">編輯 host</string>
-    <string name="edit_host_confirm">確認</string>
-    <string name="edit_host_delete">刪除</string>
-    <string name="invalid_host">無效的 host</string>
-    <string name="invalid_ip">無效的 IP</string>
 
     <!-- Errors -->
     <string name="error_bad_status_code">錯誤狀態碼：%d</string>

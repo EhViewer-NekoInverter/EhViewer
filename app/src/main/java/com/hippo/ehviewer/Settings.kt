@@ -176,8 +176,6 @@ object Settings {
     private val DEFAULT_PROXY_IP: String? = null
     private const val KEY_PROXY_PORT = "proxy_port"
     private const val DEFAULT_PROXY_PORT = -1
-    private const val KEY_BUILT_IN_HOSTS = "built_in_hosts_2"
-    private const val DEFAULT_BUILT_IN_HOSTS = false
     private const val KEY_USER_AGENT = "user_agent"
     private const val KEY_APP_LINK_VERIFY_TIP = "app_link_verify_tip"
     private const val DEFAULT_APP_LINK_VERIFY_TIP = false
@@ -662,9 +660,6 @@ object Settings {
     fun putProxyPort(value: Int) {
         putInt(KEY_PROXY_PORT, value)
     }
-
-    val builtInHosts: Boolean
-        get() = getBoolean(KEY_BUILT_IN_HOSTS, DEFAULT_BUILT_IN_HOSTS)
 
     val userAgent: String?
         get() = getString(KEY_USER_AGENT, CHROME_USER_AGENT)
