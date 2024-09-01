@@ -54,7 +54,6 @@ material = { module = "com.google.android.material:material", version.ref = "goo
 
 okhttp-bom = { module = "com.squareup.okhttp3:okhttp-bom", version.ref = "okhttp3" }
 okhttp-coroutines = { module = "com.squareup.okhttp3:okhttp-coroutines" }
-okhttp-dnsoverhttps = { module = "com.squareup.okhttp3:okhttp-dnsoverhttps" }
 okio-jvm = { module = "com.squareup.okio:okio-jvm", version.ref = "okio" }
 
 r8 = { module = "com.android.tools:r8", version.ref = "android-tools-r8" }

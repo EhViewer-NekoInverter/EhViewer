@@ -511,8 +511,10 @@
     <string name="settings_advanced_read_cache_size">閱讀快取大小</string>
     <string name="settings_advanced_app_language_title">App 介面語言</string>
     <string name="settings_advanced_proxy">代理</string>
-    <string name="settings_advanced_dns_over_http_title">安全化的網域解析(DoH)</string>
-    <string name="settings_advanced_dns_over_http_summary">解決某些地區的 DNS 中毒問題</string>
+    <string name="settings_advanced_built_in_hosts_title">內建 hosts.txt</string>
+    <string name="settings_advanced_built_in_hosts_summary">應用提供的主機到 IP 的對映\n可被自定義 hosts.txt 覆蓋</string>
+    <string name="settings_advanced_custom_hosts_title">自定義 hosts.txt</string>
+    <string name="settings_advanced_custom_hosts_summary">將主機名稱對映到相應的 IP 位址\n可覆蓋內建 hosts.txt</string>
     <string name="settings_advanced_backup_favorite">備份收藏列表</string>
     <string name="settings_advanced_backup_favorite_summary">備份雲端收藏列表到本機</string>
     <string name="settings_advanced_backup_favorite_start">正在備份收藏列表 %s</string>
