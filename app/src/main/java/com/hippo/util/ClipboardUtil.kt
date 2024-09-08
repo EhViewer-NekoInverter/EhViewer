@@ -46,13 +46,10 @@ fun Context.addTextToClipboard(text: CharSequence?, isSensitive: Boolean) {
             },
         )
     }
-    // Avoid double notify user since system have done that on Tiramisu above
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-        if (this is MainActivity) {
-            showTip(R.string.copied_to_clipboard, BaseScene.LENGTH_SHORT)
-        } else if (this is SettingsActivity) {
-            showTip(R.string.copied_to_clipboard, BaseScene.LENGTH_SHORT)
-        }
+    if (this is MainActivity) {
+        showTip(R.string.copied_to_clipboard, BaseScene.LENGTH_SHORT)
+    } else if (this is SettingsActivity) {
+        showTip(R.string.copied_to_clipboard, BaseScene.LENGTH_SHORT)
     }
 }
 
