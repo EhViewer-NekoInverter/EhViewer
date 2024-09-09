@@ -31,7 +31,6 @@ abstract class TaskPreference(
     attrs: AttributeSet? = null,
 ) : DialogPreference(context, attrs), CoroutineScope {
     override val coroutineContext = Dispatchers.IO + Job()
-    private lateinit var taskDialog: AlertDialog
     override fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
         builder.setTitle(null)
         builder.setView(R.layout.preference_dialog_task)
@@ -41,7 +40,6 @@ abstract class TaskPreference(
     abstract fun launchJob()
 
     override fun onDialogCreated(dialog: AlertDialog) {
-        this.taskDialog = dialog
         launchJob()
     }
 

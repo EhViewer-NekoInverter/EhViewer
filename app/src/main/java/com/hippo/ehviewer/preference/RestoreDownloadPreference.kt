@@ -60,8 +60,8 @@ class RestoreDownloadPreference(
             val dirname = dir.name!!
             if (mManager.containDownloadInfo(gid)) {
                 // Restore download dir to avoid redownload
-                val dbdirname = EhDB.getDownloadDirname(gid)
-                if (null == dbdirname || dirname != dbdirname) {
+                val dbDirName = EhDB.getDownloadDirname(gid)
+                if (null == dbDirName || dirname != dbDirName) {
                     EhDB.putDownloadDirname(gid, dirname)
                     restoreDirCount++
                 }

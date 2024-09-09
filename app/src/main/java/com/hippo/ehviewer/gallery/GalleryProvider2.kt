@@ -46,6 +46,7 @@ abstract class GalleryProvider2 : GalleryProvider() {
             ".jpg",
             ".png",
             ".gif",
+            ".webp",
         )
     }
 }
