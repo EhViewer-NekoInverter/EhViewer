@@ -17,27 +17,40 @@ package com.hippo.ehviewer.ui.scene
 
 import android.graphics.Paint
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 import android.widget.TextView
+import android.widget.TextView.OnEditorActionListener
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.textfield.TextInputLayout
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.UrlOpener
 import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.EhEngine
 import com.hippo.ehviewer.client.EhUrl
+import com.hippo.ehviewer.client.EhUtils
 import com.hippo.scene.Announcer
+import com.hippo.util.ExceptionUtils
 import com.hippo.util.launchIO
 import com.hippo.util.withUIContext
 import com.hippo.yorozuya.ViewUtils
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class SignInScene : SolidScene(), View.OnClickListener {
+class SignInScene : SolidScene(), OnEditorActionListener, View.OnClickListener {
     private var mProgress: View? = null
+    private var mUsernameLayout: TextInputLayout? = null
+    private var mPasswordLayout: TextInputLayout? = null
+    private var mUsername: EditText? = null
+    private var mPassword: EditText? = null
     private var mRegister: View? = null
+    private var mSignIn: View? = null
     private var mSignInViaWebView: TextView? = null
     private var mSignInViaCookies: TextView? = null
     private var mSkipSigningIn: TextView? = null
@@ -55,7 +68,12 @@ class SignInScene : SolidScene(), View.OnClickListener {
         val view = inflater.inflate(R.layout.scene_login, container, false)
         val loginForm = ViewUtils.`$$`(view, R.id.login_form)
         mProgress = ViewUtils.`$$`(view, R.id.progress)
+        mUsernameLayout = ViewUtils.`$$`(loginForm, R.id.username_layout) as TextInputLayout
+        mUsername = mUsernameLayout!!.editText!!
+        mPasswordLayout = ViewUtils.`$$`(loginForm, R.id.password_layout) as TextInputLayout
+        mPassword = mPasswordLayout!!.editText!!
         mRegister = ViewUtils.`$$`(loginForm, R.id.register)
+        mSignIn = ViewUtils.`$$`(loginForm, R.id.sign_in)
         mSignInViaWebView = ViewUtils.`$$`(loginForm, R.id.sign_in_via_webview) as TextView
         mSignInViaCookies = ViewUtils.`$$`(loginForm, R.id.sign_in_via_cookies) as TextView
         mSkipSigningIn = ViewUtils.`$$`(loginForm, R.id.tourist_mode) as TextView
@@ -68,7 +86,9 @@ class SignInScene : SolidScene(), View.OnClickListener {
         mSkipSigningIn!!.run {
             paintFlags = paintFlags or Paint.UNDERLINE_TEXT_FLAG or Paint.ANTI_ALIAS_FLAG
         }
+        mPassword!!.setOnEditorActionListener(this)
         mRegister!!.setOnClickListener(this)
+        mSignIn!!.setOnClickListener(this)
         mSignInViaWebView!!.setOnClickListener(this)
         mSignInViaCookies!!.setOnClickListener(this)
         mSkipSigningIn!!.setOnClickListener(this)
@@ -78,7 +98,12 @@ class SignInScene : SolidScene(), View.OnClickListener {
     override fun onDestroyView() {
         super.onDestroyView()
         mProgress = null
+        mUsernameLayout = null
+        mPasswordLayout = null
+        mUsername = null
+        mPassword = null
         mRegister = null
+        mSignIn = null
         mSignInViaWebView = null
         mSignInViaCookies = null
         mSkipSigningIn = null
@@ -93,6 +118,10 @@ class SignInScene : SolidScene(), View.OnClickListener {
                 animate().alpha(1.0f).setDuration(500).start()
             }
         }
+    }
+
+    private fun hideProgress() {
+        mProgress?.visibility = View.GONE
     }
 
     override fun onSceneResult(requestCode: Int, resultCode: Int, data: Bundle?) {
@@ -112,6 +141,8 @@ class SignInScene : SolidScene(), View.OnClickListener {
         when (v) {
             mRegister ->
                 UrlOpener.openUrl(activity, EhUrl.URL_REGISTER, false)
+            mSignIn ->
+                signIn()
             mSignInViaCookies ->
                 startScene(Announcer(CookieSignInScene::class.java).setRequestCode(this, REQUEST_CODE_COOKIE))
             mSignInViaWebView ->
@@ -121,6 +152,56 @@ class SignInScene : SolidScene(), View.OnClickListener {
                 Settings.putGallerySite(EhUrl.SITE_E)
                 Settings.putSelectSite(false)
                 finishSignIn(false)
+            }
+        }
+    }
+
+    override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent?): Boolean {
+        if (v == mPassword) {
+            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_NULL) {
+                signIn()
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun signIn() {
+        if (mSignInJob?.isActive == true ||
+            mUsername == null || mPassword == null ||
+            mUsernameLayout == null || mPasswordLayout == null
+        ) {
+            return
+        }
+        val username = mUsername!!.text.toString()
+        val password = mPassword!!.text.toString()
+        if (username.isEmpty()) {
+            mUsernameLayout!!.error = getString(R.string.error_username_cannot_empty)
+            return
+        } else {
+            mUsernameLayout!!.error = null
+        }
+        if (password.isEmpty()) {
+            mPasswordLayout!!.error = getString(R.string.error_password_cannot_empty)
+            return
+        } else {
+            mPasswordLayout!!.error = null
+        }
+        hideSoftInput()
+        showProgress()
+        // Clean up for sign in
+        EhUtils.signOut()
+        mSignInJob = viewLifecycleOwner.lifecycleScope.launchIO {
+            runCatching {
+                EhEngine.signIn(username, password)
+            }.onFailure {
+                it.printStackTrace()
+                withUIContext {
+                    hideProgress()
+                    showResultErrorDialog(it)
+                }
+            }.onSuccess {
+                getProfile()
             }
         }
     }
@@ -170,6 +251,14 @@ class SignInScene : SolidScene(), View.OnClickListener {
                 finish()
             }
         }
+    }
+
+    private fun showResultErrorDialog(e: Throwable) {
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.sign_in_failed)
+            .setMessage("${ExceptionUtils.getReadableString(e)}\n\n${getString(R.string.sign_in_failed_tip)}")
+            .setPositiveButton(R.string.get_it, null)
+            .show()
     }
 
     companion object {

@@ -24,11 +24,13 @@
     <string name="password">Password</string>
     <string name="sign_in">Sign in</string>
     <string name="register">Register</string>
+    <string name="sign_in_via_webview">Sign in via WebView</string>
     <string name="sign_in_via_cookies">Sign in via cookies</string>
     <string name="tourist_mode">Continue without signing in</string>
     <string name="error_username_cannot_empty">Username cannot be an empty string</string>
     <string name="error_password_cannot_empty">Password cannot be an empty string</string>
     <string name="sign_in_failed">Sign in failed</string>
+    <string name="sign_in_failed_tip">If this issue continues, try \"Sign in via WebView\" or \"Sign in via cookies\".</string>
     <string name="get_it">Got it</string>
     <!-- Cookie Sign In Scene -->
     <string name="cookie_explain">A cookie is a small piece of data stored in web browser. Google it if you don\'t know what it is or how to get it.\n\nPlease enter special cookies to sign in.</string>

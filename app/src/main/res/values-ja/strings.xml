@@ -21,6 +21,7 @@
     <string name="password">パスワード</string>
     <string name="sign_in">ログイン</string>
     <string name="register">登録</string>
+    <string name="sign_in_via_webview">Webでログイン</string>
     <string name="sign_in_via_cookies">Cookieでログイン</string>
     <string name="tourist_mode">ログインをスキップ</string>
     <string name="error_username_cannot_empty">ユーザー名を入力してください。</string>
