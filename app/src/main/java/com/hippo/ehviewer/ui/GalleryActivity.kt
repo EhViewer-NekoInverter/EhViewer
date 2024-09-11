@@ -969,35 +969,76 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         ).show()
     }
 
-    private fun saveImageTo(page: Int) {
-        if (null == mGalleryProvider) {
-            return
-        }
-        val dir = AppConfig.getExternalTempDir()
-        if (null == dir) {
-            Toast.makeText(this, R.string.error_cant_create_temp_file, Toast.LENGTH_SHORT).show()
-            return
-        }
-        val file = mGalleryProvider!!.save(
-            page,
-            UniFile.fromFile(dir)!!,
-            mGalleryProvider!!.getImageFilename(page),
-        )
-        if (file == null) {
-            Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show()
-            return
-        }
-        val filename = file.name
-        if (filename == null) {
-            Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show()
-            return
-        }
-        mCacheFileName = filename
-        try {
-            saveImageToLauncher.launch(filename)
-        } catch (e: Throwable) {
-            ExceptionUtils.throwIfFatal(e)
-            Toast.makeText(this, R.string.error_cant_find_activity, Toast.LENGTH_SHORT).show()
+    private fun saveImageTo(page: Int, original: Boolean = false) {
+        lifecycleScope.launchIO {
+            if (null == mGalleryProvider) {
+                return@launchIO
+            }
+            val dir = AppConfig.getExternalTempDir()
+            if (null == dir) {
+                withUIContext {
+                    Toast.makeText(
+                        this@GalleryActivity,
+                        R.string.error_cant_create_temp_file,
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                }
+                return@launchIO
+            }
+            val file = if (original) {
+                withUIContext {
+                    Toast.makeText(
+                        this@GalleryActivity,
+                        R.string.start_download_original,
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                }
+                mGalleryProvider!!.downloadOriginal(
+                    page,
+                    UniFile.fromFile(dir)!!,
+                    mGalleryProvider!!.getImageFilename(page),
+                )
+            } else {
+                mGalleryProvider!!.save(
+                    page,
+                    UniFile.fromFile(dir)!!,
+                    mGalleryProvider!!.getImageFilename(page),
+                )
+            }
+            if (file == null) {
+                withUIContext {
+                    Toast.makeText(
+                        this@GalleryActivity,
+                        R.string.error_cant_save_image,
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                }
+                return@launchIO
+            }
+            val filename = file.name
+            if (filename == null) {
+                withUIContext {
+                    Toast.makeText(
+                        this@GalleryActivity,
+                        R.string.error_cant_save_image,
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                }
+                return@launchIO
+            }
+            mCacheFileName = filename
+            try {
+                saveImageToLauncher.launch(filename)
+            } catch (e: Throwable) {
+                ExceptionUtils.throwIfFatal(e)
+                withUIContext {
+                    Toast.makeText(
+                        this@GalleryActivity,
+                        R.string.error_cant_find_activity,
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                }
+            }
         }
     }
 
@@ -1005,14 +1046,17 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         val resources = this@GalleryActivity.resources
         val builder = AlertDialog.Builder(this@GalleryActivity)
         builder.setTitle(resources.getString(R.string.page_menu_title, page + 1))
-        val items = arrayOf<CharSequence>(
+        val items = arrayListOf<CharSequence>(
             getString(R.string.page_menu_refresh),
             getString(R.string.page_menu_share),
             getString(android.R.string.copy),
             getString(R.string.page_menu_save),
             getString(R.string.page_menu_save_to),
         )
-        pageDialogListener(builder, items, page)
+        if (ACTION_EH == mAction && !Settings.getDownloadOriginImage(false)) {
+            items.add(getString(R.string.page_menu_download_original))
+        }
+        pageDialogListener(builder, items.toTypedArray(), page)
         builder.show()
     }
 
@@ -1034,6 +1078,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
                 2 -> copyImage(page)
                 3 -> saveImage(page)
                 4 -> saveImageTo(page)
+                5 -> saveImageTo(page, true)
             }
         }
     }
@@ -1048,42 +1093,25 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
     @SuppressLint("InflateParams", "UseSwitchCompatOrMaterialCode")
     private inner class GalleryMenuHelper(context: Context?) :
         DialogInterface.OnClickListener {
-        val view: View
-        private val mScreenRotation: Spinner
-        private val mReadingDirection: Spinner
-        private val mScaleMode: Spinner
-        private val mStartPosition: Spinner
-        private val mReadTheme: Spinner
-        private val mKeepScreenOn: Switch
-        private val mShowClock: Switch
-        private val mShowProgress: Switch
-        private val mShowBattery: Switch
-        private val mShowPageInterval: Switch
-        private val mTurnPageInterval: SeekBar
-        private val mVolumePage: Switch
-        private val mReverseVolumePage: Switch
-        private val mReadingFullscreen: Switch
-        private val mCustomScreenLightness: Switch
-        private val mScreenLightness: SeekBar
+        val view: View = LayoutInflater.from(context).inflate(R.layout.dialog_gallery_menu, null)
+        private val mScreenRotation: Spinner = view.findViewById(R.id.screen_rotation)
+        private val mReadingDirection: Spinner = view.findViewById(R.id.reading_direction)
+        private val mScaleMode: Spinner = view.findViewById(R.id.page_scaling)
+        private val mStartPosition: Spinner = view.findViewById(R.id.start_position)
+        private val mReadTheme: Spinner = view.findViewById(R.id.read_theme)
+        private val mKeepScreenOn: Switch = view.findViewById(R.id.keep_screen_on)
+        private val mShowClock: Switch = view.findViewById(R.id.show_clock)
+        private val mShowProgress: Switch = view.findViewById(R.id.show_progress)
+        private val mShowBattery: Switch = view.findViewById(R.id.show_battery)
+        private val mShowPageInterval: Switch = view.findViewById(R.id.show_page_interval)
+        private val mTurnPageInterval: SeekBar = view.findViewById(R.id.turn_page_interval)
+        private val mVolumePage: Switch = view.findViewById(R.id.volume_page)
+        private val mReverseVolumePage: Switch = view.findViewById(R.id.reverse_volume_page)
+        private val mReadingFullscreen: Switch = view.findViewById(R.id.reading_fullscreen)
+        private val mCustomScreenLightness: Switch = view.findViewById(R.id.custom_screen_lightness)
+        private val mScreenLightness: SeekBar = view.findViewById(R.id.screen_lightness)
 
         init {
-            view = LayoutInflater.from(context).inflate(R.layout.dialog_gallery_menu, null)
-            mScreenRotation = view.findViewById(R.id.screen_rotation)
-            mReadingDirection = view.findViewById(R.id.reading_direction)
-            mScaleMode = view.findViewById(R.id.page_scaling)
-            mStartPosition = view.findViewById(R.id.start_position)
-            mReadTheme = view.findViewById(R.id.read_theme)
-            mKeepScreenOn = view.findViewById(R.id.keep_screen_on)
-            mShowClock = view.findViewById(R.id.show_clock)
-            mShowProgress = view.findViewById(R.id.show_progress)
-            mShowBattery = view.findViewById(R.id.show_battery)
-            mShowPageInterval = view.findViewById(R.id.show_page_interval)
-            mTurnPageInterval = view.findViewById(R.id.turn_page_interval)
-            mVolumePage = view.findViewById(R.id.volume_page)
-            mReverseVolumePage = view.findViewById(R.id.reverse_volume_page)
-            mReadingFullscreen = view.findViewById(R.id.reading_fullscreen)
-            mCustomScreenLightness = view.findViewById(R.id.custom_screen_lightness)
-            mScreenLightness = view.findViewById(R.id.screen_lightness)
             mScreenRotation.setSelection(Settings.screenRotation)
             mReadingDirection.setSelection(Settings.readingDirection)
             mScaleMode.setSelection(Settings.pageScaling)

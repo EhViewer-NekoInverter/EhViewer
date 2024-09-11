@@ -39,6 +39,7 @@ abstract class GalleryProvider2 : GalleryProvider() {
      * @param filename without extension
      */
     abstract fun save(index: Int, dir: UniFile, filename: String): UniFile?
+    abstract suspend fun downloadOriginal(index: Int, dir: UniFile, filename: String): UniFile?
 
     companion object {
         // With dot

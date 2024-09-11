@@ -83,6 +83,10 @@ class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) :
         return mSpiderQueen.save(index, dir, filename)
     }
 
+    override suspend fun downloadOriginal(index: Int, dir: UniFile, filename: String): UniFile? {
+        return mSpiderQueen.downloadOriginal(index, dir, filename)
+    }
+
     override fun putStartPage(page: Int) {
         mSpiderQueen.putStartPage(page)
     }

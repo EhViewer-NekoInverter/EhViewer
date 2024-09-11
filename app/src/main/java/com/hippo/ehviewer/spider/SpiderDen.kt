@@ -138,6 +138,37 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
     }
 
     @Throws(IOException::class)
+    suspend fun saveImageFromUrl(
+        url: String,
+        referer: String?,
+        dst: UniFile,
+    ): Boolean {
+        nonCacheOkHttpClient.newCall(EhRequestBuilder(url, referer).build()).executeAsync().use {
+            if (it.code >= 400) return false
+            return runSuspendCatching {
+                var ret = 0L
+                runInterruptibleOkio {
+                    dst.openOutputStream().sink().buffer().use { sink ->
+                        it.body.source().use { source ->
+                            while (true) {
+                                val bytesRead = source.read(sink.buffer, 8192)
+                                if (bytesRead == -1L) break
+                                ret += bytesRead
+                                sink.emitCompleteSegments()
+                            }
+                        }
+                    }
+                }
+                ret == it.body.contentLength()
+            }.onFailure { e ->
+                e.printStackTrace()
+            }.getOrElse {
+                false
+            }
+        }
+    }
+
+    @Throws(IOException::class)
     suspend fun makeHttpCallAndSaveImage(
         index: Int,
         url: String,

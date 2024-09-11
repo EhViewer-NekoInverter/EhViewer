@@ -293,6 +293,21 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
         mWorkerScope.launch(index, force)
     }
 
+    suspend fun downloadOriginal(index: Int, dir: UniFile, filename: String): UniFile? {
+        val ext = getExtension(index)
+        val dst = dir.subFile(if (null != ext) "$filename.$ext" else filename) ?: return null
+        val pToken = getPToken(index) ?: return null
+        val pageUrl = EhUrl.getPageUrl(mSpiderInfo.gid, index, pToken)
+        val originImageUrl = EhEngine.getGalleryPage(pageUrl, mSpiderInfo.gid, mSpiderInfo.token)
+            .originImageUrl ?: return save(index, dir, filename)
+        return runSuspendCatching {
+            val targetImageUrl = EhEngine.getOriginalImageUrl(originImageUrl, pageUrl)
+            if (mSpiderDen.saveImageFromUrl(targetImageUrl, pageUrl, dst)) dst else null
+        }.onFailure {
+            it.printStackTrace()
+        }.getOrNull()
+    }
+
     fun save(index: Int, file: UniFile): Boolean {
         val state = getPageState(index)
         return if (STATE_FINISHED != state) {
@@ -380,7 +395,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
         }.getOrNull()
     }
 
-    suspend fun getPTokenFromMultiPageViewer(index: Int): String? {
+    private suspend fun getPTokenFromMultiPageViewer(index: Int): String? {
         val spiderInfo = mSpiderInfo
         val url = getGalleryMultiPageViewerUrl(
             galleryInfo.gid,
@@ -402,7 +417,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
         }
     }
 
-    suspend fun getPTokenFromInternet(index: Int): String? {
+    private suspend fun getPTokenFromInternet(index: Int): String? {
         val spiderInfo = mSpiderInfo
 
         // Check previewIndex
@@ -433,6 +448,14 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
             it.printStackTrace()
             null
         }
+    }
+
+    suspend fun getPToken(index: Int): String? {
+        if (index !in 0 until size) return null
+        return mSpiderInfo.pTokenMap[index].takeIf { it != TOKEN_FAILED }
+            ?: getPTokenFromInternet(index)
+            ?: getPTokenFromInternet(index)
+            ?: getPTokenFromMultiPageViewer(index)
     }
 
     @Synchronized
@@ -573,13 +596,6 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
         }
 
         private suspend fun doInJob(index: Int, force: Boolean, skipHath: Boolean) {
-            suspend fun getPToken(index: Int): String? {
-                if (index !in 0 until size) return null
-                return mSpiderInfo.pTokenMap[index].takeIf { it != TOKEN_FAILED }
-                    ?: getPTokenFromInternet(index)
-                    ?: getPTokenFromInternet(index)
-                    ?: getPTokenFromMultiPageViewer(index)
-            }
             updatePageState(index, STATE_DOWNLOADING)
             val previousPToken: String?
             val pToken: String

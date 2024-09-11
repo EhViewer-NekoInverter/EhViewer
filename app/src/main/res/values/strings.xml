@@ -73,8 +73,10 @@
     <string name="page_menu_share">@string/share</string>
     <string name="page_menu_save">Save</string>
     <string name="page_menu_save_to">Save to…</string>
+    <string name="page_menu_download_original">Download original</string>
     <string name="gallery_menu_title">Menu</string>
     <string name="share_image">Share image</string>
+    <string name="start_download_original">Downloading, please wait…</string>
     <string name="image_saved">Image saved to %s</string>
 
     <!-- Navigation Bar -->
@@ -267,7 +269,7 @@
     <string name="archive_resample">Resample archive</string>
     <string name="archive_free">Free</string>
     <string name="current_funds">Funds: %1$s GP, %2$d Credits</string>
-    <string name="insufficient_funds">Insufficient Funds</string>
+    <string name="insufficient_funds">Insufficient Funds (GP)</string>
     <string name="download_archive_started">Archive download started</string>
     <string name="download_archive_failure">Failed to download archive</string>
     <string name="download_archive_failure_no_hath">Need H@H client for archive download</string>
