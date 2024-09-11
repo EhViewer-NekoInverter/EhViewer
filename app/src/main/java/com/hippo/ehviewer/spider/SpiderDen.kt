@@ -16,8 +16,6 @@
 package com.hippo.ehviewer.spider
 
 import android.graphics.ImageDecoder
-import coil.disk.DiskCache
-import com.hippo.ehviewer.EhApplication.Companion.application
 import com.hippo.ehviewer.EhApplication.Companion.nonCacheOkHttpClient
 import com.hippo.ehviewer.EhDB
 import com.hippo.ehviewer.Settings
@@ -41,10 +39,10 @@ import okhttp3.Response
 import okhttp3.coroutines.executeAsync
 import okio.buffer
 import okio.sink
-import java.io.File
 import java.io.IOException
 import java.util.Locale
 import kotlin.io.path.readText
+import com.hippo.ehviewer.EhApplication.Companion.imageCache as sCache
 
 class SpiderDen(private val mGalleryInfo: GalleryInfo) {
     private val fileHashRegex = Regex("/([0-9a-f]{40})(?:-\\d+){3}-\\w+")
@@ -302,13 +300,6 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
     companion object {
         private val COMPAT_IMAGE_EXTENSIONS = SUPPORT_IMAGE_EXTENSIONS + ".jpeg"
         private val GIF_IMAGE_EXTENSION = SUPPORT_IMAGE_EXTENSIONS[2]
-
-        private val sCache by lazy {
-            DiskCache.Builder()
-                .directory(File(application.cacheDir, "image"))
-                .maxSizeBytes((Settings.readCacheSize / 5 * 4).coerceIn(256, 4096).toLong() * 1024 * 1024)
-                .build()
-        }
 
         /**
          * @param extension with dot

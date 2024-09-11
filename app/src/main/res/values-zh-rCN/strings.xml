@@ -198,6 +198,8 @@
     <string name="refresh">刷新</string>
     <string name="action_add_tag">添加标签</string>
     <string name="action_add_tag_tip">添加新标签，用逗号「,」分割</string>
+    <string name="action_clear_image_cache">清除图片缓存</string>
+    <string name="action_image_cache_cleared">已清除图片缓存</string>
     <string name="open_in_other_app">在其他应用中打开</string>
     <string name="filter_the_uploader">屏蔽上传者“%s”？</string>
     <string name="filter_added">已添加屏蔽项</string>

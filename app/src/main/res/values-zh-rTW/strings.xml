@@ -198,6 +198,8 @@
     <string name="refresh">重新整理</string>
     <string name="action_add_tag">增加標籤</string>
     <string name="action_add_tag_tip">增加新標籤，用逗號「,」分割</string>
+    <string name="action_clear_image_cache">清除圖片快取</string>
+    <string name="action_image_cache_cleared">已清除圖片快取</string>
     <string name="open_in_other_app">在其他應用程式中開啟</string>
     <string name="filter_the_uploader">把上傳者“%s”加入濾除列表?</string>
     <string name="filter_added">已經新增篩選條件</string>

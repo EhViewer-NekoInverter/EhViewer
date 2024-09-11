@@ -69,6 +69,7 @@ import com.hippo.app.CheckBoxDialogBuilder
 import com.hippo.app.EditTextDialogBuilder
 import com.hippo.ehviewer.EhApplication
 import com.hippo.ehviewer.EhApplication.Companion.galleryDetailCache
+import com.hippo.ehviewer.EhApplication.Companion.imageCache
 import com.hippo.ehviewer.EhDB
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
@@ -402,14 +403,6 @@ class GalleryDetailScene :
             object : PopupMenu.OnMenuItemClickListener {
                 override fun onMenuItemClick(item: MenuItem): Boolean {
                     when (item.itemId) {
-                        R.id.action_open_in_other_app -> {
-                            val url = galleryDetailUrl
-                            val activity: Activity? = mainActivity
-                            if (null != url && null != activity) {
-                                UrlOpener.openUrl(activity, url, false)
-                            }
-                            return true
-                        }
                         R.id.action_refresh -> {
                             if (mState != STATE_REFRESH && mState != STATE_REFRESH_HEADER) {
                                 adjustViewVisibility(STATE_REFRESH, true)
@@ -435,6 +428,25 @@ class GalleryDetailScene :
                                     voteTag(builder.text.trim { it <= ' ' }, 1)
                                     dialog.dismiss()
                                 }
+                            return true
+                        }
+                        R.id.action_clear_image_cache -> {
+                            if (mGalleryDetail == null) {
+                                return false
+                            }
+                            (0..<mGalleryDetail!!.pages).forEach {
+                                val key = EhCacheKeyFactory.getImageKey(mGalleryDetail!!.gid, it)
+                                imageCache.remove(key)
+                            }
+                            showTip(R.string.action_image_cache_cleared, LENGTH_LONG)
+                            return true
+                        }
+                        R.id.action_open_in_other_app -> {
+                            val url = galleryDetailUrl
+                            val activity: Activity? = mainActivity
+                            if (null != url && null != activity) {
+                                UrlOpener.openUrl(activity, url, false)
+                            }
                             return true
                         }
                     }

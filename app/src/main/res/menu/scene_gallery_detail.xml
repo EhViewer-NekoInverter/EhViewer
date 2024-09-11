@@ -25,6 +25,10 @@
         android:title="@string/action_add_tag" />
 
     <item
+        android:id="@+id/action_clear_image_cache"
+        android:title="@string/action_clear_image_cache" />
+
+    <item
         android:id="@+id/action_open_in_other_app"
         android:title="@string/open_in_other_app" />
 
