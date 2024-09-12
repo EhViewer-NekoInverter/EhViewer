@@ -46,8 +46,10 @@ class ImageLimitsPreference(
     private lateinit var mFunds: HomeParser.Funds
 
     init {
-        coroutineScope.launchIO {
-            getImageLimits { updateSummary() }
+        if (EhCookieStore.hasSignedIn()) {
+            coroutineScope.launchIO {
+                getImageLimits { updateSummary() }
+            }
         }
     }
 
