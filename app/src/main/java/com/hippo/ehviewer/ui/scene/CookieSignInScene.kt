@@ -208,28 +208,30 @@ class CookieSignInScene : SolidScene(), OnEditorActionListener, View.OnClickList
                 showTip(R.string.from_clipboard_error, LENGTH_SHORT)
                 return
             }
-            if (kvs.size < 3) {
+            if (kvs.size >= 2 && text.contains(EhCookieStore.KEY_IPB_MEMBER_ID) &&
+                text.contains(EhCookieStore.KEY_IPB_PASS_HASH)
+            ) {
+                for (s in kvs) {
+                    val kv: Array<String> = if (s.contains("=")) {
+                        s.split("=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                    } else if (s.contains(":")) {
+                        s.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                    } else {
+                        continue
+                    }
+                    if (kv.size != 2) {
+                        continue
+                    }
+                    when (kv[0].trim().lowercase(Locale.getDefault())) {
+                        EhCookieStore.KEY_IPB_MEMBER_ID -> mIpbMemberId?.setText(kv[1].trim())
+                        EhCookieStore.KEY_IPB_PASS_HASH -> mIpbPassHash?.setText(kv[1].trim())
+                        EhCookieStore.KEY_IGNEOUS -> mIgneous?.setText(kv[1].trim())
+                    }
+                }
+                enter()
+            } else {
                 showTip(R.string.from_clipboard_error, LENGTH_SHORT)
-                return
             }
-            for (s in kvs) {
-                val kv: Array<String> = if (s.contains("=")) {
-                    s.split("=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                } else if (s.contains(":")) {
-                    s.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                } else {
-                    continue
-                }
-                if (kv.size != 2) {
-                    continue
-                }
-                when (kv[0].trim { it <= ' ' }.lowercase(Locale.getDefault())) {
-                    "ipb_member_id" -> mIpbMemberId?.setText(kv[1].trim { it <= ' ' })
-                    "ipb_pass_hash" -> mIpbPassHash?.setText(kv[1].trim { it <= ' ' })
-                    "igneous" -> mIgneous?.setText(kv[1].trim { it <= ' ' })
-                }
-            }
-            enter()
         } catch (e: Exception) {
             ExceptionUtils.throwIfFatal(e)
             e.printStackTrace()
