@@ -17,7 +17,9 @@ package com.hippo.ehviewer.client.parser
 
 import android.util.Log
 import com.hippo.ehviewer.client.EhUrl
+import com.hippo.ehviewer.client.exception.EhException
 import com.hippo.ehviewer.client.exception.ParseException
+import com.hippo.ehviewer.client.parser.SignInParser.ERROR_PATTERN
 import com.hippo.util.ExceptionUtils
 import org.jsoup.Jsoup
 
@@ -45,8 +47,13 @@ object ProfileParser {
             }
             Result(displayName, avatar)
         }.getOrElse {
-            ExceptionUtils.throwIfFatal(it)
-            throw ParseException("Parse forums error")
+            val m = ERROR_PATTERN.matcher(body)
+            if (m.find()) {
+                throw EhException(m.group(1) ?: m.group(2))
+            } else {
+                ExceptionUtils.throwIfFatal(it)
+                throw ParseException("Parse forums error")
+            }
         }
     }
 
