@@ -818,7 +818,7 @@ class GalleryDetailScene :
         mSize!!.text = gd.size
         mPosted!!.text = gd.posted
         mFavoredTimes!!.text = resources.getString(R.string.favored_times, gd.favoriteCount)
-        if (gd.newerVersions.size != 0) {
+        if (gd.newerVersions.isNotEmpty()) {
             mNewerVersion!!.visibility = View.VISIBLE
         }
         mRatingText!!.text = getAllRatingText(gd.rating, gd.ratingCount)
@@ -1061,7 +1061,7 @@ class GalleryDetailScene :
                     // CommonOperations Actions
                     CommonOperations.startDownload(activity, galleryDetail, false)
                 } else {
-                    if (galleryDetail.newerVersions.size != 0 && downloadState == DownloadInfo.STATE_FINISH && EhUtils.isMPVAvailable) {
+                    if (galleryDetail.newerVersions.isNotEmpty() && downloadState == DownloadInfo.STATE_FINISH && EhUtils.isMPVAvailable) {
                         val titles = ArrayList<CharSequence>()
                         for (newerVersion in galleryDetail.newerVersions) {
                             titles.add(
@@ -1474,7 +1474,7 @@ class GalleryDetailScene :
                 DownloadInfo.STATE_WAIT -> setText(R.string.download_state_wait)
                 DownloadInfo.STATE_DOWNLOAD -> setText(R.string.download_state_downloading)
                 DownloadInfo.STATE_FINISH -> setText(
-                    if (mGalleryDetail != null && mGalleryDetail!!.newerVersions.size != 0 && EhUtils.isMPVAvailable) {
+                    if (mGalleryDetail != null && mGalleryDetail!!.newerVersions.isNotEmpty() && EhUtils.isMPVAvailable) {
                         R.string.download_upgradeable
                     } else {
                         R.string.download_state_downloaded

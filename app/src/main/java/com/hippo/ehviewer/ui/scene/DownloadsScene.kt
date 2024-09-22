@@ -588,10 +588,12 @@ class DownloadsScene :
             when (position) {
                 // Pin to top
                 1 -> {
-                    for (info in downloadInfoList!!.reversed()) {
-                        info.time = System.currentTimeMillis()
+                    val pinList = downloadInfoList!!.reversed()
+                    val nowTimeStamp = System.currentTimeMillis()
+                    for (i in pinList.indices) {
+                        pinList[i].time = nowTimeStamp + i
                         // DB Actions
-                        EhDB.putDownloadInfo(info)
+                        EhDB.putDownloadInfo(pinList[i])
                     }
                     recyclerView.outOfCustomChoiceMode()
                     updateForLabel()
@@ -798,12 +800,10 @@ class DownloadsScene :
     private inner class DownloadLabelHolder(
         itemView: View,
     ) : RecyclerView.ViewHolder(itemView), View.OnTouchListener {
-        val label: TextView
-        val option: ImageView
+        val label: TextView = ViewUtils.`$$`(itemView, R.id.tv_key) as TextView
+        val option: ImageView = ViewUtils.`$$`(itemView, R.id.iv_option) as ImageView
 
         init {
-            label = ViewUtils.`$$`(itemView, R.id.tv_key) as TextView
-            option = ViewUtils.`$$`(itemView, R.id.iv_option) as ImageView
             option.setOnTouchListener(this)
         }
 
@@ -984,33 +984,20 @@ class DownloadsScene :
         RecyclerView.ViewHolder(itemView),
         View.OnClickListener,
         View.OnTouchListener {
-        val thumb: LoadImageView
-        val title: TextView
-        val uploader: TextView
-        val rating: SimpleRatingView
-        val category: TextView
-        val start: View
-        val stop: View
-        val move: View
-        val state: TextView
-        val progressBar: ProgressBar
-        val percent: TextView
-        val speed: TextView
+        val thumb: LoadImageView = itemView.findViewById(R.id.thumb)
+        val title: TextView = itemView.findViewById(R.id.title)
+        val uploader: TextView = itemView.findViewById(R.id.uploader)
+        val rating: SimpleRatingView = itemView.findViewById(R.id.rating)
+        val category: TextView = itemView.findViewById(R.id.category)
+        val start: View = itemView.findViewById(R.id.start)
+        val stop: View = itemView.findViewById(R.id.stop)
+        val move: View = itemView.findViewById(R.id.move)
+        val state: TextView = itemView.findViewById(R.id.state)
+        val progressBar: ProgressBar = itemView.findViewById(R.id.progress_bar)
+        val percent: TextView = itemView.findViewById(R.id.percent)
+        val speed: TextView = itemView.findViewById(R.id.speed)
 
         init {
-            thumb = itemView.findViewById(R.id.thumb)
-            title = itemView.findViewById(R.id.title)
-            uploader = itemView.findViewById(R.id.uploader)
-            rating = itemView.findViewById(R.id.rating)
-            category = itemView.findViewById(R.id.category)
-            start = itemView.findViewById(R.id.start)
-            stop = itemView.findViewById(R.id.stop)
-            move = itemView.findViewById(R.id.move)
-            state = itemView.findViewById(R.id.state)
-            progressBar = itemView.findViewById(R.id.progress_bar)
-            percent = itemView.findViewById(R.id.percent)
-            speed = itemView.findViewById(R.id.speed)
-
             // TODO cancel on click listener when select items
             thumb.setOnClickListener(this)
             start.setOnClickListener(this)

@@ -85,7 +85,7 @@ object EhUtils {
         get() = EhCookieStore.getCookieValue(
             host.toHttpUrl(),
             EhCookieStore.KEY_HATH_PERKS,
-        )?.substringBefore("-")?.contains("q") ?: false
+        )?.substringBefore("-")?.contains("q") == true
 
     @JvmStatic
     fun getCategory(type: String?): Int {

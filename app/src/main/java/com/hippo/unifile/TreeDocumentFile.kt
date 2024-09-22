@@ -25,7 +25,6 @@ import android.webkit.MimeTypeMap
 internal class TreeDocumentFile : UniFile {
     private val mContext: Context
     override var uri: Uri
-        private set
     private var mFilename: String? = null
 
     constructor(parent: UniFile?, context: Context, uri: Uri) : super(parent) {

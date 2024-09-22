@@ -175,13 +175,8 @@ class GalleryInfoScene : ToolbarScene() {
     }
 
     private class InfoHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val key: TextView
-        val value: TextView
-
-        init {
-            key = itemView.findViewById(R.id.key)
-            value = itemView.findViewById(R.id.value)
-        }
+        val key: TextView = itemView.findViewById(R.id.key)
+        val value: TextView = itemView.findViewById(R.id.value)
     }
 
     private inner class InfoAdapter : RecyclerView.Adapter<InfoHolder>() {

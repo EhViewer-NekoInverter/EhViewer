@@ -88,7 +88,7 @@ object UrlOpener {
         customTabsIntent.setColorScheme(if (isNight) CustomTabsIntent.COLOR_SCHEME_DARK else CustomTabsIntent.COLOR_SCHEME_LIGHT)
         try {
             customTabsIntent.build().launchUrl(context, uri)
-        } catch (e: ActivityNotFoundException) {
+        } catch (_: ActivityNotFoundException) {
             Toast.makeText(context, R.string.no_browser_installed, Toast.LENGTH_LONG).show()
         }
     }

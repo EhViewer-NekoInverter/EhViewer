@@ -230,7 +230,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
                         mUri,
                         Intent.FLAG_GRANT_READ_URI_PERMISSION,
                     )
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     Toast.makeText(this, R.string.error_reading_failed, Toast.LENGTH_SHORT).show()
                 }
                 val continuation: AtomicReference<Continuation<String>?> = AtomicReference(null)

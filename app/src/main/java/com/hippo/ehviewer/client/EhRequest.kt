@@ -28,7 +28,7 @@ import kotlinx.coroutines.Job
 class EhRequest {
     internal var job: Job? = null
     val isActive
-        get() = job?.isActive ?: false
+        get() = job?.isActive == true
     var method = 0
         private set
     var args: Array<out Any?>? = null

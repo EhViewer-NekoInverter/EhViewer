@@ -222,11 +222,7 @@ abstract class BaseScene : SceneFragment() {
     val mainActivity: MainActivity?
         get() {
             val activity = activity
-            return if (activity is MainActivity) {
-                activity
-            } else {
-                null
-            }
+            return activity as? MainActivity
         }
 
     fun hideSoftInput() = activity?.window?.decorView?.run { SoftwareKeyboardControllerCompat(this) }?.hide()

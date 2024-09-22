@@ -79,7 +79,6 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
 
-// TODO Get favorite, modify favorite, add favorite, what a mess!
 @SuppressLint("NotifyDataSetChanged", "RtlHardcoded")
 class FavoritesScene :
     BaseScene(),
@@ -460,7 +459,7 @@ class FavoritesScene :
                 )
                 args.putParcelable(GalleryDetailScene.KEY_GALLERY_INFO, gi)
                 val announcer = Announcer(GalleryDetailScene::class.java).setArgs(args)
-                (view.findViewById(R.id.thumb) as View?)?.let {
+                view.findViewById<View>(R.id.thumb)?.let {
                     announcer.setTranHelper(EnterGalleryDetailTransaction(it))
                 }
                 startScene(announcer)
@@ -817,13 +816,8 @@ class FavoritesScene :
     }
 
     private class FavDrawerHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val key: TextView
-        val value: TextView
-
-        init {
-            key = ViewUtils.`$$`(itemView, R.id.key) as TextView
-            value = ViewUtils.`$$`(itemView, R.id.value) as TextView
-        }
+        val key: TextView = ViewUtils.`$$`(itemView, R.id.key) as TextView
+        val value: TextView = ViewUtils.`$$`(itemView, R.id.value) as TextView
     }
 
     private inner class AddFavoritesListener(

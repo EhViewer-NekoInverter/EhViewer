@@ -53,7 +53,7 @@ internal abstract class GalleryAdapter(
         mResources.getDimensionPixelOffset(R.dimen.gallery_padding_top_search_bar)
     private val mListThumbWidth: Int
     private val mListThumbHeight: Int
-    private val mShowFavourited: Boolean
+    private val mShowFavourited: Boolean = showFavourited
     private var mListDecoration: MarginItemDecoration? = null
     private var mGirdDecoration: MarginItemDecoration? = null
     private var mType = TYPE_INVALID
@@ -114,7 +114,6 @@ internal abstract class GalleryAdapter(
         }
 
     init {
-        mShowFavourited = showFavourited
         mRecyclerView.adapter = this
         mRecyclerView.layoutManager = mLayoutManager
         val calculator =

@@ -147,7 +147,7 @@ class ProxyPreference(
         } else {
             port = try {
                 portString.toInt()
-            } catch (e: NumberFormatException) {
+            } catch (_: NumberFormatException) {
                 -1
             }
             if (!InetValidator.isValidInetPort(port)) {

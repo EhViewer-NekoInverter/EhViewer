@@ -39,7 +39,7 @@ object InetValidator {
             }
             val iIpSegment: Int = try {
                 ipSegment.toInt()
-            } catch (e: NumberFormatException) {
+            } catch (_: NumberFormatException) {
                 return false
             }
             if (iIpSegment > 255) {

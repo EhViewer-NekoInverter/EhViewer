@@ -374,7 +374,7 @@ abstract class StageActivity : EhActivity() {
                 findScene = true
                 createNewScene = false
                 findSceneTag = tag
-                if (fragment.isDetached()) {
+                if (fragment.isDetached) {
                     transaction.attach(fragment)
                 }
             } else {

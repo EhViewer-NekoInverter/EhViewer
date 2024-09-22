@@ -28,6 +28,7 @@ import androidx.annotation.Keep
 import com.hippo.ehviewer.R
 import com.hippo.yorozuya.MathUtils
 import kotlin.math.cos
+import kotlin.math.roundToInt
 import kotlin.math.sin
 
 /**
@@ -75,13 +76,13 @@ class DrawerArrowDrawable(context: Context, color: Int) : Drawable() {
         mPaint.setColor(color)
         mSize = resources.getDimensionPixelSize(R.dimen.dad_drawable_size)
         // round this because having this floating may cause bad measurements
-        mBarSize = Math.round(resources.getDimension(R.dimen.dad_bar_size)).toFloat()
+        mBarSize = resources.getDimension(R.dimen.dad_bar_size).roundToInt().toFloat()
         // round this because having this floating may cause bad measurements
         mTopBottomArrowSize =
-            Math.round(resources.getDimension(R.dimen.dad_top_bottom_bar_arrow_size)).toFloat()
+            resources.getDimension(R.dimen.dad_top_bottom_bar_arrow_size).roundToInt().toFloat()
         mBarThickness = resources.getDimension(R.dimen.dad_thickness)
         // round this because having this floating may cause bad measurements
-        mBarGap = Math.round(resources.getDimension(R.dimen.dad_gap_between_bars)).toFloat()
+        mBarGap = resources.getDimension(R.dimen.dad_gap_between_bars).roundToInt().toFloat()
         mSpin = resources.getBoolean(R.bool.dad_spin_bars)
         mMiddleArrowSize = resources.getDimension(R.dimen.dad_middle_bar_arrow_size)
         mPaint.style = Paint.Style.STROKE
@@ -104,14 +105,14 @@ class DrawerArrowDrawable(context: Context, color: Int) : Drawable() {
         val arrowSize = MathUtils.lerp(mBarSize, mTopBottomArrowSize, mProgress)
         val middleBarSize = MathUtils.lerp(mBarSize, mMiddleArrowSize, mProgress)
         // Interpolated size of middle bar
-        val middleBarCut = Math.round(MathUtils.lerp(0f, mMaxCutForBarSize, mProgress)).toFloat()
+        val middleBarCut = MathUtils.lerp(0f, mMaxCutForBarSize, mProgress).roundToInt().toFloat()
         // The rotation of the top and bottom bars (that make the arrow head)
         val rotation = MathUtils.lerp(0f, ARROW_HEAD_ANGLE, mProgress)
 
         // The whole canvas rotates as the transition happens
         val canvasRotate = MathUtils.lerp(-180, 0, mProgress).toFloat()
-        val arrowWidth = Math.round(arrowSize * cos(rotation.toDouble())).toFloat()
-        val arrowHeight = Math.round(arrowSize * sin(rotation.toDouble())).toFloat()
+        val arrowWidth = (arrowSize * cos(rotation.toDouble())).roundToInt().toFloat()
+        val arrowHeight = (arrowSize * sin(rotation.toDouble())).roundToInt().toFloat()
         mPath.rewind()
         val topBottomBarOffset = MathUtils.lerp(
             mBarGap + mBarThickness,

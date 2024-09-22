@@ -99,11 +99,11 @@ open class FixedAspectImageView @JvmOverloads constructor(
          * Any negative float to disable it,
          * disable Aspect will not disable AdjustViewBounds.
          *
-         * @param ratio width/height
+         * @param aspect width/height
          */
-        set(ratio) {
-            mAspect = if (ratio > 0) {
-                ratio
+        set(aspect) {
+            mAspect = if (aspect > 0) {
+                aspect
             } else {
                 -1f
             }

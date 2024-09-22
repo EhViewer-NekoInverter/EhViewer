@@ -38,16 +38,16 @@ open class WrapDrawable : Drawable() {
     }
 
     override fun setBounds(bounds: Rect) {
-        super.setBounds(bounds)
+        super.bounds = bounds
         drawable?.bounds = bounds
     }
 
     override fun getChangingConfigurations(): Int {
-        return drawable?.changingConfigurations ?: super.getChangingConfigurations()
+        return drawable?.changingConfigurations ?: super.changingConfigurations
     }
 
     override fun setChangingConfigurations(configs: Int) {
-        super.setChangingConfigurations(configs)
+        super.changingConfigurations = configs
         drawable?.changingConfigurations = configs
     }
 
@@ -73,10 +73,10 @@ open class WrapDrawable : Drawable() {
     }
 
     override fun getIntrinsicWidth(): Int {
-        return drawable?.intrinsicWidth ?: super.getIntrinsicWidth()
+        return drawable?.intrinsicWidth ?: super.intrinsicWidth
     }
 
     override fun getIntrinsicHeight(): Int {
-        return drawable?.intrinsicHeight ?: super.getIntrinsicHeight()
+        return drawable?.intrinsicHeight ?: super.intrinsicHeight
     }
 }

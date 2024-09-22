@@ -36,7 +36,7 @@ object GalleryListUrlParser {
     fun parse(urlStr: String): ListUrlBuilder? {
         val url = try {
             URL(urlStr)
-        } catch (e: MalformedURLException) {
+        } catch (_: MalformedURLException) {
             return null
         }
         if (!Utilities.contain(VALID_HOSTS, url.host)) {
@@ -56,7 +56,7 @@ object GalleryListUrlParser {
         } else if (path.startsWith("/")) {
             val category = try {
                 path.substring(1).toInt()
-            } catch (e: NumberFormatException) {
+            } catch (_: NumberFormatException) {
                 return null
             }
             val builder = ListUrlBuilder()

@@ -52,7 +52,7 @@ open class SolidScene : BaseScene() {
                 if (targetScene != null) {
                     try {
                         clazz = Class.forName(targetScene)
-                    } catch (e: ClassNotFoundException) {
+                    } catch (_: ClassNotFoundException) {
                         Log.e(TAG, "Can't find class with name: $targetScene")
                     }
                 }

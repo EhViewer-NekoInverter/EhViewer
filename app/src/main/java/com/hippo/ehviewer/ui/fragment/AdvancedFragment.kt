@@ -99,7 +99,7 @@ class AdvancedFragment : BasePreferenceFragment() {
                         )
                     }
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 showTip(R.string.settings_advanced_export_data_failed, BaseScene.LENGTH_SHORT)
             }
         }
@@ -184,7 +184,7 @@ class AdvancedFragment : BasePreferenceFragment() {
                     },
                     BaseScene.LENGTH_SHORT,
                 )
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 showTip(
                     getString(R.string.settings_advanced_dump_logcat_failed),
                     BaseScene.LENGTH_SHORT,
@@ -297,7 +297,7 @@ class AdvancedFragment : BasePreferenceFragment() {
                     Uri.parse("package:" + requireContext().packageName),
                 )
                 startActivity(intent)
-            } catch (t: Throwable) {
+            } catch (_: Throwable) {
                 val intent = Intent(
                     Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                     Uri.parse("package:" + requireContext().packageName),
@@ -365,7 +365,7 @@ class AdvancedFragment : BasePreferenceFragment() {
                             )
                         }
                     }
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     showTip(
                         R.string.settings_advanced_backup_favorite_failed,
                         BaseScene.LENGTH_SHORT,

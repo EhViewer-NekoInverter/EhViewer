@@ -319,7 +319,7 @@ object EhEngine {
             .executeAndParsingWith {
                 val document = Jsoup.parse(this)
                 val elements = document.select("#chd + p")
-                if (elements.size > 0) {
+                if (elements.isNotEmpty()) {
                     throw EhException(elements[0].text())
                 }
                 GalleryDetailParser.parseComments(document)

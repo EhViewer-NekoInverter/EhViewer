@@ -129,8 +129,8 @@ class SearchLayout @JvmOverloads constructor(
         mActionView = mInflater!!.inflate(R.layout.search_action, null)
         mActionView!!.setLayoutParams(
             LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.WRAP_CONTENT,
             ),
         )
         mAction = mActionView!!.findViewById(R.id.action)

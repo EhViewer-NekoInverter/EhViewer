@@ -22,11 +22,7 @@ import kotlin.math.ceil
 
 abstract class SimpleSmoothScroller(context: Context, millisecondsPerInch: Float) :
     LinearSmoothScroller(context) {
-    private val mMillisecondsPerPx: Float
-
-    init {
-        mMillisecondsPerPx = millisecondsPerInch / context.resources.displayMetrics.densityDpi
-    }
+    private val mMillisecondsPerPx: Float = millisecondsPerInch / context.resources.displayMetrics.densityDpi
 
     override fun calculateTimeForScrolling(dx: Int): Int {
         return if (mMillisecondsPerPx <= 0) {

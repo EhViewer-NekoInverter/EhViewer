@@ -199,7 +199,7 @@ data class ListUrlBuilder(
 
                 "f_search" -> try {
                     keyword = URLDecoder.decode(value, "utf-8")
-                } catch (e: UnsupportedEncodingException) {
+                } catch (_: UnsupportedEncodingException) {
                     // Ignore
                 } catch (_: IllegalArgumentException) {
                 }

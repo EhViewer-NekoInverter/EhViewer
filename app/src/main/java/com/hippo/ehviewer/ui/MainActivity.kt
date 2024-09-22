@@ -248,7 +248,7 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
                 if (!Settings.appLinkVerifyTip) {
                     try {
                         checkAppLinkVerify()
-                    } catch (ignored: PackageManager.NameNotFoundException) {
+                    } catch (_: PackageManager.NameNotFoundException) {
                     }
                 }
             }
@@ -283,7 +283,7 @@ class MainActivity : StageActivity(), NavigationView.OnNavigationItemSelectedLis
                             Uri.parse("package:$packageName"),
                         )
                         startActivity(intent)
-                    } catch (t: Throwable) {
+                    } catch (_: Throwable) {
                         val intent = Intent(
                             android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                             Uri.parse("package:$packageName"),

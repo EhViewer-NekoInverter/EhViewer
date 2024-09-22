@@ -168,28 +168,18 @@ class FilterFragment : BaseFragment() {
     }
 
     private class FilterHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val checkbox: MaterialCheckBox?
-        val text: TextView?
-        val delete: ImageView?
-
-        init {
-            checkbox = itemView.findViewById(R.id.checkbox)
-            text = itemView.findViewById(R.id.text)
-            delete = itemView.findViewById(R.id.delete)
-        }
+        val checkbox: MaterialCheckBox? = itemView.findViewById(R.id.checkbox)
+        val text: TextView? = itemView.findViewById(R.id.text)
+        val delete: ImageView? = itemView.findViewById(R.id.delete)
     }
 
     private inner class AddFilterDialogHelper(dialog: AlertDialog) : View.OnClickListener {
-        private var mDialog: AlertDialog
-        private var mSpinner: Spinner
-        private var mInputLayout: TextInputLayout
-        private var mEditText: EditText
+        private var mDialog: AlertDialog = dialog
+        private var mSpinner: Spinner = ViewUtils.`$$`(dialog, R.id.spinner) as Spinner
+        private var mInputLayout: TextInputLayout = ViewUtils.`$$`(dialog, R.id.text_input_layout) as TextInputLayout
+        private var mEditText: EditText = mInputLayout.editText!!
 
         init {
-            mDialog = dialog
-            mSpinner = ViewUtils.`$$`(dialog, R.id.spinner) as Spinner
-            mInputLayout = ViewUtils.`$$`(dialog, R.id.text_input_layout) as TextInputLayout
-            mEditText = mInputLayout.editText!!
             val button: View? = dialog.getButton(DialogInterface.BUTTON_POSITIVE)
             button?.setOnClickListener(this)
         }
@@ -242,7 +232,7 @@ class FilterFragment : BaseFragment() {
             if (MODE_HEADER == filter.mode) {
                 holder.text?.text = filter.text
             } else {
-                holder.checkbox?.text = if (Settings.showTagTranslations) EhFilter.applyTanslation(filter) else filter.text
+                holder.checkbox?.text = if (Settings.showTagTranslations) EhFilter.applyTranslation(filter) else filter.text
                 holder.checkbox?.isChecked = filter.enable!!
                 holder.itemView.setOnClickListener {
                     mFilterList.trigger(filter)

@@ -510,7 +510,7 @@ class GalleryListScene :
         if (null == mDrawerViewTransition) {
             return
         }
-        if (mIsTopList || mQuickSearchList.size > 0) {
+        if (mIsTopList || mQuickSearchList.isNotEmpty()) {
             mDrawerViewTransition!!.showView(0, animation)
         } else {
             mDrawerViewTransition!!.showView(1, animation)
@@ -697,7 +697,7 @@ class GalleryListScene :
         args.putString(GalleryDetailScene.KEY_ACTION, GalleryDetailScene.ACTION_GALLERY_INFO)
         args.putParcelable(GalleryDetailScene.KEY_GALLERY_INFO, gi)
         val announcer = Announcer(GalleryDetailScene::class.java).setArgs(args)
-        (view.findViewById(R.id.thumb) as View?)?.let {
+        view.findViewById<View>(R.id.thumb)?.let {
             announcer.setTranHelper(EnterGalleryDetailTransaction(it))
         }
         startScene(announcer)
@@ -735,7 +735,7 @@ class GalleryListScene :
                 val text = builder.text.trim { it <= ' ' }
                 val goTo: Int = try {
                     text.toInt() - 1
-                } catch (e: NumberFormatException) {
+                } catch (_: NumberFormatException) {
                     builder.setError(getString(R.string.error_invalid_number))
                     return@setOnClickListener
                 }
@@ -788,7 +788,7 @@ class GalleryListScene :
             if (TextUtils.isEmpty(text)) text = "0"
             val goTo: Int = try {
                 text.toInt() + 1
-            } catch (e: NumberFormatException) {
+            } catch (_: NumberFormatException) {
                 builder.setError(getString(R.string.error_invalid_number))
                 return@setOnClickListener
             }
@@ -1373,12 +1373,10 @@ class GalleryListScene :
     private inner class QsDrawerHolder(
         itemView: View,
     ) : RecyclerView.ViewHolder(itemView), View.OnTouchListener {
-        val key: TextView
-        val option: ImageView
+        val key: TextView = ViewUtils.`$$`(itemView, R.id.tv_key) as TextView
+        val option: ImageView = ViewUtils.`$$`(itemView, R.id.iv_option) as ImageView
 
         init {
-            key = ViewUtils.`$$`(itemView, R.id.tv_key) as TextView
-            option = ViewUtils.`$$`(itemView, R.id.iv_option) as ImageView
             option.setOnTouchListener(this)
         }
 

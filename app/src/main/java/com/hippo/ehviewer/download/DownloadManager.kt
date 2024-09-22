@@ -537,14 +537,18 @@ object DownloadManager : OnSpiderListener {
         if (fromPosition > toPosition) {
             val time = mAllInfoList[toPosition].time
             for (i in toPosition until fromPosition) {
-                mAllInfoList[i].time = mAllInfoList[i + 1].time
+                val aTime = mAllInfoList[i].time
+                val bTime = mAllInfoList[i + 1].time
+                mAllInfoList[i].time = if (aTime == bTime) bTime + 1 else bTime
             }
             mAllInfoList[fromPosition].time = time
             EhDB.updateDownloadInfo(mAllInfoList.slice(toPosition..fromPosition))
         } else {
             val time = mAllInfoList[fromPosition].time
             for (i in fromPosition until toPosition) {
-                mAllInfoList[i].time = mAllInfoList[i + 1].time
+                val aTime = mAllInfoList[i].time
+                val bTime = mAllInfoList[i + 1].time
+                mAllInfoList[i].time = if (aTime == bTime) bTime - 1 else bTime
             }
             mAllInfoList[toPosition].time = time
             EhDB.updateDownloadInfo(mAllInfoList.slice(fromPosition..toPosition))

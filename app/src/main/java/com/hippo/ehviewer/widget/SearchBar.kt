@@ -114,8 +114,8 @@ class SearchBar @JvmOverloads constructor(
         // Get base height
         ViewUtils.measureView(
             this,
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT,
+            LayoutParams.WRAP_CONTENT,
+            LayoutParams.WRAP_CONTENT,
         )
         mBaseHeight = measuredHeight
 
@@ -133,11 +133,11 @@ class SearchBar @JvmOverloads constructor(
     }
 
     private fun addListHeader() {
-        mListHeader!!.visibility = View.VISIBLE
+        mListHeader!!.visibility = VISIBLE
     }
 
     private fun removeListHeader() {
-        mListHeader!!.visibility = View.GONE
+        mListHeader!!.visibility = GONE
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -306,7 +306,7 @@ class SearchBar @JvmOverloads constructor(
             oa.interpolator = AnimationUtils.FAST_SLOW_INTERPOLATOR
             oa.addListener(object : SimpleAnimatorListener() {
                 override fun onAnimationStart(animation: Animator) {
-                    mListContainer!!.visibility = View.VISIBLE
+                    mListContainer!!.visibility = VISIBLE
                     mInAnimation = true
                 }
 
@@ -317,7 +317,7 @@ class SearchBar @JvmOverloads constructor(
             oa.setAutoCancel(true)
             oa.start()
         } else {
-            mListContainer!!.visibility = View.VISIBLE
+            mListContainer!!.visibility = VISIBLE
             progress = 1f
         }
     }
@@ -337,7 +337,7 @@ class SearchBar @JvmOverloads constructor(
                 }
 
                 override fun onAnimationEnd(animation: Animator) {
-                    mListContainer!!.visibility = View.GONE
+                    mListContainer!!.visibility = GONE
                     mInAnimation = false
                 }
             })
@@ -345,13 +345,13 @@ class SearchBar @JvmOverloads constructor(
             oa.start()
         } else {
             progress = 0f
-            mListContainer!!.visibility = View.GONE
+            mListContainer!!.visibility = GONE
         }
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
-        if (mListContainer!!.visibility == View.VISIBLE && (!mInAnimation || mHeight == 0)) {
+        if (mListContainer!!.visibility == VISIBLE && (!mInAnimation || mHeight == 0)) {
             mWidth = right - left
             mHeight = bottom - top
         }
@@ -463,11 +463,11 @@ class SearchBar @JvmOverloads constructor(
     }
 
     private class SuggestionHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val text1 = itemView.findViewById(android.R.id.text1) as TextView
-        val text2 = itemView.findViewById(android.R.id.text2) as TextView
+        val text1: TextView = itemView.findViewById(android.R.id.text1)
+        val text2: TextView = itemView.findViewById(android.R.id.text2)
     }
 
-    private inner class SuggestionAdapter constructor(
+    private inner class SuggestionAdapter(
         private val mInflater: LayoutInflater,
     ) : RecyclerView.Adapter<SuggestionHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SuggestionHolder {
@@ -480,10 +480,10 @@ class SearchBar @JvmOverloads constructor(
             val text2 = suggestion?.getText(holder.text2)
             holder.text1.text = text1
             if (text2 == null) {
-                holder.text2.visibility = View.GONE
+                holder.text2.visibility = GONE
                 holder.text2.text = ""
             } else {
-                holder.text2.visibility = View.VISIBLE
+                holder.text2.visibility = VISIBLE
                 holder.text2.text = text2
             }
 
@@ -513,7 +513,7 @@ class SearchBar @JvmOverloads constructor(
         }
     }
 
-    inner class TagSuggestion constructor(
+    inner class TagSuggestion(
         private var mHint: String?,
         private var mKeyword: String,
     ) : Suggestion() {
@@ -535,7 +535,7 @@ class SearchBar @JvmOverloads constructor(
         }
     }
 
-    inner class KeywordSuggestion constructor(
+    inner class KeywordSuggestion(
         private val mKeyword: String,
     ) : Suggestion() {
         override fun getText(textView: TextView): CharSequence? {

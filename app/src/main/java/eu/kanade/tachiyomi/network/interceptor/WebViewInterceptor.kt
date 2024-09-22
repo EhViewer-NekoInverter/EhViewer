@@ -64,9 +64,9 @@ abstract class WebViewInterceptor(private val context: Context) : Interceptor {
 }
 
 // Based on [IsRequestHeaderSafe] in https://source.chromium.org/chromium/chromium/src/+/main:services/network/public/cpp/header_util.cc
-private fun isRequestHeaderSafe(_name: String, _value: String): Boolean {
-    val name = _name.lowercase(Locale.ENGLISH)
-    val value = _value.lowercase(Locale.ENGLISH)
+private fun isRequestHeaderSafe(name: String, value: String): Boolean {
+    val name = name.lowercase(Locale.ENGLISH)
+    val value = value.lowercase(Locale.ENGLISH)
     if (name in unsafeHeaderNames || name.startsWith("proxy-")) return false
     return !(name == "connection" && value == "upgrade")
 }

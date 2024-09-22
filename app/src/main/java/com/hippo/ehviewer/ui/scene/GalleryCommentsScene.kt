@@ -871,13 +871,8 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
     private class InfoHolder(itemView: View?) : RecyclerView.ViewHolder(
         itemView!!,
     ) {
-        val key: TextView
-        val value: TextView
-
-        init {
-            key = ViewUtils.`$$`(itemView, R.id.key) as TextView
-            value = ViewUtils.`$$`(itemView, R.id.value) as TextView
-        }
+        val key: TextView = ViewUtils.`$$`(itemView, R.id.key) as TextView
+        val value: TextView = ViewUtils.`$$`(itemView, R.id.value) as TextView
     }
 
     private abstract class CommentHolder(inflater: LayoutInflater, resId: Int, parent: ViewGroup?) :

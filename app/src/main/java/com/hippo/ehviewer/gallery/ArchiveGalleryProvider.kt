@@ -70,7 +70,6 @@ class ArchiveGalleryProvider(context: Context, private val uri: Uri, passwdFlow:
     }
 
     override var size = -1
-        private set
 
     override fun start() {
         hostJob.start()

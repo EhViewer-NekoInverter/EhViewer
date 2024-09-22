@@ -503,7 +503,7 @@ object GalleryDetailParser {
     fun parsePreviewSet(d: Document, body: String): PreviewSet {
         return try {
             parseLargePreviewSet(d)
-        } catch (e: ParseException) {
+        } catch (_: ParseException) {
             parseNormalPreviewSet(body)
         }
     }
@@ -513,7 +513,7 @@ object GalleryDetailParser {
     fun parsePreviewSet(body: String): PreviewSet {
         return try {
             parseLargePreviewSet(body)
-        } catch (e: ParseException) {
+        } catch (_: ParseException) {
             parseNormalPreviewSet(body)
         }
     }

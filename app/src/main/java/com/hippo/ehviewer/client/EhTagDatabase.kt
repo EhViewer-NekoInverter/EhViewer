@@ -251,7 +251,7 @@ object EhTagDatabase {
                 if (dataFile.exists()) {
                     try {
                         dataFile.source().buffer().use { updateData(it) }
-                    } catch (e: IOException) {
+                    } catch (_: IOException) {
                         FileUtils.delete(sha1File)
                         FileUtils.delete(dataFile)
                         Settings.putTranslationsLastUpdate(-1)

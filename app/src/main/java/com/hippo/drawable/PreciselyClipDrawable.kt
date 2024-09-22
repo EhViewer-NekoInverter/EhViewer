@@ -55,11 +55,11 @@ class PreciselyClipDrawable(
     }
 
     override fun getIntrinsicWidth(): Int {
-        return (super.getIntrinsicWidth() * mScale.width()).toInt()
+        return (super.intrinsicWidth * mScale.width()).toInt()
     }
 
     override fun getIntrinsicHeight(): Int {
-        return (super.getIntrinsicHeight() * mScale.height()).toInt()
+        return (super.intrinsicHeight * mScale.height()).toInt()
     }
 
     override fun draw(canvas: Canvas) {

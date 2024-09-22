@@ -70,7 +70,7 @@ open class StageLayout @JvmOverloads constructor(
 
     private fun beforeDispatchDraw(): Boolean {
         superDisappearingChildren
-        if (mSuperDisappearingChildren == null || mSuperDisappearingChildren!!.size <= 0 || childCount <= 1) { // only dump view
+        if (mSuperDisappearingChildren == null || mSuperDisappearingChildren!!.isEmpty() || childCount <= 1) { // only dump view
             return false
         }
 

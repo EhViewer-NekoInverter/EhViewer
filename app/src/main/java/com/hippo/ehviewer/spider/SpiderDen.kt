@@ -70,7 +70,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
 
     private fun containInCache(index: Int): Boolean {
         val key = EhCacheKeyFactory.getImageKey(mGid, index)
-        return sCache.openSnapshot(key)?.use { true } ?: false
+        return sCache.openSnapshot(key)?.use { true } == true
     }
 
     private fun containInDownloadDir(index: Int): Boolean {
@@ -122,7 +122,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
     }
 
     private fun removeFromDownloadDir(index: Int): Boolean {
-        return downloadDir?.let { findImageFile(it, index).first?.delete() } ?: false
+        return downloadDir?.let { findImageFile(it, index).first?.delete() } == true
     }
 
     fun remove(index: Int): Boolean {

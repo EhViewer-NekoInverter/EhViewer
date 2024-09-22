@@ -26,6 +26,7 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.Keep
 import com.hippo.ehviewer.R
 import com.hippo.yorozuya.MathUtils
+import kotlin.math.roundToInt
 
 /**
  * @param context used to get the configuration for the drawable from
@@ -41,7 +42,7 @@ class AddDeleteDrawable(context: Context, color: Int) : Drawable() {
     init {
         val resources = context.resources
         mSize = resources.getDimensionPixelSize(R.dimen.add_size)
-        val barThickness = Math.round(resources.getDimension(R.dimen.add_thickness)).toFloat()
+        val barThickness = resources.getDimension(R.dimen.add_thickness).roundToInt().toFloat()
         mPaint.setColor(color)
         mPaint.style = Paint.Style.STROKE
         mPaint.strokeJoin = Paint.Join.MITER

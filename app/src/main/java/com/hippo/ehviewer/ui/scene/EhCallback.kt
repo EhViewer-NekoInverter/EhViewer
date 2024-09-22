@@ -26,11 +26,7 @@ import com.hippo.scene.SceneFragment
 abstract class EhCallback<E : SceneFragment?, T>(
     context: Context,
 ) : EhClient.Callback<T> {
-    val application: EhApplication
-
-    init {
-        application = context.applicationContext as EhApplication
-    }
+    val application: EhApplication = context.applicationContext as EhApplication
 
     val content: Context
         get() {

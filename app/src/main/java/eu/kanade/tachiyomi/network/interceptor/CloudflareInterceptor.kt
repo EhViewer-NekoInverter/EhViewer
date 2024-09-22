@@ -58,7 +58,7 @@ class CloudflareInterceptor(context: Context) : WebViewInterceptor(context) {
         executor.execute {
             webview = createWebView()
 
-            webview?.webViewClient = object : WebViewClient() {
+            webview.webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView, url: String) {
                     cloudflareBypassed = EhCookieStore.saveFromWebView(origRequestUrl) {
                         it.name == EhCookieStore.KEY_CLOUDFLARE
@@ -91,7 +91,7 @@ class CloudflareInterceptor(context: Context) : WebViewInterceptor(context) {
                 }
             }
 
-            webview?.loadUrl(origRequestUrl, headers)
+            webview.loadUrl(origRequestUrl, headers)
         }
 
         latch.awaitFor30Seconds()

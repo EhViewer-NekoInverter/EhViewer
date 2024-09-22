@@ -167,10 +167,10 @@ abstract class DialogPreference(
          * Sets the layout resource that is inflated as the [View] to be shown
          * as the content View of subsequent dialogs.
          *
-         * @param dialogLayoutResId The layout resource ID to be inflated.
+         * @param dialogLayoutResource The layout resource ID to be inflated.
          */
-        set(dialogLayoutResId) {
-            mDialogLayoutResId = dialogLayoutResId
+        set(dialogLayoutResource) {
+            mDialogLayoutResId = dialogLayoutResource
         }
 
     /**

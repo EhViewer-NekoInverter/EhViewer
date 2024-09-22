@@ -57,7 +57,7 @@ internal class MediaFile(context: Context, override val uri: Uri) : UniFile(null
         try {
             val fd = openFileDescriptor("w")
             fd.close()
-        } catch (e: IOException) {
+        } catch (_: IOException) {
             return false
         }
         return true
