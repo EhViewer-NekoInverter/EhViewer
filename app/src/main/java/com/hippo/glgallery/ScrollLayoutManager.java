@@ -37,7 +37,8 @@ import java.util.List;
 class ScrollLayoutManager extends GalleryView.LayoutManager {
     private static final String TAG = ScrollLayoutManager.class.getSimpleName();
 
-    private static final float RESERVATION = 1f;
+    private static final float RESERVATION = 0.5f;
+    private static final float DEFAULT_SCALE = 1.0f;
     private static final float MAX_SCALE = 2.0f;
     private static final float MIN_SCALE = 0.3f;
     private static final float SCALE_ERROR = 0.01f;
@@ -51,7 +52,7 @@ class ScrollLayoutManager extends GalleryView.LayoutManager {
     private GLProgressView mProgress;
     private String mErrorStr;
     private GLTextureView mErrorView;
-    private float mScale = 0.5f;
+    private float mScale = DEFAULT_SCALE;
     private int mOffsetX;
     private int mOffsetY;
     private int mKeepTopPageIndex = GalleryPageView.INVALID_INDEX;
@@ -93,7 +94,7 @@ class ScrollLayoutManager extends GalleryView.LayoutManager {
     }
 
     private void resetParameters() {
-        mScale = 1.0f;
+        mScale = DEFAULT_SCALE;
         mOffsetX = 0;
         mOffsetY = 0;
         mKeepTopPageIndex = GalleryPageView.INVALID_INDEX;
@@ -506,18 +507,18 @@ class ScrollLayoutManager extends GalleryView.LayoutManager {
 
     @Override
     public void onDoubleTapConfirmed(float x, float y) {
-        if (mPages.size() == 0) {
+        if (mPages.isEmpty()) {
             return;
         }
 
         float startScale = mScale;
         float endScale;
-        if (startScale < RESERVATION - SCALE_ERROR) {
-            endScale = RESERVATION;
+        if (startScale < DEFAULT_SCALE - SCALE_ERROR) {
+            endScale = DEFAULT_SCALE;
         } else if (startScale < MAX_SCALE - SCALE_ERROR) {
             endScale = MAX_SCALE;
         } else {
-            endScale = RESERVATION;
+            endScale = DEFAULT_SCALE;
         }
 
         mSmoothScaler.startSmoothScaler(x, y, startScale, endScale, 300);
@@ -542,7 +543,7 @@ class ScrollLayoutManager extends GalleryView.LayoutManager {
 
     // True for get top or bottom
     private boolean scrollInternal(float dx, float dy) {
-        if (mPages.size() == 0) {
+        if (mPages.isEmpty()) {
             return false;
         }
 
@@ -652,7 +653,7 @@ class ScrollLayoutManager extends GalleryView.LayoutManager {
 
     @Override
     public void onFling(float velocityX, float velocityY) {
-        if (mPages.size() == 0) {
+        if (mPages.isEmpty()) {
             return;
         }
 
@@ -696,7 +697,7 @@ class ScrollLayoutManager extends GalleryView.LayoutManager {
 
     @Override
     public boolean canScale() {
-        return mPages.size() > 0;
+        return !mPages.isEmpty();
     }
 
     @Override
@@ -1057,7 +1058,7 @@ class ScrollLayoutManager extends GalleryView.LayoutManager {
 
         @Override
         protected void onCalculate(float progress) {
-            if (mPages.size() == 0) {
+            if (mPages.isEmpty()) {
                 return;
             }
 

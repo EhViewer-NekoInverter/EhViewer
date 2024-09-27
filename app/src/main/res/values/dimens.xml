@@ -123,7 +123,7 @@
     <dimen name="gallery_content_margin_v">4dp</dimen>
     <dimen name="gallery_pager_interval">48dp</dimen>
     <dimen name="gallery_scroll_interval">28dp</dimen>
-    <dimen name="gallery_page_min_height">256dp</dimen>
+    <dimen name="gallery_page_min_height">365dp</dimen>
     <dimen name="gallery_page_info_interval">24dp</dimen>
     <dimen name="gallery_progress_size">56dp</dimen>
     <dimen name="gallery_page_text_size">56sp</dimen>
