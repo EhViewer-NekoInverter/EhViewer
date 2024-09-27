@@ -37,10 +37,10 @@ import com.hippo.ehviewer.client.parser.ForumsParser
 import com.hippo.ehviewer.client.parser.GalleryApiParser
 import com.hippo.ehviewer.client.parser.GalleryDetailParser
 import com.hippo.ehviewer.client.parser.GalleryListParser
+import com.hippo.ehviewer.client.parser.GalleryMultiPageViewerParser
 import com.hippo.ehviewer.client.parser.GalleryNotAvailableParser
 import com.hippo.ehviewer.client.parser.GalleryPageApiParser
 import com.hippo.ehviewer.client.parser.GalleryPageParser
-import com.hippo.ehviewer.client.parser.GallerySha1Parser
 import com.hippo.ehviewer.client.parser.GalleryTokenApiParser
 import com.hippo.ehviewer.client.parser.HomeParser
 import com.hippo.ehviewer.client.parser.ProfileParser
@@ -733,7 +733,7 @@ object EhEngine {
         val url = EhUrl.getGalleryMultiPageViewerUrl(gid, token!!)
         val referer = EhUrl.getGalleryDetailUrl(gid, token)
         Log.d(TAG, url)
-        return EhRequestBuilder(url, referer).executeAndParsingWith(GallerySha1Parser::parse)
+        return EhRequestBuilder(url, referer).executeAndParsingWith(GalleryMultiPageViewerParser::parseSha1)
     }
 
     suspend fun getGalleryDiff(

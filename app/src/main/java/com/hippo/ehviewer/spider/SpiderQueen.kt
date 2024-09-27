@@ -34,7 +34,7 @@ import com.hippo.ehviewer.client.exception.QuotaExceededException
 import com.hippo.ehviewer.client.parser.GalleryDetailParser.parsePages
 import com.hippo.ehviewer.client.parser.GalleryDetailParser.parsePreviewPages
 import com.hippo.ehviewer.client.parser.GalleryDetailParser.parsePreviewSet
-import com.hippo.ehviewer.client.parser.GalleryMultiPageViewerPTokenParser
+import com.hippo.ehviewer.client.parser.GalleryMultiPageViewerParser
 import com.hippo.ehviewer.client.parser.GalleryPageUrlParser
 import com.hippo.image.Image
 import com.hippo.unifile.UniFile
@@ -406,7 +406,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
         return runSuspendCatching {
             plainTextOkHttpClient.newCall(request).executeAsync().use { response ->
                 val body = response.body.string()
-                GalleryMultiPageViewerPTokenParser.parse(body).forEachIndexed { index, s ->
+                GalleryMultiPageViewerParser.parsePToken(body).forEachIndexed { index, s ->
                     spiderInfo.pTokenMap[index] = s
                 }
                 spiderInfo.pTokenMap[index]
