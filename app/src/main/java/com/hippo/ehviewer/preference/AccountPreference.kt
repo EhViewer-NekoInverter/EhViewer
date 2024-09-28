@@ -17,7 +17,6 @@ package com.hippo.ehviewer.preference
 
 import android.content.Context
 import android.content.DialogInterface
-import android.text.Html
 import android.util.AttributeSet
 import android.view.View
 import android.view.WindowManager
@@ -66,17 +65,13 @@ class AccountPreference(
                 }
             }
             mCookie = EhCookieStore.KEY_IPB_MEMBER_ID + ": " + ipbMemberId +
-                "<br>" + EhCookieStore.KEY_IPB_PASS_HASH + ": " + ipbPassHash
-            igneous?.let { mCookie += "<br>" + EhCookieStore.KEY_IGNEOUS + ": " + it }
-            mMessage = Html.fromHtml(
-                context.getString(R.string.settings_eh_account_identity_cookies, mCookie),
-                Html.FROM_HTML_MODE_LEGACY,
-            ).toString()
+                "\n" + EhCookieStore.KEY_IPB_PASS_HASH + ": " + ipbPassHash
+            igneous?.let { mCookie += "\n" + EhCookieStore.KEY_IGNEOUS + ": " + it }
+            mMessage = context.getString(R.string.settings_eh_account_identity_cookies, mCookie)
             if (igneousExpire > 0 && igneousExpire != ReadableTime.MAX_VALUE_MILLIS) {
                 mMessage += "\n" + context.getString(R.string.settings_eh_account_igneous_expire) +
                     ReadableTime.getShortTime(igneousExpire)
             }
-            mCookie = mCookie!!.replace("<br>", "\n")
             mDialog.setMessage(mMessage)
         }
     }

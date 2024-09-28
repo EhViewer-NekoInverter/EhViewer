@@ -407,7 +407,7 @@
     <string name="settings_eh_account_refresh_igneous">Refresh igneous</string>
     <string name="settings_eh_account_sign_out">Sign out</string>
     <string name="settings_eh_account_sign_out_tip">You have signed out. Restart the application to sign in again</string>
-    <string name="settings_eh_account_identity_cookies">Identity cookies can be used to sign in to this account.&lt;br&gt;&lt;b&gt;KEEP IT SAFE&lt;/b&gt;&lt;br&gt;&lt;br&gt;%s</string>
+    <string name="settings_eh_account_identity_cookies">Identity cookies can be used to sign in to this account.\nKEEP IT SAFE\n\n%s</string>
     <string name="settings_eh_account_igneous_expire">ignous valid until: </string>
     <string name="settings_eh_account_identity_cookies_copy">Copy</string>
     <string name="settings_eh_gallery_site">Gallery site</string>

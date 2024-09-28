@@ -301,7 +301,7 @@
     <string name="settings_eh">EH</string>
     <string name="settings_eh_account_sign_out">ログアウト</string>
     <string name="settings_eh_account_sign_out_tip">ログアウトしました。アプリを再起動することで再度ログインします。</string>
-    <string name="settings_eh_account_identity_cookies">下記の情報を持つ誰でもこのアカウントにログインできますので&lt;br&gt;&lt;b&gt;絶対に他人に渡さないように！&lt;/b&gt;&lt;br&gt;&lt;br&gt;%s</string>
+    <string name="settings_eh_account_identity_cookies">下記の情報を持つ誰でもこのアカウントにログインできますので\n絶対に他人に渡さないように！\n\n%s</string>
     <string name="settings_eh_account_identity_cookies_copy">コピー</string>
     <string name="settings_eh_gallery_site">ギャラリーサイト</string>
     <string name="settings_eh_launch_page">アプリ既定画面</string>
