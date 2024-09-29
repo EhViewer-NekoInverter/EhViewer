@@ -492,6 +492,7 @@
     <string name="settings_download_download_origin_image_never">從不啟用</string>
     <string name="settings_download_download_origin_image_force">總是啟用</string>
     <string name="settings_download_download_origin_image_only">僅下載時啟用</string>
+    <string name="settings_download_task_confirm">確定要執行操作？</string>
     <string name="settings_download_restore_download_items">回復下載的檔案</string>
     <string name="settings_download_restore_download_items_summary">回復下載路徑中的所有下載的檔案</string>
     <string name="settings_download_restore_not_found">未尋獲可回復的已下載檔案</string>

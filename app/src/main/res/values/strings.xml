@@ -518,6 +518,7 @@
     <string name="settings_download_download_origin_image_never">Never</string>
     <string name="settings_download_download_origin_image_force">Always</string>
     <string name="settings_download_download_origin_image_only">Download only</string>
+    <string name="settings_download_task_confirm">Are you sure you want to perform this action?</string>
     <string name="settings_download_restore_download_items">Restore download items</string>
     <string name="settings_download_restore_download_items_summary">Restore all download items in download location</string>
     <string name="settings_download_restore_not_found">Not found download items to restore</string>

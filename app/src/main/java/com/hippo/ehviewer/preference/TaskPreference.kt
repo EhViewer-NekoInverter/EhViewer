@@ -16,6 +16,7 @@
 package com.hippo.ehviewer.preference
 
 import android.content.Context
+import android.content.DialogInterface
 import android.util.AttributeSet
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.snackbar.Snackbar
@@ -30,18 +31,27 @@ abstract class TaskPreference(
     context: Context,
     attrs: AttributeSet? = null,
 ) : DialogPreference(context, attrs), CoroutineScope {
+    lateinit var mDialog: AlertDialog
+
     override val coroutineContext = Dispatchers.IO + Job()
+
     override fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
-        builder.setTitle(null)
-        builder.setView(R.layout.preference_dialog_task)
-        builder.setCancelable(false)
+        builder.setTitle(jobTitle)
+            .setMessage(R.string.settings_download_task_confirm)
+            .setPositiveButton(android.R.string.ok) { _: DialogInterface, _: Int ->
+                mDialog = AlertDialog.Builder(context)
+                    .setTitle(null)
+                    .setView(R.layout.preference_dialog_task)
+                    .setCancelable(false)
+                    .show()
+                launchJob()
+            }
+            .setNegativeButton(android.R.string.cancel, null)
     }
+
+    abstract val jobTitle: String?
 
     abstract fun launchJob()
-
-    override fun onDialogCreated(dialog: AlertDialog) {
-        launchJob()
-    }
 
     protected fun showTip(msg: String) {
         (context as SettingsActivity).showTip(

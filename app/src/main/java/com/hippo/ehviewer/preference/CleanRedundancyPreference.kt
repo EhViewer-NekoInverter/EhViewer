@@ -49,11 +49,13 @@ class CleanRedundancyPreference(
         return Settings.downloadLocation?.listFiles()?.sumOf { clearFile(it).compareTo(false) } ?: 0
     }
 
+    override val jobTitle = GetText.getString(R.string.settings_download_clean_redundancy)
+
     override fun launchJob() {
         if (singletonJob?.isActive == true) {
             singletonJob?.invokeOnCompletion {
                 launchUI {
-                    dialog?.dismiss()
+                    mDialog.dismiss()
                 }
             }
         } else {
@@ -61,7 +63,7 @@ class CleanRedundancyPreference(
                 val cnt = doRealWork()
                 withUIContext {
                     showTip(FINAL_CLEAR_REDUNDANCY_MSG(cnt))
-                    dialog?.dismiss()
+                    mDialog.dismiss()
                 }
             }
         }

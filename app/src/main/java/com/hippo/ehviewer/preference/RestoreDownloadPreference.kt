@@ -15,6 +15,7 @@
  */
 package com.hippo.ehviewer.preference
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import com.hippo.ehviewer.EhDB
@@ -42,8 +43,11 @@ class RestoreDownloadPreference(
     context: Context,
     attrs: AttributeSet? = null,
 ) : TaskPreference(context, attrs) {
-    private val mManager = downloadManager
     private var restoreDirCount = 0
+
+    @SuppressLint("ParcelCreator")
+    private class RestoreItem(val dirname: String, gid: Long, token: String) : BaseGalleryInfo(gid, token)
+
     private fun getRestoreItem(dir: UniFile): RestoreItem? {
         if (!dir.isDirectory) return null
         return runCatching {
@@ -58,8 +62,8 @@ class RestoreDownloadPreference(
             } ?: return null
             val gid = result.gid
             val dirname = dir.name!!
-            if (mManager.containDownloadInfo(gid)) {
-                // Restore download dir to avoid redownload
+            if (downloadManager.containDownloadInfo(gid)) {
+                // Restore download dir to avoid re-download
                 val dbDirName = EhDB.getDownloadDirname(gid)
                 if (null == dbDirName || dirname != dbDirName) {
                     EhDB.putDownloadDirname(gid, dirname)
@@ -85,12 +89,13 @@ class RestoreDownloadPreference(
         }.getOrNull()
     }
 
-    private class RestoreItem(val dirname: String, gid: Long, token: String) : BaseGalleryInfo(gid, token)
+    override val jobTitle = GetText.getString(R.string.settings_download_restore_download_items)
+
     override fun launchJob() {
         if (singletonJob?.isActive == true) {
             singletonJob?.invokeOnCompletion {
                 launchUI {
-                    dialog?.dismiss()
+                    mDialog.dismiss()
                 }
             }
         } else {
@@ -111,7 +116,7 @@ class RestoreDownloadPreference(
                                 // Avoid failed gallery info
                                 if (null != item.title) {
                                     // Put to download
-                                    mManager.addDownload(item, null)
+                                    downloadManager.addDownload(item, null)
                                     // Put download dir to DB
                                     EhDB.putDownloadDirname(item.gid, item.dirname)
                                     count++
@@ -121,7 +126,7 @@ class RestoreDownloadPreference(
                             showTip(RESTORE_COUNT_MSG(count + restoreDirCount))
                         }
                     }
-                    dialog?.dismiss()
+                    mDialog.dismiss()
                 }
             }
         }
