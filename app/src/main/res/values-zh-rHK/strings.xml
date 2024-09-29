@@ -160,6 +160,7 @@
     <string name="search_sp_err0">頁數最小值至多為 1000</string>
     <string name="search_sp_err1">頁數最大值至少為 10</string>
     <string name="search_sp_err2">頁數範圍差至少為 20</string>
+    <string name="search_sp_err3">頁數範圍比至多為 0.8</string>
     <string name="search_sf">禁用排除項：</string>
     <string name="search_sfl">語言</string>
     <string name="search_sfu">上傳者</string>

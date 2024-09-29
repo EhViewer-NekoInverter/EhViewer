@@ -169,6 +169,7 @@
     <string name="search_sp_err0">The page range minimum cannot be above 1000</string>
     <string name="search_sp_err1">The page range maximum cannot be below 10</string>
     <string name="search_sp_err2">The page range must be at least 20</string>
+    <string name="search_sp_err3">The page range ratio cannot be above 0.8</string>
     <string name="search_sf">Disable default filters for:</string>
     <string name="search_sfl">Language</string>
     <string name="search_sfu">Uploader</string>

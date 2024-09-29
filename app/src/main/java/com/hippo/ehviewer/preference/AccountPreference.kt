@@ -69,7 +69,7 @@ class AccountPreference(
             igneous?.let { mCookie += "\n" + EhCookieStore.KEY_IGNEOUS + ": " + it }
             mMessage = context.getString(R.string.settings_eh_account_identity_cookies, mCookie)
             if (igneousExpire > 0 && igneousExpire != ReadableTime.MAX_VALUE_MILLIS) {
-                mMessage += "\n" + context.getString(R.string.settings_eh_account_igneous_expire) +
+                mMessage += "\n\n" + context.getString(R.string.settings_eh_account_igneous_expire) +
                     ReadableTime.getShortTime(igneousExpire)
             }
             mDialog.setMessage(mMessage)
