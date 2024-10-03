@@ -383,7 +383,7 @@
     <string name="settings_eh_account_sign_out">退出登录</string>
     <string name="settings_eh_account_sign_out_tip">已退出登录，重启应用以便再次登录</string>
     <string name="settings_eh_account_identity_cookies">身份 Cookie 可用于登录该账号。\n注意数据安全\n\n%s</string>
-    <string name="settings_eh_account_igneous_expire">igneous 有效期：</string>
+    <string name="settings_eh_account_igneous_expire">igneous 自动刷新：</string>
     <string name="settings_eh_account_identity_cookies_copy">复制</string>
     <string name="settings_eh_gallery_site">画廊站点</string>
     <string name="settings_eh_image_limits">图片配额</string>

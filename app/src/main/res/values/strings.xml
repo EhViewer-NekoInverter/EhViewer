@@ -409,12 +409,12 @@
     <string name="settings_eh_account_sign_out">Sign out</string>
     <string name="settings_eh_account_sign_out_tip">You have signed out. Restart the application to sign in again</string>
     <string name="settings_eh_account_identity_cookies">Identity cookies can be used to sign in to this account.\nKEEP IT SAFE\n\n%s</string>
-    <string name="settings_eh_account_igneous_expire">ignous valid until: </string>
+    <string name="settings_eh_account_igneous_expire">"igneous auto refresh: "</string>
     <string name="settings_eh_account_identity_cookies_copy">Copy</string>
     <string name="settings_eh_gallery_site">Gallery site</string>
     <string name="settings_eh_image_limits">Image Limits</string>
     <string name="settings_eh_image_limits_summary">Loading…</string>
-    <string name="settings_eh_image_limits_summary_ip">IP-based limits: </string>
+    <string name="settings_eh_image_limits_summary_ip">"IP-based limits: "</string>
     <string name="settings_eh_image_limits_summary_ip_ok">no restrictions</string>
     <string name="settings_eh_image_limits_summary_ip_restricted">lower-resolution images</string>
     <string name="settings_eh_image_limits_summary_acc">Current: %1$d / %2$d</string>
