@@ -833,7 +833,6 @@ class GalleryDetailScene :
 
     private fun bindTags(tagGroups: Array<GalleryTagGroup>?) {
         val context = context
-        val inflater = layoutInflater
         if (null == context || null == mTags || null == mNoTags) {
             return
         }
@@ -849,14 +848,14 @@ class GalleryDetailScene :
         val colorTag = theme.resolveColor(R.attr.tagBackgroundColor)
         val colorName = theme.resolveColor(R.attr.tagGroupBackgroundColor)
         for (tgs in tagGroups) {
-            val ll = inflater.inflate(R.layout.gallery_tag_group, mTags, false) as LinearLayout
+            val ll = layoutInflater.inflate(R.layout.gallery_tag_group, mTags, false) as LinearLayout
             ll.orientation = LinearLayout.HORIZONTAL
             mTags!!.addView(ll)
             var readableTagName: String? = null
             if (ehTags != null && ehTags.isInitialized()) {
                 readableTagName = ehTags.getTranslation(tag = tgs.groupName)
             }
-            val tgName = inflater.inflate(R.layout.item_gallery_tag, ll, false) as TextView
+            val tgName = layoutInflater.inflate(R.layout.item_gallery_tag, ll, false) as TextView
             ll.addView(tgName)
             tgName.text = readableTagName ?: tgs.groupName
             tgName.backgroundTintList = ColorStateList.valueOf(colorName)
@@ -868,7 +867,7 @@ class GalleryDetailScene :
                 ViewGroup.LayoutParams.WRAP_CONTENT,
             )
             for (tg in tgs) {
-                val tag = inflater.inflate(R.layout.item_gallery_tag, awl, false) as TextView
+                val tag = layoutInflater.inflate(R.layout.item_gallery_tag, awl, false) as TextView
                 awl.addView(tag)
                 var tagStr = tg
                 var status: String? = null
@@ -886,7 +885,11 @@ class GalleryDetailScene :
                     readableTag = ehTags.getTranslation(prefix, tagStr)
                 }
                 var tagText = readableTag ?: tagStr
-                status?.let { tagText += it }
+                if (status != null) {
+                    tagText += status
+                } else if (tag.typeface.isItalic) {
+                    tagText += " "
+                }
                 tag.text = tagText
                 tag.backgroundTintList = ColorStateList.valueOf(colorTag)
                 tag.setTag(R.id.tag, tgs.groupName + ":" + tagStr)
@@ -1366,7 +1369,11 @@ class GalleryDetailScene :
                         requireActivity().addTextToClipboard(tag, false)
                     }
                     R.id.copy_trans -> {
-                        requireActivity().addTextToClipboard(tv.text.toString(), false)
+                        var transText = tv.text.toString().trim()
+                        if (transText.endsWith(TAG_STATUS_UP) || transText.endsWith(TAG_STATUS_DN)) {
+                            transText = transText.substring(0, transText.length - 1)
+                        }
+                        requireActivity().addTextToClipboard(transText, false)
                     }
                 }
             }.show()
