@@ -309,6 +309,10 @@ object GalleryDetailParser {
                 if (it.hasClass("gtw")) {
                     tag = "_W$tag"
                 }
+                // Active tag
+                if (it.hasClass("gtl")) {
+                    tag = "_L$tag"
+                }
                 group.add(tag)
             }
             if (group.size > 0) group else null
@@ -322,7 +326,7 @@ object GalleryDetailParser {
     /**
      * Parse tag groups with html parser
      */
-    private fun parseTagGroups(document: Document): Array<GalleryTagGroup>? {
+    fun parseTagGroups(document: Document): Array<GalleryTagGroup>? {
         return try {
             val taglist = document.getElementById("taglist")!!
             if (taglist.children().isEmpty()) return null

@@ -29,6 +29,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -870,11 +871,13 @@ class GalleryDetailScene :
                 val tag = inflater.inflate(R.layout.item_gallery_tag, awl, false) as TextView
                 awl.addView(tag)
                 var tagStr = tg
+                var status: String? = null
                 while (tagStr.startsWith("_")) {
                     when (tagStr.substring(1, 2)) {
                         "W" -> tag.alpha = 0.5f
-                        "U" -> tag.setTextColor(TAG_COLOR_UP.toInt())
-                        "D" -> tag.setTextColor(TAG_COLOR_DN.toInt())
+                        "L" -> tag.setTypeface(tag.typeface, Typeface.ITALIC)
+                        "U" -> status = TAG_STATUS_UP
+                        "D" -> status = TAG_STATUS_DN
                     }
                     tagStr = tagStr.substring(2)
                 }
@@ -882,7 +885,9 @@ class GalleryDetailScene :
                 if (ehTags != null && ehTags.isInitialized()) {
                     readableTag = ehTags.getTranslation(prefix, tagStr)
                 }
-                tag.text = readableTag ?: tagStr
+                var tagText = readableTag ?: tagStr
+                status?.let { tagText += it }
+                tag.text = tagText
                 tag.backgroundTintList = ColorStateList.valueOf(colorTag)
                 tag.setTag(R.id.tag, tgs.groupName + ":" + tagStr)
                 tag.setOnClickListener(this)
@@ -1327,14 +1332,14 @@ class GalleryDetailScene :
         menu.add(resources.getString(R.string.add_filter))
         menuId.add(R.id.add_filter)
         if (mGalleryDetail != null && mGalleryDetail!!.apiUid >= 0) {
-            val textColor = tv.textColors.defaultColor
-            val isVoted = textColor != Color.WHITE
-            if (textColor != TAG_COLOR_UP.toInt()) {
-                menu.add(resources.getString(if (isVoted) R.string.tag_vote_down_cancel else R.string.tag_vote_up))
+            val isUp = tv.text.endsWith(TAG_STATUS_UP)
+            val isDn = tv.text.endsWith(TAG_STATUS_DN)
+            if (!isUp) {
+                menu.add(resources.getString(if (isDn) R.string.tag_vote_down_cancel else R.string.tag_vote_up))
                 menuId.add(R.id.vote_up)
             }
-            if (textColor != TAG_COLOR_DN.toInt()) {
-                menu.add(resources.getString(if (isVoted) R.string.tag_vote_up_cancel else R.string.tag_vote_down))
+            if (!isDn) {
+                menu.add(resources.getString(if (isUp) R.string.tag_vote_up_cancel else R.string.tag_vote_down))
                 menuId.add(R.id.vote_down)
             }
         }
@@ -1612,12 +1617,14 @@ class GalleryDetailScene :
         }
     }
 
-    private class VoteTagListener(context: Context) :
-        EhCallback<GalleryDetailScene?, String>(context) {
-        override fun onSuccess(result: String) {
-            if (result.isNotEmpty()) {
-                showTip(result, LENGTH_SHORT)
+    private inner class VoteTagListener(context: Context) :
+        EhCallback<GalleryDetailScene?, Pair<String, Array<GalleryTagGroup>?>>(context) {
+        override fun onSuccess(result: Pair<String, Array<GalleryTagGroup>?>) {
+            if (result.first.isNotEmpty()) {
+                showTip(result.first, LENGTH_SHORT)
             } else {
+                mGalleryDetail?.tags = result.second
+                bindTags(result.second)
                 showTip(R.string.tag_vote_successfully, LENGTH_SHORT)
             }
         }
@@ -2174,8 +2181,8 @@ class GalleryDetailScene :
         private const val STATE_REFRESH = 1
         private const val STATE_REFRESH_HEADER = 2
         private const val STATE_FAILED = 3
-        private const val TAG_COLOR_UP = 0xffffffa0u
-        private const val TAG_COLOR_DN = 0xffddddddu
+        private const val TAG_STATUS_UP = "↑"
+        private const val TAG_STATUS_DN = "↓"
         private const val KEY_GALLERY_DETAIL = "gallery_detail"
         private const val KEY_REQUEST_ID = "request_id"
         private const val TRANSITION_ANIMATION_DISABLED = true

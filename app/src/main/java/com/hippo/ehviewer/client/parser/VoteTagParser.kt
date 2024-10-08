@@ -17,11 +17,16 @@
  */
 package com.hippo.ehviewer.client.parser
 
+import com.hippo.ehviewer.client.data.GalleryTagGroup
+import com.hippo.ehviewer.client.parser.GalleryDetailParser.parseTagGroups
 import org.json.JSONObject
+import org.jsoup.Jsoup
 
 object VoteTagParser {
     // {"error":"The tag \"neko\" is not allowed. Use character:neko or artist:neko"}
-    fun parse(body: String): String {
-        return JSONObject(body).optString("error")
+    fun parse(body: String): Pair<String, Array<GalleryTagGroup>?> {
+        val obj = JSONObject(body)
+        val tags = Jsoup.parse("<div id=\"taglist\">${obj.optString("tagpane")}</div>")
+        return obj.optString("error") to parseTagGroups(tags)
     }
 }

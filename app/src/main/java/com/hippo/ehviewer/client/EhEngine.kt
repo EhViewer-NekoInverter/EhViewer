@@ -25,6 +25,7 @@ import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.client.data.GalleryCommentList
 import com.hippo.ehviewer.client.data.GalleryDetail
 import com.hippo.ehviewer.client.data.GalleryInfo
+import com.hippo.ehviewer.client.data.GalleryTagGroup
 import com.hippo.ehviewer.client.data.PreviewSet
 import com.hippo.ehviewer.client.exception.EhException
 import com.hippo.ehviewer.client.exception.InsufficientFundsException
@@ -621,7 +622,7 @@ object EhEngine {
         token: String?,
         tags: String?,
         vote: Int,
-    ): String {
+    ): Pair<String, Array<GalleryTagGroup>?> {
         val json = JSONObject()
         json.put("method", "taggallery")
         json.put("apiuid", apiUid)
