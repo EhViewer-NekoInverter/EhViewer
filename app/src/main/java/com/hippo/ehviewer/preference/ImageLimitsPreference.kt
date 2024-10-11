@@ -30,8 +30,10 @@ import com.hippo.ehviewer.client.parser.HomeParser
 import com.hippo.ehviewer.ui.SettingsActivity
 import com.hippo.ehviewer.ui.scene.BaseScene
 import com.hippo.preference.DialogPreference
+import com.hippo.util.ReadableTime
 import com.hippo.util.launchIO
 import com.hippo.util.withUIContext
+import okhttp3.HttpUrl.Companion.toHttpUrl
 
 class ImageLimitsPreference(
     context: Context,
@@ -110,12 +112,21 @@ class ImageLimitsPreference(
     private fun bind() {
         val (_, maximum, resetCost) = mLimits
         val (fundsGP, fundsC) = mFunds
-        val message = formatCurrent() +
-            "\n" + if (maximum < 0) {
-                mActivity.getString(R.string.settings_eh_unlock_cost, resetCost)
-            } else {
-                mActivity.getString(R.string.settings_eh_reset_cost, resetCost)
-            } +
+        var quotaExpire = 0L
+        EhCookieStore.getCookies(EhUrl.HOST_E.toHttpUrl()).forEach {
+            if (it.name == EhCookieStore.KEY_QUOTA) {
+                quotaExpire = it.expiresAt
+            }
+        }
+        var message = formatCurrent()
+        if (quotaExpire > 0) {
+            message += "  (~${ReadableTime.getShortTime(quotaExpire)})"
+        }
+        message += "\n" + if (maximum < 0) {
+            mActivity.getString(R.string.settings_eh_unlock_cost, resetCost)
+        } else {
+            mActivity.getString(R.string.settings_eh_reset_cost, resetCost)
+        } +
             "\n" + mActivity.getString(R.string.current_funds, "$fundsGP+", fundsC)
         mDialog.setMessage(message)
         resetButton.text = if (maximum < 0) {
