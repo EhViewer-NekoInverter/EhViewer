@@ -17,7 +17,6 @@ package com.hippo.ehviewer.spider
 
 import android.graphics.ImageDecoder
 import com.hippo.ehviewer.EhApplication.Companion.nonCacheOkHttpClient
-import com.hippo.ehviewer.EhDB
 import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.client.EhCacheKeyFactory
 import com.hippo.ehviewer.client.EhRequestBuilder
@@ -25,6 +24,7 @@ import com.hippo.ehviewer.client.EhUtils.getSuitableTitle
 import com.hippo.ehviewer.client.data.GalleryInfo
 import com.hippo.ehviewer.coil.edit
 import com.hippo.ehviewer.coil.read
+import com.hippo.ehviewer.download.DownloadManager
 import com.hippo.ehviewer.gallery.GalleryProvider2.Companion.SUPPORT_IMAGE_EXTENSIONS
 import com.hippo.image.Image.CloseableSource
 import com.hippo.image.rewriteGifSource2
@@ -46,7 +46,7 @@ import com.hippo.ehviewer.EhApplication.Companion.imageCache as sCache
 
 class SpiderDen(private val mGalleryInfo: GalleryInfo) {
     private val fileHashRegex = Regex("/([0-9a-f]{40})(?:-\\d+){3}-\\w+")
-    private val safeDirNameRegex = Regex("[^\\p{L}\\p{M}\\p{N}\\p{P}\\p{Z}\\p{Cf}\\p{Cs}\\s]")
+    private val safeDirnameRegex = Regex("[^\\p{L}\\p{M}\\p{N}\\p{P}\\p{Z}\\p{Cf}\\p{Cs}\\s]")
     private val mGid = mGalleryInfo.gid
     var downloadDir: UniFile? = null
 
@@ -57,14 +57,14 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
             field = value
             if (field == SpiderQueen.MODE_DOWNLOAD && downloadDir == null) {
                 val title = getSuitableTitle(mGalleryInfo)
-                val dirName = FileUtils.sanitizeFilename("$mGid-$title")
-                val safeDirName = dirName.replace(safeDirNameRegex, "")
-                downloadDir = perDownloadDir(dirName) ?: perDownloadDir(safeDirName)
+                val dirname = FileUtils.sanitizeFilename("$mGid-$title")
+                val safeDirname = dirname.replace(safeDirnameRegex, "")
+                downloadDir = perDownloadDir(dirname) ?: perDownloadDir(safeDirname)
             }
         }
 
-    private fun perDownloadDir(dirName: String): UniFile? {
-        EhDB.putDownloadDirname(mGid, dirName)
+    private fun perDownloadDir(dirname: String): UniFile? {
+        DownloadManager.putDownloadDirname(mGid, dirname)
         return getGalleryDownloadDir(mGid)?.takeIf { it.ensureDir() }
     }
 
@@ -329,7 +329,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
 
         fun getGalleryDownloadDir(gid: Long): UniFile? {
             val dir = Settings.downloadLocation ?: return null
-            val dirname = EhDB.getDownloadDirname(gid) ?: return null
+            val dirname = DownloadManager.getDownloadDirname(gid) ?: return null
             return dir.subFile(dirname)
         }
     }

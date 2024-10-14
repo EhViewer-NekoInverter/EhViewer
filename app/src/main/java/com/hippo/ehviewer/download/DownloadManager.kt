@@ -48,6 +48,9 @@ object DownloadManager : OnSpiderListener {
     // label and info list map, without default label info list
     private val mMap: MutableMap<String?, LinkedList<DownloadInfo>>
 
+    // All download dirname
+    private val mAllDownloadDirname = mutableMapOf<Long, String>()
+
     // All labels without default label
     private val mLabelList: MutableList<DownloadLabel>
 
@@ -64,6 +67,13 @@ object DownloadManager : OnSpiderListener {
     private var mCurrentSpider: SpiderQueen? = null
 
     init {
+        // Get all download dirname
+        val allDownloadDirname = EhDB.allDownloadDirname
+        for ((gid, dirname) in allDownloadDirname) {
+            if (dirname != null) {
+                mAllDownloadDirname.put(gid, dirname)
+            }
+        }
 
         // Get all labels
         val labels = EhDB.allDownloadLabelList.toMutableList()
@@ -109,6 +119,20 @@ object DownloadManager : OnSpiderListener {
         mWaitList = LinkedList()
         mSpeedReminder = SpeedReminder()
         mDownloadInfoListeners = ArrayList()
+    }
+
+    fun getDownloadDirname(gid: Long): String? {
+        return mAllDownloadDirname[gid]
+    }
+
+    fun putDownloadDirname(gid: Long, dirname: String) {
+        mAllDownloadDirname.put(gid, dirname)
+        EhDB.putDownloadDirname(gid, dirname)
+    }
+
+    fun removeDownloadDirname(gid: Long) {
+        mAllDownloadDirname.remove(gid)
+        EhDB.removeDownloadDirname(gid)
     }
 
     private fun getInfoListForLabel(label: String?): LinkedList<DownloadInfo>? {

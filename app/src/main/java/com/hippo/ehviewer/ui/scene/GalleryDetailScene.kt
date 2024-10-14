@@ -1705,7 +1705,7 @@ class GalleryDetailScene :
             if (checked) {
                 val file = SpiderDen.getGalleryDownloadDir(mGalleryInfo.gid)
                 // DB Actions
-                EhDB.removeDownloadDirname(mGalleryInfo.gid)
+                EhDownloadManager.removeDownloadDirname(mGalleryInfo.gid)
                 // Other Actions
                 lifecycleScope.launchIO {
                     runCatching {
@@ -1755,18 +1755,18 @@ class GalleryDetailScene :
             lifecycleScope.launchIO {
                 EhEngine.getGalleryDiff(result, from)?. let { diff ->
                     // Delete exist files
-                    val dirName = FileUtils.sanitizeFilename("${result.gid}-${EhUtils.getSuitableTitle(result)}")
-                    EhDB.putDownloadDirname(result.gid, dirName)
+                    val dirname = FileUtils.sanitizeFilename("${result.gid}-${EhUtils.getSuitableTitle(result)}")
+                    EhDownloadManager.putDownloadDirname(result.gid, dirname)
                     SpiderDen.getGalleryDownloadDir(result.gid)?.takeIf { it.isDirectory }?.let { runCatching { it.delete() } }
                     // Rename directory
                     val dir = SpiderDen.getGalleryDownloadDir(from.gid)?.takeIf { it.isDirectory }
-                    if (dir != null && dir.renameTo(dirName)) {
+                    if (dir != null && dir.renameTo(dirname)) {
                         // Delete old gallery
                         val label = EhDownloadManager.getDownloadInfo(from.gid)?.label
                         withUIContext {
                             EhDownloadManager.deleteDownload(from.gid)
                         }
-                        EhDB.removeDownloadDirname(from.gid)
+                        EhDownloadManager.removeDownloadDirname(from.gid)
                         // Delete old files
                         dir.findFile(".thumb")?.delete()
                         dir.findFile(SpiderQueen.SPIDER_INFO_FILENAME)?.delete()
@@ -1823,7 +1823,7 @@ class GalleryDetailScene :
                             }
                         }
                     } else {
-                        EhDB.removeDownloadDirname(result.gid)
+                        EhDownloadManager.removeDownloadDirname(result.gid)
                     }
                 }
                 if (!success) {

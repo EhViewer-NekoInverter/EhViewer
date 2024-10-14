@@ -63,6 +63,7 @@ import com.hippo.ehviewer.download.DownloadManager
 import com.hippo.ehviewer.download.DownloadManager.DownloadInfoListener
 import com.hippo.ehviewer.download.DownloadService
 import com.hippo.ehviewer.download.DownloadService.Companion.clear
+import com.hippo.ehviewer.spider.DownloadInfoMagics.encodeMagicRequest
 import com.hippo.ehviewer.spider.SpiderDen
 import com.hippo.ehviewer.ui.GalleryActivity
 import com.hippo.ehviewer.widget.SimpleRatingView
@@ -90,7 +91,6 @@ class DownloadsScene :
     DownloadInfoListener,
     OnClickFabListener,
     OnDragHandlerListener {
-    private val mDownloadManager = DownloadManager
     private lateinit var mLabels: MutableList<String>
     private var mLabel: String? = null
     private var mList: MutableList<DownloadInfo>? = null
@@ -114,7 +114,7 @@ class DownloadsScene :
     }
 
     private fun initLabels() {
-        val listLabel = mDownloadManager.labelList
+        val listLabel = DownloadManager.labelList
         mLabels = ArrayList(listLabel.size + LABEL_OFFSET)
         // Add "All" and "Default" label names
         mLabels.add(getString(R.string.download_all))
@@ -133,7 +133,7 @@ class DownloadsScene :
         }
         val gid = args.getLong(KEY_GID, -1L)
         if (-1L != gid) {
-            mDownloadManager.getDownloadInfo(gid)?.let {
+            DownloadManager.getDownloadInfo(gid)?.let {
                 mLabel = it.label
                 updateForLabel()
                 updateView()
@@ -159,7 +159,7 @@ class DownloadsScene :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mDownloadManager.addDownloadInfoListener(this)
+        DownloadManager.addDownloadInfoListener(this)
         if (savedInstanceState == null) {
             onInit()
         } else {
@@ -170,21 +170,21 @@ class DownloadsScene :
     override fun onDestroy() {
         super.onDestroy()
         mList = null
-        mDownloadManager.removeDownloadInfoListener(this)
+        DownloadManager.removeDownloadInfoListener(this)
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun updateForLabel() {
         var list: MutableList<DownloadInfo>?
         if (mLabel == null) {
-            list = mDownloadManager.allDownloadInfoList
+            list = DownloadManager.allDownloadInfoList
         } else if (mLabel == getString(R.string.default_download_label_name)) {
-            list = mDownloadManager.defaultDownloadInfoList
+            list = DownloadManager.defaultDownloadInfoList
         } else {
-            list = mDownloadManager.getLabelDownloadInfoList(mLabel)
+            list = DownloadManager.getLabelDownloadInfoList(mLabel)
             if (list == null) {
                 mLabel = null
-                list = mDownloadManager.allDownloadInfoList
+                list = DownloadManager.allDownloadInfoList
             }
         }
 
@@ -372,7 +372,7 @@ class DownloadsScene :
 
             R.id.action_stop_all -> {
                 // DownloadManager Actions
-                mDownloadManager.stopAllDownload()
+                DownloadManager.stopAllDownload()
                 return true
             }
 
@@ -383,7 +383,7 @@ class DownloadsScene :
                     .setPositiveButton(android.R.string.ok) { _: DialogInterface?, _: Int ->
                         lifecycleScope.launchNonCancellable {
                             // DownloadManager Actions
-                            mDownloadManager.resetAllReadingProgress()
+                            DownloadManager.resetAllReadingProgress()
                         }
                     }.show()
                 return true
@@ -479,7 +479,7 @@ class DownloadsScene :
                 NewLabelDialogHelper(builder, dialog)
                 return@setOnMenuItemClickListener true
             } else if (id == R.id.action_default_download_label) {
-                val list = mDownloadManager.labelList
+                val list = DownloadManager.labelList
                 val items = arrayOfNulls<String>(list.size + 2)
                 items[0] = getString(R.string.let_me_select)
                 items[1] = getString(R.string.default_download_label_name)
@@ -610,7 +610,7 @@ class DownloadsScene :
                 // Stop
                 3 -> {
                     // DownloadManager Actions
-                    mDownloadManager.stopRangeDownload(gidList!!)
+                    DownloadManager.stopRangeDownload(gidList!!)
                     // Cancel check mode
                     recyclerView.outOfCustomChoiceMode()
                 }
@@ -633,7 +633,7 @@ class DownloadsScene :
                 }
                 // Move
                 5 -> {
-                    val labelRawList = mDownloadManager.labelList
+                    val labelRawList = DownloadManager.labelList
                     val labelList: MutableList<String> = ArrayList(labelRawList.size + 1)
                     labelList.add(getString(R.string.default_download_label_name))
                     labelRawList.forEach {
@@ -862,7 +862,7 @@ class DownloadsScene :
                                             .setMessage(getString(R.string.delete_label_message, label))
                                             .setPositiveButton(R.string.delete) { _: DialogInterface?, _: Int ->
                                                 // DownloadManager Actions
-                                                mDownloadManager.deleteLabel(label)
+                                                DownloadManager.deleteLabel(label)
                                                 mLabels.removeAt(index)
                                                 notifyItemRemoved(index)
                                             }
@@ -887,13 +887,13 @@ class DownloadsScene :
             val label = mLabels[index]
             val list = when (position) {
                 0 -> {
-                    mDownloadManager.allDownloadInfoList
+                    DownloadManager.allDownloadInfoList
                 }
                 1 -> {
-                    mDownloadManager.defaultDownloadInfoList
+                    DownloadManager.defaultDownloadInfoList
                 }
                 else -> {
-                    mDownloadManager.getLabelDownloadInfoList(label)
+                    DownloadManager.getLabelDownloadInfoList(label)
                 }
             }
             if (list != null) {
@@ -934,7 +934,7 @@ class DownloadsScene :
 
             // Delete
             // DownloadManager Actions
-            mDownloadManager.deleteRangeDownload(mGidList)
+            DownloadManager.deleteRangeDownload(mGidList)
 
             // Delete image files
             val checked = mBuilder.isChecked
@@ -945,7 +945,7 @@ class DownloadsScene :
                     // Put file
                     files[i] = SpiderDen.getGalleryDownloadDir(info.gid)
                     // DB Actions
-                    EhDB.removeDownloadDirname(info.gid)
+                    DownloadManager.removeDownloadDirname(info.gid)
                 }
                 // Other Actions
                 lifecycleScope.launchIO {
@@ -974,7 +974,7 @@ class DownloadsScene :
                 mLabels[which]
             }
             // DownloadManager Actions
-            mDownloadManager.changeLabel(mDownloadInfoList, label)
+            DownloadManager.changeLabel(mDownloadInfoList, label)
             mLabelAdapter?.notifyDataSetChanged()
         }
     }
@@ -1035,7 +1035,7 @@ class DownloadsScene :
                 ContextCompat.startForegroundService(activity, intent)
             } else if (stop === v) {
                 // DownloadManager Actions
-                mDownloadManager.stopDownload(list[index].gid)
+                DownloadManager.stopDownload(list[index].gid)
             }
         }
 
@@ -1086,7 +1086,7 @@ class DownloadsScene :
             info.thumb?.let {
                 holder.thumb.load(
                     EhCacheKeyFactory.getThumbKey(info.gid),
-                    EhUtils.fixThumbUrl(it),
+                    encodeMagicRequest(info),
                     hardware = false,
                 )
             }
@@ -1199,13 +1199,13 @@ class DownloadsScene :
                 mBuilder.setError(getString(R.string.label_text_is_empty))
             } else if (getString(R.string.download_all) == text || getString(R.string.default_download_label_name) == text) {
                 mBuilder.setError(getString(R.string.label_text_is_invalid))
-            } else if (mDownloadManager.containLabel(text)) {
+            } else if (DownloadManager.containLabel(text)) {
                 mBuilder.setError(getString(R.string.label_text_exist))
             } else {
                 mBuilder.setError(null)
                 mDialog.dismiss()
                 // DownloadManager Actions
-                mDownloadManager.renameLabel(mOriginalLabel!!, text)
+                DownloadManager.renameLabel(mOriginalLabel!!, text)
                 if (mLabelAdapter != null) {
                     initLabels()
                     mLabelAdapter!!.notifyDataSetChanged()
@@ -1230,13 +1230,13 @@ class DownloadsScene :
                 mBuilder.setError(getString(R.string.label_text_is_empty))
             } else if (getString(R.string.download_all) == text || getString(R.string.default_download_label_name) == text) {
                 mBuilder.setError(getString(R.string.label_text_is_invalid))
-            } else if (mDownloadManager.containLabel(text)) {
+            } else if (DownloadManager.containLabel(text)) {
                 mBuilder.setError(getString(R.string.label_text_exist))
             } else {
                 mBuilder.setError(null)
                 mDialog.dismiss()
                 // DownloadManager Actions
-                mDownloadManager.addLabel(text)
+                DownloadManager.addLabel(text)
                 initLabels()
                 mLabelAdapter?.notifyItemInserted(mLabels.size - 1)
             }
@@ -1274,7 +1274,7 @@ class DownloadsScene :
                 return false
             }
             // DownloadManager Actions
-            mDownloadManager.moveLabel(fromPosition - LABEL_OFFSET, toPosition - LABEL_OFFSET)
+            DownloadManager.moveLabel(fromPosition - LABEL_OFFSET, toPosition - LABEL_OFFSET)
             val item = mLabels.removeAt(fromPosition)
             mLabels.add(toPosition, item)
             mLabelAdapter?.notifyItemMoved(fromPosition, toPosition)
@@ -1312,15 +1312,15 @@ class DownloadsScene :
             // DownloadManager Actions
             when (mLabel) {
                 null -> {
-                    mDownloadManager.moveDownload(fromPosition, toPosition)
+                    DownloadManager.moveDownload(fromPosition, toPosition)
                 }
 
                 getString(R.string.default_download_label_name) -> {
-                    mDownloadManager.moveDownload(null, fromPosition, toPosition)
+                    DownloadManager.moveDownload(null, fromPosition, toPosition)
                 }
 
                 else -> {
-                    mDownloadManager.moveDownload(mLabel, fromPosition, toPosition)
+                    DownloadManager.moveDownload(mLabel, fromPosition, toPosition)
                 }
             }
             mAdapter!!.notifyItemMoved(fromPosition, toPosition)

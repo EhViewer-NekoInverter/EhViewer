@@ -18,7 +18,6 @@ package com.hippo.ehviewer.preference
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
-import com.hippo.ehviewer.EhDB
 import com.hippo.ehviewer.GetText
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
@@ -26,6 +25,7 @@ import com.hippo.ehviewer.client.EhEngine.fillGalleryListByApi
 import com.hippo.ehviewer.client.EhUrl
 import com.hippo.ehviewer.client.data.BaseGalleryInfo
 import com.hippo.ehviewer.client.parser.GalleryDetailUrlParser
+import com.hippo.ehviewer.download.DownloadManager
 import com.hippo.ehviewer.spider.SpiderQueen
 import com.hippo.ehviewer.spider.readCompatFromUniFile
 import com.hippo.unifile.UniFile
@@ -37,7 +37,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import okio.buffer
 import okio.source
-import com.hippo.ehviewer.download.DownloadManager as downloadManager
 
 class RestoreDownloadPreference(
     context: Context,
@@ -62,11 +61,11 @@ class RestoreDownloadPreference(
             } ?: return null
             val gid = result.gid
             val dirname = dir.name!!
-            if (downloadManager.containDownloadInfo(gid)) {
+            if (DownloadManager.containDownloadInfo(gid)) {
                 // Restore download dir to avoid re-download
-                val dbDirName = EhDB.getDownloadDirname(gid)
-                if (null == dbDirName || dirname != dbDirName) {
-                    EhDB.putDownloadDirname(gid, dirname)
+                val dbDirname = DownloadManager.getDownloadDirname(gid)
+                if (null == dbDirname || dirname != dbDirname) {
+                    DownloadManager.putDownloadDirname(gid, dirname)
                     restoreDirCount++
                 }
                 return null
@@ -116,9 +115,9 @@ class RestoreDownloadPreference(
                                 // Avoid failed gallery info
                                 if (null != item.title) {
                                     // Put to download
-                                    downloadManager.addDownload(item, null)
+                                    DownloadManager.addDownload(item, null)
                                     // Put download dir to DB
-                                    EhDB.putDownloadDirname(item.gid, item.dirname)
+                                    DownloadManager.putDownloadDirname(item.gid, item.dirname)
                                     count++
                                 }
                                 i++
