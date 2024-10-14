@@ -1084,12 +1084,14 @@ class DownloadsScene :
             }
             val info = mList!![holder.bindingAdapterPosition]
             info.thumb?.let {
-                holder.thumb.load(
-                    EhCacheKeyFactory.getThumbKey(info.gid),
-                    EhUtils.fixThumbUrl(it),
-                    path = SpiderDen.getGalleryDownloadDir(info.gid),
-                    hardware = false,
-                )
+                lifecycleScope.launchIO {
+                    holder.thumb.load(
+                        EhCacheKeyFactory.getThumbKey(info.gid),
+                        EhUtils.fixThumbUrl(it),
+                        path = SpiderDen.getGalleryDownloadDir(info.gid),
+                        hardware = false,
+                    )
+                }
             }
             holder.title.text = EhUtils.getSuitableTitle(info)
             holder.uploader.text = info.uploader

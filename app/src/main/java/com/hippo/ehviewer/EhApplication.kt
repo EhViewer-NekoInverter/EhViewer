@@ -16,6 +16,7 @@
 package com.hippo.ehviewer
 
 import android.app.Activity
+import android.os.StrictMode
 import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.view.View
@@ -103,6 +104,9 @@ class EhApplication : SceneApplication(), ImageLoaderFactory {
             }
         }
         mIdGenerator.setNextId(Settings.getInt(KEY_GLOBAL_STUFF_NEXT_ID, 0))
+        if (BuildConfig.DEBUG) {
+            StrictMode.enableDefaults()
+        }
     }
 
     private suspend fun cleanupDownload() {
