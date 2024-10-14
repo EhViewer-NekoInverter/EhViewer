@@ -25,13 +25,7 @@ import androidx.core.content.ContextCompat
 import coil.load
 import coil.size.Size
 import com.hippo.drawable.PreciselyClipDrawable
-import com.hippo.ehviewer.EhApplication.Companion.thumbCache
 import com.hippo.ehviewer.R
-import com.hippo.ehviewer.coil.read
-import com.hippo.unifile.UniFile
-import com.hippo.util.launchIO
-import com.hippo.util.sendTo
-import kotlinx.coroutines.DelicateCoroutinesApi
 
 open class LoadImageView @JvmOverloads constructor(
     context: Context,
@@ -46,7 +40,6 @@ open class LoadImageView @JvmOverloads constructor(
     private var mClipHeight = Int.MIN_VALUE
     private var mKey: String? = null
     private var mUrl: String? = null
-    private var mPath: UniFile? = null
     private var mHardware = true
 
     @RetryType
@@ -85,24 +78,19 @@ open class LoadImageView @JvmOverloads constructor(
         mClipHeight = Int.MIN_VALUE
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     fun load(
         key: String,
         url: String,
         crossfade: Boolean = true,
-        path: UniFile? = null,
         hardware: Boolean = true,
     ) {
         mKey = key
         mUrl = url
-        mPath = path
         mHardware = hardware
-        val thumb = path?.takeIf { it.isDirectory }?.subFile(".thumb")
-        val uri = thumb?.takeIf { it.isFile }?.uri?.toString() ?: url
-        load(uri) {
+        load(url) {
             // https://coil-kt.github.io/coil/recipes/#shared-element-transitions
             allowHardware(hardware)
-            data(uri)
+            data(url)
             memoryCacheKey(key)
             diskCacheKey(key)
             size(Size.ORIGINAL)
@@ -115,24 +103,8 @@ open class LoadImageView @JvmOverloads constructor(
                     onPreSetImageDrawable(errorDrawable, true)
                     super.setImageDrawable(errorDrawable)
                     setRetry(true)
-                    thumb?.run {
-                        launchIO { if (exists()) delete() }
-                    }
                 },
-                { _, _ ->
-                    setRetry(false)
-                    thumb?.let {
-                        launchIO {
-                            runCatching {
-                                if (!it.exists() && it.ensureFile()) {
-                                    thumbCache.read(key) { UniFile.fromFile(data.toFile())!! sendTo it }
-                                }
-                            }.onFailure {
-                                it.printStackTrace()
-                            }
-                        }
-                    }
-                },
+                { _, _ -> setRetry(false) },
             )
         }
     }
@@ -143,7 +115,7 @@ open class LoadImageView @JvmOverloads constructor(
     }
 
     private fun reload() {
-        mKey?.let { this.load(it, mUrl!!, path = mPath, hardware = mHardware) }
+        mKey?.let { this.load(it, mUrl!!, hardware = mHardware) }
     }
 
     override fun setImageDrawable(drawable: Drawable?) {
