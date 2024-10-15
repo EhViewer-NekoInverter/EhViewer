@@ -105,7 +105,7 @@ class DownloadsScene :
     private var mLabelAdapter: DownloadLabelAdapter? = null
     private var mLabelItemTouchHelper: ItemTouchHelper? = null
     private var mKeyword: String? = null
-    private var mSort = 0
+    private var mSort = Settings.defaultSortingMethod
     private var mType = -1
     private var mInitPosition = -1
 
@@ -422,6 +422,7 @@ class DownloadsScene :
                         mSort,
                     ) { dialog: DialogInterface, which: Int ->
                         mSort = which
+                        Settings.putDefaultSortingMethod(which)
                         dialog.dismiss()
                         updateForLabel()
                         updateView()
