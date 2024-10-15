@@ -254,6 +254,8 @@ object Settings {
     private val DEFAULT_RECENT_DOWNLOAD_LABEL: String? = null
     private const val KEY_DEFAULT_SORTING_METHOD = "default_sorting_method"
     private const val DEFAULT_SORTING_METHOD = 0
+    private const val KEY_DEFAULT_TOP_LIST = "default_top_list"
+    private const val DEFAULT_TOP_LIST = "15"
     private const val KEY_REMOVE_IMAGE_FILES = "include_pic"
     private const val DEFAULT_REMOVE_IMAGE_FILES = true
     private const val KEY_CLIPBOARD_TEXT_HASH_CODE = "clipboard_text_hash_code"
@@ -821,6 +823,12 @@ object Settings {
         get() = getInt(KEY_DEFAULT_SORTING_METHOD, DEFAULT_SORTING_METHOD)
     fun putDefaultSortingMethod(value: Int) {
         putInt(KEY_DEFAULT_SORTING_METHOD, value)
+    }
+
+    val defaultTopList: String?
+        get() = getString(KEY_DEFAULT_TOP_LIST, DEFAULT_TOP_LIST)
+    fun putDefaultTopList(value: String?) {
+        putString(KEY_DEFAULT_TOP_LIST, value)
     }
 
     val removeImageFiles: Boolean

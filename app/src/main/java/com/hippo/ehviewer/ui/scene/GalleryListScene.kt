@@ -234,7 +234,7 @@ class GalleryListScene :
             ACTION_HOMEPAGE -> ListUrlBuilder()
             ACTION_SUBSCRIPTION -> ListUrlBuilder(MODE_SUBSCRIPTION)
             ACTION_WHATS_HOT -> ListUrlBuilder(MODE_WHATS_HOT)
-            ACTION_TOP_LIST -> ListUrlBuilder(MODE_TOPLIST, mKeyword = "15")
+            ACTION_TOP_LIST -> ListUrlBuilder(MODE_TOPLIST, mKeyword = Settings.defaultTopList)
             ACTION_LIST_URL_BUILDER -> args.getParcelableCompat<ListUrlBuilder>(KEY_LIST_URL_BUILDER)
                 ?.copy() ?: ListUrlBuilder()
             else -> throw IllegalStateException("Wrong KEY_ACTION:${args.getString(KEY_ACTION)} when handle args!")
@@ -1458,7 +1458,9 @@ class GalleryListScene :
                     if (null == mHelper) {
                         return@setOnClickListener
                     }
-                    mUrlBuilder.keyword = keywords[holder.bindingAdapterPosition].toString()
+                    val keyword = keywords[holder.bindingAdapterPosition].toString()
+                    Settings.putDefaultTopList(keyword)
+                    mUrlBuilder.keyword = keyword
                     onUpdateUrlBuilder()
                     mHelper!!.refresh()
                     setState(STATE_NORMAL)
