@@ -338,12 +338,17 @@
     <string name="download_stop_all">全部停止</string>
     <string name="download_start_all_reversed">全部開始（倒序）</string>
     <string name="download_sort_by">排序規則</string>
-    <string name="download_sort_default">預設排序</string>
+    <string name="download_sort_added_time_desc">加入時間（遞減）</string>
+    <string name="download_sort_added_time_asc">加入時間（遞增）</string>
+    <string name="download_sort_title_asc">圖庫標題（遞增）</string>
+    <string name="download_sort_title_desc">圖庫標題（遞減）</string>
+    <string name="download_sort_author_asc">圖庫作者（遞增）</string>
+    <string name="download_sort_author_desc">圖庫作者（遞減）</string>
+    <string name="download_sort_name_asc">圖庫名稱（遞增）</string>
+    <string name="download_sort_name_desc">圖庫名稱（遞減）</string>
+    <string name="download_sort_category_asc">圖庫分類（遞增）</string>
+    <string name="download_sort_category_desc">圖庫分類（遞減）</string>
     <string name="download_sort_shuffle">隨機排序</string>
-    <string name="download_sort_title">畫廊標題</string>
-    <string name="download_sort_author">畫廊作者</string>
-    <string name="download_sort_name">畫廊名稱</string>
-    <string name="download_sort_category">畫廊分類</string>
     <string name="download_reset_reading_progress">重置閱讀進度</string>
     <string name="reset_reading_progress_message">重置所有已下載圖庫的閱讀進度？</string>
     <!-- Download Fab Action -->

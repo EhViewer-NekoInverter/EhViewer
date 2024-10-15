@@ -50,4 +50,9 @@
         android:title="@string/download_reset_reading_progress"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/action_open_download_labels"
+        android:title="@string/download_labels"
+        app:showAsAction="never" />
+
 </menu>

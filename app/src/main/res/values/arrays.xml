@@ -277,12 +277,17 @@
     </string-array>
 
     <string-array name="download_sort">
-        <item>@string/download_sort_default</item>
+        <item>@string/download_sort_added_time_desc</item>
+        <item>@string/download_sort_added_time_asc</item>
+        <item>@string/download_sort_title_asc</item>
+        <item>@string/download_sort_title_desc</item>
+        <item>@string/download_sort_author_asc</item>
+        <item>@string/download_sort_author_desc</item>
+        <item>@string/download_sort_name_asc</item>
+        <item>@string/download_sort_name_desc</item>
+        <item>@string/download_sort_category_asc</item>
+        <item>@string/download_sort_category_desc</item>
         <item>@string/download_sort_shuffle</item>
-        <item>@string/download_sort_title</item>
-        <item>@string/download_sort_author</item>
-        <item>@string/download_sort_name</item>
-        <item>@string/download_sort_category</item>
     </string-array>
 
     <string-array name="read_theme_entries">

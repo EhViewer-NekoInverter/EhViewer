@@ -199,7 +199,7 @@ class DownloadsScene :
             mList = list
         }
 
-        if (mSort == 1) {
+        if (mSort == 10) {
             mList = ArrayList(mList!!.shuffled())
         } else {
             mList!!.sortWith { o1, o2 ->
@@ -207,10 +207,15 @@ class DownloadsScene :
                 val title2 = EhUtils.getSuitableTitle(o2)
                 when (mSort) {
                     0 -> o2.time.compareTo(o1.time)
+                    1 -> o1.time.compareTo(o2.time)
                     2 -> title1.compareTo(title2, true)
-                    3 -> getAuthor(title1).compareTo(getAuthor(title2), true)
-                    4 -> getName(title1).compareTo(getName(title2), true)
-                    5 -> o1.category.compareTo(o2.category)
+                    3 -> title2.compareTo(title1, true)
+                    4 -> getAuthor(title1).compareTo(getAuthor(title2), true)
+                    5 -> getAuthor(title2).compareTo(getAuthor(title1), true)
+                    6 -> getName(title1).compareTo(getName(title2), true)
+                    7 -> getName(title2).compareTo(getName(title1), true)
+                    8 -> o1.category.compareTo(o2.category)
+                    9 -> o2.category.compareTo(o1.category)
                     else -> 0
                 }
             }
@@ -373,6 +378,11 @@ class DownloadsScene :
             R.id.action_stop_all -> {
                 // DownloadManager Actions
                 DownloadManager.stopAllDownload()
+                return true
+            }
+
+            R.id.action_open_download_labels -> {
+                openDrawer(GravityCompat.END)
                 return true
             }
 

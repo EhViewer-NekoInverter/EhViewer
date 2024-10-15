@@ -338,12 +338,17 @@
     <string name="download_stop_all">全部停止</string>
     <string name="download_start_all_reversed">全部開始（倒序）</string>
     <string name="download_sort_by">排序規則</string>
-    <string name="download_sort_default">默認排序</string>
+    <string name="download_sort_added_time_desc">新增時間（降序）</string>
+    <string name="download_sort_added_time_asc">新增時間（升序）</string>
+    <string name="download_sort_title_asc">畫廊標題（升序）</string>
+    <string name="download_sort_title_desc">畫廊標題（降序）</string>
+    <string name="download_sort_author_asc">畫廊作者（升序）</string>
+    <string name="download_sort_author_desc">畫廊作者（降序）</string>
+    <string name="download_sort_name_asc">畫廊名稱（升序）</string>
+    <string name="download_sort_name_desc">畫廊名稱（降序）</string>
+    <string name="download_sort_category_asc">畫廊分類（升序）</string>
+    <string name="download_sort_category_desc">畫廊分類（降序）</string>
     <string name="download_sort_shuffle">隨機排序</string>
-    <string name="download_sort_title">畫廊標題</string>
-    <string name="download_sort_author">畫廊作者</string>
-    <string name="download_sort_name">畫廊名稱</string>
-    <string name="download_sort_category">畫廊分類</string>
     <string name="download_reset_reading_progress">重置閲讀進度</string>
     <string name="reset_reading_progress_message">重置所有已下載畫廊的閲讀進度？</string>
     <!-- Download Fab Action -->
