@@ -97,6 +97,7 @@ import com.hippo.ehviewer.client.parser.ArchiveParser
 import com.hippo.ehviewer.client.parser.HomeParser
 import com.hippo.ehviewer.client.parser.RateGalleryParser
 import com.hippo.ehviewer.client.parser.TorrentParser
+import com.hippo.ehviewer.coil.DownloadThumbInterceptor.THUMB_FILE
 import com.hippo.ehviewer.dao.DownloadInfo
 import com.hippo.ehviewer.dao.Filter
 import com.hippo.ehviewer.download.DownloadManager.DownloadInfoListener
@@ -1031,13 +1032,11 @@ class GalleryDetailScene :
         if (null == context || null == activity) {
             return
         }
+        if (v == mTip && request()) {
+            adjustViewVisibility(STATE_REFRESH, true)
+        }
         val galleryDetail = mGalleryDetail ?: return
         when (v) {
-            mTip -> {
-                if (request()) {
-                    adjustViewVisibility(STATE_REFRESH, true)
-                }
-            }
             mBackAction -> {
                 onBackPressed()
             }
@@ -1753,29 +1752,29 @@ class GalleryDetailScene :
                 .show()
             var success = false
             lifecycleScope.launchIO {
-                EhEngine.getGalleryDiff(result, from)?. let { diff ->
+                EhEngine.getGalleryDiff(result, from)?.let { diff ->
                     // Delete exist files
                     val dirname = FileUtils.sanitizeFilename("${result.gid}-${EhUtils.getSuitableTitle(result)}")
                     EhDownloadManager.putDownloadDirname(result.gid, dirname)
-                    SpiderDen.getGalleryDownloadDir(result.gid)?.takeIf { it.isDirectory }?.let { runCatching { it.delete() } }
+                    launchIO { SpiderDen.getGalleryDownloadDir(result.gid)?.delete() }
                     // Rename directory
                     val dir = SpiderDen.getGalleryDownloadDir(from.gid)?.takeIf { it.isDirectory }
                     if (dir != null && dir.renameTo(dirname)) {
                         // Delete old gallery
                         val label = EhDownloadManager.getDownloadInfo(from.gid)?.label
-                        withUIContext {
-                            EhDownloadManager.deleteDownload(from.gid)
-                        }
+                        EhDownloadManager.deleteDownload(from.gid)
                         EhDownloadManager.removeDownloadDirname(from.gid)
                         // Delete old files
-                        dir.findFile(".thumb")?.delete()
-                        dir.findFile(SpiderQueen.SPIDER_INFO_FILENAME)?.delete()
+                        launchIO {
+                            dir.findFile(THUMB_FILE)?.delete()
+                            dir.findFile(SpiderQueen.SPIDER_INFO_FILENAME)?.delete()
+                        }
                         // Rename images
                         val renames: MutableList<String> = ArrayList()
                         (if (diff.isNotEmpty() && diff[0].first == 0) diff.reversed() else diff).forEach {
                             SpiderDen.findImageFile(dir, it.first).first?.let { fromFile ->
                                 if (it.second == -1) {
-                                    fromFile.delete()
+                                    launchIO { fromFile.delete() }
                                 } else {
                                     val extension = fromFile.name.let { name -> FileUtils.getExtensionFromFilename(name) }
                                     var toFileName = SpiderDen.perFilename(it.second, ".$extension")
@@ -1783,12 +1782,12 @@ class GalleryDetailScene :
                                         toFileName += ".bak"
                                         renames.add(toFileName)
                                     }
-                                    fromFile.renameTo(toFileName)
+                                    launchIO { fromFile.renameTo(toFileName) }
                                 }
                             }
                         }
                         renames.forEach {
-                            dir.findFile(it)?.renameTo(it.replace(".bak", ""))
+                            launchIO { dir.findFile(it)?.renameTo(it.replace(".bak", "")) }
                         }
                         // Start download
                         val intent = Intent(activity, DownloadService::class.java)

@@ -27,7 +27,7 @@ import com.hippo.unifile.UniFile
 import com.hippo.util.sendTo
 
 object DownloadThumbInterceptor : Interceptor {
-    private const val THUMB_FILE = ".thumb"
+    const val THUMB_FILE = ".thumb"
     override suspend fun intercept(chain: Interceptor.Chain): ImageResult {
         val magicOrUrl = chain.request.data as? String
         if (magicOrUrl != null) {
