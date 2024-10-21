@@ -1,7 +1,7 @@
 [versions]
-agp = "8.7.0"
+agp = "8.7.1"
 android-tools-r8 = "8.7.14"
-androidx-activity = "1.9.2"
+androidx-activity = "1.9.3"
 androidx-appcompat = "1.7.0"
 androidx-biometric = "1.4.0-alpha02"
 androidx-browser = "1.8.0"
