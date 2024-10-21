@@ -752,7 +752,7 @@ class GalleryDetailScene :
         }
         if (ACTION_GALLERY_INFO == mAction && mGalleryInfo != null) {
             val gi: GalleryInfo = mGalleryInfo!!
-            mThumb!!.load(EhCacheKeyFactory.getThumbKey(gi.gid), gi.thumb!!, hardware = false)
+            mThumb!!.load(EhCacheKeyFactory.getThumbKey(gi.gid), EhUtils.fixThumbUrl(gi.thumb!!), hardware = false)
             mTitle!!.text = EhUtils.getSuitableTitle(gi)
             mUploader!!.text = gi.uploader
             mUploader!!.alpha = if (gi.disowned) .5f else 1f
@@ -804,7 +804,7 @@ class GalleryDetailScene :
             return
         }
         val resources = resources
-        mThumb!!.load(EhCacheKeyFactory.getThumbKey(gd.gid), gd.thumb!!, false, hardware = false)
+        mThumb!!.load(EhCacheKeyFactory.getThumbKey(gd.gid), EhUtils.fixThumbUrl(gd.thumb!!), false, hardware = false)
         mTitle!!.text = EhUtils.getSuitableTitle(gd)
         mUploader!!.text = gd.uploader
         mUploader!!.alpha = if (gd.disowned) .5f else 1f

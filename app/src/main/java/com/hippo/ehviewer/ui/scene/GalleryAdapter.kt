@@ -33,7 +33,6 @@ import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.client.EhCacheKeyFactory
 import com.hippo.ehviewer.client.EhUtils
 import com.hippo.ehviewer.client.data.GalleryInfo
-import com.hippo.ehviewer.dao.LocalFavoriteInfo
 import com.hippo.ehviewer.widget.TileThumb
 import com.hippo.widget.recyclerview.AutoStaggeredGridLayoutManager
 import com.hippo.yorozuya.ViewUtils
@@ -189,9 +188,7 @@ internal abstract class GalleryAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: GalleryHolder, position: Int) {
         val gi = getDataAt(position) ?: return
-        if (gi is LocalFavoriteInfo) {
-            gi.thumb = EhUtils.fixThumbUrl(gi.thumb!!)
-        }
+        gi.thumb = EhUtils.fixThumbUrl(gi.thumb!!)
         when (mType) {
             TYPE_LIST -> {
                 holder.thumb.load(EhCacheKeyFactory.getThumbKey(gi.gid), gi.thumb!!, hardware = false)
