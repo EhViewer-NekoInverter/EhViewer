@@ -50,6 +50,7 @@ object EhUrl {
     const val URL_PREFIX_THUMB_E = "https://ehgt.org/"
     const val URL_PREFIX_THUMB_EX = "https://s.exhentai.org/t/"
     const val URL_PREFIX_THUMB_EX_OLD = "https://exhentai.org/t/"
+    const val URL_SIGNATURE_THUMB_NORMAL = ".hath.network/cm/"
     const val REFERER_E = "https://$DOMAIN_E"
     private const val REFERER_EX = "https://$DOMAIN_EX"
     private const val ORIGIN_E = REFERER_E

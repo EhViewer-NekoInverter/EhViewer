@@ -178,6 +178,7 @@ dependencies {
 
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.serialization.cbor)
+    implementation(libs.ktor.utils)
     implementation(libs.jsoup)
 }
 
