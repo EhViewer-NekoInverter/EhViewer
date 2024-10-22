@@ -76,8 +76,7 @@ class MyTagsFragment : BaseFragment() {
         cookieManager.removeSessionCookies(null)
 
         // Copy cookies from okhttp cookie store to CookieManager
-        val store = EhCookieStore
-        for (cookie in store.getCookies(url.toHttpUrl())) {
+        for (cookie in EhCookieStore.getCookies(url.toHttpUrl())) {
             cookieManager.setCookie(url, cookie.toString())
         }
     }
@@ -89,7 +88,7 @@ class MyTagsFragment : BaseFragment() {
     private inner class MyTagsWebViewClient : WebViewClient() {
         override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
             // Never load other urls
-            return request.url.toString() != this@MyTagsFragment.url
+            return !request.url.toString().startsWith(this@MyTagsFragment.url)
         }
 
         override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
