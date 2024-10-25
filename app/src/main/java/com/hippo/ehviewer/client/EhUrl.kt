@@ -164,7 +164,7 @@ object EhUrl {
         return host + "gallerypopups.php?gid=" + gid + "&t=" + token + "&act=addfav"
     }
 
-    fun getDownloadArchive(gid: Long, token: String?, or: String): String {
+    fun getDownloadArchive(gid: Long, token: String?, or: String?): String {
         return host + "archiver.php?gid=" + gid + "&token=" + token + "&or=" + or
     }
 

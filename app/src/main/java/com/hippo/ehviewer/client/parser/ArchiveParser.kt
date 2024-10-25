@@ -32,8 +32,7 @@ object ArchiveParser {
         "You do not have enough funds to download this archive."
 
     fun parse(body: String): Result {
-        val m = PATTERN_HATH_FORM.find(body)!!
-        val paramOr = m.groupValues[1]
+        val paramOr = PATTERN_HATH_FORM.find(body)?.groupValues[1]
         val archiveList = ArrayList<Archive>()
         Jsoup.parse(body).select("#db>div>div").forEach { element ->
             if (element.childrenSize() > 0 && !element.attr("style").contains("color:#CCCCCC")) {

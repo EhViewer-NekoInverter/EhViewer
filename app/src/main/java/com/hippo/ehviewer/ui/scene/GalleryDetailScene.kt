@@ -1970,7 +1970,7 @@ class GalleryDetailScene :
                 request.setArgs(
                     mGalleryDetail!!.gid,
                     mGalleryDetail!!.token!!,
-                    mArchiveFormParamOr!!,
+                    mArchiveFormParamOr,
                     res,
                     isHAtH,
                 )

@@ -472,9 +472,6 @@ object EhEngine {
         res: String?,
         isHAtH: Boolean,
     ): String? {
-        if (or.isNullOrEmpty()) {
-            throw EhException("Invalid form param or: $or")
-        }
         if (res.isNullOrEmpty()) {
             throw EhException("Invalid res: $res")
         }
