@@ -67,13 +67,11 @@ object GalleryDetailParser {
     private val PATTERN_PREVIEW_PAGES =
         Regex("<td[^>]+><a[^>]+>([\\d,]+)</a></td><td[^>]+>(?:<a[^>]+>)?&gt;(?:</a>)?</td>")
     private val PATTERN_NORMAL_PREVIEW =
-        Regex("<div class=\"gdtm\"[^<>]*><div[^<>]*width:(\\d+)[^<>]*height:(\\d+)[^<>]*\\((.+?)\\)[^<>]*-(\\d+)px[^<>]*><a[^<>]*href=\"(.+?)\"[^<>]*><img alt=\"([\\d,]+)\"")
+        Regex("<div class=\"gdtm\"[^>]*><div[^>]*width:(\\d+)[^>]*height:(\\d+)[^>]*\\(([^)]+)\\)[^>]*-(\\d+)px[^>]*><a[^>]*href=\"([^\"]+)\"[^>]*><img alt=\"([\\d,]+)\"")
     private val PATTERN_NORMAL_PREVIEW_NEW =
-        Regex("<a href=\"(.+?)\"><div[^<>]*title=\"Page (\\d+):[^<>]*width:(\\d+)[^<>]*height:(\\d+)[^<>]*\\((.+?)\\)[^<>]*-(\\d+)px[^<>]*>")
+        Regex("<a href=\"([^\"]+)\"><div[^>]*title=\"Page (\\d+):[^>]*width:(\\d+)[^>]*height:(\\d+)[^>]*\\(([^)]+)\\)[^>]*-(\\d+)px[^>]*>")
     private val PATTERN_LARGE_PREVIEW =
-        Regex("<div class=\"gdtl\".+?<a href=\"(.+?)\"><img alt=\"([\\d,]+)\".+?src=\"(.+?)\"")
-    private val PATTERN_LARGE_PREVIEW_NEW =
-        Regex("<a href=\"(.+?)\"><div[^<>]*title=\"Page (\\d+):[^<>]*\\((.+?)\\)[^<>]*0 0[^<>]*>")
+        Regex("<a href=\"([^\"]+)\"><[^>]*title=\"Page (\\d+):[^>]*(?:url\\(|src=\")([^)\"]+)[)\"]")
     private val PATTERN_NEWER_DATE = Regex(", added (.+?)<br />")
     private val PATTERN_FAVORITE_SLOT =
         Regex("/fav.png\\); background-position:0px -(\\d+)px")
@@ -509,13 +507,7 @@ object GalleryDetailParser {
 
     @JvmStatic
     @Throws(ParseException::class)
-    fun parsePreviewSet(body: String): PreviewSet {
-        return try {
-            parseLargePreviewSet(body)
-        } catch (_: ParseException) {
-            parseNormalPreviewSet(body)
-        }
-    }
+    fun parsePreviewSet(body: String): PreviewSet = runCatching { parseNormalPreviewSet(body) }.getOrElse { parseLargePreviewSet(body) }
 
     /**
      * Parse large previews with regular expressions
@@ -523,10 +515,7 @@ object GalleryDetailParser {
     @Throws(ParseException::class)
     private fun parseLargePreviewSet(body: String): LargePreviewSet {
         val largePreviewSet = LargePreviewSet()
-        (
-            PATTERN_LARGE_PREVIEW.findAll(body).takeIf { it.count() > 0 }
-                ?: PATTERN_LARGE_PREVIEW_NEW.findAll(body)
-            ).forEach {
+        PATTERN_LARGE_PREVIEW.findAll(body).forEach {
             val index = (it.groupValues[2].toIntOrNull() ?: return@forEach) - 1
             val imageUrl = it.groupValues[3].trim()
             val pageUrl = it.groupValues[1].trim()
