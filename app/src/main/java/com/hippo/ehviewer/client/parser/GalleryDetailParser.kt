@@ -69,9 +69,9 @@ object GalleryDetailParser {
     private val PATTERN_NORMAL_PREVIEW =
         Regex("<div class=\"gdtm\"[^>]*><div[^>]*width:(\\d+)[^>]*height:(\\d+)[^>]*\\(([^)]+)\\)[^>]*-(\\d+)px[^>]*><a[^>]*href=\"([^\"]+)\"[^>]*><img alt=\"([\\d,]+)\"")
     private val PATTERN_NORMAL_PREVIEW_NEW =
-        Regex("<a href=\"([^\"]+)\"><div[^>]*title=\"Page (\\d+):[^>]*width:(\\d+)[^>]*height:(\\d+)[^>]*\\(([^)]+)\\)[^>]*-(\\d+)px[^>]*>")
+        Regex("<a href=\"([^\"]+)\">(?:<div>)?<div[^>]*title=\"Page (\\d+):[^>]*width:(\\d+)[^>]*height:(\\d+)[^>]*\\(([^)]+)\\)[^>]*-(\\d+)px[^>]*>")
     private val PATTERN_LARGE_PREVIEW =
-        Regex("<a href=\"([^\"]+)\"><[^>]*title=\"Page (\\d+):[^>]*(?:url\\(|src=\")([^)\"]+)[)\"]")
+        Regex("<a href=\"([^\"]+)\">(?:<div>)?<[^>]*title=\"Page (\\d+):[^>]*(?:url\\(|src=\")([^)\"]+)[)\"]")
     private val PATTERN_NEWER_DATE = Regex(", added (.+?)<br />")
     private val PATTERN_FAVORITE_SLOT =
         Regex("/fav.png\\); background-position:0px -(\\d+)px")
