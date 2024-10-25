@@ -20,6 +20,7 @@ import com.hippo.ehviewer.EhDB
 import com.hippo.ehviewer.client.EhUtils
 import com.hippo.ehviewer.client.data.BaseGalleryInfo
 import com.hippo.ehviewer.client.data.GalleryInfo
+import com.hippo.ehviewer.client.exception.EhException
 import com.hippo.ehviewer.client.exception.ParseException
 import com.hippo.util.ExceptionUtils
 import com.hippo.util.JsoupUtils
@@ -109,7 +110,7 @@ object GalleryListParser {
             }
             var child: Element = glname
             var children = glname.children()
-            while (children.size != 0) {
+            while (children.isNotEmpty()) {
                 child = children[0]
                 children = child.children()
             }
@@ -121,7 +122,7 @@ object GalleryListParser {
 
         // Tags
         val gts = e.select(".gt, .gtl")
-        if (gts.size != 0) {
+        if (gts.isNotEmpty()) {
             val tags = ArrayList<String>()
             for (gt in gts) {
                 tags.add(gt.attr("title"))
@@ -284,7 +285,12 @@ object GalleryListParser {
             ExceptionUtils.throwIfFatal(e)
             result.noWatchedTags = body.contains("<p>You do not have any watched tags")
             if (body.contains("No hits found</p>")) {
-                return result
+                val warn = d.getElementsByClass("searchwarn").text()
+                if (warn.isNullOrEmpty()) {
+                    return result
+                } else {
+                    throw EhException(warn)
+                }
             }
         }
         try { // For toplists
