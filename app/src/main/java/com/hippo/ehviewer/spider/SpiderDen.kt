@@ -45,7 +45,7 @@ import kotlin.io.path.readText
 import com.hippo.ehviewer.EhApplication.Companion.imageCache as sCache
 
 class SpiderDen(private val mGalleryInfo: GalleryInfo) {
-    private val fileHashRegex = Regex("/([0-9a-f]{40})(?:-\\d+){3}-\\w+")
+    private val fileHashRegex = Regex("/h/([0-9a-f]{40})")
     private val safeDirnameRegex = Regex("[^\\p{L}\\p{M}\\p{N}\\p{P}\\p{Z}\\p{Cf}\\p{Cs}\\s]")
     private val mGid = mGalleryInfo.gid
     var downloadDir: UniFile? = null
@@ -200,9 +200,11 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
                         }
                     }
                 }
-                val expected = fileHashRegex.findAll(url).last().groupValues[1]
-                val actual = outFile.sha1()
-                check(expected == actual) { "File hash mismatch: expected $expected, but got $actual\nURL: $url" }
+                fileHashRegex.find(url)?.let {
+                    val expected = it.groupValues[1]
+                    val actual = outFile.sha1()
+                    check(expected == actual) { "File hash mismatch: expected $expected, but got $actual\nURL: $url" }
+                }
                 if (extension.lowercase() == "gif") {
                     outFile.openFileDescriptor("rw").use {
                         rewriteGifSource2(it.fd)
