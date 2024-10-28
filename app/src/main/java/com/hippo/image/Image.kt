@@ -127,30 +127,24 @@ class Image private constructor(
         }
 
     companion object {
-        fun calculateSampleSize(info: ImageInfo, targetHeight: Int, targetWeight: Int): Int {
-            return min(
-                info.size.width / targetWeight,
-                info.size.height / targetHeight,
-            ).coerceAtLeast(1)
-        }
+        fun calculateSampleSize(info: ImageInfo, targetHeight: Int, targetWeight: Int): Int = min(
+            info.size.width / targetWeight,
+            info.size.height / targetHeight,
+        ).coerceAtLeast(1)
 
         val screenWidth = EhApplication.application.resources.displayMetrics.widthPixels
         val screenHeight = EhApplication.application.resources.displayMetrics.heightPixels
 
         @JvmStatic
-        fun decode(src: CloseableSource): Image? {
-            return runCatching {
-                Image(src)
-            }.onFailure {
-                src.close()
-                it.printStackTrace()
-            }.getOrNull()
-        }
+        fun decode(src: CloseableSource): Image? = runCatching {
+            Image(src)
+        }.onFailure {
+            src.close()
+            it.printStackTrace()
+        }.getOrNull()
 
         @JvmStatic
-        fun create(bitmap: Bitmap): Image {
-            return Image(drawable = bitmap.toDrawable(Resources.getSystem()))
-        }
+        fun create(bitmap: Bitmap): Image = Image(drawable = bitmap.toDrawable(Resources.getSystem()))
     }
 
     interface CloseableSource : AutoCloseable {

@@ -22,15 +22,13 @@ import com.hippo.util.JsoupUtils
 import org.jsoup.Jsoup
 
 object GalleryNotAvailableParser {
-    fun parse(body: String): String? {
-        return runCatching {
-            val document = Jsoup.parse(body)
-            val d = JsoupUtils.getElementByClass(document, "d")
-            d!!.child(0).html().replace("<br>", "\n")
-        }.getOrElse {
-            ExceptionUtils.throwIfFatal(it)
-            it.printStackTrace()
-            null
-        }
+    fun parse(body: String): String? = runCatching {
+        val document = Jsoup.parse(body)
+        val d = JsoupUtils.getElementByClass(document, "d")
+        d!!.child(0).html().replace("<br>", "\n")
+    }.getOrElse {
+        ExceptionUtils.throwIfFatal(it)
+        it.printStackTrace()
+        null
     }
 }

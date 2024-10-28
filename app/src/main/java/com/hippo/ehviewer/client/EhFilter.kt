@@ -157,9 +157,7 @@ object EhFilter {
     }
 
     @Synchronized
-    fun needTags(): Boolean {
-        return mTagFilterList.isNotEmpty() || mTagNamespaceFilterList.isNotEmpty()
-    }
+    fun needTags(): Boolean = mTagFilterList.isNotEmpty() || mTagNamespaceFilterList.isNotEmpty()
 
     @Synchronized
     fun filterTitle(info: GalleryInfo?): Boolean {
@@ -174,7 +172,8 @@ object EhFilter {
             var i = 0
             val n = filters.size
             while (i < n) {
-                if (filters[i].enable!! && title.lowercase(Locale.getDefault()).contains(
+                if (filters[i].enable!! &&
+                    title.lowercase(Locale.getDefault()).contains(
                         filters[i].text!!,
                     )
                 ) {
@@ -232,7 +231,8 @@ object EhFilter {
             filterNamespace = filter.substring(0, index)
             filterName = filter.substring(index + 1)
         }
-        return if (null != tagNamespace && null != filterNamespace &&
+        return if (null != tagNamespace &&
+            null != filterNamespace &&
             tagNamespace != filterNamespace
         ) {
             false

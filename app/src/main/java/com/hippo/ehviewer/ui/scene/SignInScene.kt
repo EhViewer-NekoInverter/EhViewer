@@ -43,7 +43,10 @@ import com.hippo.yorozuya.ViewUtils
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class SignInScene : SolidScene(), OnEditorActionListener, View.OnClickListener {
+class SignInScene :
+    SolidScene(),
+    OnEditorActionListener,
+    View.OnClickListener {
     private var mProgress: View? = null
     private var mUsernameLayout: TextInputLayout? = null
     private var mPasswordLayout: TextInputLayout? = null
@@ -56,9 +59,7 @@ class SignInScene : SolidScene(), OnEditorActionListener, View.OnClickListener {
     private var mSkipSigningIn: TextView? = null
     private var mSignInJob: Job? = null
 
-    override fun needShowLeftDrawer(): Boolean {
-        return false
-    }
+    override fun needShowLeftDrawer(): Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -168,8 +169,10 @@ class SignInScene : SolidScene(), OnEditorActionListener, View.OnClickListener {
 
     private fun signIn() {
         if (mSignInJob?.isActive == true ||
-            mUsername == null || mPassword == null ||
-            mUsernameLayout == null || mPasswordLayout == null
+            mUsername == null ||
+            mPassword == null ||
+            mUsernameLayout == null ||
+            mPasswordLayout == null
         ) {
             return
         }
@@ -189,9 +192,8 @@ class SignInScene : SolidScene(), OnEditorActionListener, View.OnClickListener {
         }
         hideSoftInput()
         showProgress()
-        // Clean up for sign in
-        EhUtils.signOut()
         mSignInJob = viewLifecycleOwner.lifecycleScope.launchIO {
+            EhUtils.signOut()
             runCatching {
                 EhEngine.signIn(username, password)
             }.onFailure {

@@ -105,13 +105,9 @@ abstract class BaseScene : SceneFragment() {
         }
     }
 
-    open fun needShowLeftDrawer(): Boolean {
-        return true
-    }
+    open fun needShowLeftDrawer(): Boolean = true
 
-    open fun getNavCheckedItem(): Int {
-        return 0
-    }
+    open fun getNavCheckedItem(): Int = 0
 
     /**
      * @param resId 0 for clear
@@ -150,9 +146,7 @@ abstract class BaseScene : SceneFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
-        return null
-    }
+    ): View? = null
 
     fun destroyDrawerView() {
         if (drawerView != null) {

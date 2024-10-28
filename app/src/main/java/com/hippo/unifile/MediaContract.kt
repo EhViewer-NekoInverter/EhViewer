@@ -20,19 +20,11 @@ import android.net.Uri
 import android.provider.MediaStore
 
 internal object MediaContract {
-    fun getName(context: Context, self: Uri): String? {
-        return Contracts.queryForString(context, self, MediaStore.MediaColumns.DISPLAY_NAME, null)
-    }
+    fun getName(context: Context, self: Uri): String? = Contracts.queryForString(context, self, MediaStore.MediaColumns.DISPLAY_NAME, null)
 
-    fun getType(context: Context, self: Uri): String? {
-        return Contracts.queryForString(context, self, MediaStore.MediaColumns.MIME_TYPE, null)
-    }
+    fun getType(context: Context, self: Uri): String? = Contracts.queryForString(context, self, MediaStore.MediaColumns.MIME_TYPE, null)
 
-    fun lastModified(context: Context, self: Uri): Long {
-        return Contracts.queryForLong(context, self, MediaStore.MediaColumns.DATE_MODIFIED, 0)
-    }
+    fun lastModified(context: Context, self: Uri): Long = Contracts.queryForLong(context, self, MediaStore.MediaColumns.DATE_MODIFIED, 0)
 
-    fun length(context: Context, self: Uri): Long {
-        return Contracts.queryForLong(context, self, MediaStore.MediaColumns.SIZE, 0)
-    }
+    fun length(context: Context, self: Uri): Long = Contracts.queryForLong(context, self, MediaStore.MediaColumns.SIZE, 0)
 }

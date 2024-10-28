@@ -124,15 +124,13 @@ private fun rethrowExactly(code: Int, body: String, e: Throwable) {
     throw e
 }
 
-private suspend inline fun <T> Request.Builder.executeAndParsingWith(block: String.() -> T): T {
-    return okHttpClient.newCall(this.build()).executeAsync().use { response ->
-        val body = response.body.string()
-        runCatching {
-            block(body)
-        }.onFailure {
-            rethrowExactly(response.code, body, it)
-        }.getOrThrow()
-    }
+private suspend inline fun <T> Request.Builder.executeAndParsingWith(block: String.() -> T): T = okHttpClient.newCall(this.build()).executeAsync().use { response ->
+    val body = response.body.string()
+    runCatching {
+        block(body)
+    }.onFailure {
+        rethrowExactly(response.code, body, it)
+    }.getOrThrow()
 }
 
 object EhEngine {
@@ -187,8 +185,7 @@ object EhEngine {
                 hasRated = true
             }
         }
-        val needApi = filter && sEhFilter.needTags() && !hasTags ||
-            Settings.showGalleryPages && !hasPages || hasRated
+        val needApi = filter && sEhFilter.needTags() && !hasTags || Settings.showGalleryPages && !hasPages || hasRated
         if (needApi) {
             fillGalleryListByApi(list, url)
         }
@@ -197,8 +194,7 @@ object EhEngine {
         if (filter) {
             // Thumbnail mode need filter uploader again
             list.removeAll {
-                !sEhFilter.filterUploader(it) || !sEhFilter.filterTag(it) ||
-                    !sEhFilter.filterTagNamespace(it)
+                !sEhFilter.filterUploader(it) || !sEhFilter.filterTag(it) || !sEhFilter.filterTagNamespace(it)
             }
         }
     }
@@ -737,20 +733,18 @@ object EhEngine {
     suspend fun getGalleryDiff(
         to: GalleryInfo,
         from: GalleryInfo,
-    ): List<Pair<Int, Int>>? {
-        return runCatching {
-            val toSha1 = getGallerySha1(to.gid, to.token).toMutableList()
-            val info: MutableList<Pair<Int, Int>> = ArrayList()
-            getGallerySha1(from.gid, from.token).forEachIndexed { index, value ->
-                val idx = toSha1.indexOf(value)
-                // Avoid duplicate files
-                if (idx != -1) toSha1[idx] = ""
-                if (idx != index) info.add(Pair(index, idx))
-            }
-            info
-        }.getOrElse {
-            it.printStackTrace()
-            null
+    ): List<Pair<Int, Int>>? = runCatching {
+        val toSha1 = getGallerySha1(to.gid, to.token).toMutableList()
+        val info: MutableList<Pair<Int, Int>> = ArrayList()
+        getGallerySha1(from.gid, from.token).forEachIndexed { index, value ->
+            val idx = toSha1.indexOf(value)
+            // Avoid duplicate files
+            if (idx != -1) toSha1[idx] = ""
+            if (idx != index) info.add(Pair(index, idx))
         }
+        info
+    }.getOrElse {
+        it.printStackTrace()
+        null
     }
 }

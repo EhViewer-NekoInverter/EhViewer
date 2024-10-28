@@ -96,7 +96,10 @@ import com.hippo.yorozuya.collect.IntList
 import rikka.core.res.resolveColor
 import kotlin.math.hypot
 
-class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshListener {
+class GalleryCommentsScene :
+    ToolbarScene(),
+    View.OnClickListener,
+    OnRefreshListener {
     private var mGalleryDetail: GalleryDetail? = null
     private var mRecyclerView: EasyRecyclerView? = null
     private var mFabLayout: FabLayout? = null
@@ -128,8 +131,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
             return
         }
         mGalleryDetail = args.getParcelableCompat(KEY_GALLERY_DETAIL)
-        mShowAllComments =
-            mGalleryDetail != null && mGalleryDetail!!.comments != null && !mGalleryDetail!!.comments!!.hasMore
+        mShowAllComments = mGalleryDetail != null && mGalleryDetail!!.comments != null && !mGalleryDetail!!.comments!!.hasMore
     }
 
     private fun onInit() {
@@ -138,8 +140,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
 
     private fun onRestore(savedInstanceState: Bundle) {
         mGalleryDetail = savedInstanceState.getParcelableCompat(KEY_GALLERY_DETAIL)
-        mShowAllComments =
-            mGalleryDetail != null && mGalleryDetail!!.comments != null && !mGalleryDetail!!.comments!!.hasMore
+        mShowAllComments = mGalleryDetail != null && mGalleryDetail!!.comments != null && !mGalleryDetail!!.comments!!.hasMore
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -212,9 +213,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
                 return true
             }
 
-            override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-                return true
-            }
+            override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean = true
 
             override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
                 item?.let {
@@ -417,18 +416,14 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
         val inflater = LayoutInflater.from(mContext)
         val rv = inflater.inflate(R.layout.dialog_recycler_view, null) as EasyRecyclerView
         rv.adapter = object : RecyclerView.Adapter<InfoHolder>() {
-            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InfoHolder {
-                return InfoHolder(inflater.inflate(R.layout.item_drawer_favorites, parent, false))
-            }
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InfoHolder = InfoHolder(inflater.inflate(R.layout.item_drawer_favorites, parent, false))
 
             override fun onBindViewHolder(holder: InfoHolder, position: Int) {
                 holder.key.text = userArray[position]
                 holder.value.text = voteArray[position]
             }
 
-            override fun getItemCount(): Int {
-                return length
-            }
+            override fun getItemCount(): Int = length
         }
         rv.layoutManager = LinearLayoutManager(mContext)
         val decoration = LinearDividerItemDecoration(
@@ -805,8 +800,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
         }
     }
 
-    private inner class RefreshCommentListener(context: Context) :
-        EhCallback<GalleryCommentsScene?, GalleryDetail>(context) {
+    private inner class RefreshCommentListener(context: Context) : EhCallback<GalleryCommentsScene?, GalleryDetail>(context) {
         override fun onSuccess(result: GalleryDetail) {
             val scene = this@GalleryCommentsScene
             scene.onRefreshGallerySuccess(result.comments)
@@ -820,8 +814,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
         override fun onCancel() {}
     }
 
-    private inner class CommentGalleryListener(context: Context, private val mCommentId: Long) :
-        EhCallback<GalleryCommentsScene?, GalleryCommentList>(context) {
+    private inner class CommentGalleryListener(context: Context, private val mCommentId: Long) : EhCallback<GalleryCommentsScene?, GalleryCommentList>(context) {
         override fun onSuccess(result: GalleryCommentList) {
             showTip(
                 if (mCommentId != 0L) R.string.edit_comment_successfully else R.string.comment_successfully,
@@ -844,8 +837,7 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
         override fun onCancel() {}
     }
 
-    private inner class VoteCommentListener(context: Context) :
-        EhCallback<GalleryCommentsScene?, VoteCommentParser.Result>(context) {
+    private inner class VoteCommentListener(context: Context) : EhCallback<GalleryCommentsScene?, VoteCommentParser.Result>(context) {
         override fun onSuccess(result: VoteCommentParser.Result) {
             showTip(
                 if (result.expectVote > 0) {
@@ -868,24 +860,21 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
         override fun onCancel() {}
     }
 
-    private class InfoHolder(itemView: View?) : RecyclerView.ViewHolder(
-        itemView!!,
-    ) {
+    private class InfoHolder(itemView: View?) :
+        RecyclerView.ViewHolder(
+            itemView!!,
+        ) {
         val key: TextView = ViewUtils.`$$`(itemView, R.id.key) as TextView
         val value: TextView = ViewUtils.`$$`(itemView, R.id.value) as TextView
     }
 
-    private abstract class CommentHolder(inflater: LayoutInflater, resId: Int, parent: ViewGroup?) :
-        RecyclerView.ViewHolder(inflater.inflate(resId, parent, false))
+    private abstract class CommentHolder(inflater: LayoutInflater, resId: Int, parent: ViewGroup?) : RecyclerView.ViewHolder(inflater.inflate(resId, parent, false))
 
-    private class MoreCommentHolder(inflater: LayoutInflater, parent: ViewGroup?) :
-        CommentHolder(inflater, R.layout.item_gallery_comment_more, parent)
+    private class MoreCommentHolder(inflater: LayoutInflater, parent: ViewGroup?) : CommentHolder(inflater, R.layout.item_gallery_comment_more, parent)
 
-    private class ProgressCommentHolder(inflater: LayoutInflater, parent: ViewGroup?) :
-        CommentHolder(inflater, R.layout.item_gallery_comment_progress, parent)
+    private class ProgressCommentHolder(inflater: LayoutInflater, parent: ViewGroup?) : CommentHolder(inflater, R.layout.item_gallery_comment_progress, parent)
 
-    private inner class ActualCommentHolder(inflater: LayoutInflater, parent: ViewGroup?) :
-        CommentHolder(inflater, R.layout.item_gallery_comment, parent) {
+    private inner class ActualCommentHolder(inflater: LayoutInflater, parent: ViewGroup?) : CommentHolder(inflater, R.layout.item_gallery_comment, parent) {
         private val user: TextView = itemView.findViewById(R.id.user)
         private val time: TextView = itemView.findViewById(R.id.time)
         val comment: LinkifyTextView = itemView.findViewById(R.id.comment)
@@ -955,13 +944,11 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
     private inner class CommentAdapter : RecyclerView.Adapter<CommentHolder>() {
         private val mInflater: LayoutInflater = layoutInflater
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentHolder {
-            return when (viewType) {
-                TYPE_COMMENT -> ActualCommentHolder(mInflater, parent)
-                TYPE_MORE -> MoreCommentHolder(mInflater, parent)
-                TYPE_PROGRESS -> ProgressCommentHolder(mInflater, parent)
-                else -> throw IllegalStateException("Invalid view type: $viewType")
-            }
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentHolder = when (viewType) {
+            TYPE_COMMENT -> ActualCommentHolder(mInflater, parent)
+            TYPE_MORE -> MoreCommentHolder(mInflater, parent)
+            TYPE_PROGRESS -> ProgressCommentHolder(mInflater, parent)
+            else -> throw IllegalStateException("Invalid view type: $viewType")
         }
 
         override fun onBindViewHolder(holder: CommentHolder, position: Int) {
@@ -983,22 +970,18 @@ class GalleryCommentsScene : ToolbarScene(), View.OnClickListener, OnRefreshList
             }
         }
 
-        override fun getItemCount(): Int {
-            return if (mGalleryDetail == null || mGalleryDetail!!.comments == null || mGalleryDetail!!.comments!!.comments == null) {
-                0
-            } else if (mGalleryDetail!!.comments!!.hasMore) {
-                mGalleryDetail!!.comments!!.comments!!.size + 1
-            } else {
-                mGalleryDetail!!.comments!!.comments!!.size
-            }
+        override fun getItemCount(): Int = if (mGalleryDetail == null || mGalleryDetail!!.comments == null || mGalleryDetail!!.comments!!.comments == null) {
+            0
+        } else if (mGalleryDetail!!.comments!!.hasMore) {
+            mGalleryDetail!!.comments!!.comments!!.size + 1
+        } else {
+            mGalleryDetail!!.comments!!.comments!!.size
         }
 
-        override fun getItemViewType(position: Int): Int {
-            return if (position >= mGalleryDetail!!.comments!!.comments!!.size) {
-                if (mRefreshingComments) TYPE_PROGRESS else TYPE_MORE
-            } else {
-                TYPE_COMMENT
-            }
+        override fun getItemViewType(position: Int): Int = if (position >= mGalleryDetail!!.comments!!.comments!!.size) {
+            if (mRefreshingComments) TYPE_PROGRESS else TYPE_MORE
+        } else {
+            TYPE_COMMENT
         }
     }
 

@@ -56,8 +56,8 @@ import com.hippo.easyrecyclerview.MarginItemDecoration
 import com.hippo.ehviewer.EhDB
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
-import com.hippo.ehviewer.client.EhCacheKeyFactory
 import com.hippo.ehviewer.client.EhUtils
+import com.hippo.ehviewer.client.getThumbKey
 import com.hippo.ehviewer.dao.DownloadInfo
 import com.hippo.ehviewer.download.DownloadManager
 import com.hippo.ehviewer.download.DownloadManager.DownloadInfoListener
@@ -109,9 +109,7 @@ class DownloadsScene :
     private var mType = -1
     private var mInitPosition = -1
 
-    override fun getNavCheckedItem(): Int {
-        return R.id.nav_downloads
-    }
+    override fun getNavCheckedItem(): Int = R.id.nav_downloads
 
     private fun initLabels() {
         val listLabel = DownloadManager.labelList
@@ -337,9 +335,7 @@ class DownloadsScene :
         toggleDrawer(GravityCompat.START)
     }
 
-    override fun getMenuResId(): Int {
-        return R.menu.scene_download
-    }
+    override fun getMenuResId(): Int = R.menu.scene_download
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
         // Skip when in choice mode
@@ -810,7 +806,8 @@ class DownloadsScene :
     @SuppressLint("ClickableViewAccessibility")
     private inner class DownloadLabelHolder(
         itemView: View,
-    ) : RecyclerView.ViewHolder(itemView), View.OnTouchListener {
+    ) : RecyclerView.ViewHolder(itemView),
+        View.OnTouchListener {
         val label: TextView = ViewUtils.`$$`(itemView, R.id.tv_key) as TextView
         val option: ImageView = ViewUtils.`$$`(itemView, R.id.iv_option) as ImageView
 
@@ -826,8 +823,7 @@ class DownloadsScene :
         }
     }
 
-    private inner class DownloadLabelAdapter(private val mInflater: LayoutInflater) :
-        RecyclerView.Adapter<DownloadLabelHolder>() {
+    private inner class DownloadLabelAdapter(private val mInflater: LayoutInflater) : RecyclerView.Adapter<DownloadLabelHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DownloadLabelHolder {
             val holder = DownloadLabelHolder(mInflater.inflate(R.layout.item_drawer_list, parent, false))
             holder.itemView.setOnClickListener {
@@ -919,13 +915,9 @@ class DownloadsScene :
             }
         }
 
-        override fun getItemId(position: Int): Long {
-            return (if (position < LABEL_OFFSET) position else mLabels[position].hashCode()).toLong()
-        }
+        override fun getItemId(position: Int): Long = (if (position < LABEL_OFFSET) position else mLabels[position].hashCode()).toLong()
 
-        override fun getItemCount(): Int {
-            return mLabels.size
-        }
+        override fun getItemCount(): Int = mLabels.size
     }
 
     private inner class DeleteRangeDialogHelper(
@@ -1072,12 +1064,10 @@ class DownloadsScene :
             mListThumbWidth = mListThumbHeight * 2 / 3
         }
 
-        override fun getItemId(position: Int): Long {
-            return if (mList == null || position < 0 || position >= mList!!.size) {
-                0
-            } else {
-                mList!![position].gid
-            }
+        override fun getItemId(position: Int): Long = if (mList == null || position < 0 || position >= mList!!.size) {
+            0
+        } else {
+            mList!![position].gid
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DownloadHolder {
@@ -1096,7 +1086,7 @@ class DownloadsScene :
             val info = mList!![holder.bindingAdapterPosition]
             info.thumb?.let {
                 holder.thumb.load(
-                    EhCacheKeyFactory.getThumbKey(info.gid),
+                    getThumbKey(info.gid),
                     encodeMagicRequest(info),
                     hardware = false,
                 )
@@ -1156,9 +1146,7 @@ class DownloadsScene :
             }
         }
 
-        override fun getItemCount(): Int {
-            return if (mList == null) 0 else mList!!.size
-        }
+        override fun getItemCount(): Int = if (mList == null) 0 else mList!!.size
     }
 
     private inner class DownloadChoiceListener : CustomChoiceListener {
@@ -1270,9 +1258,7 @@ class DownloadsScene :
             }
         }
 
-        override fun isLongPressDragEnabled(): Boolean {
-            return false
-        }
+        override fun isLongPressDragEnabled(): Boolean = false
 
         override fun onMove(
             recyclerView: RecyclerView,
@@ -1299,16 +1285,12 @@ class DownloadsScene :
         override fun getMovementFlags(
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder,
-        ): Int {
-            return makeMovementFlags(
-                ItemTouchHelper.UP or ItemTouchHelper.DOWN,
-                0,
-            )
-        }
+        ): Int = makeMovementFlags(
+            ItemTouchHelper.UP or ItemTouchHelper.DOWN,
+            0,
+        )
 
-        override fun isLongPressDragEnabled(): Boolean {
-            return false
-        }
+        override fun isLongPressDragEnabled(): Boolean = false
 
         override fun onMove(
             recyclerView: RecyclerView,

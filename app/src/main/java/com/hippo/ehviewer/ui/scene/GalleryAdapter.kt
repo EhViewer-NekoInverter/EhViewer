@@ -30,9 +30,9 @@ import com.hippo.drawable.TriangleDrawable
 import com.hippo.easyrecyclerview.MarginItemDecoration
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
-import com.hippo.ehviewer.client.EhCacheKeyFactory
 import com.hippo.ehviewer.client.EhUtils
 import com.hippo.ehviewer.client.data.GalleryInfo
+import com.hippo.ehviewer.client.getThumbKey
 import com.hippo.ehviewer.widget.TileThumb
 import com.hippo.widget.recyclerview.AutoStaggeredGridLayoutManager
 import com.hippo.yorozuya.ViewUtils
@@ -179,9 +179,7 @@ internal abstract class GalleryAdapter(
 
     abstract fun onItemClick(view: View, position: Int)
     abstract fun onItemLongClick(view: View, position: Int): Boolean
-    override fun getItemViewType(position: Int): Int {
-        return mType
-    }
+    override fun getItemViewType(position: Int): Int = mType
 
     abstract fun getDataAt(position: Int): GalleryInfo?
 
@@ -191,7 +189,7 @@ internal abstract class GalleryAdapter(
         gi.thumb = EhUtils.fixThumbUrl(gi.thumb!!)
         when (mType) {
             TYPE_LIST -> {
-                holder.thumb.load(EhCacheKeyFactory.getThumbKey(gi.gid), gi.thumb!!, hardware = false)
+                holder.thumb.load(getThumbKey(gi.gid), gi.thumb!!, hardware = false)
                 holder.title.text = EhUtils.getSuitableTitle(gi)
                 holder.uploader!!.alpha = if (gi.disowned) .5f else 1f
                 if (TextUtils.isEmpty(gi.uploader)) {
@@ -231,7 +229,7 @@ internal abstract class GalleryAdapter(
             }
             TYPE_GRID -> {
                 (holder.thumb as TileThumb).setThumbSize(gi.thumbWidth, gi.thumbHeight)
-                holder.thumb.load(EhCacheKeyFactory.getThumbKey(gi.gid), gi.thumb!!, hardware = false)
+                holder.thumb.load(getThumbKey(gi.gid), gi.thumb!!, hardware = false)
                 if (Settings.thumbShowTitle) {
                     holder.title.text = EhUtils.getSuitableTitle(gi)
                     holder.title.visibility = View.VISIBLE

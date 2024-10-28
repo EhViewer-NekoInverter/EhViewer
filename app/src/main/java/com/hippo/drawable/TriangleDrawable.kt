@@ -62,7 +62,5 @@ class TriangleDrawable(color: Int) : Drawable() {
         "Deprecated in Java",
         ReplaceWith("PixelFormat.OPAQUE", "android.graphics.PixelFormat"),
     )
-    override fun getOpacity(): Int {
-        return PixelFormat.OPAQUE
-    }
+    override fun getOpacity(): Int = PixelFormat.OPAQUE
 }

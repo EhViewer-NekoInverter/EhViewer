@@ -81,36 +81,26 @@ fun readFromCache(gid: Long): SpiderInfo? {
     }.getOrNull()
 }
 
-fun readCompatFromUniFile(file: UniFile): SpiderInfo? {
-    return runCatching {
-        file.openInputStream().use {
-            cbor.decodeFromByteArray<SpiderInfo>(it.readBytes())
-        }
-    }.getOrNull() ?: runCatching {
-        file.openInputStream().use { readLegacySpiderInfo(it) }
-    }.getOrNull()
-}
+fun readCompatFromUniFile(file: UniFile): SpiderInfo? = runCatching {
+    file.openInputStream().use {
+        cbor.decodeFromByteArray<SpiderInfo>(it.readBytes())
+    }
+}.getOrNull() ?: runCatching {
+    file.openInputStream().use { readLegacySpiderInfo(it) }
+}.getOrNull()
 
 private fun readLegacySpiderInfo(inputStream: InputStream): SpiderInfo? {
     val source = inputStream.source().buffer()
-    fun read(): String {
-        return source.readUtf8LineStrict()
-    }
-    fun readInt(): Int {
-        return read().toInt()
-    }
-    fun readLong(): Long {
-        return read().toLong()
-    }
-    fun getVersion(str: String): Int {
-        return if (str.startsWith(VERSION_STR)) {
-            NumberUtils.parseIntSafely(
-                str.substring(VERSION_STR.length),
-                -1,
-            )
-        } else {
-            1
-        }
+    fun read(): String = source.readUtf8LineStrict()
+    fun readInt(): Int = read().toInt()
+    fun readLong(): Long = read().toLong()
+    fun getVersion(str: String): Int = if (str.startsWith(VERSION_STR)) {
+        NumberUtils.parseIntSafely(
+            str.substring(VERSION_STR.length),
+            -1,
+        )
+    } else {
+        1
     }
     val version = getVersion(read())
     var startPage = 0

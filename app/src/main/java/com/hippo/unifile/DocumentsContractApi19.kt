@@ -22,53 +22,39 @@ import android.net.Uri
 import android.provider.DocumentsContract
 
 internal object DocumentsContractApi19 {
-    fun isDocumentUri(context: Context, self: Uri): Boolean {
-        return DocumentsContract.isDocumentUri(context, self)
-    }
+    fun isDocumentUri(context: Context, self: Uri): Boolean = DocumentsContract.isDocumentUri(context, self)
 
-    fun getName(context: Context, self: Uri): String? {
-        return Contracts.queryForString(
-            context,
-            self,
-            DocumentsContract.Document.COLUMN_DISPLAY_NAME,
-            null,
-        )
-    }
+    fun getName(context: Context, self: Uri): String? = Contracts.queryForString(
+        context,
+        self,
+        DocumentsContract.Document.COLUMN_DISPLAY_NAME,
+        null,
+    )
 
-    private fun getRawType(context: Context, self: Uri): String? {
-        return Contracts.queryForString(
-            context,
-            self,
-            DocumentsContract.Document.COLUMN_MIME_TYPE,
-            null,
-        )
-    }
+    private fun getRawType(context: Context, self: Uri): String? = Contracts.queryForString(
+        context,
+        self,
+        DocumentsContract.Document.COLUMN_MIME_TYPE,
+        null,
+    )
 
-    fun getType(context: Context, self: Uri): String? {
-        return getRawType(context, self).takeUnless { it == DocumentsContract.Document.MIME_TYPE_DIR }
-    }
+    fun getType(context: Context, self: Uri): String? = getRawType(context, self).takeUnless { it == DocumentsContract.Document.MIME_TYPE_DIR }
 
-    fun isDirectory(context: Context, self: Uri): Boolean {
-        return DocumentsContract.Document.MIME_TYPE_DIR == getRawType(context, self)
-    }
+    fun isDirectory(context: Context, self: Uri): Boolean = DocumentsContract.Document.MIME_TYPE_DIR == getRawType(context, self)
 
     fun isFile(context: Context, self: Uri): Boolean {
         val type = getRawType(context, self)
         return !(DocumentsContract.Document.MIME_TYPE_DIR == type || type.isNullOrEmpty())
     }
 
-    fun lastModified(context: Context, self: Uri): Long {
-        return Contracts.queryForLong(
-            context,
-            self,
-            DocumentsContract.Document.COLUMN_LAST_MODIFIED,
-            -1L,
-        )
-    }
+    fun lastModified(context: Context, self: Uri): Long = Contracts.queryForLong(
+        context,
+        self,
+        DocumentsContract.Document.COLUMN_LAST_MODIFIED,
+        -1L,
+    )
 
-    fun length(context: Context, self: Uri): Long {
-        return Contracts.queryForLong(context, self, DocumentsContract.Document.COLUMN_SIZE, -1L)
-    }
+    fun length(context: Context, self: Uri): Long = Contracts.queryForLong(context, self, DocumentsContract.Document.COLUMN_SIZE, -1L)
 
     fun canRead(context: Context, self: Uri): Boolean {
         // Ignore if grant doesn't allow read
@@ -112,27 +98,23 @@ internal object DocumentsContractApi19 {
         }
     }
 
-    fun delete(context: Context, self: Uri): Boolean {
-        return try {
-            DocumentsContract.deleteDocument(context.contentResolver, self)
-        } catch (e: Throwable) {
-            Utils.throwIfFatal(e)
-            false
-        }
+    fun delete(context: Context, self: Uri): Boolean = try {
+        DocumentsContract.deleteDocument(context.contentResolver, self)
+    } catch (e: Throwable) {
+        Utils.throwIfFatal(e)
+        false
     }
 
-    fun exists(context: Context, self: Uri): Boolean {
-        return runCatching {
-            context.contentResolver.query(
-                self,
-                arrayOf(DocumentsContract.Document.COLUMN_DOCUMENT_ID),
-                null,
-                null,
-                null,
-            ).use { null != it && it.count > 0 }
-        }.getOrElse {
-            Utils.throwIfFatal(it)
-            false
-        }
+    fun exists(context: Context, self: Uri): Boolean = runCatching {
+        context.contentResolver.query(
+            self,
+            arrayOf(DocumentsContract.Document.COLUMN_DOCUMENT_ID),
+            null,
+            null,
+            null,
+        ).use { null != it && it.count > 0 }
+    }.getOrElse {
+        Utils.throwIfFatal(it)
+        false
     }
 }

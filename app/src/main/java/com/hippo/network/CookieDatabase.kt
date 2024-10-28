@@ -106,9 +106,7 @@ internal class CookieDatabase(context: Context, name: String) {
         }
     }
 
-    private fun findCookieWithOkHttpCookies(cookie: OkHttpCookie): Cookie? {
-        return cookiesList.find { it.name == cookie.name && it.domain == cookie.domain && it.value == cookie.value }
-    }
+    private fun findCookieWithOkHttpCookies(cookie: OkHttpCookie): Cookie? = cookiesList.find { it.name == cookie.name && it.domain == cookie.domain && it.value == cookie.value }
 
     fun add(cookie: OkHttpCookie) {
         val c = cookie.toCookie()
@@ -136,20 +134,16 @@ internal class CookieDatabase(context: Context, name: String) {
     }
 }
 
-fun Cookie.toOkHttp3Cookie(): OkHttpCookie {
-    return OkHttpCookie.Builder().apply {
-        name(name)
-        value(value)
-        expiresAt(expiresAt)
-        if (hostOnly) hostOnlyDomain(domain) else domain(domain)
-        path(path)
-        if (secure) secure()
-        if (httpOnly) httpOnly()
-    }.build()
-}
+fun Cookie.toOkHttp3Cookie(): OkHttpCookie = OkHttpCookie.Builder().apply {
+    name(name)
+    value(value)
+    expiresAt(expiresAt)
+    if (hostOnly) hostOnlyDomain(domain) else domain(domain)
+    path(path)
+    if (secure) secure()
+    if (httpOnly) httpOnly()
+}.build()
 
-private fun OkHttpCookie.toCookie(id: Long? = null): Cookie {
-    return Cookie(
-        name, value, expiresAt, domain, path, secure, httpOnly, persistent, hostOnly, id,
-    )
-}
+private fun OkHttpCookie.toCookie(id: Long? = null): Cookie = Cookie(
+    name, value, expiresAt, domain, path, secure, httpOnly, persistent, hostOnly, id,
+)

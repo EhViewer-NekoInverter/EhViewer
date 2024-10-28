@@ -33,7 +33,8 @@ class FabLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
-) : ViewGroup(context, attrs, defStyleAttr), View.OnClickListener {
+) : ViewGroup(context, attrs, defStyleAttr),
+    View.OnClickListener {
     private var mFabSize = 0
     private var mFabMiniSize = 0
     private var mIntervalPrimary = 0
@@ -67,12 +68,10 @@ class FabLayout @JvmOverloads constructor(
     private val secondaryFabCount: Int
         get() = 0.coerceAtLeast(childCount - 1)
 
-    fun getSecondaryFabAt(index: Int): FloatingActionButton? {
-        return if (index < 0 || index >= secondaryFabCount) {
-            null
-        } else {
-            getChildAt(index) as FloatingActionButton
-        }
+    fun getSecondaryFabAt(index: Int): FloatingActionButton? = if (index < 0 || index >= secondaryFabCount) {
+        null
+    } else {
+        getChildAt(index) as FloatingActionButton
     }
 
     fun setSecondaryFabVisibilityAt(index: Int, visible: Boolean) {

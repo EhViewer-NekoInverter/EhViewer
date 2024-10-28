@@ -37,9 +37,7 @@ import rikka.layoutinflater.view.LayoutInflaterFactory
 
 abstract class EhActivity : AppCompatActivity() {
     @StyleRes
-    fun getThemeStyleRes(): Int {
-        return if (Settings.blackDarkTheme && (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES > 0)) R.style.ThemeOverlay_Black else R.style.ThemeOverlay
-    }
+    fun getThemeStyleRes(): Int = if (Settings.blackDarkTheme && (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES > 0)) R.style.ThemeOverlay_Black else R.style.ThemeOverlay
 
     override fun onApplyThemeResource(theme: Theme, resid: Int, first: Boolean) {
         theme.applyStyle(resid, true)

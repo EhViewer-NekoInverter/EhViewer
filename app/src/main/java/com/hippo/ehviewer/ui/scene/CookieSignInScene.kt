@@ -44,7 +44,10 @@ import kotlinx.coroutines.Job
 import okhttp3.Cookie
 import java.util.Locale
 
-class CookieSignInScene : SolidScene(), OnEditorActionListener, View.OnClickListener {
+class CookieSignInScene :
+    SolidScene(),
+    OnEditorActionListener,
+    View.OnClickListener {
     private var mProgress: View? = null
     private var mIpbMemberIdLayout: TextInputLayout? = null
     private var mIpbPassHashLayout: TextInputLayout? = null
@@ -56,9 +59,7 @@ class CookieSignInScene : SolidScene(), OnEditorActionListener, View.OnClickList
     private var mFromClipboard: TextView? = null
     private var mSignInJob: Job? = null
 
-    override fun needShowLeftDrawer(): Boolean {
-        return false
-    }
+    override fun needShowLeftDrawer(): Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -127,9 +128,12 @@ class CookieSignInScene : SolidScene(), OnEditorActionListener, View.OnClickList
 
     fun enter() {
         if (mSignInJob?.isActive == true ||
-            null == mIpbMemberIdLayout || null == mIpbPassHashLayout ||
-            null == mIgneousLayout || null == mIpbMemberId ||
-            null == mIpbPassHash || null == mIgneous
+            null == mIpbMemberIdLayout ||
+            null == mIpbPassHashLayout ||
+            null == mIgneousLayout ||
+            null == mIpbMemberId ||
+            null == mIpbPassHash ||
+            null == mIgneous
         ) {
             return
         }
@@ -151,6 +155,7 @@ class CookieSignInScene : SolidScene(), OnEditorActionListener, View.OnClickList
         hideSoftInput()
         showProgress()
         mSignInJob = viewLifecycleOwner.lifecycleScope.launchIO {
+            EhUtils.signOut()
             runCatching {
                 storeCookie(ipbMemberId, ipbPassHash, igneous)
                 EhEngine.getProfile().run {
@@ -172,7 +177,6 @@ class CookieSignInScene : SolidScene(), OnEditorActionListener, View.OnClickList
     }
 
     private fun showResultErrorDialog(e: Throwable) {
-        EhCookieStore.clear()
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.sign_in_failed)
             .setMessage("${ExceptionUtils.getReadableString(e)}\n\n${getString(R.string.wrong_cookie_warning)}")
@@ -181,7 +185,6 @@ class CookieSignInScene : SolidScene(), OnEditorActionListener, View.OnClickList
     }
 
     private suspend fun storeCookie(id: String, hash: String, igneous: String) {
-        EhUtils.signOut()
         EhCookieStore.addCookie(newCookie(EhCookieStore.KEY_IPB_MEMBER_ID, id, EhUrl.DOMAIN_E))
         EhCookieStore.addCookie(newCookie(EhCookieStore.KEY_IPB_MEMBER_ID, id, EhUrl.DOMAIN_EX))
         EhCookieStore.addCookie(newCookie(EhCookieStore.KEY_IPB_PASS_HASH, hash, EhUrl.DOMAIN_E))
@@ -208,7 +211,8 @@ class CookieSignInScene : SolidScene(), OnEditorActionListener, View.OnClickList
                 showTip(R.string.from_clipboard_error, LENGTH_SHORT)
                 return
             }
-            if (kvs.size >= 2 && text.contains(EhCookieStore.KEY_IPB_MEMBER_ID) &&
+            if (kvs.size >= 2 &&
+                text.contains(EhCookieStore.KEY_IPB_MEMBER_ID) &&
                 text.contains(EhCookieStore.KEY_IPB_PASS_HASH)
             ) {
                 for (s in kvs) {
@@ -240,9 +244,7 @@ class CookieSignInScene : SolidScene(), OnEditorActionListener, View.OnClickList
     }
 
     companion object {
-        private fun newCookie(name: String, value: String, domain: String): Cookie {
-            return Cookie.Builder().name(name).value(value)
-                .domain(domain).expiresAt(Long.MAX_VALUE).build()
-        }
+        private fun newCookie(name: String, value: String, domain: String): Cookie = Cookie.Builder().name(name).value(value)
+            .domain(domain).expiresAt(Long.MAX_VALUE).build()
     }
 }

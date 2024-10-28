@@ -43,7 +43,9 @@ import com.hippo.yorozuya.FileUtils
 import com.hippo.yorozuya.SimpleHandler
 import com.hippo.yorozuya.collect.LongList
 
-class DownloadService : Service(), DownloadManager.DownloadListener {
+class DownloadService :
+    Service(),
+    DownloadManager.DownloadListener {
     private var mNotifyManager: NotificationManagerCompat? = null
     private var mDownloadManager: DownloadManager? = null
     private var mDownloadingBuilder: NotificationCompat.Builder? = null
@@ -147,9 +149,7 @@ class DownloadService : Service(), DownloadManager.DownloadListener {
         checkStopSelf()
     }
 
-    override fun onBind(intent: Intent): IBinder? {
-        throw IllegalStateException("No bindService")
-    }
+    override fun onBind(intent: Intent): IBinder? = throw IllegalStateException("No bindService")
 
     private fun ensureDownloadingBuilder() {
         if (mDownloadingBuilder != null) {

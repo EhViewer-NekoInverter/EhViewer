@@ -24,13 +24,9 @@ import java.io.IOException
 internal class MediaFile(context: Context, override val uri: Uri) : UniFile(null) {
     private val mContext = context.applicationContext
 
-    override fun createFile(displayName: String): UniFile? {
-        return null
-    }
+    override fun createFile(displayName: String): UniFile? = null
 
-    override fun createDirectory(displayName: String): UniFile? {
-        return null
-    }
+    override fun createDirectory(displayName: String): UniFile? = null
 
     override val name: String?
         get() = MediaContract.getName(mContext, uri)
@@ -41,17 +37,11 @@ internal class MediaFile(context: Context, override val uri: Uri) : UniFile(null
     override val isFile: Boolean
         get() = DocumentsContractApi19.isFile(mContext, uri)
 
-    override fun lastModified(): Long {
-        return MediaContract.lastModified(mContext, uri)
-    }
+    override fun lastModified(): Long = MediaContract.lastModified(mContext, uri)
 
-    override fun length(): Long {
-        return MediaContract.length(mContext, uri)
-    }
+    override fun length(): Long = MediaContract.length(mContext, uri)
 
-    override fun canRead(): Boolean {
-        return isFile
-    }
+    override fun canRead(): Boolean = isFile
 
     override fun canWrite(): Boolean {
         try {
@@ -63,52 +53,30 @@ internal class MediaFile(context: Context, override val uri: Uri) : UniFile(null
         return true
     }
 
-    override fun ensureDir(): Boolean {
-        return false
-    }
+    override fun ensureDir(): Boolean = false
 
-    override fun ensureFile(): Boolean {
-        return isFile
-    }
+    override fun ensureFile(): Boolean = isFile
 
-    override fun subFile(displayName: String): UniFile? {
-        return null
-    }
+    override fun subFile(displayName: String): UniFile? = null
 
-    override fun delete(): Boolean {
-        return false
-    }
+    override fun delete(): Boolean = false
 
-    override fun exists(): Boolean {
-        return isFile
-    }
+    override fun exists(): Boolean = isFile
 
-    override fun listFiles(): Array<UniFile>? {
-        return null
-    }
+    override fun listFiles(): Array<UniFile>? = null
 
-    override fun listFiles(filter: FilenameFilter?): Array<UniFile>? {
-        return null
-    }
+    override fun listFiles(filter: FilenameFilter?): Array<UniFile>? = null
 
-    override fun findFile(displayName: String): UniFile? {
-        return null
-    }
+    override fun findFile(displayName: String): UniFile? = null
 
-    override fun renameTo(displayName: String): Boolean {
-        return false
-    }
+    override fun renameTo(displayName: String): Boolean = false
 
     override val imageSource: ImageDecoder.Source
         get() = Contracts.getImageSource(mContext, uri)
 
-    override fun openFileDescriptor(mode: String): ParcelFileDescriptor {
-        return Contracts.openFileDescriptor(mContext, uri, mode)
-    }
+    override fun openFileDescriptor(mode: String): ParcelFileDescriptor = Contracts.openFileDescriptor(mContext, uri, mode)
 
     companion object {
-        fun isMediaUri(context: Context, uri: Uri): Boolean {
-            return null != MediaContract.getName(context, uri)
-        }
+        fun isMediaUri(context: Context, uri: Uri): Boolean = null != MediaContract.getName(context, uri)
     }
 }

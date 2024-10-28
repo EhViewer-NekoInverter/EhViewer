@@ -42,24 +42,20 @@ abstract class WebViewInterceptor(private val context: Context) : Interceptor {
         return intercept(chain, request, response)
     }
 
-    fun parseHeaders(headers: Headers): Map<String, String> {
-        return headers
-            // Keeping unsafe header makes webview throw [net::ERR_INVALID_ARGUMENT]
-            .filter { (name, value) ->
-                isRequestHeaderSafe(name, value)
-            }
-            .groupBy(keySelector = { (name, _) -> name }) { (_, value) -> value }
-            .mapValues { it.value.getOrNull(0).orEmpty() }
-    }
+    fun parseHeaders(headers: Headers): Map<String, String> = headers
+        // Keeping unsafe header makes webview throw [net::ERR_INVALID_ARGUMENT]
+        .filter { (name, value) ->
+            isRequestHeaderSafe(name, value)
+        }
+        .groupBy(keySelector = { (name, _) -> name }) { (_, value) -> value }
+        .mapValues { it.value.getOrNull(0).orEmpty() }
 
     fun CountDownLatch.awaitFor30Seconds() {
         await(30, TimeUnit.SECONDS)
     }
 
-    fun createWebView(): WebView {
-        return WebView(context).apply {
-            setDefaultSettings()
-        }
+    fun createWebView(): WebView = WebView(context).apply {
+        setDefaultSettings()
     }
 }
 

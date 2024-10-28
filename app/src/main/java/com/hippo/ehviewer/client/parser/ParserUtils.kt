@@ -27,19 +27,11 @@ object ParserUtils {
         DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.US).withZone(ZoneOffset.UTC)
 
     @Synchronized
-    fun formatDate(time: Long): String {
-        return formatter.format(Instant.ofEpochMilli(time))
-    }
+    fun formatDate(time: Long): String = formatter.format(Instant.ofEpochMilli(time))
 
-    fun trim(str: String?): String {
-        return str?.let { StringUtils.unescapeXml(it).trim() } ?: ""
-    }
+    fun trim(str: String?): String = str?.let { StringUtils.unescapeXml(it).trim() } ?: ""
 
-    fun parseInt(str: String?, defValue: Int): Int {
-        return NumberUtils.parseIntSafely(trim(str).replace(",", ""), defValue)
-    }
+    fun parseInt(str: String?, defValue: Int): Int = NumberUtils.parseIntSafely(trim(str).replace(",", ""), defValue)
 
-    fun parseLong(str: String?, defValue: Long): Long {
-        return NumberUtils.parseLongSafely(trim(str).replace(",", ""), defValue)
-    }
+    fun parseLong(str: String?, defValue: Long): Long = NumberUtils.parseLongSafely(trim(str).replace(",", ""), defValue)
 }

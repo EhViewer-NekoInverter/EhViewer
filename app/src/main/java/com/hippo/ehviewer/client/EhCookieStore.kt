@@ -167,9 +167,7 @@ object EhCookieStore : CookieJar {
     @Synchronized
     fun clear() {
         map.clear()
-        launchIO {
-            db.clear()
-        }
+        db.clear()
     }
 
     fun newCookie(
@@ -221,9 +219,7 @@ object EhCookieStore : CookieJar {
     /**
      * Returns true if `host` is not a host name and might be an IP address.
      */
-    private fun verifyAsIpAddress(host: String): Boolean {
-        return VERIFY_AS_IP_ADDRESS.matcher(host).matches()
-    }
+    private fun verifyAsIpAddress(host: String): Boolean = VERIFY_AS_IP_ADDRESS.matcher(host).matches()
 
     // okhttp3.Cookie.domainMatch(HttpUrl, String)
     private fun domainMatch(url: HttpUrl, domain: String?): Boolean {
@@ -232,7 +228,8 @@ object EhCookieStore : CookieJar {
             true // As in 'example.com' matching 'example.com'.
         } else {
             urlHost.endsWith(domain!!) &&
-                urlHost[urlHost.length - domain.length - 1] == '.' && !verifyAsIpAddress(
+                urlHost[urlHost.length - domain.length - 1] == '.' &&
+                !verifyAsIpAddress(
                     urlHost,
                 )
         }

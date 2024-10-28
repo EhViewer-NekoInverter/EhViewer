@@ -30,7 +30,9 @@ import com.hippo.widget.lockpattern.LockPatternUtils
 import com.hippo.widget.lockpattern.LockPatternView
 import com.hippo.yorozuya.ViewUtils
 
-class SetSecurityFragment : BaseFragment(), View.OnClickListener {
+class SetSecurityFragment :
+    BaseFragment(),
+    View.OnClickListener {
     private var mPatternView: LockPatternView? = null
     private var mCancel: View? = null
     private var mSet: View? = null
@@ -81,14 +83,13 @@ class SetSecurityFragment : BaseFragment(), View.OnClickListener {
                 Settings.putSecurity(security)
                 Settings.putEnableFingerprint(
                     mFingerprint!!.visibility == View.VISIBLE &&
-                        mFingerprint!!.isChecked && security.isNotEmpty(),
+                        mFingerprint!!.isChecked &&
+                        security.isNotEmpty(),
                 )
             }
             requireActivity().onBackPressed()
         }
     }
 
-    override fun getFragmentTitle(): Int {
-        return R.string.set_pattern_protection
-    }
+    override fun getFragmentTitle(): Int = R.string.set_pattern_protection
 }

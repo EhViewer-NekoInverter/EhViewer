@@ -97,8 +97,10 @@ open class EasyRecyclerView @JvmOverloads constructor(
     override fun setAdapter(adapter: Adapter<*>?) {
         super.setAdapter(adapter)
         mAdapter = adapter
-        if (adapter != null && adapter.hasStableIds() &&
-            mChoiceMode != CHOICE_MODE_NONE && mCheckedIdStates == null
+        if (adapter != null &&
+            adapter.hasStableIds() &&
+            mChoiceMode != CHOICE_MODE_NONE &&
+            mCheckedIdStates == null
         ) {
             mCheckedIdStates = LongSparseArray()
         }
@@ -126,12 +128,10 @@ open class EasyRecyclerView @JvmOverloads constructor(
      * is invalid
      * @see .setChoiceMode
      */
-    private fun isItemChecked(position: Int): Boolean {
-        return if (mChoiceMode != CHOICE_MODE_NONE && mCheckStates != null) {
-            mCheckStates!![position]
-        } else {
-            false
-        }
+    private fun isItemChecked(position: Int): Boolean = if (mChoiceMode != CHOICE_MODE_NONE && mCheckStates != null) {
+        mCheckStates!![position]
+    } else {
+        false
     }
 
     val checkedItemPositions: SparseBooleanArray?
@@ -508,9 +508,7 @@ open class EasyRecyclerView @JvmOverloads constructor(
             }
         }
 
-        override fun describeContents(): Int {
-            return 0
-        }
+        override fun describeContents(): Int = 0
 
         override fun writeToParcel(out: Parcel, flags: Int) {
             out.writeParcelable(superState, flags)
@@ -527,21 +525,15 @@ open class EasyRecyclerView @JvmOverloads constructor(
         }
 
         companion object CREATOR : Parcelable.Creator<SavedState> {
-            override fun createFromParcel(`in`: Parcel): SavedState {
-                return SavedState(`in`)
-            }
+            override fun createFromParcel(`in`: Parcel): SavedState = SavedState(`in`)
 
-            override fun newArray(size: Int): Array<SavedState?> {
-                return arrayOfNulls(size)
-            }
+            override fun newArray(size: Int): Array<SavedState?> = arrayOfNulls(size)
         }
     }
 
     inner class MultiChoiceModeWrapper : MultiChoiceModeListener {
         private val mWrapped: MultiChoiceModeListener? = null
-        fun hasWrappedCallback(): Boolean {
-            return mWrapped != null
-        }
+        fun hasWrappedCallback(): Boolean = mWrapped != null
 
         override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
             if (mWrapped!!.onCreateActionMode(mode, menu)) {
@@ -552,13 +544,9 @@ open class EasyRecyclerView @JvmOverloads constructor(
             return false
         }
 
-        override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
-            return mWrapped!!.onPrepareActionMode(mode, menu)
-        }
+        override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean = mWrapped!!.onPrepareActionMode(mode, menu)
 
-        override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-            return mWrapped!!.onActionItemClicked(mode, item)
-        }
+        override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean = mWrapped!!.onActionItemClicked(mode, item)
 
         override fun onDestroyActionMode(mode: ActionMode) {
             mWrapped!!.onDestroyActionMode(mode)

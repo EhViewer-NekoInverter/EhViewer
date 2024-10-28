@@ -38,13 +38,9 @@ open class BasePreferenceFragment :
     open val fragmentTitle: Int
         get() = -1
 
-    override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {
-        return false
-    }
+    override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean = false
 
-    override fun onPreferenceClick(preference: Preference): Boolean {
-        return false
-    }
+    override fun onPreferenceClick(preference: Preference): Boolean = false
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {}
 

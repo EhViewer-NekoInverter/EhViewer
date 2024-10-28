@@ -23,10 +23,8 @@ class MSQLiteBuilder {
     companion object {
         const val COLUMN_ID = "_id"
         private val JAVA_TYPE_TO_SQLITE_TYPE: MutableMap<Class<*>?, String> = HashMap()
-        private fun javaTypeToSQLiteType(clazz: Class<*>?): String {
-            return JAVA_TYPE_TO_SQLITE_TYPE[clazz]
-                ?: throw IllegalStateException("Unknown type: $clazz")
-        }
+        private fun javaTypeToSQLiteType(clazz: Class<*>?): String = JAVA_TYPE_TO_SQLITE_TYPE[clazz]
+            ?: throw IllegalStateException("Unknown type: $clazz")
 
         init {
             JAVA_TYPE_TO_SQLITE_TYPE[Boolean::class.javaPrimitiveType] =
@@ -73,27 +71,21 @@ class MSQLiteBuilder {
         table: String,
         column: String = COLUMN_ID,
         clazz: Class<*>? = Int::class.javaPrimitiveType,
-    ): MSQLiteBuilder {
-        return statement("CREATE TABLE " + table + " (" + column + " " + javaTypeToSQLiteType(clazz) + " PRIMARY KEY);")
-    }
+    ): MSQLiteBuilder = statement("CREATE TABLE " + table + " (" + column + " " + javaTypeToSQLiteType(clazz) + " PRIMARY KEY);")
 
     /**
      * Drops a table.
      */
-    fun dropTable(table: String): MSQLiteBuilder {
-        return statement("DROP TABLE $table;")
-    }
+    fun dropTable(table: String): MSQLiteBuilder = statement("DROP TABLE $table;")
 
     /**
      * Inserts a column to the table.
      */
-    fun insertColumn(table: String, column: String, clazz: Class<*>?): MSQLiteBuilder {
-        return statement(
-            "ALTER TABLE $table ADD COLUMN $column " + javaTypeToSQLiteType(
-                clazz,
-            ) + ";",
-        )
-    }
+    fun insertColumn(table: String, column: String, clazz: Class<*>?): MSQLiteBuilder = statement(
+        "ALTER TABLE $table ADD COLUMN $column " + javaTypeToSQLiteType(
+            clazz,
+        ) + ";",
+    )
 
     /**
      * Add a statement.
@@ -107,9 +99,7 @@ class MSQLiteBuilder {
     /**
      * Build a SQLiteOpenHelper from it.
      */
-    fun build(context: Context?, name: String?, version: Int): SQLiteOpenHelper {
-        return MSQLiteOpenHelper(context, name, version, this)
-    }
+    fun build(context: Context?, name: String?, version: Int): SQLiteOpenHelper = MSQLiteOpenHelper(context, name, version, this)
 
     fun getStatements(oldVersion: Int, newVersion: Int): List<String> {
         val result: MutableList<String> = ArrayList()

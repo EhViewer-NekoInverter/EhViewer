@@ -114,7 +114,10 @@ import java.util.concurrent.atomic.AtomicReference
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 
-class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Listener {
+class GalleryActivity :
+    EhActivity(),
+    OnSeekBarChangeListener,
+    GalleryView.Listener {
     private val requestStoragePermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission(),
     ) { result ->
@@ -903,7 +906,8 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         if (null == mGalleryProvider) {
             return
         }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && ContextCompat.checkSelfPermission(
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q &&
+            ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
             ) != PackageManager.PERMISSION_GRANTED
@@ -1091,8 +1095,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
     }
 
     @SuppressLint("InflateParams", "UseSwitchCompatOrMaterialCode")
-    private inner class GalleryMenuHelper(context: Context?) :
-        DialogInterface.OnClickListener {
+    private inner class GalleryMenuHelper(context: Context?) : DialogInterface.OnClickListener {
         val view: View = LayoutInflater.from(context).inflate(R.layout.dialog_gallery_menu, null)
         private val mScreenRotation: Spinner = view.findViewById(R.id.screen_rotation)
         private val mReadingDirection: Spinner = view.findViewById(R.id.reading_direction)
@@ -1289,8 +1292,7 @@ class GalleryActivity : EhActivity(), OnSeekBarChangeListener, GalleryView.Liste
         }
     }
 
-    private inner class GalleryAdapter(glRootView: GLRootView, provider: GalleryProvider) :
-        SimpleAdapter(glRootView, provider) {
+    private inner class GalleryAdapter(glRootView: GLRootView, provider: GalleryProvider) : SimpleAdapter(glRootView, provider) {
         override fun onDataChanged() {
             super.onDataChanged()
             if (mGalleryProvider != null) {

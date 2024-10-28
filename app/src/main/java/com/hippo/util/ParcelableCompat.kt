@@ -26,18 +26,10 @@ import androidx.core.content.IntentCompat
 import androidx.core.os.BundleCompat
 import androidx.core.os.ParcelCompat
 
-inline fun <reified T : Parcelable> Bundle.getParcelableCompat(key: String?): T? {
-    return BundleCompat.getParcelable(this, key, T::class.java)
-}
+inline fun <reified T : Parcelable> Bundle.getParcelableCompat(key: String?): T? = BundleCompat.getParcelable(this, key, T::class.java)
 
-inline fun <reified T : Parcelable> Bundle.getSparseParcelableArrayCompat(key: String?): SparseArray<T?>? {
-    return BundleCompat.getSparseParcelableArray(this, key, T::class.java)
-}
+inline fun <reified T : Parcelable> Bundle.getSparseParcelableArrayCompat(key: String?): SparseArray<T?>? = BundleCompat.getSparseParcelableArray(this, key, T::class.java)
 
-inline fun <reified T : Parcelable> Intent.getParcelableExtraCompat(key: String?): T? {
-    return IntentCompat.getParcelableExtra(this, key, T::class.java)
-}
+inline fun <reified T : Parcelable> Intent.getParcelableExtraCompat(key: String?): T? = IntentCompat.getParcelableExtra(this, key, T::class.java)
 
-inline fun <reified T : Parcelable> Parcel.readParcelableCompat(key: ClassLoader?): T? {
-    return ParcelCompat.readParcelable(this, key, T::class.java)
-}
+inline fun <reified T : Parcelable> Parcel.readParcelableCompat(key: ClassLoader?): T? = ParcelCompat.readParcelable(this, key, T::class.java)

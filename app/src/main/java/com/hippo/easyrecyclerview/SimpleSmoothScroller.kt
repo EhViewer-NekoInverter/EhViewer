@@ -20,15 +20,12 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import kotlin.math.abs
 import kotlin.math.ceil
 
-abstract class SimpleSmoothScroller(context: Context, millisecondsPerInch: Float) :
-    LinearSmoothScroller(context) {
+abstract class SimpleSmoothScroller(context: Context, millisecondsPerInch: Float) : LinearSmoothScroller(context) {
     private val mMillisecondsPerPx: Float = millisecondsPerInch / context.resources.displayMetrics.densityDpi
 
-    override fun calculateTimeForScrolling(dx: Int): Int {
-        return if (mMillisecondsPerPx <= 0) {
-            super.calculateTimeForScrolling(dx)
-        } else {
-            ceil(abs(dx.toDouble()) * mMillisecondsPerPx).toInt()
-        }
+    override fun calculateTimeForScrolling(dx: Int): Int = if (mMillisecondsPerPx <= 0) {
+        super.calculateTimeForScrolling(dx)
+    } else {
+        ceil(abs(dx.toDouble()) * mMillisecondsPerPx).toInt()
     }
 }

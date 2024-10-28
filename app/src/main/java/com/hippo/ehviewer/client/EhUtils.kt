@@ -90,33 +90,30 @@ object EhUtils {
     @JvmStatic
     fun getCategory(type: String?): Int {
         for (entry in CATEGORY_STRINGS) {
-            for (str in entry.first)
+            for (str in entry.first) {
                 if (str.equals(type, ignoreCase = true)) {
                     return entry.second
                 }
+            }
         }
         return UNKNOWN
     }
 
-    fun getCategory(type: Int): String {
-        return CATEGORY_VALUES.getOrDefault(type, CATEGORY_VALUES[UNKNOWN]!!)[0]
-    }
+    fun getCategory(type: Int): String = CATEGORY_VALUES.getOrDefault(type, CATEGORY_VALUES[UNKNOWN]!!)[0]
 
-    fun getCategoryColor(category: Int): Int {
-        return when (category) {
-            DOUJINSHI -> BG_COLOR_DOUJINSHI
-            MANGA -> BG_COLOR_MANGA
-            ARTIST_CG -> BG_COLOR_ARTIST_CG
-            GAME_CG -> BG_COLOR_GAME_CG
-            WESTERN -> BG_COLOR_WESTERN
-            NON_H -> BG_COLOR_NON_H
-            IMAGE_SET -> BG_COLOR_IMAGE_SET
-            COSPLAY -> BG_COLOR_COSPLAY
-            ASIAN_PORN -> BG_COLOR_ASIAN_PORN
-            MISC -> BG_COLOR_MISC
-            else -> BG_COLOR_UNKNOWN
-        }.toInt()
-    }
+    fun getCategoryColor(category: Int): Int = when (category) {
+        DOUJINSHI -> BG_COLOR_DOUJINSHI
+        MANGA -> BG_COLOR_MANGA
+        ARTIST_CG -> BG_COLOR_ARTIST_CG
+        GAME_CG -> BG_COLOR_GAME_CG
+        WESTERN -> BG_COLOR_WESTERN
+        NON_H -> BG_COLOR_NON_H
+        IMAGE_SET -> BG_COLOR_IMAGE_SET
+        COSPLAY -> BG_COLOR_COSPLAY
+        ASIAN_PORN -> BG_COLOR_ASIAN_PORN
+        MISC -> BG_COLOR_MISC
+        else -> BG_COLOR_UNKNOWN
+    }.toInt()
 
     fun signOut() {
         EhCookieStore.clear()
@@ -127,18 +124,14 @@ object EhUtils {
         Settings.putSelectSite(true)
     }
 
-    fun needSignedIn(): Boolean {
-        return Settings.needSignIn
-    }
+    fun needSignedIn(): Boolean = Settings.needSignIn
 
     @JvmStatic
-    fun getSuitableTitle(gi: GalleryInfo): String {
-        return if (Settings.showJpnTitle) {
-            if (TextUtils.isEmpty(gi.titleJpn)) gi.title else gi.titleJpn
-        } else {
-            if (TextUtils.isEmpty(gi.title)) gi.titleJpn else gi.title
-        }.orEmpty()
-    }
+    fun getSuitableTitle(gi: GalleryInfo): String = if (Settings.showJpnTitle) {
+        if (TextUtils.isEmpty(gi.titleJpn)) gi.title else gi.titleJpn
+    } else {
+        if (TextUtils.isEmpty(gi.title)) gi.titleJpn else gi.title
+    }.orEmpty()
 
     fun extractTitle(fullTitle: String?): String? {
         var title: String = fullTitle ?: return null
@@ -154,10 +147,8 @@ object EhUtils {
         return title.ifEmpty { null }
     }
 
-    fun fixThumbUrl(url: String): String {
-        return EhUrl.getThumbUrlPrefix() +
-            url.removePrefix(EhUrl.URL_PREFIX_THUMB_E).removePrefix(EhUrl.URL_PREFIX_THUMB_EX_OLD).removePrefix(EhUrl.URL_PREFIX_THUMB_EX)
-    }
+    fun fixThumbUrl(url: String): String = EhUrl.getThumbUrlPrefix() +
+        url.removePrefix(EhUrl.URL_PREFIX_THUMB_E).removePrefix(EhUrl.URL_PREFIX_THUMB_EX_OLD).removePrefix(EhUrl.URL_PREFIX_THUMB_EX)
 
     @JvmStatic
     fun handleThumbUrlResolution(url: String?): String? {

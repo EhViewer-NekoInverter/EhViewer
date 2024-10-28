@@ -56,9 +56,7 @@ class UserAgentPreference(
         summary = mUserAgent
     }
 
-    override fun onCreateDialogView(): View {
-        return view
-    }
+    override fun onCreateDialogView(): View = view
 
     override fun onDialogCreated(dialog: AlertDialog) {
         super.onDialogCreated(dialog)

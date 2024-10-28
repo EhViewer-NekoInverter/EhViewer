@@ -53,7 +53,5 @@ object InetValidator {
     }
 
     @JvmStatic
-    fun isValidInetPort(inetPort: Int): Boolean {
-        return inetPort in 0..65535
-    }
+    fun isValidInetPort(inetPort: Int): Boolean = inetPort in 0..65535
 }

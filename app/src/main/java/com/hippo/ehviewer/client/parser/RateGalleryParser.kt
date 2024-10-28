@@ -20,15 +20,13 @@ import org.json.JSONException
 import org.json.JSONObject
 
 object RateGalleryParser {
-    fun parse(body: String): Result {
-        return try {
-            val jsonObject = JSONObject(body)
-            val rating = jsonObject.getDouble("rating_avg").toFloat()
-            val ratingCount = jsonObject.getInt("rating_cnt")
-            Result(rating, ratingCount)
-        } catch (e: JSONException) {
-            throw ParseException("Can't parse rate gallery", e)
-        }
+    fun parse(body: String): Result = try {
+        val jsonObject = JSONObject(body)
+        val rating = jsonObject.getDouble("rating_avg").toFloat()
+        val ratingCount = jsonObject.getInt("rating_cnt")
+        Result(rating, ratingCount)
+    } catch (e: JSONException) {
+        throw ParseException("Can't parse rate gallery", e)
     }
 
     class Result(val rating: Float, val ratingCount: Int)

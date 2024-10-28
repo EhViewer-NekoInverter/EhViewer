@@ -34,9 +34,7 @@ abstract class ToolbarScene : BaseScene() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
-        return null
-    }
+    ): View? = null
 
     override var needWhiteStatusBar = false
 
@@ -76,13 +74,9 @@ abstract class ToolbarScene : BaseScene() {
         }
     }
 
-    open fun getMenuResId(): Int {
-        return 0
-    }
+    open fun getMenuResId(): Int = 0
 
-    open fun onMenuItemClick(item: MenuItem): Boolean {
-        return false
-    }
+    open fun onMenuItemClick(item: MenuItem): Boolean = false
 
     open fun onNavigationClick() {}
 

@@ -41,7 +41,8 @@ class GalleryDetail(
 
     @IgnoredOnParcel
     var previewSet: PreviewSet? = null,
-) : AbstractGalleryInfo by galleryInfo, GalleryInfo {
+) : AbstractGalleryInfo by galleryInfo,
+    GalleryInfo {
     override fun generateSLang() {
         val index = LANGUAGES.indexOf(language)
         if (index != -1) {

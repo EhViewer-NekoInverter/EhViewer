@@ -69,49 +69,33 @@ internal class RawFile(parent: UniFile?, var mFile: File) : UniFile(parent) {
     override val isFile: Boolean
         get() = mFile.isFile
 
-    override fun lastModified(): Long {
-        return mFile.lastModified()
+    override fun lastModified(): Long = mFile.lastModified()
+
+    override fun length(): Long = mFile.length()
+
+    override fun canRead(): Boolean = mFile.canRead()
+
+    override fun canWrite(): Boolean = mFile.canWrite()
+
+    override fun ensureDir(): Boolean = mFile.isDirectory || mFile.mkdirs()
+
+    override fun ensureFile(): Boolean = if (mFile.exists()) {
+        mFile.isFile
+    } else {
+        runCatching {
+            FileOutputStream(mFile).use {}
+            true
+        }.getOrDefault(false)
     }
 
-    override fun length(): Long {
-        return mFile.length()
-    }
-
-    override fun canRead(): Boolean {
-        return mFile.canRead()
-    }
-
-    override fun canWrite(): Boolean {
-        return mFile.canWrite()
-    }
-
-    override fun ensureDir(): Boolean {
-        return mFile.isDirectory || mFile.mkdirs()
-    }
-
-    override fun ensureFile(): Boolean {
-        return if (mFile.exists()) {
-            mFile.isFile
-        } else {
-            runCatching {
-                FileOutputStream(mFile).use {}
-                true
-            }.getOrDefault(false)
-        }
-    }
-
-    override fun subFile(displayName: String): UniFile {
-        return RawFile(this, File(mFile, displayName))
-    }
+    override fun subFile(displayName: String): UniFile = RawFile(this, File(mFile, displayName))
 
     override fun delete(): Boolean {
         deleteContents(mFile)
         return mFile.delete()
     }
 
-    override fun exists(): Boolean {
-        return mFile.exists()
-    }
+    override fun exists(): Boolean = mFile.exists()
 
     override fun listFiles(): Array<UniFile>? {
         val files = mFile.listFiles() ?: return null

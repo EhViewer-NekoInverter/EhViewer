@@ -21,8 +21,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 class IntList @JvmOverloads constructor(
     private val delegate: MutableList<Int> = mutableListOf(),
-) : Parcelable, MutableList<Int> by delegate {
-    fun getInternalArray(): IntArray {
-        return delegate.toIntArray()
-    }
+) : Parcelable,
+    MutableList<Int> by delegate {
+    fun getInternalArray(): IntArray = delegate.toIntArray()
 }

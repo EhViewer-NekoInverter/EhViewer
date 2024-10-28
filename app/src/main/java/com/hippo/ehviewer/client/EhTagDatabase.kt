@@ -58,15 +58,11 @@ object EhTagDatabase {
     private val dataUrl = urls?.get(3)!!
     private val updateLock = Mutex()
 
-    fun isInitialized(): Boolean {
-        return this::tagGroups.isInitialized
-    }
+    fun isInitialized(): Boolean = this::tagGroups.isInitialized
 
-    private fun JSONObject.toTagGroups(): TagGroups =
-        keys().asSequence().associateWith { getJSONObject(it).toTagGroup() }
+    private fun JSONObject.toTagGroups(): TagGroups = keys().asSequence().associateWith { getJSONObject(it).toTagGroup() }
 
-    private fun JSONObject.toTagGroup(): TagGroup =
-        keys().asSequence().associateWith { getString(it) }
+    private fun JSONObject.toTagGroup(): TagGroup = keys().asSequence().associateWith { getString(it) }
 
     private fun updateData(source: BufferedSource) {
         try {
@@ -76,9 +72,7 @@ object EhTagDatabase {
         }
     }
 
-    fun getTranslation(prefix: String? = NAMESPACE_PREFIX, tag: String?): String? {
-        return tagGroups[prefix]?.get(tag)?.trim()?.takeIf { it.isNotEmpty() }
-    }
+    fun getTranslation(prefix: String? = NAMESPACE_PREFIX, tag: String?): String? = tagGroups[prefix]?.get(tag)?.trim()?.takeIf { it.isNotEmpty() }
 
     private fun internalSuggestFlow(
         tags: Map<String, String>,
@@ -104,7 +98,8 @@ object EhTagDatabase {
             TYPE_START -> {
                 if (translate) {
                     tags.forEach { (tag, hint) ->
-                        if (!tag.equalsIgnoreSpace(keyword) && !hint.equalsIgnoreSpace(keyword) &&
+                        if (!tag.equalsIgnoreSpace(keyword) &&
+                            !hint.equalsIgnoreSpace(keyword) &&
                             (tag.startsWithIgnoreSpace(keyword) || hint.startsWithIgnoreSpace(keyword))
                         ) {
                             emit(Pair(hint, tag))
@@ -122,8 +117,10 @@ object EhTagDatabase {
             TYPE_CONTAIN -> {
                 if (translate) {
                     tags.forEach { (tag, hint) ->
-                        if (!tag.equalsIgnoreSpace(keyword) && !hint.equalsIgnoreSpace(keyword) &&
-                            !tag.startsWithIgnoreSpace(keyword) && !hint.startsWithIgnoreSpace(keyword) &&
+                        if (!tag.equalsIgnoreSpace(keyword) &&
+                            !hint.equalsIgnoreSpace(keyword) &&
+                            !tag.startsWithIgnoreSpace(keyword) &&
+                            !hint.startsWithIgnoreSpace(keyword) &&
                             (tag.containsIgnoreSpace(keyword) || hint.containsIgnoreSpace(keyword))
                         ) {
                             emit(Pair(hint, tag))
@@ -131,7 +128,8 @@ object EhTagDatabase {
                     }
                 } else {
                     tags.keys.forEach { tag ->
-                        if (!tag.equalsIgnoreSpace(keyword) && !tag.startsWithIgnoreSpace(keyword) &&
+                        if (!tag.equalsIgnoreSpace(keyword) &&
+                            !tag.startsWithIgnoreSpace(keyword) &&
                             tag.containsIgnoreSpace(keyword)
                         ) {
                             emit(Pair(null, tag))
@@ -165,14 +163,11 @@ object EhTagDatabase {
 
     private fun String.removeSpace(): String = replace(" ", "")
 
-    private fun String.containsIgnoreSpace(other: String, ignoreCase: Boolean = true): Boolean =
-        removeSpace().contains(other.removeSpace(), ignoreCase)
+    private fun String.containsIgnoreSpace(other: String, ignoreCase: Boolean = true): Boolean = removeSpace().contains(other.removeSpace(), ignoreCase)
 
-    private fun String.equalsIgnoreSpace(other: String, ignoreCase: Boolean = true): Boolean =
-        removeSpace().equals(other.removeSpace(), ignoreCase)
+    private fun String.equalsIgnoreSpace(other: String, ignoreCase: Boolean = true): Boolean = removeSpace().equals(other.removeSpace(), ignoreCase)
 
-    private fun String.startsWithIgnoreSpace(other: String, ignoreCase: Boolean = true): Boolean =
-        removeSpace().startsWith(other.removeSpace(), ignoreCase)
+    private fun String.startsWithIgnoreSpace(other: String, ignoreCase: Boolean = true): Boolean = removeSpace().startsWith(other.removeSpace(), ignoreCase)
 
     private val NAMESPACE_TO_PREFIX = HashMap<String, String>().also {
         it["artist"] = "a"
@@ -189,28 +184,18 @@ object EhTagDatabase {
     }
 
     @JvmStatic
-    fun namespaceToPrefix(namespace: String): String? {
-        return NAMESPACE_TO_PREFIX[namespace]
-    }
+    fun namespaceToPrefix(namespace: String): String? = NAMESPACE_TO_PREFIX[namespace]
 
-    private fun getMetadata(context: Context): Array<String>? {
-        return context.resources.getStringArray(R.array.tag_translation_metadata)
-            .takeIf { it.size == 4 }
-    }
+    private fun getMetadata(context: Context): Array<String>? = context.resources.getStringArray(R.array.tag_translation_metadata)
+        .takeIf { it.size == 4 }
 
-    fun isTranslatable(context: Context): Boolean {
-        return context.resources.getBoolean(R.bool.tag_translatable)
-    }
+    fun isTranslatable(context: Context): Boolean = context.resources.getBoolean(R.bool.tag_translatable)
 
-    private fun getFileContent(file: File): String? {
-        return runCatching {
-            file.source().buffer().use { it.readString(StandardCharsets.UTF_8) }
-        }.getOrNull()
-    }
+    private fun getFileContent(file: File): String? = runCatching {
+        file.source().buffer().use { it.readString(StandardCharsets.UTF_8) }
+    }.getOrNull()
 
-    private fun checkData(sha1: String?, data: File): Boolean {
-        return sha1 != null && sha1 == UniFile.fromFile(data)?.sha1()
-    }
+    private fun checkData(sha1: String?, data: File): Boolean = sha1 != null && sha1 == UniFile.fromFile(data)?.sha1()
 
     private suspend fun save(url: String, file: File): Boolean {
         val request: Request = Request.Builder().url(url).build()

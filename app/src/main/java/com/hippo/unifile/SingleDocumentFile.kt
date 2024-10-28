@@ -20,17 +20,12 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.ParcelFileDescriptor
 
-internal class SingleDocumentFile(parent: UniFile?, context: Context, override val uri: Uri) :
-    UniFile(parent) {
+internal class SingleDocumentFile(parent: UniFile?, context: Context, override val uri: Uri) : UniFile(parent) {
     private val mContext = context.applicationContext
 
-    override fun createFile(displayName: String): UniFile? {
-        return null
-    }
+    override fun createFile(displayName: String): UniFile? = null
 
-    override fun createDirectory(displayName: String): UniFile? {
-        return null
-    }
+    override fun createDirectory(displayName: String): UniFile? = null
 
     override val name: String?
         get() = DocumentsContractApi19.getName(mContext, uri)
@@ -41,62 +36,34 @@ internal class SingleDocumentFile(parent: UniFile?, context: Context, override v
     override val isFile: Boolean
         get() = DocumentsContractApi19.isFile(mContext, uri)
 
-    override fun lastModified(): Long {
-        return DocumentsContractApi19.lastModified(mContext, uri)
-    }
+    override fun lastModified(): Long = DocumentsContractApi19.lastModified(mContext, uri)
 
-    override fun length(): Long {
-        return DocumentsContractApi19.length(mContext, uri)
-    }
+    override fun length(): Long = DocumentsContractApi19.length(mContext, uri)
 
-    override fun canRead(): Boolean {
-        return DocumentsContractApi19.canRead(mContext, uri)
-    }
+    override fun canRead(): Boolean = DocumentsContractApi19.canRead(mContext, uri)
 
-    override fun canWrite(): Boolean {
-        return DocumentsContractApi19.canWrite(mContext, uri)
-    }
+    override fun canWrite(): Boolean = DocumentsContractApi19.canWrite(mContext, uri)
 
-    override fun ensureDir(): Boolean {
-        return isDirectory
-    }
+    override fun ensureDir(): Boolean = isDirectory
 
-    override fun ensureFile(): Boolean {
-        return isFile
-    }
+    override fun ensureFile(): Boolean = isFile
 
-    override fun subFile(displayName: String): UniFile? {
-        return null
-    }
+    override fun subFile(displayName: String): UniFile? = null
 
-    override fun delete(): Boolean {
-        return DocumentsContractApi19.delete(mContext, uri)
-    }
+    override fun delete(): Boolean = DocumentsContractApi19.delete(mContext, uri)
 
-    override fun exists(): Boolean {
-        return DocumentsContractApi19.exists(mContext, uri)
-    }
+    override fun exists(): Boolean = DocumentsContractApi19.exists(mContext, uri)
 
-    override fun listFiles(): Array<UniFile>? {
-        return null
-    }
+    override fun listFiles(): Array<UniFile>? = null
 
-    override fun listFiles(filter: FilenameFilter?): Array<UniFile>? {
-        return null
-    }
+    override fun listFiles(filter: FilenameFilter?): Array<UniFile>? = null
 
-    override fun findFile(displayName: String): UniFile? {
-        return null
-    }
+    override fun findFile(displayName: String): UniFile? = null
 
-    override fun renameTo(displayName: String): Boolean {
-        return false
-    }
+    override fun renameTo(displayName: String): Boolean = false
 
     override val imageSource: ImageDecoder.Source
         get() = Contracts.getImageSource(mContext, uri)
 
-    override fun openFileDescriptor(mode: String): ParcelFileDescriptor {
-        return Contracts.openFileDescriptor(mContext, uri, mode)
-    }
+    override fun openFileDescriptor(mode: String): ParcelFileDescriptor = Contracts.openFileDescriptor(mContext, uri, mode)
 }

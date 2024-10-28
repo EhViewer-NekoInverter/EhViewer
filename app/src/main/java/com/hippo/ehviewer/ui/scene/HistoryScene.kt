@@ -48,9 +48,9 @@ import com.hippo.ehviewer.EhDB
 import com.hippo.ehviewer.FavouriteStatusRouter
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
-import com.hippo.ehviewer.client.EhCacheKeyFactory
 import com.hippo.ehviewer.client.EhUtils
 import com.hippo.ehviewer.client.data.GalleryInfo
+import com.hippo.ehviewer.client.getThumbKey
 import com.hippo.ehviewer.dao.DownloadInfo
 import com.hippo.ehviewer.dao.HistoryInfo
 import com.hippo.ehviewer.download.DownloadManager
@@ -75,13 +75,9 @@ class HistoryScene : ToolbarScene() {
     private var mRecyclerView: EasyRecyclerView? = null
     private val mAdapter: HistoryAdapter by lazy {
         HistoryAdapter(object : DiffUtil.ItemCallback<HistoryInfo>() {
-            override fun areItemsTheSame(oldItem: HistoryInfo, newItem: HistoryInfo): Boolean {
-                return oldItem.gid == newItem.gid
-            }
+            override fun areItemsTheSame(oldItem: HistoryInfo, newItem: HistoryInfo): Boolean = oldItem.gid == newItem.gid
 
-            override fun areContentsTheSame(oldItem: HistoryInfo, newItem: HistoryInfo): Boolean {
-                return oldItem.gid == newItem.gid
-            }
+            override fun areContentsTheSame(oldItem: HistoryInfo, newItem: HistoryInfo): Boolean = oldItem.gid == newItem.gid
         })
     }
     private val mDownloadManager = DownloadManager
@@ -122,9 +118,7 @@ class HistoryScene : ToolbarScene() {
         mFavouriteStatusRouter.removeListener(mFavouriteStatusRouterListener)
     }
 
-    override fun getNavCheckedItem(): Int {
-        return R.id.nav_history
-    }
+    override fun getNavCheckedItem(): Int = R.id.nav_history
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -206,9 +200,7 @@ class HistoryScene : ToolbarScene() {
         toggleDrawer(GravityCompat.START)
     }
 
-    override fun getMenuResId(): Int {
-        return R.menu.scene_history
-    }
+    override fun getMenuResId(): Int = R.menu.scene_history
 
     private fun showClearAllDialog() {
         AlertDialog.Builder(requireContext())
@@ -374,8 +366,7 @@ class HistoryScene : ToolbarScene() {
         return true
     }
 
-    private class AddToFavoriteListener(context: Context) :
-        EhCallback<GalleryListScene?, Unit>(context) {
+    private class AddToFavoriteListener(context: Context) : EhCallback<GalleryListScene?, Unit>(context) {
         override fun onSuccess(result: Unit) {
             showTip(R.string.add_to_favorite_success, LENGTH_SHORT)
         }
@@ -387,8 +378,7 @@ class HistoryScene : ToolbarScene() {
         override fun onCancel() {}
     }
 
-    private class RemoveFromFavoriteListener(context: Context) :
-        EhCallback<GalleryListScene?, Unit>(context) {
+    private class RemoveFromFavoriteListener(context: Context) : EhCallback<GalleryListScene?, Unit>(context) {
         override fun onSuccess(result: Unit) {
             showTip(R.string.remove_from_favorite_success, LENGTH_SHORT)
         }
@@ -426,8 +416,7 @@ class HistoryScene : ToolbarScene() {
         }
     }
 
-    private inner class HistoryAdapter(diffCallback: DiffUtil.ItemCallback<HistoryInfo>) :
-        PagingDataAdapter<HistoryInfo, HistoryHolder>(diffCallback) {
+    private inner class HistoryAdapter(diffCallback: DiffUtil.ItemCallback<HistoryInfo>) : PagingDataAdapter<HistoryInfo, HistoryHolder>(diffCallback) {
         private val mInflater: LayoutInflater = layoutInflater
         private val mListThumbWidth: Int
         private val mListThumbHeight: Int
@@ -454,7 +443,7 @@ class HistoryScene : ToolbarScene() {
             val gi: GalleryInfo? = getItem(position)
             gi ?: return
             gi.thumb?.let {
-                holder.thumb.load(EhCacheKeyFactory.getThumbKey(gi.gid), EhUtils.fixThumbUrl(it), hardware = false)
+                holder.thumb.load(getThumbKey(gi.gid), EhUtils.fixThumbUrl(it), hardware = false)
             }
             holder.title.text = EhUtils.getSuitableTitle(gi)
             holder.uploader.text = gi.uploader
@@ -493,21 +482,15 @@ class HistoryScene : ToolbarScene() {
         override fun getMovementFlags(
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder,
-        ): Int {
-            return makeMovementFlags(0, ItemTouchHelper.LEFT)
-        }
+        ): Int = makeMovementFlags(0, ItemTouchHelper.LEFT)
 
-        override fun getSwipeThreshold(viewHolder: RecyclerView.ViewHolder): Float {
-            return 0.3f
-        }
+        override fun getSwipeThreshold(viewHolder: RecyclerView.ViewHolder): Float = 0.3f
 
         override fun onMove(
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder,
             target: RecyclerView.ViewHolder,
-        ): Boolean {
-            return false
-        }
+        ): Boolean = false
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val mPosition = viewHolder.bindingAdapterPosition

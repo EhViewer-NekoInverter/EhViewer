@@ -23,30 +23,24 @@ internal object DocumentsContractApi21 {
     private const val PATH_DOCUMENT = "document"
     private const val PATH_TREE = "tree"
 
-    fun createFile(context: Context, self: Uri, mimeType: String, displayName: String): Uri? {
-        return try {
-            DocumentsContract.createDocument(
-                context.contentResolver,
-                self,
-                mimeType,
-                displayName,
-            )
-        } catch (e: Throwable) {
-            Utils.throwIfFatal(e)
-            null
-        }
-    }
-
-    fun createDirectory(context: Context, self: Uri, displayName: String): Uri? {
-        return createFile(context, self, DocumentsContract.Document.MIME_TYPE_DIR, displayName)
-    }
-
-    fun prepareTreeUri(treeUri: Uri?): Uri {
-        return DocumentsContract.buildDocumentUriUsingTree(
-            treeUri,
-            DocumentsContract.getTreeDocumentId(treeUri),
+    fun createFile(context: Context, self: Uri, mimeType: String, displayName: String): Uri? = try {
+        DocumentsContract.createDocument(
+            context.contentResolver,
+            self,
+            mimeType,
+            displayName,
         )
+    } catch (e: Throwable) {
+        Utils.throwIfFatal(e)
+        null
     }
+
+    fun createDirectory(context: Context, self: Uri, displayName: String): Uri? = createFile(context, self, DocumentsContract.Document.MIME_TYPE_DIR, displayName)
+
+    fun prepareTreeUri(treeUri: Uri?): Uri = DocumentsContract.buildDocumentUriUsingTree(
+        treeUri,
+        DocumentsContract.getTreeDocumentId(treeUri),
+    )
 
     fun getTreeDocumentPath(documentUri: Uri): String {
         val paths = documentUri.pathSegments
@@ -56,12 +50,10 @@ internal object DocumentsContractApi21 {
         throw IllegalArgumentException("Invalid URI: $documentUri")
     }
 
-    fun buildChildUri(uri: Uri, displayName: String): Uri {
-        return DocumentsContract.buildDocumentUriUsingTree(
-            uri,
-            getTreeDocumentPath(uri) + "/" + displayName,
-        )
-    }
+    fun buildChildUri(uri: Uri, displayName: String): Uri = DocumentsContract.buildDocumentUriUsingTree(
+        uri,
+        getTreeDocumentPath(uri) + "/" + displayName,
+    )
 
     fun listFiles(context: Context, self: Uri): Array<Uri> {
         val childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(
@@ -94,12 +86,10 @@ internal object DocumentsContractApi21 {
         return results.toTypedArray<Uri>()
     }
 
-    fun renameTo(context: Context, self: Uri, displayName: String): Uri? {
-        return try {
-            DocumentsContract.renameDocument(context.contentResolver, self, displayName)
-        } catch (e: Throwable) {
-            Utils.throwIfFatal(e)
-            null
-        }
+    fun renameTo(context: Context, self: Uri, displayName: String): Uri? = try {
+        DocumentsContract.renameDocument(context.contentResolver, self, displayName)
+    } catch (e: Throwable) {
+        Utils.throwIfFatal(e)
+        null
     }
 }

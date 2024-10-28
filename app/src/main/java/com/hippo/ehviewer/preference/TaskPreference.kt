@@ -30,7 +30,8 @@ import kotlinx.coroutines.Job
 abstract class TaskPreference(
     context: Context,
     attrs: AttributeSet? = null,
-) : DialogPreference(context, attrs), CoroutineScope {
+) : DialogPreference(context, attrs),
+    CoroutineScope {
     lateinit var mDialog: AlertDialog
 
     override val coroutineContext = Dispatchers.IO + Job()

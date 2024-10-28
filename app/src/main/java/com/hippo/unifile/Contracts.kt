@@ -27,50 +27,40 @@ internal object Contracts {
         self: Uri,
         column: String,
         defaultValue: String?,
-    ): String? {
-        return runCatching {
-            context.contentResolver.query(self, arrayOf(column), null, null, null).use {
-                if (it != null && it.moveToFirst() && !it.isNull(0)) {
-                    it.getString(0)
-                } else {
-                    defaultValue
-                }
+    ): String? = runCatching {
+        context.contentResolver.query(self, arrayOf(column), null, null, null).use {
+            if (it != null && it.moveToFirst() && !it.isNull(0)) {
+                it.getString(0)
+            } else {
+                defaultValue
             }
-        }.getOrElse {
-            Utils.throwIfFatal(it)
-            defaultValue
         }
+    }.getOrElse {
+        Utils.throwIfFatal(it)
+        defaultValue
     }
 
-    fun queryForInt(context: Context, self: Uri, column: String?, defaultValue: Int): Int {
-        return queryForLong(context, self, column, defaultValue.toLong()).toInt()
-    }
+    fun queryForInt(context: Context, self: Uri, column: String?, defaultValue: Int): Int = queryForLong(context, self, column, defaultValue.toLong()).toInt()
 
-    fun queryForLong(context: Context, self: Uri, column: String?, defaultValue: Long): Long {
-        return runCatching {
-            context.contentResolver.query(self, arrayOf(column), null, null, null).use {
-                if (it != null && it.moveToFirst() && !it.isNull(0)) {
-                    it.getLong(0)
-                } else {
-                    defaultValue
-                }
+    fun queryForLong(context: Context, self: Uri, column: String?, defaultValue: Long): Long = runCatching {
+        context.contentResolver.query(self, arrayOf(column), null, null, null).use {
+            if (it != null && it.moveToFirst() && !it.isNull(0)) {
+                it.getLong(0)
+            } else {
+                defaultValue
             }
-        }.getOrElse {
-            Utils.throwIfFatal(it)
-            defaultValue
         }
+    }.getOrElse {
+        Utils.throwIfFatal(it)
+        defaultValue
     }
 
     fun openFileDescriptor(
         context: Context,
         uri: Uri?,
         mode: String?,
-    ): ParcelFileDescriptor {
-        return context.contentResolver.openFileDescriptor(uri!!, mode!!)
-            ?: throw IOException("Can't open ParcelFileDescriptor")
-    }
+    ): ParcelFileDescriptor = context.contentResolver.openFileDescriptor(uri!!, mode!!)
+        ?: throw IOException("Can't open ParcelFileDescriptor")
 
-    fun getImageSource(context: Context, uri: Uri?): ImageDecoder.Source {
-        return ImageDecoder.createSource(context.contentResolver, uri!!)
-    }
+    fun getImageSource(context: Context, uri: Uri?): ImageDecoder.Source = ImageDecoder.createSource(context.contentResolver, uri!!)
 }

@@ -29,7 +29,8 @@ open class CheckTextView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
-) : AppCompatCheckedTextView(context, attrs, defStyleAttr), View.OnClickListener {
+) : AppCompatCheckedTextView(context, attrs, defStyleAttr),
+    View.OnClickListener {
     private val mSelfBounds = Rect()
     private val mOverlayBounds = Rect()
     private var mForegroundInPadding = true
@@ -65,9 +66,7 @@ open class CheckTextView @JvmOverloads constructor(
      * @return foreground gravity.
      * @see .setForegroundGravity
      */
-    override fun getForegroundGravity(): Int {
-        return mForegroundGravity
-    }
+    override fun getForegroundGravity(): Int = mForegroundGravity
 
     /**
      * Describes how the foreground is positioned. Defaults to START and TOP.
@@ -93,9 +92,7 @@ open class CheckTextView @JvmOverloads constructor(
         }
     }
 
-    override fun verifyDrawable(who: Drawable): Boolean {
-        return super.verifyDrawable(who) || who === mForeground
-    }
+    override fun verifyDrawable(who: Drawable): Boolean = super.verifyDrawable(who) || who === mForeground
 
     override fun jumpDrawablesToCurrentState() {
         super.jumpDrawablesToCurrentState()
@@ -117,9 +114,7 @@ open class CheckTextView @JvmOverloads constructor(
      *
      * @return A Drawable or null if no foreground was set.
      */
-    override fun getForeground(): Drawable {
-        return mForeground!!
-    }
+    override fun getForeground(): Drawable = mForeground!!
 
     /**
      * Supply a Drawable that is to be rendered on top of all of the child

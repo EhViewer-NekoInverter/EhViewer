@@ -36,17 +36,11 @@ class SelectItemWithIconAdapter(
         inflater = LayoutInflater.from(context)
     }
 
-    override fun getCount(): Int {
-        return texts.size
-    }
+    override fun getCount(): Int = texts.size
 
-    override fun getItem(position: Int): Any {
-        return texts[position]
-    }
+    override fun getItem(position: Int): Any = texts[position]
 
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
+    override fun getItemId(position: Int): Long = position.toLong()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val mConvertView = convertView ?: inflater.inflate(R.layout.dialog_item_select_with_icon, parent, false)

@@ -19,10 +19,6 @@ package com.hippo.yorozuya
 
 import org.jsoup.parser.Parser
 
-fun String.unescapeXml(): String {
-    return Parser.unescapeEntities(this, true)
-}
+fun String.unescapeXml(): String = Parser.unescapeEntities(this, true)
 
-inline infix fun <T> CharSequence.trimAnd(block: CharSequence.() -> T): T {
-    return block(trim())
-}
+inline infix fun <T> CharSequence.trimAnd(block: CharSequence.() -> T): T = block(trim())

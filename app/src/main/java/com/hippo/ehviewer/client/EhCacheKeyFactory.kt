@@ -15,24 +15,15 @@
  */
 package com.hippo.ehviewer.client
 
-object EhCacheKeyFactory {
-    fun getThumbKey(gid: Long): String {
-        return "preview:large:$gid:0"
-    }
+private val NormalPreviewKeyRegex = Regex("(/\\d+-\\d+)\\.\\w+$")
 
-    fun getNormalPreviewKey(gid: Long, index: Int): String {
-        return "preview:normal:$gid:$index"
-    }
+fun getThumbKey(gid: Long): String = "preview:large:$gid:0"
 
-    fun getLargePreviewKey(gid: Long, index: Int): String {
-        return "preview:large:$gid:$index"
-    }
+fun getNormalPreviewKey(url: String) = NormalPreviewKeyRegex.find(url)?.groupValues[1] ?: url
 
-    fun getLargePreviewSetKey(gid: Long, index: Int): String {
-        return "large_preview_set:$gid:$index"
-    }
+fun getLargePreviewKey(gid: Long, index: Int) = "preview:large:$gid:$index"
 
-    fun getImageKey(gid: Long, index: Int): String {
-        return "image:$gid:$index"
-    }
-}
+fun getImageKey(gid: Long, index: Int) = "image:$gid:$index"
+
+val String.isNormalPreviewKey
+    get() = startsWith('/')

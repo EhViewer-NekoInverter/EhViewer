@@ -23,7 +23,5 @@ import com.hippo.widget.ObservedTextView
 class URLImageGetter(
     private val mTextView: ObservedTextView,
 ) : ImageGetter {
-    override fun getDrawable(source: String): Drawable {
-        return UnikeryDrawable(mTextView).apply { load(source) }
-    }
+    override fun getDrawable(source: String): Drawable = UnikeryDrawable(mTextView).apply { load(source) }
 }

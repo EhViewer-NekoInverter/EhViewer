@@ -278,13 +278,11 @@ object Settings {
         }
     }
 
-    private fun getBoolean(key: String, defValue: Boolean): Boolean {
-        return try {
-            sSettingsPre.getBoolean(key, defValue)
-        } catch (e: ClassCastException) {
-            Log.d(TAG, "Get ClassCastException when get $key value", e)
-            defValue
-        }
+    private fun getBoolean(key: String, defValue: Boolean): Boolean = try {
+        sSettingsPre.getBoolean(key, defValue)
+    } catch (e: ClassCastException) {
+        Log.d(TAG, "Get ClassCastException when get $key value", e)
+        defValue
     }
 
     private fun putBoolean(key: String, value: Boolean) {
@@ -292,13 +290,11 @@ object Settings {
     }
 
     @JvmStatic
-    fun getInt(key: String, defValue: Int): Int {
-        return try {
-            sSettingsPre.getInt(key, defValue)
-        } catch (e: ClassCastException) {
-            Log.d(TAG, "Get ClassCastException when get $key value", e)
-            defValue
-        }
+    fun getInt(key: String, defValue: Int): Int = try {
+        sSettingsPre.getInt(key, defValue)
+    } catch (e: ClassCastException) {
+        Log.d(TAG, "Get ClassCastException when get $key value", e)
+        defValue
     }
 
     @JvmStatic
@@ -306,35 +302,29 @@ object Settings {
         sSettingsPre.edit().putInt(key, value).apply()
     }
 
-    private fun getLong(key: String, defValue: Long): Long {
-        return try {
-            sSettingsPre.getLong(key, defValue)
-        } catch (e: ClassCastException) {
-            Log.d(TAG, "Get ClassCastException when get $key value", e)
-            defValue
-        }
+    private fun getLong(key: String, defValue: Long): Long = try {
+        sSettingsPre.getLong(key, defValue)
+    } catch (e: ClassCastException) {
+        Log.d(TAG, "Get ClassCastException when get $key value", e)
+        defValue
     }
 
     private fun putLong(key: String, value: Long) {
         sSettingsPre.edit().putLong(key, value).apply()
     }
 
-    private fun getString(key: String, defValue: String?): String? {
-        return try {
-            sSettingsPre.getString(key, defValue)
-        } catch (e: ClassCastException) {
-            Log.d(TAG, "Get ClassCastException when get $key value", e)
-            defValue
-        }
+    private fun getString(key: String, defValue: String?): String? = try {
+        sSettingsPre.getString(key, defValue)
+    } catch (e: ClassCastException) {
+        Log.d(TAG, "Get ClassCastException when get $key value", e)
+        defValue
     }
 
     private fun putString(key: String, value: String?) {
         sSettingsPre.edit().putString(key, value).apply()
     }
 
-    private fun getStringSet(key: String): MutableSet<String>? {
-        return sSettingsPre.getStringSet(key, null)
-    }
+    private fun getStringSet(key: String): MutableSet<String>? = sSettingsPre.getStringSet(key, null)
 
     private fun putStringToStringSet(key: String, value: String) {
         var set = getStringSet(key)
@@ -349,16 +339,14 @@ object Settings {
         sSettingsPre.edit().putStringSet(key, set).apply()
     }
 
-    private fun getIntFromStr(key: String, defValue: Int): Int {
-        return try {
-            NumberUtils.parseIntSafely(
-                sSettingsPre.getString(key, defValue.toString()),
-                defValue,
-            )
-        } catch (e: ClassCastException) {
-            Log.d(TAG, "Get ClassCastException when get $key value", e)
-            defValue
-        }
+    private fun getIntFromStr(key: String, defValue: Int): Int = try {
+        NumberUtils.parseIntSafely(
+            sSettingsPre.getString(key, defValue.toString()),
+            defValue,
+        )
+    } catch (e: ClassCastException) {
+        Log.d(TAG, "Get ClassCastException when get $key value", e)
+        defValue
     }
 
     private fun putIntToStr(key: String, value: Int) {
@@ -609,12 +597,10 @@ object Settings {
     val preloadImage: Int
         get() = getIntFromStr(KEY_PRELOAD_IMAGE, DEFAULT_PRELOAD_IMAGE)
 
-    fun getDownloadOriginImage(mode: Boolean): Boolean {
-        return when (getIntFromStr(KEY_DOWNLOAD_ORIGIN_IMAGE, DEFAULT_DOWNLOAD_ORIGIN_IMAGE)) {
-            2 -> mode
-            1 -> true
-            else -> false
-        }
+    fun getDownloadOriginImage(mode: Boolean): Boolean = when (getIntFromStr(KEY_DOWNLOAD_ORIGIN_IMAGE, DEFAULT_DOWNLOAD_ORIGIN_IMAGE)) {
+        2 -> mode
+        1 -> true
+        else -> false
     }
 
     val skipCopyImage: Boolean
