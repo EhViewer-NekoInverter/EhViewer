@@ -28,32 +28,41 @@ import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.EhEngine
 import com.hippo.ehviewer.client.EhTagDatabase
+import com.hippo.ehviewer.client.EhUrl.SITE_EX
+import com.hippo.ehviewer.client.EhUtils.isExHentai
 import com.hippo.util.launchNonCancellable
 
 class EhFragment : BasePreferenceFragment() {
+    private lateinit var detailSize: Preference
+    private lateinit var listThumbSize: Preference
+    private lateinit var thumbSize: Preference
+    private lateinit var thumbShowTitle: Preference
+    private lateinit var forceEhThumb: Preference
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.eh_settings)
         val account = findPreference<Preference>(Settings.KEY_ACCOUNT)
+        val gallerySite = findPreference<Preference>(Settings.KEY_GALLERY_SITE)
         val theme = findPreference<Preference>(Settings.KEY_THEME)
         val blackDarkTheme = findPreference<Preference>(Settings.KEY_BLACK_DARK_THEME)
-        val gallerySite = findPreference<Preference>(Settings.KEY_GALLERY_SITE)
         val listMode = findPreference<Preference>(Settings.KEY_LIST_MODE)
-        val detailSize = findPreference<Preference>(Settings.KEY_DETAIL_SIZE)
-        val listThumbSize = findPreference<Preference>(Settings.KEY_LIST_THUMB_SIZE)
-        val thumbSize = findPreference<Preference>(Settings.KEY_THUMB_SIZE)
-        val thumbShowTitle = findPreference<Preference>(Settings.KEY_THUMB_SHOW_TITLE)
         val showTagTranslations = findPreference<Preference>(Settings.KEY_SHOW_TAG_TRANSLATIONS)
         val tagTranslationsSource = findPreference<Preference>(Settings.KEY_TAG_TRANSLATIONS_SOURCE)
+        detailSize = findPreference<Preference>(Settings.KEY_DETAIL_SIZE)!!
+        listThumbSize = findPreference<Preference>(Settings.KEY_LIST_THUMB_SIZE)!!
+        thumbSize = findPreference<Preference>(Settings.KEY_THUMB_SIZE)!!
+        thumbShowTitle = findPreference<Preference>(Settings.KEY_THUMB_SHOW_TITLE)!!
+        forceEhThumb = findPreference<Preference>(Settings.KEY_FORCE_EH_THUMB)!!
 
+        gallerySite!!.onPreferenceChangeListener = this
         theme!!.onPreferenceChangeListener = this
         blackDarkTheme!!.onPreferenceChangeListener = this
-        gallerySite!!.onPreferenceChangeListener = this
         listMode!!.onPreferenceChangeListener = this
-        detailSize!!.onPreferenceChangeListener = this
-        listThumbSize!!.onPreferenceChangeListener = this
-        thumbSize!!.onPreferenceChangeListener = this
-        thumbShowTitle!!.onPreferenceChangeListener = this
         showTagTranslations!!.onPreferenceChangeListener = this
+        detailSize.onPreferenceChangeListener = this
+        listThumbSize.onPreferenceChangeListener = this
+        thumbSize.onPreferenceChangeListener = this
+        thumbShowTitle.onPreferenceChangeListener = this
         Settings.displayName?.let { account?.summary = it }
         if (!EhTagDatabase.isTranslatable(requireActivity())) {
             if (!Settings.showTagTranslations) {
@@ -67,6 +76,7 @@ class EhFragment : BasePreferenceFragment() {
                 preferenceScreen.removePreference(preference!!)
             }
         }
+        showForceEhThumb(isExHentai)
         updateListPreference(Settings.listMode)
     }
 
@@ -80,6 +90,7 @@ class EhFragment : BasePreferenceFragment() {
                 EhApplication.application.recreateAllActivity()
             }
         } else if (Settings.KEY_GALLERY_SITE == key) {
+            showForceEhThumb((newValue as String).toInt() == SITE_EX)
             requireActivity().setResult(Activity.RESULT_OK)
             lifecycleScope.launchNonCancellable {
                 runCatching {
@@ -112,11 +123,15 @@ class EhFragment : BasePreferenceFragment() {
     override val fragmentTitle: Int
         get() = R.string.settings_eh
 
+    private fun showForceEhThumb(newValue: Boolean) {
+        forceEhThumb.isVisible = newValue
+    }
+
     private fun updateListPreference(newValue: Int) {
         val isDetailMode = newValue == 0
-        findPreference<Preference>(Settings.KEY_DETAIL_SIZE)!!.isVisible = isDetailMode
-        findPreference<Preference>(Settings.KEY_LIST_THUMB_SIZE)!!.isVisible = isDetailMode
-        findPreference<Preference>(Settings.KEY_THUMB_SIZE)!!.isVisible = !isDetailMode
-        findPreference<Preference>(Settings.KEY_THUMB_SHOW_TITLE)!!.isVisible = !isDetailMode
+        detailSize.isVisible = isDetailMode
+        listThumbSize.isVisible = isDetailMode
+        thumbSize.isVisible = !isDetailMode
+        thumbShowTitle.isVisible = !isDetailMode
     }
 }

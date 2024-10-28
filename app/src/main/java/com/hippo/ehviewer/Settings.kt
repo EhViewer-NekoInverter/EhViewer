@@ -54,7 +54,7 @@ object Settings {
     private const val DEFAULT_THUMB_SIZE = 4
     const val KEY_THUMB_SHOW_TITLE = "thumb_show_title"
     private const val DEFAULT_THUMB_SHOW_TITLE = true
-    private const val KEY_FORCE_EH_THUMB = "force_eh_thumb"
+    const val KEY_FORCE_EH_THUMB = "force_eh_thumb"
     private const val DEFAULT_FORCE_EH_THUMB = false
     private const val KEY_SHOW_JPN_TITLE = "show_jpn_title"
     private const val DEFAULT_SHOW_JPN_TITLE = false
