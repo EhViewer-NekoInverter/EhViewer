@@ -191,13 +191,15 @@ ksp {
     arg("room.generateKotlin", "true")
 }
 
+val ktlintVersion = libs.ktlint.get().version
+
 spotless {
     kotlin {
         // https://github.com/diffplug/spotless/issues/111
         target("src/**/*.kt")
-        ktlint()
+        ktlint(ktlintVersion)
     }
     kotlinGradle {
-        ktlint()
+        ktlint(ktlintVersion)
     }
 }

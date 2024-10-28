@@ -51,6 +51,7 @@ drawer = { module = "com.drakeet.drawer:drawer", version.ref = "drawer" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 kotlinx-serialization-cbor = { module = "org.jetbrains.kotlinx:kotlinx-serialization-cbor", version.ref = "kotlinx-serialization" }
+ktlint = "com.pinterest:ktlint:1.4.0-kotlin-dev-SNAPSHOT"
 ktor-utils = { module = "io.ktor:ktor-utils", version.ref = "ktor-utils" }
 material = { module = "com.google.android.material:material", version.ref = "google-android-material" }
 
