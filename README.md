@@ -50,17 +50,13 @@ NekoInverter 版的 EhViewer，复刻自 [https://gitlab.com/NekoInverter/EhView
 
 如果您可以接受 MD3 风格，那使用 [彩E](https://github.com/FooIbar/EhViewer) 应该是更好的选择，我建立本仓库就是因为实在不能接受 MD3！不要大圆角！不要大色块！😡😡
 
-**![sticker](https://github.com/EhViewer-NekoInverter/Arts/blob/main/sticker.webp) 🐭🐭 最近沉迷看 V，关注 B 站 [昨日青子](https://space.bilibili.com/3493284812950114) 喵，关注 B 站 [昨日青子](https://live.bilibili.com/27700995) 谢谢喵！**
-
-(给语文不太好的人翻译一下：我是她的粉丝，我觉得她很可爱所以你们都应该看看，下载地址在下面，别找她要了，她什么都不知道)
-
 # 下载
 
 **注：需要 Android 9 及以上版本系统**
 
 请前往 [Github Releases](https://github.com/EhViewer-NekoInverter/EhViewer/releases) 下载发行版
 
-也可以前往 [Github Actions](https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml) 下载 CI 版参与测试，需要登录 Github 账号
+如果发行版存在未修复的问题，前往 [Github Actions](https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml) 下载 CI 版，需要登录 Github 账号
 
 # 截图
 
@@ -76,6 +72,7 @@ NekoInverter 版的 EhViewer，复刻自 [https://gitlab.com/NekoInverter/EhView
 - [Coil](https://coil-kt.github.io/coil/)
 - [FullDraggableDrawer](https://github.com/PureWriter/FullDraggableDrawer)
 - [Jsoup](https://jsoup.org/)
+- [Ktor](https://ktor.io/)
 - [Libarchive](http://www.libarchive.org/)
 - [MDC-Android](https://github.com/material-components/material-components-android)
 - [Nettle](https://www.lysator.liu.se/~nisse/nettle/)
