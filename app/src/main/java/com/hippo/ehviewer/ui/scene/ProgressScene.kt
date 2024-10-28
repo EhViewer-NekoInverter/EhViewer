@@ -34,7 +34,9 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 /**
  * Only show a progress with jobs in background
  */
-class ProgressScene : BaseScene(), View.OnClickListener {
+class ProgressScene :
+    BaseScene(),
+    View.OnClickListener {
     private var mValid = false
     private var mError: String? = null
     private var mAction: String? = null
@@ -44,9 +46,7 @@ class ProgressScene : BaseScene(), View.OnClickListener {
     private var mTip: TextView? = null
     private var mViewTransition: ViewTransition? = null
 
-    override fun needShowLeftDrawer(): Boolean {
-        return false
-    }
+    override fun needShowLeftDrawer(): Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

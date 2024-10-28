@@ -45,9 +45,7 @@ class CleanRedundancyPreference(
         return true
     }
 
-    private fun doRealWork(): Int {
-        return Settings.downloadLocation?.listFiles()?.sumOf { clearFile(it).compareTo(false) } ?: 0
-    }
+    private fun doRealWork(): Int = Settings.downloadLocation?.listFiles()?.sumOf { clearFile(it).compareTo(false) } ?: 0
 
     override val jobTitle = GetText.getString(R.string.settings_download_clean_redundancy)
 

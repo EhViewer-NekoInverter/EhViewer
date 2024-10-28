@@ -132,9 +132,7 @@ class FavoritesScene :
     private var mModifyFavCat = 0
     private var mFavSlot = -2
 
-    override fun getNavCheckedItem(): Int {
-        return R.id.nav_favourite
-    }
+    override fun getNavCheckedItem(): Int = R.id.nav_favourite
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -288,7 +286,8 @@ class FavoritesScene :
                 mSearchBar!!.setTitle(getString(R.string.favorites_title, favCatName))
             }
         } else {
-            if (!ObjectUtils.equal(favCatName, mOldFavCat) || !ObjectUtils.equal(
+            if (!ObjectUtils.equal(favCatName, mOldFavCat) ||
+                !ObjectUtils.equal(
                     keyword,
                     mOldKeyword,
                 )
@@ -480,19 +479,13 @@ class FavoritesScene :
     }
 
     // SearchBarMover.Helper
-    override fun isValidView(recyclerView: RecyclerView): Boolean {
-        return recyclerView == mRecyclerView
-    }
+    override fun isValidView(recyclerView: RecyclerView): Boolean = recyclerView == mRecyclerView
 
     // SearchBarMover.Helper
-    override fun getValidRecyclerView(): RecyclerView? {
-        return mRecyclerView
-    }
+    override fun getValidRecyclerView(): RecyclerView? = mRecyclerView
 
     // SearchBarMover.Helper
-    override fun forceShowSearchBar(): Boolean {
-        return false
-    }
+    override fun forceShowSearchBar(): Boolean = false
 
     // SearchBar.Helper
     override fun onClickTitle() {
@@ -881,15 +874,10 @@ class FavoritesScene :
         override fun onCancel() {}
     }
 
-    private inner class FavDrawerAdapter(private val mInflater: LayoutInflater) :
-        RecyclerView.Adapter<FavDrawerHolder>() {
-        override fun getItemViewType(position: Int): Int {
-            return position
-        }
+    private inner class FavDrawerAdapter(private val mInflater: LayoutInflater) : RecyclerView.Adapter<FavDrawerHolder>() {
+        override fun getItemViewType(position: Int): Int = position
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavDrawerHolder {
-            return FavDrawerHolder(mInflater.inflate(R.layout.item_drawer_favorites, parent, false))
-        }
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavDrawerHolder = FavDrawerHolder(mInflater.inflate(R.layout.item_drawer_favorites, parent, false))
 
         @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: FavDrawerHolder, position: Int) {
@@ -918,12 +906,10 @@ class FavoritesScene :
             holder.itemView.setOnClickListener { onItemClick(holder.itemView, position) }
         }
 
-        override fun getItemCount(): Int {
-            return if (null == mFavCatArray) {
-                2
-            } else {
-                12
-            }
+        override fun getItemCount(): Int = if (null == mFavCatArray) {
+            2
+        } else {
+            12
         }
     }
 
@@ -1025,21 +1011,15 @@ class FavoritesScene :
         recyclerView: RecyclerView,
         type: Int,
     ) : GalleryAdapter(inflater, resources, recyclerView, type, false) {
-        override fun getItemCount(): Int {
-            return if (null != mHelper) mHelper!!.size() else 0
-        }
+        override fun getItemCount(): Int = if (null != mHelper) mHelper!!.size() else 0
 
         override fun onItemClick(view: View, position: Int) {
             this@FavoritesScene.onItemClick(view, position)
         }
 
-        override fun onItemLongClick(view: View, position: Int): Boolean {
-            return this@FavoritesScene.onItemLongClick(position)
-        }
+        override fun onItemLongClick(view: View, position: Int): Boolean = this@FavoritesScene.onItemLongClick(position)
 
-        override fun getDataAt(position: Int): GalleryInfo? {
-            return if (null != mHelper) mHelper!!.getDataAtEx(position) else null
-        }
+        override fun getDataAt(position: Int): GalleryInfo? = if (null != mHelper) mHelper!!.getDataAtEx(position) else null
     }
 
     private inner class FavoritesHelper : GalleryInfoContentHelper() {
@@ -1155,9 +1135,7 @@ class FavoritesScene :
             mSearchBarMover?.showSearchBar()
         }
 
-        override fun isDuplicate(d1: GalleryInfo?, d2: GalleryInfo?): Boolean {
-            return d1?.gid == d2?.gid && d1 != null && d2 != null
-        }
+        override fun isDuplicate(d1: GalleryInfo?, d2: GalleryInfo?): Boolean = d1?.gid == d2?.gid && d1 != null && d2 != null
 
         override fun onScrollToPosition(position: Int) {
             if (0 == position) {

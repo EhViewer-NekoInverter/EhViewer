@@ -274,9 +274,7 @@ abstract class UniFile internal constructor(private val parent: UniFile?) {
          * @param file the file to wrap
          * @return the [UniFile] representing the given [File].
          */
-        fun fromFile(file: File?): UniFile? {
-            return if (file != null) RawFile(null, file) else null
-        }
+        fun fromFile(file: File?): UniFile? = if (file != null) RawFile(null, file) else null
 
         /**
          * Create a [UniFile] representing the single document at the
@@ -328,9 +326,7 @@ abstract class UniFile internal constructor(private val parent: UniFile?) {
          * @param mediaUri the media uri to wrap
          * @return the [UniFile] representing the given [Uri].
          */
-        fun fromMediaUri(context: Context, mediaUri: Uri): UniFile {
-            return MediaFile(context, mediaUri)
-        }
+        fun fromMediaUri(context: Context, mediaUri: Uri): UniFile = MediaFile(context, mediaUri)
 
         /**
          * Create a [UniFile] representing the given [Uri].
@@ -366,9 +362,7 @@ abstract class UniFile internal constructor(private val parent: UniFile?) {
         /**
          * Test if given Uri is FileUri
          */
-        fun isFileUri(uri: Uri): Boolean {
-            return ContentResolver.SCHEME_FILE == uri.scheme
-        }
+        fun isFileUri(uri: Uri): Boolean = ContentResolver.SCHEME_FILE == uri.scheme
 
         /**
          * Test if given Uri is backed by a

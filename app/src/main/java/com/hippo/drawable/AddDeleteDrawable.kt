@@ -82,13 +82,9 @@ class AddDeleteDrawable(context: Context, color: Int) : Drawable() {
         mPaint.setColorFilter(cf)
     }
 
-    override fun getIntrinsicHeight(): Int {
-        return mSize * 6 / 5
-    }
+    override fun getIntrinsicHeight(): Int = mSize * 6 / 5
 
-    override fun getIntrinsicWidth(): Int {
-        return mSize * 6 / 5
-    }
+    override fun getIntrinsicWidth(): Int = mSize * 6 / 5
 
     /**
      * If set, canvas is flipped when progress reached to end and going back to start.
@@ -139,7 +135,5 @@ class AddDeleteDrawable(context: Context, color: Int) : Drawable() {
         "Deprecated in Java",
         ReplaceWith("PixelFormat.TRANSLUCENT", "android.graphics.PixelFormat"),
     )
-    override fun getOpacity(): Int {
-        return PixelFormat.TRANSLUCENT
-    }
+    override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 }

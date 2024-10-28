@@ -42,9 +42,7 @@ open class WrapDrawable : Drawable() {
         drawable?.bounds = bounds
     }
 
-    override fun getChangingConfigurations(): Int {
-        return drawable?.changingConfigurations ?: super.changingConfigurations
-    }
+    override fun getChangingConfigurations(): Int = drawable?.changingConfigurations ?: super.changingConfigurations
 
     override fun setChangingConfigurations(configs: Int) {
         super.changingConfigurations = configs
@@ -68,15 +66,9 @@ open class WrapDrawable : Drawable() {
         "Deprecated in Java",
         ReplaceWith("PixelFormat.TRANSLUCENT", "android.graphics.PixelFormat"),
     )
-    override fun getOpacity(): Int {
-        return PixelFormat.TRANSLUCENT
-    }
+    override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
-    override fun getIntrinsicWidth(): Int {
-        return drawable?.intrinsicWidth ?: super.intrinsicWidth
-    }
+    override fun getIntrinsicWidth(): Int = drawable?.intrinsicWidth ?: super.intrinsicWidth
 
-    override fun getIntrinsicHeight(): Int {
-        return drawable?.intrinsicHeight ?: super.intrinsicHeight
-    }
+    override fun getIntrinsicHeight(): Int = drawable?.intrinsicHeight ?: super.intrinsicHeight
 }

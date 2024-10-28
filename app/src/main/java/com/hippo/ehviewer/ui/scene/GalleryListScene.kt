@@ -224,9 +224,7 @@ class GalleryListScene :
     private var mHasFirstRefresh = false
     private var mIsTopList = false
 
-    override fun getNavCheckedItem(): Int {
-        return mNavCheckedId
-    }
+    override fun getNavCheckedItem(): Int = mNavCheckedId
 
     private fun handleArgs(args: Bundle?) {
         args ?: return
@@ -324,16 +322,14 @@ class GalleryListScene :
         })
     }
 
-    private fun wrapTagKeyword(keyword: String): String {
-        return if (keyword.endsWith(':')) {
-            keyword
-        } else if (keyword.contains(" ")) {
-            val tag = keyword.substringAfter(':')
-            val prefix = keyword.dropLast(tag.length)
-            "$prefix\"$tag$\""
-        } else {
-            "$keyword$"
-        }
+    private fun wrapTagKeyword(keyword: String): String = if (keyword.endsWith(':')) {
+        keyword
+    } else if (keyword.contains(" ")) {
+        val tag = keyword.substringAfter(':')
+        val prefix = keyword.dropLast(tag.length)
+        "$prefix\"$tag$\""
+    } else {
+        "$keyword$"
     }
 
     // Update search bar title, drawer checked item
@@ -1271,24 +1267,18 @@ class GalleryListScene :
     }
 
     // SearchBarMover.Helper
-    override fun isValidView(recyclerView: RecyclerView): Boolean {
-        return (mState == STATE_NORMAL && recyclerView == mRecyclerView) ||
-            (mState == STATE_SEARCH && recyclerView == mSearchLayout)
+    override fun isValidView(recyclerView: RecyclerView): Boolean = (mState == STATE_NORMAL && recyclerView == mRecyclerView) ||
+        (mState == STATE_SEARCH && recyclerView == mSearchLayout)
+
+    // SearchBarMover.Helper
+    override fun getValidRecyclerView(): RecyclerView? = if (mState == STATE_NORMAL || mState == STATE_SIMPLE_SEARCH) {
+        mRecyclerView
+    } else {
+        mSearchLayout
     }
 
     // SearchBarMover.Helper
-    override fun getValidRecyclerView(): RecyclerView? {
-        return if (mState == STATE_NORMAL || mState == STATE_SIMPLE_SEARCH) {
-            mRecyclerView
-        } else {
-            mSearchLayout
-        }
-    }
-
-    // SearchBarMover.Helper
-    override fun forceShowSearchBar(): Boolean {
-        return mState == STATE_SIMPLE_SEARCH || mState == STATE_SEARCH_SHOW_LIST
-    }
+    override fun forceShowSearchBar(): Boolean = mState == STATE_SIMPLE_SEARCH || mState == STATE_SEARCH_SHOW_LIST
 
     private fun onGetGalleryListSuccess(result: GalleryListParser.Result, taskId: Int) {
         if (mHelper != null && mHelper!!.isCurrentTask(taskId)) {
@@ -1343,8 +1333,7 @@ class GalleryListScene :
         override fun onCancel() {}
     }
 
-    private class AddToFavoriteListener(context: Context) :
-        EhCallback<GalleryListScene, Unit>(context) {
+    private class AddToFavoriteListener(context: Context) : EhCallback<GalleryListScene, Unit>(context) {
         override fun onSuccess(result: Unit) {
             showTip(R.string.add_to_favorite_success, LENGTH_SHORT)
         }
@@ -1356,8 +1345,7 @@ class GalleryListScene :
         override fun onCancel() {}
     }
 
-    private class RemoveFromFavoriteListener(context: Context) :
-        EhCallback<GalleryListScene, Unit>(context) {
+    private class RemoveFromFavoriteListener(context: Context) : EhCallback<GalleryListScene, Unit>(context) {
         override fun onSuccess(result: Unit) {
             showTip(R.string.remove_from_favorite_success, LENGTH_SHORT)
         }
@@ -1372,7 +1360,8 @@ class GalleryListScene :
     @SuppressLint("ClickableViewAccessibility")
     private inner class QsDrawerHolder(
         itemView: View,
-    ) : RecyclerView.ViewHolder(itemView), View.OnTouchListener {
+    ) : RecyclerView.ViewHolder(itemView),
+        View.OnTouchListener {
         val key: TextView = ViewUtils.`$$`(itemView, R.id.tv_key) as TextView
         val option: ImageView = ViewUtils.`$$`(itemView, R.id.iv_option) as ImageView
 
@@ -1403,8 +1392,7 @@ class GalleryListScene :
         }
     }
 
-    private inner class QsDrawerAdapter(private val mInflater: LayoutInflater) :
-        RecyclerView.Adapter<QsDrawerHolder>() {
+    private inner class QsDrawerAdapter(private val mInflater: LayoutInflater) : RecyclerView.Adapter<QsDrawerHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QsDrawerHolder {
             val holder = QsDrawerHolder(mInflater.inflate(R.layout.item_drawer_list, parent, false))
             if (!mIsTopList) {
@@ -1485,31 +1473,25 @@ class GalleryListScene :
             }
         }
 
-        override fun getItemId(position: Int): Long {
-            return if (mIsTopList) position.toLong() else mQuickSearchList[position].id!!
-        }
+        override fun getItemId(position: Int): Long = if (mIsTopList) position.toLong() else mQuickSearchList[position].id!!
 
-        override fun getItemCount(): Int {
-            return if (mIsTopList) 4 else mQuickSearchList.size
-        }
+        override fun getItemCount(): Int = if (mIsTopList) 4 else mQuickSearchList.size
     }
 
     private abstract inner class UrlSuggestion : Suggestion() {
-        override fun getText(textView: TextView): CharSequence? {
-            return if (textView.id == android.R.id.text1) {
-                val bookImage =
-                    AppCompatResources.getDrawable(textView.context, R.drawable.v_book_open_x24)
-                val ssb = SpannableStringBuilder("    ")
-                ssb.append(getString(R.string.gallery_list_search_bar_open_gallery))
-                val imageSize = (textView.textSize * 1.25).toInt()
-                if (bookImage != null) {
-                    bookImage.setBounds(0, 0, imageSize, imageSize)
-                    ssb.setSpan(ImageSpan(bookImage), 1, 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                }
-                ssb
-            } else {
-                null
+        override fun getText(textView: TextView): CharSequence? = if (textView.id == android.R.id.text1) {
+            val bookImage =
+                AppCompatResources.getDrawable(textView.context, R.drawable.v_book_open_x24)
+            val ssb = SpannableStringBuilder("    ")
+            ssb.append(getString(R.string.gallery_list_search_bar_open_gallery))
+            val imageSize = (textView.textSize * 1.25).toInt()
+            if (bookImage != null) {
+                bookImage.setBounds(0, 0, imageSize, imageSize)
+                ssb.setSpan(ImageSpan(bookImage), 1, 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
+            ssb
+        } else {
+            null
         }
 
         override fun onClick() {
@@ -1558,21 +1540,15 @@ class GalleryListScene :
         recyclerView: RecyclerView,
         type: Int,
     ) : GalleryAdapter(inflater, resources, recyclerView, type, true) {
-        override fun getItemCount(): Int {
-            return mHelper?.size() ?: 0
-        }
+        override fun getItemCount(): Int = mHelper?.size() ?: 0
 
         override fun onItemClick(view: View, position: Int) {
             this@GalleryListScene.onItemClick(view, position)
         }
 
-        override fun onItemLongClick(view: View, position: Int): Boolean {
-            return this@GalleryListScene.onItemLongClick(position)
-        }
+        override fun onItemLongClick(view: View, position: Int): Boolean = this@GalleryListScene.onItemLongClick(position)
 
-        override fun getDataAt(position: Int): GalleryInfo? {
-            return mHelper?.getDataAtEx(position)
-        }
+        override fun getDataAt(position: Int): GalleryInfo? = mHelper?.getDataAtEx(position)
     }
 
     private inner class GalleryListHelper : GalleryInfoContentHelper() {
@@ -1620,9 +1596,7 @@ class GalleryListScene :
             showActionFab()
         }
 
-        override fun isDuplicate(d1: GalleryInfo?, d2: GalleryInfo?): Boolean {
-            return d1?.gid == d2?.gid && d1 != null && d2 != null
-        }
+        override fun isDuplicate(d1: GalleryInfo?, d2: GalleryInfo?): Boolean = d1?.gid == d2?.gid && d1 != null && d2 != null
 
         override fun onScrollToPosition(position: Int) {
             if (0 == position) {
@@ -1632,21 +1606,16 @@ class GalleryListScene :
         }
     }
 
-    private inner class GalleryListQSItemTouchHelperCallback(private val mAdapter: QsDrawerAdapter) :
-        ItemTouchHelper.Callback() {
+    private inner class GalleryListQSItemTouchHelperCallback(private val mAdapter: QsDrawerAdapter) : ItemTouchHelper.Callback() {
         override fun getMovementFlags(
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder,
-        ): Int {
-            return makeMovementFlags(
-                ItemTouchHelper.UP or ItemTouchHelper.DOWN,
-                0,
-            )
-        }
+        ): Int = makeMovementFlags(
+            ItemTouchHelper.UP or ItemTouchHelper.DOWN,
+            0,
+        )
 
-        override fun isLongPressDragEnabled(): Boolean {
-            return false
-        }
+        override fun isLongPressDragEnabled(): Boolean = false
 
         override fun onMove(
             recyclerView: RecyclerView,
@@ -1695,12 +1664,22 @@ class GalleryListScene :
         ): String? {
             val keyword = urlBuilder.keyword
             val category = urlBuilder.category
-            return if (ListUrlBuilder.MODE_NORMAL == urlBuilder.mode && EhUtils.NONE == category &&
-                TextUtils.isEmpty(keyword) && urlBuilder.advanceSearch == -1 && urlBuilder.minRating == -1 && urlBuilder.pageFrom == -1 && urlBuilder.pageTo == -1
+            return if (ListUrlBuilder.MODE_NORMAL == urlBuilder.mode &&
+                EhUtils.NONE == category &&
+                TextUtils.isEmpty(keyword) &&
+                urlBuilder.advanceSearch == -1 &&
+                urlBuilder.minRating == -1 &&
+                urlBuilder.pageFrom == -1 &&
+                urlBuilder.pageTo == -1
             ) {
                 resources.getString(if (appName) R.string.app_name else R.string.homepage)
-            } else if (MODE_SUBSCRIPTION == urlBuilder.mode && EhUtils.NONE == category &&
-                TextUtils.isEmpty(keyword) && urlBuilder.advanceSearch == -1 && urlBuilder.minRating == -1 && urlBuilder.pageFrom == -1 && urlBuilder.pageTo == -1
+            } else if (MODE_SUBSCRIPTION == urlBuilder.mode &&
+                EhUtils.NONE == category &&
+                TextUtils.isEmpty(keyword) &&
+                urlBuilder.advanceSearch == -1 &&
+                urlBuilder.minRating == -1 &&
+                urlBuilder.pageFrom == -1 &&
+                urlBuilder.pageTo == -1
             ) {
                 resources.getString(R.string.subscription)
             } else if (MODE_WHATS_HOT == urlBuilder.mode) {

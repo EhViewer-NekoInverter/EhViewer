@@ -19,9 +19,7 @@ import java.util.concurrent.CountDownLatch
 class CloudflareInterceptor(context: Context) : WebViewInterceptor(context) {
     private val executor = ContextCompat.getMainExecutor(context)
 
-    override fun shouldIntercept(response: Response): Boolean {
-        return response.header(HEADER_NAME) == HEADER_VALUE
-    }
+    override fun shouldIntercept(response: Response): Boolean = response.header(HEADER_NAME) == HEADER_VALUE
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun intercept(

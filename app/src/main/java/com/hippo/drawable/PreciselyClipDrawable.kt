@@ -54,13 +54,9 @@ class PreciselyClipDrawable(
         super.onBoundsChange(mTemp)
     }
 
-    override fun getIntrinsicWidth(): Int {
-        return (super.intrinsicWidth * mScale.width()).toInt()
-    }
+    override fun getIntrinsicWidth(): Int = (super.intrinsicWidth * mScale.width()).toInt()
 
-    override fun getIntrinsicHeight(): Int {
-        return (super.intrinsicHeight * mScale.height()).toInt()
-    }
+    override fun getIntrinsicHeight(): Int = (super.intrinsicHeight * mScale.height()).toInt()
 
     override fun draw(canvas: Canvas) {
         canvas.withClip(bounds) { super.draw(canvas) }

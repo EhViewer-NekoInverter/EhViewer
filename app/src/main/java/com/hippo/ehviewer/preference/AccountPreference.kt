@@ -40,7 +40,8 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 class AccountPreference(
     context: Context,
     attrs: AttributeSet? = null,
-) : DialogPreference(context, attrs), View.OnClickListener {
+) : DialogPreference(context, attrs),
+    View.OnClickListener {
     private val mActivity = context as SettingsActivity
     private var mCookie: String? = null
     private var mMessage: String? = context.getString(R.string.settings_eh_account_name_tourist)

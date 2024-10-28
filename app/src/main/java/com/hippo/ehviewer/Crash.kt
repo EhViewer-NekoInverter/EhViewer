@@ -24,14 +24,10 @@ import java.io.File
 import java.io.FileWriter
 import java.io.PrintWriter
 
-private fun joinIfStringArray(any: Any?): String {
-    return if (any is Array<*>) any.joinToString() else any.toString()
-}
+private fun joinIfStringArray(any: Any?): String = if (any is Array<*>) any.joinToString() else any.toString()
 
-private fun collectClassStaticInfo(clazz: Class<*>): String {
-    return clazz.declaredFields.joinToString("\n") {
-        "${it.name}=${joinIfStringArray(it.get(null))}"
-    }
+private fun collectClassStaticInfo(clazz: Class<*>): String = clazz.declaredFields.joinToString("\n") {
+    "${it.name}=${joinIfStringArray(it.get(null))}"
 }
 
 object Crash {

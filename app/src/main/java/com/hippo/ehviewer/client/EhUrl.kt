@@ -133,9 +133,7 @@ object EhUrl {
             else -> URL_WATCHED_E
         }
 
-    fun getGalleryDetailUrl(gid: Long, token: String?): String {
-        return getGalleryDetailUrl(gid, token, 0, false)
-    }
+    fun getGalleryDetailUrl(gid: Long, token: String?): String = getGalleryDetailUrl(gid, token, 0, false)
 
     @JvmStatic
     fun getGalleryDetailUrl(gid: Long, token: String?, index: Int, allComment: Boolean): String {
@@ -156,31 +154,21 @@ object EhUrl {
     }
 
     @JvmStatic
-    fun getPageUrl(gid: Long, index: Int, pToken: String): String {
-        return host + "s/" + pToken + '/' + gid + '-' + (index + 1)
-    }
+    fun getPageUrl(gid: Long, index: Int, pToken: String): String = host + "s/" + pToken + '/' + gid + '-' + (index + 1)
 
-    fun getAddFavorites(gid: Long, token: String?): String {
-        return host + "gallerypopups.php?gid=" + gid + "&t=" + token + "&act=addfav"
-    }
+    fun getAddFavorites(gid: Long, token: String?): String = host + "gallerypopups.php?gid=" + gid + "&t=" + token + "&act=addfav"
 
-    fun getDownloadArchive(gid: Long, token: String?, or: String?): String {
-        return host + "archiver.php?gid=" + gid + "&token=" + token + "&or=" + or
-    }
+    fun getDownloadArchive(gid: Long, token: String?, or: String?): String = host + "archiver.php?gid=" + gid + "&token=" + token + "&or=" + or
 
-    fun getTagDefinitionUrl(tag: String): String {
-        return "https://ehwiki.org/wiki/" + tag.replace(' ', '_')
-    }
+    fun getTagDefinitionUrl(tag: String): String = "https://ehwiki.org/wiki/" + tag.replace(' ', '_')
 
-    fun getThumbUrlPrefix(): String {
-        return if (Settings.forceEhThumb) {
-            URL_PREFIX_THUMB_E
-        } else {
-            when (Settings.gallerySite) {
-                SITE_E -> URL_PREFIX_THUMB_E
-                SITE_EX -> URL_PREFIX_THUMB_EX
-                else -> URL_PREFIX_THUMB_E
-            }
+    fun getThumbUrlPrefix(): String = if (Settings.forceEhThumb) {
+        URL_PREFIX_THUMB_E
+    } else {
+        when (Settings.gallerySite) {
+            SITE_E -> URL_PREFIX_THUMB_E
+            SITE_EX -> URL_PREFIX_THUMB_EX
+            else -> URL_PREFIX_THUMB_E
         }
     }
 }

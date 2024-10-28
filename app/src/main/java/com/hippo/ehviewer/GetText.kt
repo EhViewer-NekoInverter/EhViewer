@@ -18,11 +18,7 @@ package com.hippo.ehviewer
 import androidx.annotation.StringRes
 
 object GetText {
-    fun getString(@StringRes id: Int): String {
-        return EhApplication.application.getString(id)
-    }
+    fun getString(@StringRes id: Int): String = EhApplication.application.getString(id)
 
-    fun getString(@StringRes id: Int, vararg formatArgs: Any?): String {
-        return EhApplication.application.getString(id, *formatArgs)
-    }
+    fun getString(@StringRes id: Int, vararg formatArgs: Any?): String = EhApplication.application.getString(id, *formatArgs)
 }

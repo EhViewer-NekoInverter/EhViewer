@@ -21,24 +21,22 @@ class UrlBuilder(private var mRootUrl: String) {
         mQueryMap[key] = value
     }
 
-    fun build(): String {
-        return if (mQueryMap.isEmpty()) {
-            mRootUrl
-        } else {
-            val sb = StringBuilder(mRootUrl)
-            sb.append("?")
-            val iter: Iterator<String> = mQueryMap.keys.iterator()
-            if (iter.hasNext()) {
-                val key = iter.next()
-                val value = mQueryMap[key]
-                sb.append(key).append("=").append(value)
-            }
-            while (iter.hasNext()) {
-                val key = iter.next()
-                val value = mQueryMap[key]
-                sb.append("&").append(key).append("=").append(value)
-            }
-            sb.toString()
+    fun build(): String = if (mQueryMap.isEmpty()) {
+        mRootUrl
+    } else {
+        val sb = StringBuilder(mRootUrl)
+        sb.append("?")
+        val iter: Iterator<String> = mQueryMap.keys.iterator()
+        if (iter.hasNext()) {
+            val key = iter.next()
+            val value = mQueryMap[key]
+            sb.append(key).append("=").append(value)
         }
+        while (iter.hasNext()) {
+            val key = iter.next()
+            val value = mQueryMap[key]
+            sb.append("&").append(key).append("=").append(value)
+        }
+        sb.toString()
     }
 }

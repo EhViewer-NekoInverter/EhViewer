@@ -18,7 +18,9 @@ package com.hippo.ehviewer.client.data
 import android.os.Parcelable
 import java.util.regex.Pattern
 
-interface GalleryInfo : AbstractGalleryInfo, Parcelable {
+interface GalleryInfo :
+    AbstractGalleryInfo,
+    Parcelable {
     fun generateSLang() {
         simpleLanguage = simpleTags?.let { generateSLangFromTags(it) }
             ?: title?.let { generateSLangFromTitle(it) }

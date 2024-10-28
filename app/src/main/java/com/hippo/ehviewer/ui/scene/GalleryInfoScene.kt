@@ -182,23 +182,19 @@ class GalleryInfoScene : ToolbarScene() {
     private inner class InfoAdapter : RecyclerView.Adapter<InfoHolder>() {
         private val mInflater: LayoutInflater = layoutInflater
 
-        override fun getItemViewType(position: Int): Int {
-            return if (position == 0) {
-                TYPE_HEADER
-            } else {
-                TYPE_DATA
-            }
+        override fun getItemViewType(position: Int): Int = if (position == 0) {
+            TYPE_HEADER
+        } else {
+            TYPE_DATA
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InfoHolder {
-            return InfoHolder(
-                mInflater.inflate(
-                    if (viewType == TYPE_HEADER) R.layout.item_gallery_info_header else R.layout.item_gallery_info_data,
-                    parent,
-                    false,
-                ),
-            )
-        }
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InfoHolder = InfoHolder(
+            mInflater.inflate(
+                if (viewType == TYPE_HEADER) R.layout.item_gallery_info_header else R.layout.item_gallery_info_data,
+                parent,
+                false,
+            ),
+        )
 
         override fun onBindViewHolder(holder: InfoHolder, position: Int) {
             holder.key.text = mKeys[position]
@@ -207,9 +203,7 @@ class GalleryInfoScene : ToolbarScene() {
             holder.itemView.setOnClickListener { onItemClick(position) }
         }
 
-        override fun getItemCount(): Int {
-            return mKeys.size.coerceAtMost(mValues.size)
-        }
+        override fun getItemCount(): Int = mKeys.size.coerceAtMost(mValues.size)
     }
 
     companion object {

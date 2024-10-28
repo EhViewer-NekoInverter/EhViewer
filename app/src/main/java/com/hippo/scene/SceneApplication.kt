@@ -44,7 +44,5 @@ abstract class SceneApplication : Application() {
         }
     }
 
-    fun findStageActivityById(id: Int): StageActivity {
-        return mStageMap[id]
-    }
+    fun findStageActivityById(id: Int): StageActivity = mStageMap[id]
 }

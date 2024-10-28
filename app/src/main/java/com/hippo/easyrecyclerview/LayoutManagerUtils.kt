@@ -77,9 +77,7 @@ object LayoutManagerUtils {
             is LinearLayoutManager -> {
                 smoothScroller =
                     object : SimpleSmoothScroller(context!!, millisecondsPerInch.toFloat()) {
-                        override fun computeScrollVectorForPosition(targetPosition: Int): PointF? {
-                            return layoutManager.computeScrollVectorForPosition(targetPosition)
-                        }
+                        override fun computeScrollVectorForPosition(targetPosition: Int): PointF? = layoutManager.computeScrollVectorForPosition(targetPosition)
                     }
             }
 
@@ -143,45 +141,41 @@ object LayoutManagerUtils {
         }, 200)
     }
 
-    fun getFirstVisibleItemPosition(layoutManager: RecyclerView.LayoutManager): Int {
-        return when (layoutManager) {
-            is LinearLayoutManager -> {
-                layoutManager.findFirstVisibleItemPosition()
-            }
+    fun getFirstVisibleItemPosition(layoutManager: RecyclerView.LayoutManager): Int = when (layoutManager) {
+        is LinearLayoutManager -> {
+            layoutManager.findFirstVisibleItemPosition()
+        }
 
-            is StaggeredGridLayoutManager -> {
-                val positions =
-                    layoutManager.findFirstVisibleItemPositions(null)
-                MathUtils.min(*positions)
-            }
+        is StaggeredGridLayoutManager -> {
+            val positions =
+                layoutManager.findFirstVisibleItemPositions(null)
+            MathUtils.min(*positions)
+        }
 
-            else -> {
-                throw IllegalStateException(
-                    "Can't do getFirstVisibleItemPosition for " +
-                        layoutManager.javaClass.getName(),
-                )
-            }
+        else -> {
+            throw IllegalStateException(
+                "Can't do getFirstVisibleItemPosition for " +
+                    layoutManager.javaClass.getName(),
+            )
         }
     }
 
-    fun getLastVisibleItemPosition(layoutManager: RecyclerView.LayoutManager): Int {
-        return when (layoutManager) {
-            is LinearLayoutManager -> {
-                layoutManager.findLastVisibleItemPosition()
-            }
+    fun getLastVisibleItemPosition(layoutManager: RecyclerView.LayoutManager): Int = when (layoutManager) {
+        is LinearLayoutManager -> {
+            layoutManager.findLastVisibleItemPosition()
+        }
 
-            is StaggeredGridLayoutManager -> {
-                val positions =
-                    layoutManager.findLastVisibleItemPositions(null)
-                MathUtils.max(*positions)
-            }
+        is StaggeredGridLayoutManager -> {
+            val positions =
+                layoutManager.findLastVisibleItemPositions(null)
+            MathUtils.max(*positions)
+        }
 
-            else -> {
-                throw IllegalStateException(
-                    "Can't do getLastVisibleItemPosition for " +
-                        layoutManager.javaClass.getName(),
-                )
-            }
+        else -> {
+            throw IllegalStateException(
+                "Can't do getLastVisibleItemPosition for " +
+                    layoutManager.javaClass.getName(),
+            )
         }
     }
 

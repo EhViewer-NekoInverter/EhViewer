@@ -33,9 +33,7 @@ class UrlPreference(
         a.recycle()
     }
 
-    override fun getSummary(): CharSequence? {
-        return mUrl ?: super.getSummary()
-    }
+    override fun getSummary(): CharSequence? = mUrl ?: super.getSummary()
 
     override fun onClick() {
         UrlOpener.openUrl(context, mUrl, true)

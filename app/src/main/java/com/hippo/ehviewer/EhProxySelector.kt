@@ -76,9 +76,7 @@ class EhProxySelector internal constructor() : ProxySelector() {
     }
 
     private class NullProxySelector : ProxySelector() {
-        override fun select(uri: URI): List<Proxy> {
-            return listOf(Proxy.NO_PROXY)
-        }
+        override fun select(uri: URI): List<Proxy> = listOf(Proxy.NO_PROXY)
 
         override fun connectFailed(uri: URI, sa: SocketAddress, ioe: IOException) {}
     }

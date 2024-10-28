@@ -160,9 +160,7 @@ class ContentLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout
         }
     }
 
-    override fun onSaveInstanceState(): Parcelable {
-        return mContentHelper.saveInstanceState(super.onSaveInstanceState())
-    }
+    override fun onSaveInstanceState(): Parcelable = mContentHelper.saveInstanceState(super.onSaveInstanceState())
 
     override fun onRestoreInstanceState(state: Parcelable) {
         super.onRestoreInstanceState(mContentHelper.restoreInstanceState(state))
@@ -335,24 +333,18 @@ class ContentLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout
         val data: List<E>
             get() = mData
 
-        fun getDataAtEx(location: Int): E? {
-            return if (location >= 0 && location < mData.size) {
-                mData[location]
-            } else {
-                null
-            }
+        fun getDataAtEx(location: Int): E? = if (location >= 0 && location < mData.size) {
+            mData[location]
+        } else {
+            null
         }
 
         val firstVisibleItem: E?
             get() = getDataAtEx(LayoutManagerUtils.getFirstVisibleItemPosition(mRecyclerView!!.layoutManager!!))
 
-        fun size(): Int {
-            return mData.size
-        }
+        fun size(): Int = mData.size
 
-        fun isCurrentTask(taskId: Int): Boolean {
-            return mCurrentTaskId == taskId
-        }
+        fun isCurrentTask(taskId: Int): Boolean = mCurrentTaskId == taskId
 
         protected abstract fun isDuplicate(d1: E, d2: E): Boolean
         private fun removeDuplicateData(data: List<E>, start: Int, end: Int) {
@@ -726,12 +718,10 @@ class ContentLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout
             mBottomProgress!!.hide()
         }
 
-        private fun getPageStart(page: Int): Int {
-            return if (mStartPage == page) {
-                0
-            } else {
-                mPageDivider!![page - mStartPage - 1]
-            }
+        private fun getPageStart(page: Int): Int = if (mStartPage == page) {
+            0
+        } else {
+            mPageDivider!![page - mStartPage - 1]
         }
 
         private fun getPageForPosition(position: Int): Int {
@@ -755,9 +745,7 @@ class ContentLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout
         val pageForBottom: Int
             get() = getPageForPosition(LayoutManagerUtils.getLastVisibleItemPosition(mRecyclerView!!.layoutManager!!))
 
-        fun canGoTo(): Boolean {
-            return isContentShowing
-        }
+        fun canGoTo(): Boolean = isContentShowing
 
         /**
          * Check range first!
@@ -846,41 +834,39 @@ class ContentLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout
         }
 
         @Suppress("UNCHECKED_CAST")
-        open fun restoreInstanceState(state: Parcelable): Parcelable? {
-            return if (state is Bundle) {
-                mViewTransition!!.showView(state.getInt(KEY_SHOWN_VIEW), false)
-                mTipView!!.text = state.getString(KEY_TIP)
-                mSavedDataId = state.getInt(KEY_DATA)
-                var newData: ArrayList<E>? = null
-                val app = context.applicationContext as EhApplication
-                if (mSavedDataId != IntIdGenerator.INVALID_ID) {
-                    newData = app.removeGlobalStuff(mSavedDataId) as ArrayList<E>?
-                    mSavedDataId = IntIdGenerator.INVALID_ID
-                    if (newData != null) {
-                        mData = newData
-                    }
+        open fun restoreInstanceState(state: Parcelable): Parcelable? = if (state is Bundle) {
+            mViewTransition!!.showView(state.getInt(KEY_SHOWN_VIEW), false)
+            mTipView!!.text = state.getString(KEY_TIP)
+            mSavedDataId = state.getInt(KEY_DATA)
+            var newData: ArrayList<E>? = null
+            val app = context.applicationContext as EhApplication
+            if (mSavedDataId != IntIdGenerator.INVALID_ID) {
+                newData = app.removeGlobalStuff(mSavedDataId) as ArrayList<E>?
+                mSavedDataId = IntIdGenerator.INVALID_ID
+                if (newData != null) {
+                    mData = newData
                 }
-                mIdGenerator.setNextId(state.getInt(KEY_NEXT_ID))
-                mPageDivider = state.getParcelableCompat(KEY_PAGE_DIVIDER)
-                mStartPage = state.getInt(KEY_START_PAGE)
-                mEndPage = state.getInt(KEY_END_PAGE)
-                pages = state.getInt(KEY_PAGES)
-                mPrev = state.getString(KEY_PREV)
-                mNext = state.getString(KEY_NEXT)
-                notifyDataSetChanged()
-                if (newData == null) {
-                    mPageDivider!!.clear()
-                    mStartPage = 0
-                    mEndPage = 0
-                    pages = 0
-                    mPrev = null
-                    mNext = null
-                    firstRefresh()
-                }
-                state.getParcelableCompat(KEY_SUPER)
-            } else {
-                state
             }
+            mIdGenerator.setNextId(state.getInt(KEY_NEXT_ID))
+            mPageDivider = state.getParcelableCompat(KEY_PAGE_DIVIDER)
+            mStartPage = state.getInt(KEY_START_PAGE)
+            mEndPage = state.getInt(KEY_END_PAGE)
+            pages = state.getInt(KEY_PAGES)
+            mPrev = state.getString(KEY_PREV)
+            mNext = state.getString(KEY_NEXT)
+            notifyDataSetChanged()
+            if (newData == null) {
+                mPageDivider!!.clear()
+                mStartPage = 0
+                mEndPage = 0
+                pages = 0
+                mPrev = null
+                mNext = null
+                firstRefresh()
+            }
+            state.getParcelableCompat(KEY_SUPER)
+        } else {
+            state
         }
 
         companion object {

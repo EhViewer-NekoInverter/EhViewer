@@ -20,4 +20,5 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class LongList @JvmOverloads constructor(private val delegate: MutableList<Long> = mutableListOf()) :
-    Parcelable, MutableList<Long> by delegate
+    Parcelable,
+    MutableList<Long> by delegate

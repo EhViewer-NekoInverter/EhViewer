@@ -81,9 +81,7 @@ class MyTagsFragment : BaseFragment() {
         }
     }
 
-    override fun getFragmentTitle(): Int {
-        return R.string.my_tags
-    }
+    override fun getFragmentTitle(): Int = R.string.my_tags
 
     private inner class MyTagsWebViewClient : WebViewClient() {
         override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {

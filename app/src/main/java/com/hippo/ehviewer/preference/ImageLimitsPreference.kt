@@ -38,7 +38,8 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 class ImageLimitsPreference(
     context: Context,
     attrs: AttributeSet? = null,
-) : DialogPreference(context, attrs), View.OnClickListener {
+) : DialogPreference(context, attrs),
+    View.OnClickListener {
     private val mActivity = context as SettingsActivity
     private val placeholder = context.getString(R.string.please_wait)
     private val coroutineScope = mActivity.lifecycleScope

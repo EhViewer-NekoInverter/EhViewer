@@ -28,42 +28,40 @@ object GalleryPageApiParser {
     private val PATTERN_ORIGIN_IMAGE_URL =
         Pattern.compile("<a href=\"([^\"]+)fullimg([^\"]+)\">")
 
-    fun parse(body: String): Result {
-        return try {
-            var m: Matcher
-            val jo = JSONObject(body)
-            if (jo.has("error")) {
-                throw ParseException(jo.getString("error"))
-            }
-            val i3 = jo.getString("i3")
-            m = PATTERN_IMAGE_URL.matcher(i3)
-            val imageUrl = if (m.find()) {
-                StringUtils.unescapeXml(StringUtils.trim(m.group(1)))
-            } else {
-                null
-            }
-            val i6 = jo.getString("i6")
-            m = PATTERN_SKIP_HATH_KEY.matcher(i6)
-            val skipHathKey = if (m.find()) {
-                StringUtils.unescapeXml(StringUtils.trim(m.group(1)))
-            } else {
-                null
-            }
-            m = PATTERN_ORIGIN_IMAGE_URL.matcher(i6)
-            val originImageUrl = if (m.find()) {
-                StringUtils.unescapeXml(m.group(1)) + "fullimg" +
-                    StringUtils.unescapeXml(m.group(2))
-            } else {
-                null
-            }
-            if (!imageUrl.isNullOrEmpty()) {
-                Result(imageUrl, skipHathKey, originImageUrl)
-            } else {
-                throw ParseException("Parse image url and skip hath key error")
-            }
-        } catch (e: JSONException) {
-            throw ParseException("Can't parse json", e)
+    fun parse(body: String): Result = try {
+        var m: Matcher
+        val jo = JSONObject(body)
+        if (jo.has("error")) {
+            throw ParseException(jo.getString("error"))
         }
+        val i3 = jo.getString("i3")
+        m = PATTERN_IMAGE_URL.matcher(i3)
+        val imageUrl = if (m.find()) {
+            StringUtils.unescapeXml(StringUtils.trim(m.group(1)))
+        } else {
+            null
+        }
+        val i6 = jo.getString("i6")
+        m = PATTERN_SKIP_HATH_KEY.matcher(i6)
+        val skipHathKey = if (m.find()) {
+            StringUtils.unescapeXml(StringUtils.trim(m.group(1)))
+        } else {
+            null
+        }
+        m = PATTERN_ORIGIN_IMAGE_URL.matcher(i6)
+        val originImageUrl = if (m.find()) {
+            StringUtils.unescapeXml(m.group(1)) + "fullimg" +
+                StringUtils.unescapeXml(m.group(2))
+        } else {
+            null
+        }
+        if (!imageUrl.isNullOrEmpty()) {
+            Result(imageUrl, skipHathKey, originImageUrl)
+        } else {
+            throw ParseException("Parse image url and skip hath key error")
+        }
+    } catch (e: JSONException) {
+        throw ParseException("Can't parse json", e)
     }
 
     class Result(val imageUrl: String, val skipHathKey: String?, val originImageUrl: String?)

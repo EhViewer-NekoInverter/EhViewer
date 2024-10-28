@@ -149,9 +149,7 @@ class BatteryDrawable : Drawable() {
         "Deprecated in Java",
         ReplaceWith("PixelFormat.TRANSLUCENT", "android.graphics.PixelFormat"),
     )
-    override fun getOpacity(): Int {
-        return PixelFormat.TRANSLUCENT
-    }
+    override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
     companion object {
         const val WARN_LIMIT = 15

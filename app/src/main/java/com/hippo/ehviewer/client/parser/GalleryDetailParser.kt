@@ -286,43 +286,41 @@ object GalleryDetailParser {
         }
     }
 
-    private fun parseTagGroup(element: Element): GalleryTagGroup? {
-        return try {
-            val group = GalleryTagGroup()
-            var nameSpace = element.child(0).text()
-            // Remove last ':'
-            nameSpace = nameSpace.substring(0, nameSpace.length - 1)
-            group.groupName = nameSpace
-            val tags = element.child(1).children()
-            tags.forEach {
-                var tag = it.text()
-                // Sometimes parody tag is followed with '|' and english translate, just remove them
-                val index = tag.indexOf('|')
-                if (index >= 0) {
-                    tag = tag.substring(0, index).trim()
-                }
-                // Vote status
-                if (it.child(0).hasClass("tup")) {
-                    tag = "_U$tag"
-                } else if (it.child(0).hasClass("tdn")) {
-                    tag = "_D$tag"
-                }
-                // Weak tag
-                if (it.hasClass("gtw")) {
-                    tag = "_W$tag"
-                }
-                // Active tag
-                if (it.hasClass("gtl")) {
-                    tag = "_L$tag"
-                }
-                group.add(tag)
+    private fun parseTagGroup(element: Element): GalleryTagGroup? = try {
+        val group = GalleryTagGroup()
+        var nameSpace = element.child(0).text()
+        // Remove last ':'
+        nameSpace = nameSpace.substring(0, nameSpace.length - 1)
+        group.groupName = nameSpace
+        val tags = element.child(1).children()
+        tags.forEach {
+            var tag = it.text()
+            // Sometimes parody tag is followed with '|' and english translate, just remove them
+            val index = tag.indexOf('|')
+            if (index >= 0) {
+                tag = tag.substring(0, index).trim()
             }
-            if (group.isNotEmpty()) group else null
-        } catch (e: Throwable) {
-            ExceptionUtils.throwIfFatal(e)
-            e.printStackTrace()
-            null
+            // Vote status
+            if (it.child(0).hasClass("tup")) {
+                tag = "_U$tag"
+            } else if (it.child(0).hasClass("tdn")) {
+                tag = "_D$tag"
+            }
+            // Weak tag
+            if (it.hasClass("gtw")) {
+                tag = "_W$tag"
+            }
+            // Active tag
+            if (it.hasClass("gtl")) {
+                tag = "_L$tag"
+            }
+            group.add(tag)
         }
+        if (group.isNotEmpty()) group else null
+    } catch (e: Throwable) {
+        ExceptionUtils.throwIfFatal(e)
+        e.printStackTrace()
+        null
     }
 
     /**
@@ -341,14 +339,12 @@ object GalleryDetailParser {
         }
     }
 
-    private fun parseTagGroups(trs: Elements): Array<GalleryTagGroup> {
-        return try {
-            trs.mapNotNull { parseTagGroup(it) }.toTypedArray()
-        } catch (e: Throwable) {
-            ExceptionUtils.throwIfFatal(e)
-            e.printStackTrace()
-            EMPTY_GALLERY_TAG_GROUP_ARRAY
-        }
+    private fun parseTagGroups(trs: Elements): Array<GalleryTagGroup> = try {
+        trs.mapNotNull { parseTagGroup(it) }.toTypedArray()
+    } catch (e: Throwable) {
+        ExceptionUtils.throwIfFatal(e)
+        e.printStackTrace()
+        EMPTY_GALLERY_TAG_GROUP_ARRAY
     }
 
     private fun parseComment(element: Element): GalleryComment? {
@@ -442,47 +438,43 @@ object GalleryDetailParser {
     /**
      * Parse comments with html parser
      */
-    fun parseComments(document: Document): GalleryCommentList {
-        return try {
-            val cdiv = document.getElementById("cdiv")!!
-            val c1s = cdiv.getElementsByClass("c1")
-            val list = c1s.mapNotNull { parseComment(it) }
-            val chd = cdiv.getElementById("chd")
-            var hasMore = false
-            NodeTraversor.traverse(
-                object : NodeVisitor {
-                    override fun head(node: Node, depth: Int) {
-                        if (node is Element && node.text() == "click to show all") {
-                            hasMore = true
-                        }
+    fun parseComments(document: Document): GalleryCommentList = try {
+        val cdiv = document.getElementById("cdiv")!!
+        val c1s = cdiv.getElementsByClass("c1")
+        val list = c1s.mapNotNull { parseComment(it) }
+        val chd = cdiv.getElementById("chd")
+        var hasMore = false
+        NodeTraversor.traverse(
+            object : NodeVisitor {
+                override fun head(node: Node, depth: Int) {
+                    if (node is Element && node.text() == "click to show all") {
+                        hasMore = true
                     }
+                }
 
-                    override fun tail(node: Node, depth: Int) {}
-                },
-                chd!!,
-            )
-            GalleryCommentList(list.toTypedArray(), hasMore)
-        } catch (e: Throwable) {
-            ExceptionUtils.throwIfFatal(e)
-            e.printStackTrace()
-            EMPTY_GALLERY_COMMENT_ARRAY
-        }
+                override fun tail(node: Node, depth: Int) {}
+            },
+            chd!!,
+        )
+        GalleryCommentList(list.toTypedArray(), hasMore)
+    } catch (e: Throwable) {
+        ExceptionUtils.throwIfFatal(e)
+        e.printStackTrace()
+        EMPTY_GALLERY_COMMENT_ARRAY
     }
 
     /**
      * Parse preview pages with html parser
      */
     @Throws(ParseException::class)
-    fun parsePreviewPages(document: Document): Int {
-        return try {
-            val ptt = document.getElementsByClass("ptt").first()!!
-            val elements = ptt.child(0).child(0).children()
-            elements[elements.size - 2].text().toInt()
-        } catch (e: Throwable) {
-            ExceptionUtils.throwIfFatal(e)
-            e.printStackTrace()
-            throw ParseException("Can't parse preview pages")
-        }
+    fun parsePreviewPages(document: Document): Int = try {
+        val ptt = document.getElementsByClass("ptt").first()!!
+        val elements = ptt.child(0).child(0).children()
+        elements[elements.size - 2].text().toInt()
+    } catch (e: Throwable) {
+        ExceptionUtils.throwIfFatal(e)
+        e.printStackTrace()
+        throw ParseException("Can't parse preview pages")
     }
 
     /**
@@ -490,20 +482,16 @@ object GalleryDetailParser {
      */
     @JvmStatic
     @Throws(ParseException::class)
-    fun parsePreviewPages(body: String): Int {
-        return PATTERN_PREVIEW_PAGES.find(body)?.groupValues?.get(1)?.toIntOrNull()
-            ?: throw ParseException("Parse preview page count error")
-    }
+    fun parsePreviewPages(body: String): Int = PATTERN_PREVIEW_PAGES.find(body)?.groupValues?.get(1)?.toIntOrNull()
+        ?: throw ParseException("Parse preview page count error")
 
     /**
      * Parse pages with regular expressions
      */
     @JvmStatic
     @Throws(ParseException::class)
-    fun parsePages(body: String): Int {
-        return PATTERN_PAGES.find(body)?.groupValues?.get(1)?.toIntOrNull()
-            ?: throw ParseException("Parse pages error")
-    }
+    fun parsePages(body: String): Int = PATTERN_PAGES.find(body)?.groupValues?.get(1)?.toIntOrNull()
+        ?: throw ParseException("Parse pages error")
 
     @JvmStatic
     @Throws(ParseException::class)

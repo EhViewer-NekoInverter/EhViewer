@@ -26,18 +26,14 @@ internal class CookieSet {
      * Returns a previous cookie with
      * the same name, domain and path or `null`.
      */
-    fun add(cookie: Cookie): Cookie? {
-        return map.put(Key(cookie), cookie)
-    }
+    fun add(cookie: Cookie): Cookie? = map.put(Key(cookie), cookie)
 
     /**
      * Removes a cookie with the same name,
      * domain and path as the cookie.
      * Returns the removed cookie or `null`.
      */
-    fun remove(cookie: Cookie): Cookie? {
-        return map.remove(Key(cookie))
-    }
+    fun remove(cookie: Cookie): Cookie? = map.remove(Key(cookie))
 
     /**
      * Get cookies for the url. Fill `accepted` and `expired`.

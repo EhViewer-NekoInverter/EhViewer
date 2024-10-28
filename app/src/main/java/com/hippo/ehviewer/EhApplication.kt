@@ -50,7 +50,9 @@ import okhttp3.Cache
 import okhttp3.OkHttpClient
 import java.io.File
 
-class EhApplication : SceneApplication(), ImageLoaderFactory {
+class EhApplication :
+    SceneApplication(),
+    ImageLoaderFactory {
     private val mIdGenerator = IntIdGenerator()
     private val mGlobalStuffMap = HashMap<Int, Any>()
     private val mActivityList = ArrayList<Activity>()
@@ -176,13 +178,9 @@ class EhApplication : SceneApplication(), ImageLoaderFactory {
         return id
     }
 
-    fun containGlobalStuff(id: Int): Boolean {
-        return mGlobalStuffMap.containsKey(id)
-    }
+    fun containGlobalStuff(id: Int): Boolean = mGlobalStuffMap.containsKey(id)
 
-    fun removeGlobalStuff(id: Int): Any? {
-        return mGlobalStuffMap.remove(id)
-    }
+    fun removeGlobalStuff(id: Int): Any? = mGlobalStuffMap.remove(id)
 
     fun removeGlobalStuff(o: Any) {
         mGlobalStuffMap.values.removeAll(setOf(o))
@@ -196,19 +194,17 @@ class EhApplication : SceneApplication(), ImageLoaderFactory {
         mActivityList.remove(activity)
     }
 
-    override fun newImageLoader(): ImageLoader {
-        return ImageLoader.Builder(this).apply {
-            okHttpClient(nonCacheOkHttpClient)
-            components {
-                add(MergeInterceptor)
-                add(DownloadThumbInterceptor)
-                add(LimitConcurrencyInterceptor)
-            }
-            crossfade(300)
-            diskCache(thumbCache)
-            if (BuildConfig.DEBUG) logger(DebugLogger())
-        }.build()
-    }
+    override fun newImageLoader(): ImageLoader = ImageLoader.Builder(this).apply {
+        okHttpClient(nonCacheOkHttpClient)
+        components {
+            add(MergeInterceptor)
+            add(DownloadThumbInterceptor)
+            add(LimitConcurrencyInterceptor)
+        }
+        crossfade(300)
+        diskCache(thumbCache)
+        if (BuildConfig.DEBUG) logger(DebugLogger())
+    }.build()
 
     companion object {
         private const val KEY_GLOBAL_STUFF_NEXT_ID = "global_stuff_next_id"

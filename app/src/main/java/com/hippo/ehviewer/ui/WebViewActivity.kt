@@ -43,10 +43,8 @@ class WebViewActivity : EhActivity() {
     companion object {
         const val KEY_URL = "url"
 
-        fun newIntent(context: Context, url: String): Intent {
-            return Intent(context, WebViewActivity::class.java).apply {
-                putExtra(KEY_URL, url)
-            }
+        fun newIntent(context: Context, url: String): Intent = Intent(context, WebViewActivity::class.java).apply {
+            putExtra(KEY_URL, url)
         }
     }
 }

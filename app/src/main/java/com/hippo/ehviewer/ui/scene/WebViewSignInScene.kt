@@ -38,9 +38,7 @@ import rikka.core.res.resolveColor
 class WebViewSignInScene : SolidScene() {
     private var mWebView: WebView? = null
 
-    override fun needShowLeftDrawer(): Boolean {
-        return false
-    }
+    override fun needShowLeftDrawer(): Boolean = false
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(

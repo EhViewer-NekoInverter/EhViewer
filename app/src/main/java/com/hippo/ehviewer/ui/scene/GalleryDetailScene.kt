@@ -233,21 +233,19 @@ class GalleryDetailScene :
     private var mModifyingFavorites = false
 
     @StringRes
-    private fun getRatingText(rating: Float): Int {
-        return when ((rating * 2).roundToInt()) {
-            0 -> R.string.rating0
-            1 -> R.string.rating1
-            2 -> R.string.rating2
-            3 -> R.string.rating3
-            4 -> R.string.rating4
-            5 -> R.string.rating5
-            6 -> R.string.rating6
-            7 -> R.string.rating7
-            8 -> R.string.rating8
-            9 -> R.string.rating9
-            10 -> R.string.rating10
-            else -> R.string.rating_none
-        }
+    private fun getRatingText(rating: Float): Int = when ((rating * 2).roundToInt()) {
+        0 -> R.string.rating0
+        1 -> R.string.rating1
+        2 -> R.string.rating2
+        3 -> R.string.rating3
+        4 -> R.string.rating4
+        5 -> R.string.rating5
+        6 -> R.string.rating6
+        7 -> R.string.rating7
+        8 -> R.string.rating8
+        9 -> R.string.rating9
+        10 -> R.string.rating10
+        else -> R.string.rating_none
     }
 
     private fun handleArgs(args: Bundle?) {
@@ -971,14 +969,12 @@ class GalleryDetailScene :
         }
     }
 
-    private fun getAllRatingText(rating: Float, ratingCount: Int): String {
-        return getString(
-            R.string.rating_text,
-            getString(getRatingText(rating)),
-            rating,
-            ratingCount,
-        )
-    }
+    private fun getAllRatingText(rating: Float, ratingCount: Int): String = getString(
+        R.string.rating_text,
+        getString(getRatingText(rating)),
+        rating,
+        ratingCount,
+    )
 
     private fun setTransitionName() {
         val gid = gid
@@ -1623,8 +1619,7 @@ class GalleryDetailScene :
         }
     }
 
-    private inner class VoteTagListener(context: Context) :
-        EhCallback<GalleryDetailScene?, Pair<String, Array<GalleryTagGroup>?>>(context) {
+    private inner class VoteTagListener(context: Context) : EhCallback<GalleryDetailScene?, Pair<String, Array<GalleryTagGroup>?>>(context) {
         override fun onSuccess(result: Pair<String, Array<GalleryTagGroup>?>) {
             if (result.first.isNotEmpty()) {
                 showTip(result.first, LENGTH_SHORT)
@@ -1715,8 +1710,7 @@ class GalleryDetailScene :
         }
     }
 
-    private inner class GetGalleryDetailListener(context: Context) :
-        EhCallback<GalleryDetailScene?, GalleryDetail>(context) {
+    private inner class GetGalleryDetailListener(context: Context) : EhCallback<GalleryDetailScene?, GalleryDetail>(context) {
         override fun onSuccess(result: GalleryDetail) {
             application.removeGlobalStuff(this)
             // Put gallery detail to cache
@@ -1740,8 +1734,7 @@ class GalleryDetailScene :
         }
     }
 
-    private inner class GalleryUpgradeListener(context: Context) :
-        EhCallback<GalleryDetailScene?, GalleryDetail>(context) {
+    private inner class GalleryUpgradeListener(context: Context) : EhCallback<GalleryDetailScene?, GalleryDetail>(context) {
         override fun onSuccess(result: GalleryDetail) {
             val activity = mainActivity ?: return
             val from = mGalleryDetail ?: return
@@ -1862,8 +1855,7 @@ class GalleryDetailScene :
     private inner class ModifyFavoritesListener(
         context: Context,
         private val mAddOrRemove: Boolean,
-    ) :
-        EhCallback<GalleryDetailScene?, Unit>(context) {
+    ) : EhCallback<GalleryDetailScene?, Unit>(context) {
         override fun onSuccess(result: Unit) {
             showTip(
                 if (mAddOrRemove) R.string.remove_from_favorite_success else R.string.add_to_favorite_success,
@@ -2134,7 +2126,9 @@ class GalleryDetailScene :
         }
     }
 
-    private inner class RateDialogHelper : OnUserRateListener, DialogInterface.OnClickListener {
+    private inner class RateDialogHelper :
+        OnUserRateListener,
+        DialogInterface.OnClickListener {
         private var mRatingBar: GalleryRatingBar? = null
         private var mRatingText: TextView? = null
         fun setDialog(dialog: Dialog?, rating: Float) {

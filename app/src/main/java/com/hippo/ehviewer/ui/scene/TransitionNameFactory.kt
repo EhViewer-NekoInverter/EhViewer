@@ -16,19 +16,11 @@
 package com.hippo.ehviewer.ui.scene
 
 object TransitionNameFactory {
-    fun getThumbTransitionName(gid: Long): String {
-        return "thumb:$gid"
-    }
+    fun getThumbTransitionName(gid: Long): String = "thumb:$gid"
 
-    fun getTitleTransitionName(gid: Long): String {
-        return "title:$gid"
-    }
+    fun getTitleTransitionName(gid: Long): String = "title:$gid"
 
-    fun getUploaderTransitionName(gid: Long): String {
-        return "uploader:$gid"
-    }
+    fun getUploaderTransitionName(gid: Long): String = "uploader:$gid"
 
-    fun getCategoryTransitionName(gid: Long): String {
-        return "category:$gid"
-    }
+    fun getCategoryTransitionName(gid: Long): String = "category:$gid"
 }

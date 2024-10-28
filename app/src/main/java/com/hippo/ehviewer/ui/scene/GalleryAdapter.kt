@@ -179,9 +179,7 @@ internal abstract class GalleryAdapter(
 
     abstract fun onItemClick(view: View, position: Int)
     abstract fun onItemLongClick(view: View, position: Int): Boolean
-    override fun getItemViewType(position: Int): Int {
-        return mType
-    }
+    override fun getItemViewType(position: Int): Int = mType
 
     abstract fun getDataAt(position: Int): GalleryInfo?
 

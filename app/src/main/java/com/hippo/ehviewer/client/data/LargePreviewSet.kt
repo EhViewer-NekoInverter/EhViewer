@@ -31,17 +31,11 @@ class LargePreviewSet(
         mPageUrlList.add(pageUrl)
     }
 
-    override fun size(): Int {
-        return mImageUrlList.size
-    }
+    override fun size(): Int = mImageUrlList.size
 
-    override fun getPosition(index: Int): Int {
-        return mPositionList[index]
-    }
+    override fun getPosition(index: Int): Int = mPositionList[index]
 
-    override fun getPageUrlAt(index: Int): String {
-        return mPageUrlList[index]
-    }
+    override fun getPageUrlAt(index: Int): String = mPageUrlList[index]
 
     override fun getGalleryPreview(gid: Long, index: Int): GalleryPreview {
         val galleryPreview = GalleryPreview()

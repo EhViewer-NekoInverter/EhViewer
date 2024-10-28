@@ -44,15 +44,13 @@ class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) :
     override val startPage
         get() = mSpiderQueen.startPage
 
-    override fun getImageFilename(index: Int): String {
-        return String.format(
-            Locale.US,
-            "%d-%s-%08d",
-            mGalleryInfo.gid,
-            mGalleryInfo.token,
-            index + 1,
-        )
-    }
+    override fun getImageFilename(index: Int): String = String.format(
+        Locale.US,
+        "%d-%s-%08d",
+        mGalleryInfo.gid,
+        mGalleryInfo.token,
+        index + 1,
+    )
 
     override fun getImageFilenameWithExtension(index: Int): String {
         val extension = mSpiderQueen.getExtension(index)
@@ -75,17 +73,11 @@ class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) :
         )
     }
 
-    override fun save(index: Int, file: UniFile): Boolean {
-        return mSpiderQueen.save(index, file)
-    }
+    override fun save(index: Int, file: UniFile): Boolean = mSpiderQueen.save(index, file)
 
-    override fun save(index: Int, dir: UniFile, filename: String): UniFile? {
-        return mSpiderQueen.save(index, dir, filename)
-    }
+    override fun save(index: Int, dir: UniFile, filename: String): UniFile? = mSpiderQueen.save(index, dir, filename)
 
-    override suspend fun downloadOriginal(index: Int, dir: UniFile, filename: String): UniFile? {
-        return mSpiderQueen.downloadOriginal(index, dir, filename)
-    }
+    override suspend fun downloadOriginal(index: Int, dir: UniFile, filename: String): UniFile? = mSpiderQueen.downloadOriginal(index, dir, filename)
 
     override fun putStartPage(page: Int) {
         mSpiderQueen.putStartPage(page)
@@ -104,9 +96,7 @@ class EhGalleryProvider(private val mGalleryInfo: GalleryInfo) :
         mSpiderQueen.forceRequest(index)
     }
 
-    override suspend fun awaitReady(): Boolean {
-        return mSpiderQueen.awaitReady()
-    }
+    override suspend fun awaitReady(): Boolean = mSpiderQueen.awaitReady()
 
     override val isReady: Boolean
         get() = mSpiderQueen.isReady

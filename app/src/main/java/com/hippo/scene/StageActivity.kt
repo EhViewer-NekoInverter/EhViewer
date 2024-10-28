@@ -60,9 +60,7 @@ abstract class StageActivity : EhActivity() {
      *
      * @return `null` for do not start scene
      */
-    protected open fun onStartSceneFromIntent(clazz: Class<*>, args: Bundle?): Announcer? {
-        return Announcer(clazz).setArgs(args)
-    }
+    protected open fun onStartSceneFromIntent(clazz: Class<*>, args: Bundle?): Announcer? = Announcer(clazz).setArgs(args)
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
@@ -162,20 +160,18 @@ abstract class StageActivity : EhActivity() {
         return integer ?: throw RuntimeException("Not register " + clazz.getName())
     }
 
-    private fun newSceneInstance(clazz: Class<*>): SceneFragment {
-        return try {
-            clazz.getDeclaredConstructor().newInstance() as SceneFragment
-        } catch (e: InstantiationException) {
-            throw IllegalStateException("Can't instance " + clazz.getName(), e)
-        } catch (e: IllegalAccessException) {
-            throw IllegalStateException(
-                "The constructor of " +
-                    clazz.getName() + " is not visible",
-                e,
-            )
-        } catch (e: ClassCastException) {
-            throw IllegalStateException(clazz.getName() + " can not cast to scene", e)
-        }
+    private fun newSceneInstance(clazz: Class<*>): SceneFragment = try {
+        clazz.getDeclaredConstructor().newInstance() as SceneFragment
+    } catch (e: InstantiationException) {
+        throw IllegalStateException("Can't instance " + clazz.getName(), e)
+    } catch (e: IllegalAccessException) {
+        throw IllegalStateException(
+            "The constructor of " +
+                clazz.getName() + " is not visible",
+            e,
+        )
+    } catch (e: ClassCastException) {
+        throw IllegalStateException(clazz.getName() + " can not cast to scene", e)
     }
 
     @JvmOverloads
@@ -413,13 +409,9 @@ abstract class StageActivity : EhActivity() {
         }
     }
 
-    fun getSceneIndex(scene: SceneFragment): Int {
-        return getTagIndex(scene.tag)
-    }
+    fun getSceneIndex(scene: SceneFragment): Int = getTagIndex(scene.tag)
 
-    private fun getTagIndex(tag: String?): Int {
-        return mSceneTagList.indexOf(tag)
-    }
+    private fun getTagIndex(tag: String?): Int = mSceneTagList.indexOf(tag)
 
     fun sortSceneViews(views: ArrayList<View>) {
         views.sortWith(mSceneViewComparator)
@@ -572,9 +564,7 @@ abstract class StageActivity : EhActivity() {
             }
         }
 
-        override fun compare(lhs: View, rhs: View): Int {
-            return getIndex(lhs) - getIndex(rhs)
-        }
+        override fun compare(lhs: View, rhs: View): Int = getIndex(lhs) - getIndex(rhs)
     }
 
     companion object {

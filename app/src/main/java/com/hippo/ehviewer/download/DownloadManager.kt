@@ -121,9 +121,7 @@ object DownloadManager : OnSpiderListener {
         mDownloadInfoListeners = ArrayList()
     }
 
-    fun getDownloadDirname(gid: Long): String? {
-        return mAllDownloadDirname[gid]
-    }
+    fun getDownloadDirname(gid: Long): String? = mAllDownloadDirname[gid]
 
     fun putDownloadDirname(gid: Long, dirname: String) {
         mAllDownloadDirname.put(gid, dirname)
@@ -135,12 +133,10 @@ object DownloadManager : OnSpiderListener {
         EhDB.removeDownloadDirname(gid)
     }
 
-    private fun getInfoListForLabel(label: String?): LinkedList<DownloadInfo>? {
-        return if (label == null) {
-            mDefaultInfoList
-        } else {
-            mMap[label]
-        }
+    private fun getInfoListForLabel(label: String?): LinkedList<DownloadInfo>? = if (label == null) {
+        mDefaultInfoList
+    } else {
+        mMap[label]
     }
 
     fun containLabel(label: String?): Boolean {
@@ -155,9 +151,7 @@ object DownloadManager : OnSpiderListener {
         return false
     }
 
-    fun containDownloadInfo(gid: Long): Boolean {
-        return mAllInfoMap.indexOfKey(gid) >= 0
-    }
+    fun containDownloadInfo(gid: Long): Boolean = mAllInfoMap.indexOfKey(gid) >= 0
 
     val labelList: List<DownloadLabel>
         get() = mLabelList
@@ -166,13 +160,9 @@ object DownloadManager : OnSpiderListener {
     val defaultDownloadInfoList: MutableList<DownloadInfo>
         get() = mDefaultInfoList
 
-    fun getLabelDownloadInfoList(label: String?): MutableList<DownloadInfo>? {
-        return mMap[label]
-    }
+    fun getLabelDownloadInfoList(label: String?): MutableList<DownloadInfo>? = mMap[label]
 
-    fun getDownloadInfo(gid: Long): DownloadInfo? {
-        return mAllInfoMap[gid]
-    }
+    fun getDownloadInfo(gid: Long): DownloadInfo? = mAllInfoMap[gid]
 
     fun getDownloadState(gid: Long): Int {
         val info = mAllInfoMap[gid]

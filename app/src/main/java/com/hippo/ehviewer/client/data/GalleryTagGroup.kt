@@ -22,4 +22,5 @@ import kotlinx.parcelize.Parcelize
 class GalleryTagGroup(
     private val mTagList: ArrayList<String> = arrayListOf(),
     var groupName: String? = null,
-) : Parcelable, MutableList<String> by mTagList
+) : Parcelable,
+    MutableList<String> by mTagList

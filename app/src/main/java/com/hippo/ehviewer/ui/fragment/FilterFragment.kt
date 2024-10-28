@@ -163,9 +163,7 @@ class FilterFragment : BaseFragment() {
             .show()
     }
 
-    override fun getFragmentTitle(): Int {
-        return R.string.filter
-    }
+    override fun getFragmentTitle(): Int = R.string.filter
 
     private class FilterHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val checkbox: MaterialCheckBox? = itemView.findViewById(R.id.checkbox)
@@ -210,12 +208,10 @@ class FilterFragment : BaseFragment() {
     }
 
     private inner class FilterAdapter : RecyclerView.Adapter<FilterHolder>() {
-        override fun getItemViewType(position: Int): Int {
-            return if (mFilterList[position].mode == MODE_HEADER) {
-                TYPE_HEADER
-            } else {
-                TYPE_ITEM
-            }
+        override fun getItemViewType(position: Int): Int = if (mFilterList[position].mode == MODE_HEADER) {
+            TYPE_HEADER
+        } else {
+            TYPE_ITEM
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilterHolder {
@@ -244,18 +240,14 @@ class FilterFragment : BaseFragment() {
             }
         }
 
-        override fun getItemCount(): Int {
-            return mFilterList.size()
-        }
+        override fun getItemCount(): Int = mFilterList.size()
 
-        override fun getItemId(position: Int): Long {
-            return run {
-                val filter = mFilterList[position]
-                if (filter.id != null) {
-                    (filter.text.hashCode() shr filter.mode) + filter.id!!
-                } else {
-                    (filter.text.hashCode() shr filter.mode).toLong()
-                }
+        override fun getItemId(position: Int): Long = run {
+            val filter = mFilterList[position]
+            if (filter.id != null) {
+                (filter.text.hashCode() shr filter.mode) + filter.id!!
+            } else {
+                (filter.text.hashCode() shr filter.mode).toLong()
             }
         }
     }
@@ -409,9 +401,7 @@ class FilterFragment : BaseFragment() {
             throw IndexOutOfBoundsException()
         }
 
-        fun add(filter: Filter): Boolean {
-            return mEhFilter.addFilter(filter)
-        }
+        fun add(filter: Filter): Boolean = mEhFilter.addFilter(filter)
 
         fun delete(filter: Filter) {
             mEhFilter.deleteFilter(filter)

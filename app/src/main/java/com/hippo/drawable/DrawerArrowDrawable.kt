@@ -156,21 +156,15 @@ class DrawerArrowDrawable(context: Context, color: Int) : Drawable() {
         mPaint.setColorFilter(colorFilter)
     }
 
-    override fun getIntrinsicHeight(): Int {
-        return mSize
-    }
+    override fun getIntrinsicHeight(): Int = mSize
 
-    override fun getIntrinsicWidth(): Int {
-        return mSize
-    }
+    override fun getIntrinsicWidth(): Int = mSize
 
     @Deprecated(
         "Deprecated in Java",
         ReplaceWith("PixelFormat.TRANSLUCENT", "android.graphics.PixelFormat"),
     )
-    override fun getOpacity(): Int {
-        return PixelFormat.TRANSLUCENT
-    }
+    override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
     @get:Keep
     @set:Keep

@@ -45,112 +45,110 @@ object EhClient {
         }
     }
 
-    suspend fun execute(method: Int, vararg params: Any?): Any? {
-        return when (method) {
-            METHOD_GET_GALLERY_LIST -> EhEngine.getGalleryList(
-                params[0] as String,
-            )
+    suspend fun execute(method: Int, vararg params: Any?): Any? = when (method) {
+        METHOD_GET_GALLERY_LIST -> EhEngine.getGalleryList(
+            params[0] as String,
+        )
 
-            METHOD_GET_GALLERY_DETAIL -> EhEngine.getGalleryDetail(
-                params[0] as String,
-            )
+        METHOD_GET_GALLERY_DETAIL -> EhEngine.getGalleryDetail(
+            params[0] as String,
+        )
 
-            METHOD_GET_PREVIEW_SET -> EhEngine.getPreviewSet(
-                params[0] as String,
-            )
+        METHOD_GET_PREVIEW_SET -> EhEngine.getPreviewSet(
+            params[0] as String,
+        )
 
-            METHOD_GET_RATE_GALLERY -> EhEngine.rateGallery(
-                params[0] as Long,
-                params[1] as String?,
-                params[2] as Long,
-                params[3] as String?,
-                params[4] as Float,
-            )
+        METHOD_GET_RATE_GALLERY -> EhEngine.rateGallery(
+            params[0] as Long,
+            params[1] as String?,
+            params[2] as Long,
+            params[3] as String?,
+            params[4] as Float,
+        )
 
-            METHOD_GET_COMMENT_GALLERY -> EhEngine.commentGallery(
-                params[0] as String?,
-                params[1] as String,
-                params[2] as String?,
-            )
+        METHOD_GET_COMMENT_GALLERY -> EhEngine.commentGallery(
+            params[0] as String?,
+            params[1] as String,
+            params[2] as String?,
+        )
 
-            METHOD_GET_GALLERY_TOKEN -> EhEngine.getGalleryToken(
-                params[0] as Long,
-                params[1] as String?,
+        METHOD_GET_GALLERY_TOKEN -> EhEngine.getGalleryToken(
+            params[0] as Long,
+            params[1] as String?,
+            params[2] as Int,
+        )
+
+        METHOD_GET_FAVORITES -> EhEngine.getFavorites(
+            params[0] as String,
+        )
+
+        METHOD_ADD_FAVORITES -> EhEngine.addFavorites(
+            params[0] as Long,
+            params[1] as String?,
+            params[2] as Int,
+            params[3] as String?,
+        )
+
+        METHOD_ADD_FAVORITES_RANGE ->
+            @Suppress("UNCHECKED_CAST")
+            EhEngine.addFavoritesRange(
+                params[0] as LongArray,
+                params[1] as Array<String?>,
                 params[2] as Int,
             )
 
-            METHOD_GET_FAVORITES -> EhEngine.getFavorites(
-                params[0] as String,
-            )
+        METHOD_MODIFY_FAVORITES -> EhEngine.modifyFavorites(
+            params[0] as String,
+            params[1] as LongArray,
+            params[2] as Int,
+        )
 
-            METHOD_ADD_FAVORITES -> EhEngine.addFavorites(
-                params[0] as Long,
-                params[1] as String?,
-                params[2] as Int,
-                params[3] as String?,
-            )
+        METHOD_GET_TORRENT_LIST -> EhEngine.getTorrentList(
+            params[0] as String,
+            params[1] as Long,
+            params[2] as String?,
+        )
 
-            METHOD_ADD_FAVORITES_RANGE ->
-                @Suppress("UNCHECKED_CAST")
-                EhEngine.addFavoritesRange(
-                    params[0] as LongArray,
-                    params[1] as Array<String?>,
-                    params[2] as Int,
-                )
+        METHOD_VOTE_COMMENT -> EhEngine.voteComment(
+            params[0] as Long,
+            params[1] as String?,
+            params[2] as Long,
+            params[3] as String?,
+            params[4] as Long,
+            params[5] as Int,
+        )
 
-            METHOD_MODIFY_FAVORITES -> EhEngine.modifyFavorites(
-                params[0] as String,
-                params[1] as LongArray,
-                params[2] as Int,
-            )
+        METHOD_IMAGE_SEARCH -> EhEngine.imageSearch(
+            params[0] as File,
+            params[1] as Boolean,
+            params[2] as Boolean,
+            params[3] as Boolean,
+        )
 
-            METHOD_GET_TORRENT_LIST -> EhEngine.getTorrentList(
-                params[0] as String,
-                params[1] as Long,
-                params[2] as String?,
-            )
+        METHOD_ARCHIVE_LIST -> EhEngine.getArchiveList(
+            params[0] as String,
+            params[1] as Long,
+            params[2] as String?,
+        )
 
-            METHOD_VOTE_COMMENT -> EhEngine.voteComment(
-                params[0] as Long,
-                params[1] as String?,
-                params[2] as Long,
-                params[3] as String?,
-                params[4] as Long,
-                params[5] as Int,
-            )
+        METHOD_DOWNLOAD_ARCHIVE -> EhEngine.downloadArchive(
+            params[0] as Long,
+            params[1] as String?,
+            params[2] as String?,
+            params[3] as String?,
+            params[4] as Boolean,
+        )
 
-            METHOD_IMAGE_SEARCH -> EhEngine.imageSearch(
-                params[0] as File,
-                params[1] as Boolean,
-                params[2] as Boolean,
-                params[3] as Boolean,
-            )
+        METHOD_VOTE_TAG -> EhEngine.voteTag(
+            params[0] as Long,
+            params[1] as String?,
+            params[2] as Long,
+            params[3] as String?,
+            params[4] as String?,
+            params[5] as Int,
+        )
 
-            METHOD_ARCHIVE_LIST -> EhEngine.getArchiveList(
-                params[0] as String,
-                params[1] as Long,
-                params[2] as String?,
-            )
-
-            METHOD_DOWNLOAD_ARCHIVE -> EhEngine.downloadArchive(
-                params[0] as Long,
-                params[1] as String?,
-                params[2] as String?,
-                params[3] as String?,
-                params[4] as Boolean,
-            )
-
-            METHOD_VOTE_TAG -> EhEngine.voteTag(
-                params[0] as Long,
-                params[1] as String?,
-                params[2] as Long,
-                params[3] as String?,
-                params[4] as String?,
-                params[5] as Int,
-            )
-
-            else -> throw IllegalStateException("Can't detect method $method")
-        }
+        else -> throw IllegalStateException("Can't detect method $method")
     }
 
     interface Callback<E> {

@@ -16,23 +16,13 @@
 package com.hippo.ehviewer.client
 
 object EhCacheKeyFactory {
-    fun getThumbKey(gid: Long): String {
-        return "preview:large:$gid:0"
-    }
+    fun getThumbKey(gid: Long): String = "preview:large:$gid:0"
 
-    fun getNormalPreviewKey(gid: Long, index: Int): String {
-        return "preview:normal:$gid:$index"
-    }
+    fun getNormalPreviewKey(gid: Long, index: Int): String = "preview:normal:$gid:$index"
 
-    fun getLargePreviewKey(gid: Long, index: Int): String {
-        return "preview:large:$gid:$index"
-    }
+    fun getLargePreviewKey(gid: Long, index: Int): String = "preview:large:$gid:$index"
 
-    fun getLargePreviewSetKey(gid: Long, index: Int): String {
-        return "large_preview_set:$gid:$index"
-    }
+    fun getLargePreviewSetKey(gid: Long, index: Int): String = "large_preview_set:$gid:$index"
 
-    fun getImageKey(gid: Long, index: Int): String {
-        return "image:$gid:$index"
-    }
+    fun getImageKey(gid: Long, index: Int): String = "image:$gid:$index"
 }

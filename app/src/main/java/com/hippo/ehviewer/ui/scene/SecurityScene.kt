@@ -33,7 +33,9 @@ import com.hippo.yorozuya.ObjectUtils
 import com.hippo.yorozuya.ViewUtils
 import java.util.concurrent.Executors
 
-class SecurityScene : SolidScene(), OnPatternListener {
+class SecurityScene :
+    SolidScene(),
+    OnPatternListener {
     private var mPatternView: LockPatternView? = null
     private var mSensorManager: SensorManager? = null
     private var mAccelerometer: Sensor? = null
@@ -42,9 +44,7 @@ class SecurityScene : SolidScene(), OnPatternListener {
     private var canAuthenticate = false
     private var mRetryTimes = 0
 
-    override fun needShowLeftDrawer(): Boolean {
-        return false
-    }
+    override fun needShowLeftDrawer(): Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -254,9 +254,7 @@ class SearchBar @JvmOverloads constructor(
         return false
     }
 
-    fun getState(): Int {
-        return mState
-    }
+    fun getState(): Int = mState
 
     fun setState(state: Int, animation: Boolean = true) {
         if (mState != state) {
@@ -357,9 +355,7 @@ class SearchBar @JvmOverloads constructor(
         }
     }
 
-    override fun getProgress(): Float {
-        return mProgress
-    }
+    override fun getProgress(): Float = mProgress
 
     @Keep
     override fun setProgress(progress: Float) {
@@ -367,9 +363,7 @@ class SearchBar @JvmOverloads constructor(
         invalidate()
     }
 
-    fun getEditText(): SearchEditText {
-        return mEditText!!
-    }
+    fun getEditText(): SearchEditText = mEditText!!
 
     override fun draw(canvas: Canvas) {
         if (mInAnimation && mHeight != 0) {
@@ -424,16 +418,14 @@ class SearchBar @JvmOverloads constructor(
         }
     }
 
-    private fun wrapTagKeyword(keyword: String): String {
-        return if (keyword.endsWith(':')) {
-            keyword
-        } else if (keyword.contains(" ")) {
-            val tag = keyword.substringAfter(':')
-            val prefix = keyword.dropLast(tag.length)
-            "$prefix\"$tag$\" "
-        } else {
-            "$keyword$ "
-        }
+    private fun wrapTagKeyword(keyword: String): String = if (keyword.endsWith(':')) {
+        keyword
+    } else if (keyword.contains(" ")) {
+        val tag = keyword.substringAfter(':')
+        val prefix = keyword.dropLast(tag.length)
+        "$prefix\"$tag$\" "
+    } else {
+        "$keyword$ "
     }
 
     interface Helper {
@@ -457,9 +449,7 @@ class SearchBar @JvmOverloads constructor(
     abstract class Suggestion {
         abstract fun getText(textView: TextView): CharSequence?
         abstract fun onClick()
-        open fun onLongClick(): Boolean {
-            return false
-        }
+        open fun onLongClick(): Boolean = false
     }
 
     private class SuggestionHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -470,9 +460,7 @@ class SearchBar @JvmOverloads constructor(
     private inner class SuggestionAdapter(
         private val mInflater: LayoutInflater,
     ) : RecyclerView.Adapter<SuggestionHolder>() {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SuggestionHolder {
-            return SuggestionHolder(mInflater.inflate(R.layout.item_simple_list_2, parent, false))
-        }
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SuggestionHolder = SuggestionHolder(mInflater.inflate(R.layout.item_simple_list_2, parent, false))
 
         override fun onBindViewHolder(holder: SuggestionHolder, position: Int) {
             val suggestion = mSuggestionList?.get(position)
@@ -504,25 +492,19 @@ class SearchBar @JvmOverloads constructor(
             }
         }
 
-        override fun getItemId(position: Int): Long {
-            return position.toLong()
-        }
+        override fun getItemId(position: Int): Long = position.toLong()
 
-        override fun getItemCount(): Int {
-            return mSuggestionList?.size ?: 0
-        }
+        override fun getItemCount(): Int = mSuggestionList?.size ?: 0
     }
 
     inner class TagSuggestion(
         private var mHint: String?,
         private var mKeyword: String,
     ) : Suggestion() {
-        override fun getText(textView: TextView): CharSequence? {
-            return if (textView.id == android.R.id.text1) {
-                mKeyword
-            } else {
-                mHint
-            }
+        override fun getText(textView: TextView): CharSequence? = if (textView.id == android.R.id.text1) {
+            mKeyword
+        } else {
+            mHint
         }
 
         override fun onClick() {
@@ -538,12 +520,10 @@ class SearchBar @JvmOverloads constructor(
     inner class KeywordSuggestion(
         private val mKeyword: String,
     ) : Suggestion() {
-        override fun getText(textView: TextView): CharSequence? {
-            return if (textView.id == android.R.id.text1) {
-                mKeyword
-            } else {
-                null
-            }
+        override fun getText(textView: TextView): CharSequence? = if (textView.id == android.R.id.text1) {
+            mKeyword
+        } else {
+            null
         }
 
         override fun onClick() {

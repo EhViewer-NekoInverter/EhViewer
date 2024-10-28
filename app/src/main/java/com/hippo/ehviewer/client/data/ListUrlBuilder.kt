@@ -263,120 +263,118 @@ data class ListUrlBuilder(
         }
     }
 
-    fun build(): String {
-        return when (mode) {
-            MODE_NORMAL, MODE_SUBSCRIPTION -> {
-                val url: String = if (mode == MODE_NORMAL) {
-                    EhUrl.host
-                } else {
-                    EhUrl.watchedUrl
-                }
-                val ub = UrlBuilder(url)
-                if (this.category != EhUtils.NONE) {
-                    ub.addQuery("f_cats", category.inv() and EhUtils.ALL_CATEGORY)
-                }
-                // Search key
-                mKeyword?.run {
-                    val keyword = trim { it <= ' ' }
-                    if (keyword.isNotEmpty()) {
-                        ub.addQuery("f_search", encodeUTF8(this))
-                    }
-                }
-                hash?.let {
-                    ub.addQuery("f_shash", it)
-                }
-                mJumpTo?.let {
-                    ub.addQuery("seek", it)
-                }
-                mPrev?.let {
-                    ub.addQuery("prev", it)
-                }
-                mNext?.let {
-                    ub.addQuery("next", it)
-                }
-                // Advance search
-                if (advanceSearch != -1) {
-                    ub.addQuery("advsearch", "1")
-                    if (advanceSearch and AdvanceSearchTable.SH != 0) ub.addQuery("f_sh", "on")
-                    if (advanceSearch and AdvanceSearchTable.STO != 0) ub.addQuery("f_sto", "on")
-                    if (advanceSearch and AdvanceSearchTable.SFL != 0) ub.addQuery("f_sfl", "on")
-                    if (advanceSearch and AdvanceSearchTable.SFU != 0) ub.addQuery("f_sfu", "on")
-                    if (advanceSearch and AdvanceSearchTable.SFT != 0) ub.addQuery("f_sft", "on")
-                    // Set min star
-                    if (minRating != -1) {
-                        ub.addQuery("f_sr", "on")
-                        ub.addQuery("f_srdd", minRating)
-                    }
-                    // Pages
-                    if (pageFrom != -1 || pageTo != -1) {
-                        ub.addQuery("f_sp", "on")
-                        ub.addQuery("f_spf", if (pageFrom != -1) pageFrom.toString() else "")
-                        ub.addQuery("f_spt", if (pageTo != -1) pageTo.toString() else "")
-                    }
-                }
-                ub.build()
+    fun build(): String = when (mode) {
+        MODE_NORMAL, MODE_SUBSCRIPTION -> {
+            val url: String = if (mode == MODE_NORMAL) {
+                EhUrl.host
+            } else {
+                EhUrl.watchedUrl
             }
-
-            MODE_UPLOADER -> {
-                val sb = StringBuilder(EhUrl.host)
-                mKeyword?.let {
-                    sb.append("uploader/")
-                    sb.append(encodeUTF8(it))
-                }
-                mPrev?.let {
-                    sb.append("?prev=").append(it)
-                }
-                mNext?.let {
-                    sb.append("?next=").append(it)
-                }
-                mJumpTo?.let {
-                    sb.append("&seek=").append(it)
-                }
-                sb.toString()
+            val ub = UrlBuilder(url)
+            if (this.category != EhUtils.NONE) {
+                ub.addQuery("f_cats", category.inv() and EhUtils.ALL_CATEGORY)
             }
-
-            MODE_TAG -> {
-                val sb = StringBuilder(EhUrl.host)
-                mKeyword?.let {
-                    sb.append("tag/")
-                    sb.append(encodeUTF8(it))
+            // Search key
+            mKeyword?.run {
+                val keyword = trim { it <= ' ' }
+                if (keyword.isNotEmpty()) {
+                    ub.addQuery("f_search", encodeUTF8(this))
                 }
-                mPrev?.let {
-                    sb.append("?prev=").append(it)
-                }
-                mNext?.let {
-                    sb.append("?next=").append(it)
-                }
-                mJumpTo?.let {
-                    sb.append("&seek=").append(it)
-                }
-                sb.toString()
             }
-
-            MODE_WHATS_HOT -> EhUrl.popularUrl
-
-            MODE_IMAGE_SEARCH -> {
-                val ub = UrlBuilder(EhUrl.host)
-                hash?.let {
-                    ub.addQuery("f_shash", it)
-                }
-                ub.build()
+            hash?.let {
+                ub.addQuery("f_shash", it)
             }
-
-            MODE_TOPLIST -> {
-                val sb = StringBuilder(EhUrl.HOST_E)
-                sb.append("toplist.php?tl=")
-                mKeyword.orEmpty().let {
-                    sb.append(encodeUTF8(it))
-                }
-                mJumpTo?.let {
-                    sb.append("&p=").append(it)
-                }
-                sb.toString()
+            mJumpTo?.let {
+                ub.addQuery("seek", it)
             }
-
-            else -> throw IllegalStateException("Unexpected value: $mode")
+            mPrev?.let {
+                ub.addQuery("prev", it)
+            }
+            mNext?.let {
+                ub.addQuery("next", it)
+            }
+            // Advance search
+            if (advanceSearch != -1) {
+                ub.addQuery("advsearch", "1")
+                if (advanceSearch and AdvanceSearchTable.SH != 0) ub.addQuery("f_sh", "on")
+                if (advanceSearch and AdvanceSearchTable.STO != 0) ub.addQuery("f_sto", "on")
+                if (advanceSearch and AdvanceSearchTable.SFL != 0) ub.addQuery("f_sfl", "on")
+                if (advanceSearch and AdvanceSearchTable.SFU != 0) ub.addQuery("f_sfu", "on")
+                if (advanceSearch and AdvanceSearchTable.SFT != 0) ub.addQuery("f_sft", "on")
+                // Set min star
+                if (minRating != -1) {
+                    ub.addQuery("f_sr", "on")
+                    ub.addQuery("f_srdd", minRating)
+                }
+                // Pages
+                if (pageFrom != -1 || pageTo != -1) {
+                    ub.addQuery("f_sp", "on")
+                    ub.addQuery("f_spf", if (pageFrom != -1) pageFrom.toString() else "")
+                    ub.addQuery("f_spt", if (pageTo != -1) pageTo.toString() else "")
+                }
+            }
+            ub.build()
         }
+
+        MODE_UPLOADER -> {
+            val sb = StringBuilder(EhUrl.host)
+            mKeyword?.let {
+                sb.append("uploader/")
+                sb.append(encodeUTF8(it))
+            }
+            mPrev?.let {
+                sb.append("?prev=").append(it)
+            }
+            mNext?.let {
+                sb.append("?next=").append(it)
+            }
+            mJumpTo?.let {
+                sb.append("&seek=").append(it)
+            }
+            sb.toString()
+        }
+
+        MODE_TAG -> {
+            val sb = StringBuilder(EhUrl.host)
+            mKeyword?.let {
+                sb.append("tag/")
+                sb.append(encodeUTF8(it))
+            }
+            mPrev?.let {
+                sb.append("?prev=").append(it)
+            }
+            mNext?.let {
+                sb.append("?next=").append(it)
+            }
+            mJumpTo?.let {
+                sb.append("&seek=").append(it)
+            }
+            sb.toString()
+        }
+
+        MODE_WHATS_HOT -> EhUrl.popularUrl
+
+        MODE_IMAGE_SEARCH -> {
+            val ub = UrlBuilder(EhUrl.host)
+            hash?.let {
+                ub.addQuery("f_shash", it)
+            }
+            ub.build()
+        }
+
+        MODE_TOPLIST -> {
+            val sb = StringBuilder(EhUrl.HOST_E)
+            sb.append("toplist.php?tl=")
+            mKeyword.orEmpty().let {
+                sb.append(encodeUTF8(it))
+            }
+            mJumpTo?.let {
+                sb.append("&p=").append(it)
+            }
+            sb.toString()
+        }
+
+        else -> throw IllegalStateException("Unexpected value: $mode")
     }
 
     @IntDef(

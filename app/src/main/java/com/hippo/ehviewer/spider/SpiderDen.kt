@@ -100,19 +100,17 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
         }
     }
 
-    operator fun contains(index: Int): Boolean {
-        return when (mode) {
-            SpiderQueen.MODE_READ -> {
-                containInCache(index) || containInDownloadDir(index)
-            }
+    operator fun contains(index: Int): Boolean = when (mode) {
+        SpiderQueen.MODE_READ -> {
+            containInCache(index) || containInDownloadDir(index)
+        }
 
-            SpiderQueen.MODE_DOWNLOAD -> {
-                containInDownloadDir(index) || copyFromCacheToDownloadDir(index, Settings.skipCopyImage)
-            }
+        SpiderQueen.MODE_DOWNLOAD -> {
+            containInDownloadDir(index) || copyFromCacheToDownloadDir(index, Settings.skipCopyImage)
+        }
 
-            else -> {
-                false
-            }
+        else -> {
+            false
         }
     }
 
@@ -121,13 +119,9 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
         return sCache.remove(key)
     }
 
-    private fun removeFromDownloadDir(index: Int): Boolean {
-        return downloadDir?.let { findImageFile(it, index).first?.delete() } == true
-    }
+    private fun removeFromDownloadDir(index: Int): Boolean = downloadDir?.let { findImageFile(it, index).first?.delete() } == true
 
-    fun remove(index: Int): Boolean {
-        return removeFromCache(index) or removeFromDownloadDir(index)
-    }
+    fun remove(index: Int): Boolean = removeFromCache(index) or removeFromDownloadDir(index)
 
     private fun findDownloadFileForIndex(index: Int, extension: String): UniFile? {
         val dir = downloadDir ?: return null
@@ -306,10 +300,8 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
         /**
          * @param extension with dot
          */
-        private fun fixExtension(extension: String): String {
-            return extension.takeIf { SUPPORT_IMAGE_EXTENSIONS.contains(it) }
-                ?: SUPPORT_IMAGE_EXTENSIONS[0]
-        }
+        private fun fixExtension(extension: String): String = extension.takeIf { SUPPORT_IMAGE_EXTENSIONS.contains(it) }
+            ?: SUPPORT_IMAGE_EXTENSIONS[0]
 
         fun findImageFile(dir: UniFile, index: Int): Pair<UniFile?, Boolean> {
             for (extension in COMPAT_IMAGE_EXTENSIONS) {
@@ -325,9 +317,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
         /**
          * @param extension with dot
          */
-        fun perFilename(index: Int, extension: String?): String {
-            return String.format(Locale.US, "%08d%s", index + 1, extension)
-        }
+        fun perFilename(index: Int, extension: String?): String = String.format(Locale.US, "%08d%s", index + 1, extension)
 
         fun getGalleryDownloadDir(gid: Long): UniFile? {
             val dir = Settings.downloadLocation ?: return null

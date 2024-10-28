@@ -149,9 +149,7 @@ class GalleryPreviewsScene : ToolbarScene() {
         setNavigationIcon(R.drawable.v_arrow_left_dark_x24)
     }
 
-    override fun getMenuResId(): Int {
-        return if ((mGalleryInfo as GalleryDetail).previewPages > 1) R.menu.scene_gallery_previews else 0
-    }
+    override fun getMenuResId(): Int = if ((mGalleryInfo as GalleryDetail).previewPages > 1) R.menu.scene_gallery_previews else 0
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
         val context = context ?: return false
@@ -248,15 +246,13 @@ class GalleryPreviewsScene : ToolbarScene() {
     private inner class GalleryPreviewAdapter : RecyclerView.Adapter<GalleryPreviewHolder>() {
         private val mInflater: LayoutInflater = layoutInflater
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GalleryPreviewHolder {
-            return GalleryPreviewHolder(
-                mInflater.inflate(
-                    R.layout.item_gallery_preview,
-                    parent,
-                    false,
-                ),
-            )
-        }
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GalleryPreviewHolder = GalleryPreviewHolder(
+            mInflater.inflate(
+                R.layout.item_gallery_preview,
+                parent,
+                false,
+            ),
+        )
 
         @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: GalleryPreviewHolder, position: Int) {
@@ -267,9 +263,7 @@ class GalleryPreviewsScene : ToolbarScene() {
             holder.itemView.setOnClickListener { onItemClick(holder.bindingAdapterPosition) }
         }
 
-        override fun getItemCount(): Int {
-            return if (mHelper != null) mHelper!!.size() else 0
-        }
+        override fun getItemCount(): Int = if (mHelper != null) mHelper!!.size() else 0
     }
 
     private inner class GalleryPreviewHelper : ContentHelper<GalleryPreview>() {
@@ -312,13 +306,12 @@ class GalleryPreviewsScene : ToolbarScene() {
             }
         }
 
-        override fun isDuplicate(d1: GalleryPreview, d2: GalleryPreview): Boolean {
-            return false
-        }
+        override fun isDuplicate(d1: GalleryPreview, d2: GalleryPreview): Boolean = false
     }
 
     private inner class GoToDialogHelper(private val mPages: Int, private val mCurrentPage: Int) :
-        View.OnClickListener, DialogInterface.OnDismissListener {
+        View.OnClickListener,
+        DialogInterface.OnDismissListener {
         private var mSlider: Slider? = null
         private var mDialog: Dialog? = null
         fun setDialog(dialog: AlertDialog) {

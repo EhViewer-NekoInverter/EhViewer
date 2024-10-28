@@ -44,7 +44,10 @@ import kotlinx.coroutines.Job
 import okhttp3.Cookie
 import java.util.Locale
 
-class CookieSignInScene : SolidScene(), OnEditorActionListener, View.OnClickListener {
+class CookieSignInScene :
+    SolidScene(),
+    OnEditorActionListener,
+    View.OnClickListener {
     private var mProgress: View? = null
     private var mIpbMemberIdLayout: TextInputLayout? = null
     private var mIpbPassHashLayout: TextInputLayout? = null
@@ -56,9 +59,7 @@ class CookieSignInScene : SolidScene(), OnEditorActionListener, View.OnClickList
     private var mFromClipboard: TextView? = null
     private var mSignInJob: Job? = null
 
-    override fun needShowLeftDrawer(): Boolean {
-        return false
-    }
+    override fun needShowLeftDrawer(): Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -240,9 +241,7 @@ class CookieSignInScene : SolidScene(), OnEditorActionListener, View.OnClickList
     }
 
     companion object {
-        private fun newCookie(name: String, value: String, domain: String): Cookie {
-            return Cookie.Builder().name(name).value(value)
-                .domain(domain).expiresAt(Long.MAX_VALUE).build()
-        }
+        private fun newCookie(name: String, value: String, domain: String): Cookie = Cookie.Builder().name(name).value(value)
+            .domain(domain).expiresAt(Long.MAX_VALUE).build()
     }
 }

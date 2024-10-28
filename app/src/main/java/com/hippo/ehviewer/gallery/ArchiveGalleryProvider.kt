@@ -149,13 +149,9 @@ class ArchiveGalleryProvider(context: Context, private val uri: Uri, passwdFlow:
         mJobMap[index]?.cancel()
     }
 
-    override fun getImageFilename(index: Int): String {
-        return FileUtils.getNameFromFilename(getImageFilenameWithExtension(index))
-    }
+    override fun getImageFilename(index: Int): String = FileUtils.getNameFromFilename(getImageFilenameWithExtension(index))
 
-    override fun getImageFilenameWithExtension(index: Int): String {
-        return FileUtils.sanitizeFilename(getFilename(index))
-    }
+    override fun getImageFilenameWithExtension(index: Int): String = FileUtils.sanitizeFilename(getFilename(index))
 
     override fun save(index: Int, file: UniFile): Boolean {
         runCatching {
@@ -176,9 +172,7 @@ class ArchiveGalleryProvider(context: Context, private val uri: Uri, passwdFlow:
         return dst
     }
 
-    override suspend fun downloadOriginal(index: Int, dir: UniFile, filename: String): UniFile? {
-        return null
-    }
+    override suspend fun downloadOriginal(index: Int, dir: UniFile, filename: String): UniFile? = null
 
     override fun preloadPages(pages: List<Int>, pair: Pair<Int, Int>) {}
 }

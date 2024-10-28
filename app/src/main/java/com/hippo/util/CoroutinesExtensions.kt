@@ -40,8 +40,7 @@ import kotlin.coroutines.EmptyCoroutineContext
  * - custom scope like view or presenter scope
  */
 @DelicateCoroutinesApi
-fun launchUI(block: suspend CoroutineScope.() -> Unit): Job =
-    GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT, block)
+fun launchUI(block: suspend CoroutineScope.() -> Unit): Job = GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT, block)
 
 /**
  * Think twice before using this. This is a delicate API. It is easy to accidentally create resource or memory leaks when GlobalScope is used.
@@ -51,8 +50,7 @@ fun launchUI(block: suspend CoroutineScope.() -> Unit): Job =
  * - custom scope like view or presenter scope
  */
 @DelicateCoroutinesApi
-fun launchIO(block: suspend CoroutineScope.() -> Unit): Job =
-    GlobalScope.launch(Dispatchers.IO, CoroutineStart.DEFAULT, block)
+fun launchIO(block: suspend CoroutineScope.() -> Unit): Job = GlobalScope.launch(Dispatchers.IO, CoroutineStart.DEFAULT, block)
 
 /**
  * Think twice before using this. This is a delicate API. It is easy to accidentally create resource or memory leaks when GlobalScope is used.
@@ -62,36 +60,26 @@ fun launchIO(block: suspend CoroutineScope.() -> Unit): Job =
  * - custom scope like view or presenter scope
  */
 @DelicateCoroutinesApi
-fun launchNow(block: suspend CoroutineScope.() -> Unit): Job =
-    GlobalScope.launch(Dispatchers.Main, CoroutineStart.UNDISPATCHED, block)
+fun launchNow(block: suspend CoroutineScope.() -> Unit): Job = GlobalScope.launch(Dispatchers.Main, CoroutineStart.UNDISPATCHED, block)
 
-fun CoroutineScope.launchUI(block: suspend CoroutineScope.() -> Unit): Job =
-    launch(Dispatchers.Main, block = block)
+fun CoroutineScope.launchUI(block: suspend CoroutineScope.() -> Unit): Job = launch(Dispatchers.Main, block = block)
 
-fun CoroutineScope.launchIO(block: suspend CoroutineScope.() -> Unit): Job =
-    launch(Dispatchers.IO, block = block)
+fun CoroutineScope.launchIO(block: suspend CoroutineScope.() -> Unit): Job = launch(Dispatchers.IO, block = block)
 
-fun CoroutineScope.launchNonCancellable(block: suspend CoroutineScope.() -> Unit): Job =
-    launchIO { withContext(NonCancellable, block) }
+fun CoroutineScope.launchNonCancellable(block: suspend CoroutineScope.() -> Unit): Job = launchIO { withContext(NonCancellable, block) }
 
 suspend fun <T> withUIContext(block: suspend CoroutineScope.() -> T) = withContext(Dispatchers.Main, block)
 
 suspend fun <T> withIOContext(block: suspend CoroutineScope.() -> T) = withContext(Dispatchers.IO, block)
 
-suspend fun <T> withNonCancellableContext(block: suspend CoroutineScope.() -> T) =
-    withContext(NonCancellable, block)
+suspend fun <T> withNonCancellableContext(block: suspend CoroutineScope.() -> T) = withContext(NonCancellable, block)
 
 // moe.tarsin.coroutines
-inline fun <reified T : Throwable> Result<*>.except(): Result<*> =
-    onFailure { if (it is T) throw it }
+inline fun <reified T : Throwable> Result<*>.except(): Result<*> = onFailure { if (it is T) throw it }
 
-inline fun <R> runSuspendCatching(block: () -> R): Result<R> {
-    return runCatching(block).apply { except<CancellationException>() }
-}
+inline fun <R> runSuspendCatching(block: () -> R): Result<R> = runCatching(block).apply { except<CancellationException>() }
 
-inline fun <T, R> T.runSuspendCatching(block: T.() -> R): Result<R> {
-    return runCatching(block).apply { except<CancellationException>() }
-}
+inline fun <T, R> T.runSuspendCatching(block: T.() -> R): Result<R> = runCatching(block).apply { except<CancellationException>() }
 
 // See https://github.com/Kotlin/kotlinx.coroutines/issues/3551
 suspend inline fun <T> runInterruptibleOkio(

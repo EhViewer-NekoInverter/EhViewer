@@ -58,17 +58,13 @@ class EhStageLayout @JvmOverloads constructor(
     val aboveSnackViewCount: Int
         get() = if (null == mAboveSnackViewList) 0 else mAboveSnackViewList!!.size
 
-    fun getAboveSnackViewAt(index: Int): View? {
-        return if (null == mAboveSnackViewList || index < 0 || index >= mAboveSnackViewList!!.size) {
-            null
-        } else {
-            mAboveSnackViewList!![index]
-        }
+    fun getAboveSnackViewAt(index: Int): View? = if (null == mAboveSnackViewList || index < 0 || index >= mAboveSnackViewList!!.size) {
+        null
+    } else {
+        mAboveSnackViewList!![index]
     }
 
-    override fun getBehavior(): Behavior {
-        return Behavior()
-    }
+    override fun getBehavior(): Behavior = Behavior()
 
     class Behavior : CoordinatorLayout.Behavior<EhStageLayout?>() {
         @SuppressLint("RestrictedApi")
@@ -76,9 +72,7 @@ class EhStageLayout @JvmOverloads constructor(
             parent: CoordinatorLayout,
             child: EhStageLayout,
             dependency: View,
-        ): Boolean {
-            return dependency is SnackbarLayout
-        }
+        ): Boolean = dependency is SnackbarLayout
 
         override fun onDependentViewChanged(
             parent: CoordinatorLayout,

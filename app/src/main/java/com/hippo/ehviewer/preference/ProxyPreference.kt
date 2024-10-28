@@ -37,7 +37,8 @@ import com.hippo.yorozuya.ViewUtils
 class ProxyPreference(
     context: Context,
     attrs: AttributeSet? = null,
-) : DialogPreference(context, attrs), View.OnClickListener {
+) : DialogPreference(context, attrs),
+    View.OnClickListener {
     private var mType: Spinner? = null
     private var mIpInputLayout: TextInputLayout? = null
     private var mIp: EditText? = null
@@ -50,9 +51,7 @@ class ProxyPreference(
         updateSummary(Settings.proxyType, Settings.proxyIp, Settings.proxyPort)
     }
 
-    private fun getProxyTypeText(type: Int): String {
-        return mArray[MathUtils.clamp(type, 0, mArray.size - 1)]
-    }
+    private fun getProxyTypeText(type: Int): String = mArray[MathUtils.clamp(type, 0, mArray.size - 1)]
 
     private fun updateSummary(type: Int, ip: String?, port: Int) {
         var type1 = type

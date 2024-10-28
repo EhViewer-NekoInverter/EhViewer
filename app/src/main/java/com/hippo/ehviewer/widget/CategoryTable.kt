@@ -32,7 +32,8 @@ import com.hippo.yorozuya.NumberUtils
 class CategoryTable @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-) : TableLayout(context, attrs), View.OnLongClickListener {
+) : TableLayout(context, attrs),
+    View.OnLongClickListener {
     private var mDoujinshi: CheckTextView
     private var mManga: CheckTextView
     private var mArtistCG: CheckTextView
