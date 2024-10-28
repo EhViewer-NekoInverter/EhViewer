@@ -131,10 +131,7 @@ class GalleryCommentsScene :
             return
         }
         mGalleryDetail = args.getParcelableCompat(KEY_GALLERY_DETAIL)
-        mShowAllComments =
-            mGalleryDetail != null &&
-            mGalleryDetail!!.comments != null &&
-            !mGalleryDetail!!.comments!!.hasMore
+        mShowAllComments = mGalleryDetail != null && mGalleryDetail!!.comments != null && !mGalleryDetail!!.comments!!.hasMore
     }
 
     private fun onInit() {
@@ -143,10 +140,7 @@ class GalleryCommentsScene :
 
     private fun onRestore(savedInstanceState: Bundle) {
         mGalleryDetail = savedInstanceState.getParcelableCompat(KEY_GALLERY_DETAIL)
-        mShowAllComments =
-            mGalleryDetail != null &&
-            mGalleryDetail!!.comments != null &&
-            !mGalleryDetail!!.comments!!.hasMore
+        mShowAllComments = mGalleryDetail != null && mGalleryDetail!!.comments != null && !mGalleryDetail!!.comments!!.hasMore
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

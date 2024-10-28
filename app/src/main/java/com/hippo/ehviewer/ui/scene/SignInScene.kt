@@ -169,8 +169,10 @@ class SignInScene :
 
     private fun signIn() {
         if (mSignInJob?.isActive == true ||
-            mUsername == null || mPassword == null ||
-            mUsernameLayout == null || mPasswordLayout == null
+            mUsername == null ||
+            mPassword == null ||
+            mUsernameLayout == null ||
+            mPasswordLayout == null
         ) {
             return
         }
@@ -190,9 +192,8 @@ class SignInScene :
         }
         hideSoftInput()
         showProgress()
-        // Clean up for sign in
-        EhUtils.signOut()
         mSignInJob = viewLifecycleOwner.lifecycleScope.launchIO {
+            EhUtils.signOut()
             runCatching {
                 EhEngine.signIn(username, password)
             }.onFailure {

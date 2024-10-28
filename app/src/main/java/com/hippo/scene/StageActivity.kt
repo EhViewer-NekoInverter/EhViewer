@@ -284,7 +284,8 @@ abstract class StageActivity : EhActivity() {
         val transaction = fragmentManager.beginTransaction()
         // Animation
         if (currentScene != null) {
-            if (tranHelper == null || !tranHelper.onTransition(
+            if (tranHelper == null ||
+                !tranHelper.onTransition(
                     this,
                     transaction,
                     currentScene,
@@ -363,7 +364,9 @@ abstract class StageActivity : EhActivity() {
             fragment.exitTransition = null
 
             // Check is target scene
-            if (!forceNewScene && !findScene && clazz.isInstance(fragment) &&
+            if (!forceNewScene &&
+                !findScene &&
+                clazz.isInstance(fragment) &&
                 (launchMode == SceneFragment.LAUNCH_MODE_SINGLE_TASK || !fragment.isDetached)
             ) {
                 scene = fragment as SceneFragment?
@@ -451,7 +454,8 @@ abstract class StageActivity : EhActivity() {
         }
         val transaction = fragmentManager.beginTransaction()
         if (next != null) {
-            if (transitionHelper == null || !transitionHelper.onTransition(
+            if (transitionHelper == null ||
+                !transitionHelper.onTransition(
                     this,
                     transaction,
                     scene,

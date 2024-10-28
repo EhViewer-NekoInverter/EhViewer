@@ -538,7 +538,8 @@ class MainActivity :
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        if (mDrawerLayout != null && (
+        if (mDrawerLayout != null &&
+            (
                 mDrawerLayout!!.isDrawerOpen(GravityCompat.START) ||
                     mDrawerLayout!!.isDrawerOpen(GravityCompat.END)
                 )

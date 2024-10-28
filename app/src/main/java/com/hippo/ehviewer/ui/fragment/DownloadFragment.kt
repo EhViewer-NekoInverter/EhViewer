@@ -103,9 +103,8 @@ class DownloadFragment : BasePreferenceFragment() {
         val key = preference.key
         if (Settings.KEY_DOWNLOAD_LOCATION == key) {
             val file = Settings.downloadLocation
-            if (file != null && !UniFile.isFileUri(
-                    Settings.downloadLocation!!.uri,
-                )
+            if (file != null &&
+                !UniFile.isFileUri(Settings.downloadLocation!!.uri)
             ) {
                 AlertDialog.Builder(requireContext())
                     .setTitle(R.string.settings_download_download_location)

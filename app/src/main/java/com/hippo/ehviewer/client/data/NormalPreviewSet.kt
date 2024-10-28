@@ -15,6 +15,7 @@
  */
 package com.hippo.ehviewer.client.data
 
+import com.hippo.ehviewer.client.getNormalPreviewKey
 import com.hippo.widget.LoadImageView
 import com.hippo.yorozuya.collect.IntList
 
@@ -28,15 +29,6 @@ class NormalPreviewSet(
     private var mClipHeightList: IntList = IntList(),
     private var mPageUrlList: ArrayList<String> = arrayListOf(),
 ) : PreviewSet() {
-    private fun getImageKey(imageUrl: String): String {
-        val index = imageUrl.indexOf('/')
-        return if (index >= 0) {
-            imageUrl.substring(index + 1)
-        } else {
-            imageUrl
-        }
-    }
-
     fun addItem(
         position: Int,
         imageUrl: String,
@@ -47,7 +39,7 @@ class NormalPreviewSet(
         pageUrl: String,
     ) {
         mPositionList.add(position)
-        mImageKeyList.add(getImageKey(imageUrl))
+        mImageKeyList.add(getNormalPreviewKey(imageUrl))
         mImageUrlList.add(imageUrl)
         mOffsetXList.add(xOffset)
         mOffsetYList.add(yOffset)

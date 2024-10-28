@@ -167,9 +167,7 @@ object EhCookieStore : CookieJar {
     @Synchronized
     fun clear() {
         map.clear()
-        launchIO {
-            db.clear()
-        }
+        db.clear()
     }
 
     fun newCookie(

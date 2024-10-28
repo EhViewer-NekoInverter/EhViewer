@@ -87,8 +87,15 @@ class AccountPreference(
             builder.setNegativeButton(R.string.settings_eh_account_refresh_igneous, null)
         }
         builder.setPositiveButton(R.string.settings_eh_account_sign_out) { _: DialogInterface, _: Int ->
-            EhUtils.signOut()
-            mActivity.showTip(R.string.settings_eh_account_sign_out_tip, BaseScene.LENGTH_SHORT)
+            mActivity.lifecycleScope.launchIO {
+                EhUtils.signOut()
+                withUIContext {
+                    mActivity.showTip(
+                        R.string.settings_eh_account_sign_out_tip,
+                        BaseScene.LENGTH_SHORT,
+                    )
+                }
+            }
         }
         builder.setMessage(mMessage)
     }

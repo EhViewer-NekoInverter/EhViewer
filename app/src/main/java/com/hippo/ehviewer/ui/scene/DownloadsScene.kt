@@ -56,8 +56,8 @@ import com.hippo.easyrecyclerview.MarginItemDecoration
 import com.hippo.ehviewer.EhDB
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
-import com.hippo.ehviewer.client.EhCacheKeyFactory
 import com.hippo.ehviewer.client.EhUtils
+import com.hippo.ehviewer.client.getThumbKey
 import com.hippo.ehviewer.dao.DownloadInfo
 import com.hippo.ehviewer.download.DownloadManager
 import com.hippo.ehviewer.download.DownloadManager.DownloadInfoListener
@@ -1086,7 +1086,7 @@ class DownloadsScene :
             val info = mList!![holder.bindingAdapterPosition]
             info.thumb?.let {
                 holder.thumb.load(
-                    EhCacheKeyFactory.getThumbKey(info.gid),
+                    getThumbKey(info.gid),
                     encodeMagicRequest(info),
                     hardware = false,
                 )

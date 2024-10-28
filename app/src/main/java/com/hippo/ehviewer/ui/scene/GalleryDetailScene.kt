@@ -75,7 +75,6 @@ import com.hippo.ehviewer.EhDB
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.UrlOpener
-import com.hippo.ehviewer.client.EhCacheKeyFactory
 import com.hippo.ehviewer.client.EhClient
 import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.EhEngine
@@ -93,6 +92,8 @@ import com.hippo.ehviewer.client.data.GalleryInfo
 import com.hippo.ehviewer.client.data.GalleryTagGroup
 import com.hippo.ehviewer.client.data.ListUrlBuilder
 import com.hippo.ehviewer.client.exception.EhException
+import com.hippo.ehviewer.client.getImageKey
+import com.hippo.ehviewer.client.getThumbKey
 import com.hippo.ehviewer.client.parser.ArchiveParser
 import com.hippo.ehviewer.client.parser.HomeParser
 import com.hippo.ehviewer.client.parser.RateGalleryParser
@@ -435,7 +436,7 @@ class GalleryDetailScene :
                                 return false
                             }
                             (0..<mGalleryDetail!!.pages).forEach {
-                                val key = EhCacheKeyFactory.getImageKey(mGalleryDetail!!.gid, it)
+                                val key = getImageKey(mGalleryDetail!!.gid, it)
                                 imageCache.remove(key)
                             }
                             showTip(R.string.action_image_cache_cleared, LENGTH_LONG)
@@ -736,7 +737,8 @@ class GalleryDetailScene :
             }
         }
         if ((oldState == STATE_INIT || oldState == STATE_FAILED || oldState == STATE_REFRESH) &&
-            (state == STATE_NORMAL || state == STATE_REFRESH_HEADER) && theme.resolveBoolean(androidx.appcompat.R.attr.isLightTheme, false)
+            (state == STATE_NORMAL || state == STATE_REFRESH_HEADER) &&
+            theme.resolveBoolean(androidx.appcompat.R.attr.isLightTheme, false)
         ) {
             if (!createCircularReveal()) {
                 SimpleHandler.getInstance().post(this::createCircularReveal)
@@ -750,7 +752,7 @@ class GalleryDetailScene :
         }
         if (ACTION_GALLERY_INFO == mAction && mGalleryInfo != null) {
             val gi: GalleryInfo = mGalleryInfo!!
-            mThumb!!.load(EhCacheKeyFactory.getThumbKey(gi.gid), EhUtils.fixThumbUrl(gi.thumb!!), hardware = false)
+            mThumb!!.load(getThumbKey(gi.gid), EhUtils.fixThumbUrl(gi.thumb!!), hardware = false)
             mTitle!!.text = EhUtils.getSuitableTitle(gi)
             mUploader!!.text = gi.uploader
             mUploader!!.alpha = if (gi.disowned) .5f else 1f
@@ -802,7 +804,7 @@ class GalleryDetailScene :
             return
         }
         val resources = resources
-        mThumb!!.load(EhCacheKeyFactory.getThumbKey(gd.gid), EhUtils.fixThumbUrl(gd.thumb!!), false, hardware = false)
+        mThumb!!.load(getThumbKey(gd.gid), EhUtils.fixThumbUrl(gd.thumb!!), false, hardware = false)
         mTitle!!.text = EhUtils.getSuitableTitle(gd)
         mUploader!!.text = gd.uploader
         mUploader!!.alpha = if (gd.disowned) .5f else 1f
@@ -978,8 +980,11 @@ class GalleryDetailScene :
 
     private fun setTransitionName() {
         val gid = gid
-        if (gid != -1L && mThumb != null &&
-            mTitle != null && mUploader != null && mCategory != null
+        if (gid != -1L &&
+            mThumb != null &&
+            mTitle != null &&
+            mUploader != null &&
+            mCategory != null
         ) {
             ViewCompat.setTransitionName(mThumb!!, TransitionNameFactory.getThumbTransitionName(gid))
             ViewCompat.setTransitionName(mTitle!!, TransitionNameFactory.getTitleTransitionName(gid))
@@ -1176,7 +1181,8 @@ class GalleryDetailScene :
                 }
             }
             mTorrent -> {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q && ContextCompat.checkSelfPermission(
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q &&
+                    ContextCompat.checkSelfPermission(
                         activity,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     ) != PackageManager.PERMISSION_GRANTED
@@ -1442,8 +1448,10 @@ class GalleryDetailScene :
     }
 
     override fun onBackPressed() {
-        if (mViewTransition != null && mThumb != null &&
-            mViewTransition!!.shownViewIndex == 0 && mThumb!!.isShown
+        if (mViewTransition != null &&
+            mThumb != null &&
+            mViewTransition!!.shownViewIndex == 0 &&
+            mThumb!!.isShown
         ) {
             val location = IntArray(2)
             mThumb!!.getLocationInWindow(location)
@@ -1599,8 +1607,10 @@ class GalleryDetailScene :
             exit: Fragment,
             enter: Fragment,
         ): Boolean {
-            if (enter !is GalleryListScene && enter !is DownloadsScene &&
-                enter !is FavoritesScene && enter !is HistoryScene
+            if (enter !is GalleryListScene &&
+                enter !is DownloadsScene &&
+                enter !is FavoritesScene &&
+                enter !is HistoryScene
             ) {
                 return false
             }

@@ -97,8 +97,10 @@ open class EasyRecyclerView @JvmOverloads constructor(
     override fun setAdapter(adapter: Adapter<*>?) {
         super.setAdapter(adapter)
         mAdapter = adapter
-        if (adapter != null && adapter.hasStableIds() &&
-            mChoiceMode != CHOICE_MODE_NONE && mCheckedIdStates == null
+        if (adapter != null &&
+            adapter.hasStableIds() &&
+            mChoiceMode != CHOICE_MODE_NONE &&
+            mCheckedIdStates == null
         ) {
             mCheckedIdStates = LongSparseArray()
         }

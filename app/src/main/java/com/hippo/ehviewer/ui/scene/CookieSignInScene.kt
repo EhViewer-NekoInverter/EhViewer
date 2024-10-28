@@ -128,9 +128,12 @@ class CookieSignInScene :
 
     fun enter() {
         if (mSignInJob?.isActive == true ||
-            null == mIpbMemberIdLayout || null == mIpbPassHashLayout ||
-            null == mIgneousLayout || null == mIpbMemberId ||
-            null == mIpbPassHash || null == mIgneous
+            null == mIpbMemberIdLayout ||
+            null == mIpbPassHashLayout ||
+            null == mIgneousLayout ||
+            null == mIpbMemberId ||
+            null == mIpbPassHash ||
+            null == mIgneous
         ) {
             return
         }
@@ -152,6 +155,7 @@ class CookieSignInScene :
         hideSoftInput()
         showProgress()
         mSignInJob = viewLifecycleOwner.lifecycleScope.launchIO {
+            EhUtils.signOut()
             runCatching {
                 storeCookie(ipbMemberId, ipbPassHash, igneous)
                 EhEngine.getProfile().run {
@@ -173,7 +177,6 @@ class CookieSignInScene :
     }
 
     private fun showResultErrorDialog(e: Throwable) {
-        EhCookieStore.clear()
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.sign_in_failed)
             .setMessage("${ExceptionUtils.getReadableString(e)}\n\n${getString(R.string.wrong_cookie_warning)}")
@@ -182,7 +185,6 @@ class CookieSignInScene :
     }
 
     private suspend fun storeCookie(id: String, hash: String, igneous: String) {
-        EhUtils.signOut()
         EhCookieStore.addCookie(newCookie(EhCookieStore.KEY_IPB_MEMBER_ID, id, EhUrl.DOMAIN_E))
         EhCookieStore.addCookie(newCookie(EhCookieStore.KEY_IPB_MEMBER_ID, id, EhUrl.DOMAIN_EX))
         EhCookieStore.addCookie(newCookie(EhCookieStore.KEY_IPB_PASS_HASH, hash, EhUrl.DOMAIN_E))
@@ -209,7 +211,8 @@ class CookieSignInScene :
                 showTip(R.string.from_clipboard_error, LENGTH_SHORT)
                 return
             }
-            if (kvs.size >= 2 && text.contains(EhCookieStore.KEY_IPB_MEMBER_ID) &&
+            if (kvs.size >= 2 &&
+                text.contains(EhCookieStore.KEY_IPB_MEMBER_ID) &&
                 text.contains(EhCookieStore.KEY_IPB_PASS_HASH)
             ) {
                 for (s in kvs) {

@@ -185,12 +185,7 @@ object EhEngine {
                 hasRated = true
             }
         }
-        val needApi = filter &&
-            sEhFilter.needTags() &&
-            !hasTags ||
-            Settings.showGalleryPages &&
-            !hasPages ||
-            hasRated
+        val needApi = filter && sEhFilter.needTags() && !hasTags || Settings.showGalleryPages && !hasPages || hasRated
         if (needApi) {
             fillGalleryListByApi(list, url)
         }
@@ -199,9 +194,7 @@ object EhEngine {
         if (filter) {
             // Thumbnail mode need filter uploader again
             list.removeAll {
-                !sEhFilter.filterUploader(it) ||
-                    !sEhFilter.filterTag(it) ||
-                    !sEhFilter.filterTagNamespace(it)
+                !sEhFilter.filterUploader(it) || !sEhFilter.filterTag(it) || !sEhFilter.filterTagNamespace(it)
             }
         }
     }

@@ -46,8 +46,6 @@ class WebViewSignInScene : SolidScene() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        EhUtils.signOut()
-
         // http://stackoverflow.com/questions/32284642/how-to-handle-an-uncatched-exception
         CookieManager.getInstance().apply {
             flush()
@@ -119,6 +117,7 @@ class WebViewSignInScene : SolidScene() {
             }
             if (getId && getHash) {
                 viewLifecycleOwner.lifecycleScope.launchIO {
+                    EhUtils.signOut()
                     cookies.forEach {
                         addCookie(EhUrl.DOMAIN_EX, it)
                         addCookie(EhUrl.DOMAIN_E, it)

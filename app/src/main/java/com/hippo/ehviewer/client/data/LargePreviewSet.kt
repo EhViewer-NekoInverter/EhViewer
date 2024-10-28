@@ -15,8 +15,8 @@
  */
 package com.hippo.ehviewer.client.data
 
-import com.hippo.ehviewer.client.EhCacheKeyFactory
 import com.hippo.ehviewer.client.EhUtils
+import com.hippo.ehviewer.client.getLargePreviewKey
 import com.hippo.widget.LoadImageView
 import com.hippo.yorozuya.collect.IntList
 
@@ -40,7 +40,7 @@ class LargePreviewSet(
     override fun getGalleryPreview(gid: Long, index: Int): GalleryPreview {
         val galleryPreview = GalleryPreview()
         galleryPreview.position = mPositionList[index]
-        galleryPreview.imageKey = EhCacheKeyFactory.getLargePreviewKey(gid, galleryPreview.position)
+        galleryPreview.imageKey = getLargePreviewKey(gid, galleryPreview.position)
         galleryPreview.imageUrl = mImageUrlList[index]
         galleryPreview.pageUrl = mPageUrlList[index]
         return galleryPreview
@@ -49,7 +49,7 @@ class LargePreviewSet(
     override fun load(view: LoadImageView, gid: Long, index: Int) {
         view.resetClip()
         view.load(
-            EhCacheKeyFactory.getLargePreviewKey(gid, mPositionList[index]),
+            getLargePreviewKey(gid, mPositionList[index]),
             EhUtils.fixThumbUrl(mImageUrlList[index]),
         )
     }
