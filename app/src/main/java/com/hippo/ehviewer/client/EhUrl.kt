@@ -71,17 +71,12 @@ object EhUrl {
         }
 
     val apiUrl: String
-        get() = if (Settings.forceEhThumb) {
-            API_E
-        } else {
-            when (Settings.gallerySite) {
-                SITE_E -> API_E
-                SITE_EX -> API_EX
-                else -> API_E
-            }
+        get() = when (Settings.gallerySite) {
+            SITE_E -> API_E
+            SITE_EX -> API_EX
+            else -> API_E
         }
 
-    @JvmStatic
     val referer: String
         get() = when (Settings.gallerySite) {
             SITE_E -> REFERER_E
@@ -96,7 +91,6 @@ object EhUrl {
             else -> ORIGIN_E
         }
 
-    @JvmStatic
     val uConfigUrl: String
         get() = when (Settings.gallerySite) {
             SITE_E -> URL_UCONFIG_E
@@ -104,7 +98,6 @@ object EhUrl {
             else -> URL_UCONFIG_E
         }
 
-    @JvmStatic
     val myTagsUrl: String
         get() = when (Settings.gallerySite) {
             SITE_E -> URL_MY_TAGS_E
@@ -135,7 +128,6 @@ object EhUrl {
 
     fun getGalleryDetailUrl(gid: Long, token: String?): String = getGalleryDetailUrl(gid, token, 0, false)
 
-    @JvmStatic
     fun getGalleryDetailUrl(gid: Long, token: String?, index: Int, allComment: Boolean): String {
         val builder = UrlBuilder(host + "g/" + gid + '/' + token + '/')
         if (index != 0) {
@@ -147,13 +139,11 @@ object EhUrl {
         return builder.build()
     }
 
-    @JvmStatic
     fun getGalleryMultiPageViewerUrl(gid: Long, token: String): String {
         val builder = UrlBuilder(host + "mpv/" + gid + '/' + token + '/')
         return builder.build()
     }
 
-    @JvmStatic
     fun getPageUrl(gid: Long, index: Int, pToken: String): String = host + "s/" + pToken + '/' + gid + '-' + (index + 1)
 
     fun getAddFavorites(gid: Long, token: String?): String = host + "gallerypopups.php?gid=" + gid + "&t=" + token + "&act=addfav"
