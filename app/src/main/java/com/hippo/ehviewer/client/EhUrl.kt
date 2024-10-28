@@ -158,7 +158,7 @@ object EhUrl {
 
     fun getAddFavorites(gid: Long, token: String?): String = host + "gallerypopups.php?gid=" + gid + "&t=" + token + "&act=addfav"
 
-    fun getDownloadArchive(gid: Long, token: String?, or: String?): String = host + "archiver.php?gid=" + gid + "&token=" + token + "&or=" + or
+    fun getDownloadArchive(gid: Long, token: String?): String = host + "archiver.php?gid=" + gid + "&token=" + token
 
     fun getTagDefinitionUrl(tag: String): String = "https://ehwiki.org/wiki/" + tag.replace(' ', '_')
 

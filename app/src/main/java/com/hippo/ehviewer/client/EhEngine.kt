@@ -464,7 +464,6 @@ object EhEngine {
     suspend fun downloadArchive(
         gid: Long,
         token: String?,
-        or: String?,
         res: String?,
         isHAtH: Boolean,
     ): String? {
@@ -482,7 +481,7 @@ object EhEngine {
                 builder.add("dlcheck", "Download Resample Archive")
             }
         }
-        val url = EhUrl.getDownloadArchive(gid, token, or)
+        val url = EhUrl.getDownloadArchive(gid, token)
         val referer = EhUrl.getGalleryDetailUrl(gid, token)
         val origin = EhUrl.origin
         Log.d(TAG, url)

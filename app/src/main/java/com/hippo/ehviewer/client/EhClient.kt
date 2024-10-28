@@ -135,8 +135,7 @@ object EhClient {
             params[0] as Long,
             params[1] as String?,
             params[2] as String?,
-            params[3] as String?,
-            params[4] as Boolean,
+            params[3] as Boolean,
         )
 
         METHOD_VOTE_TAG -> EhEngine.voteTag(
