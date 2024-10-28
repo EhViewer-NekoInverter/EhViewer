@@ -415,9 +415,6 @@
     <string name="settings_eh_list_tile_thumb_size">詳細資料模式下縮圖大小</string>
     <string name="settings_eh_thumb_size">縮圖模式下縮圖大小</string>
     <string name="settings_eh_thumb_show_title">縮圖模式下顯示畫廊標題</string>
-    <string name="settings_eh_thumb_resolution">縮圖解析度</string>
-    <string name="settings_eh_thumb_resolution_summary">%s，指定解析度可能會使縮圖取得失敗</string>
-    <string name="settings_eh_thumb_resolution_auto">自動</string>
     <string name="settings_eh_force_eh_thumb">強制使用 E-Hentai 縮圖伺服器</string>
     <string name="settings_eh_force_eh_thumb_summary">若 ExHentai 載入失敗可嘗試此項目</string>
     <string name="settings_eh_show_jpn_title">顯示日文標題</string>

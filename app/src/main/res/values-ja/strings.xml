@@ -310,9 +310,6 @@
     <string name="settings_eh_list_mode_thumb">サムネイル</string>
     <string name="settings_eh_detail_size">詳細情報のサイズ</string>
     <string name="settings_eh_thumb_size">サムネイルサイズ</string>
-    <string name="settings_eh_thumb_resolution">サムネイル解像度</string>
-    <string name="settings_eh_thumb_resolution_summary">%s。解像度を正しく設定しないと、サムネイルを取得できない場合があります</string>
-    <string name="settings_eh_thumb_resolution_auto">自動</string>
     <string name="settings_eh_show_jpn_title">日本語タイトルを表示</string>
     <string name="settings_eh_show_gallery_pages">ギャラリーページ数を表示</string>
     <string name="settings_eh_show_gallery_pages_summary">リストにギャラリーのページの数量を表示します</string>

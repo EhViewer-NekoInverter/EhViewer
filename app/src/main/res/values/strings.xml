@@ -441,9 +441,6 @@
     <string name="settings_eh_list_tile_thumb_size">Thumb size in detail mode</string>
     <string name="settings_eh_thumb_size">Thumb size in thumb mode</string>
     <string name="settings_eh_thumb_show_title">Show title in thumb mode</string>
-    <string name="settings_eh_thumb_resolution">Thumb resolution</string>
-    <string name="settings_eh_thumb_resolution_summary">Currently %s. Certain resolutions might cause getting thumb failed</string>
-    <string name="settings_eh_thumb_resolution_auto">Auto</string>
     <string name="settings_eh_force_eh_thumb">Force E-Hentai thumb server</string>
     <string name="settings_eh_force_eh_thumb_summary">Try this if you have trouble loading from ExHentai</string>
     <string name="settings_eh_show_jpn_title">Show Japanese title</string>

@@ -120,14 +120,6 @@
         android:title="@string/settings_eh_thumb_show_title"
         app:iconSpaceReserved="false" />
 
-    <rikka.preference.SimpleMenuPreference
-        android:defaultValue="0"
-        android:key="thumb_resolution"
-        android:title="@string/settings_eh_thumb_resolution"
-        app:entries="@array/thumb_resolution_entries"
-        app:entryValues="@array/thumb_resolution_entry_values"
-        app:iconSpaceReserved="false" />
-
     <SwitchPreferenceCompat
         android:defaultValue="false"
         android:key="force_eh_thumb"

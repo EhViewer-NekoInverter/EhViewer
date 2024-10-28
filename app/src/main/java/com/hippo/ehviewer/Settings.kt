@@ -54,8 +54,6 @@ object Settings {
     private const val DEFAULT_THUMB_SIZE = 4
     const val KEY_THUMB_SHOW_TITLE = "thumb_show_title"
     private const val DEFAULT_THUMB_SHOW_TITLE = true
-    const val KEY_THUMB_RESOLUTION = "thumb_resolution"
-    private const val DEFAULT_THUMB_RESOLUTION = 0
     private const val KEY_FORCE_EH_THUMB = "force_eh_thumb"
     private const val DEFAULT_FORCE_EH_THUMB = false
     private const val KEY_SHOW_JPN_TITLE = "show_jpn_title"
@@ -416,9 +414,6 @@ object Settings {
 
     val thumbShowTitle: Boolean
         get() = getBoolean(KEY_THUMB_SHOW_TITLE, DEFAULT_THUMB_SHOW_TITLE)
-
-    val thumbResolution: Int
-        get() = getIntFromStr(KEY_THUMB_RESOLUTION, DEFAULT_THUMB_RESOLUTION)
 
     val forceEhThumb: Boolean
         get() = getBoolean(KEY_FORCE_EH_THUMB, DEFAULT_FORCE_EH_THUMB)

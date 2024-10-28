@@ -20,7 +20,6 @@ import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.client.EhFilter
 import com.hippo.ehviewer.client.EhUtils
 import com.hippo.ehviewer.client.EhUtils.getCategory
-import com.hippo.ehviewer.client.EhUtils.handleThumbUrlResolution
 import com.hippo.ehviewer.client.data.BaseGalleryInfo
 import com.hippo.ehviewer.client.data.GalleryComment
 import com.hippo.ehviewer.client.data.GalleryCommentList
@@ -127,7 +126,7 @@ object GalleryDetailParser {
             // Thumb url
             gm.getElementById("gd1")?.child(0)?.attr("style")?.trim()?.let {
                 gd.thumb = PATTERN_COVER.find(it)?.run {
-                    handleThumbUrlResolution(groupValues[3])
+                    groupValues[3]
                 }
             }
 

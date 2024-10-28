@@ -16,7 +16,6 @@
 package com.hippo.ehviewer.client.parser
 
 import com.hippo.ehviewer.client.EhUtils.getCategory
-import com.hippo.ehviewer.client.EhUtils.handleThumbUrlResolution
 import com.hippo.ehviewer.client.data.GalleryInfo
 import com.hippo.yorozuya.NumberUtils
 import org.json.JSONObject
@@ -32,7 +31,7 @@ object GalleryApiParser {
             gi.title = ParserUtils.trim(g.getString("title"))
             gi.titleJpn = ParserUtils.trim(g.getString("title_jpn"))
             gi.category = getCategory(g.getString("category"))
-            gi.thumb = handleThumbUrlResolution(g.getString("thumb"))
+            gi.thumb = g.getString("thumb")
             gi.uploader = g.getString("uploader")
             gi.posted =
                 ParserUtils.formatDate(ParserUtils.parseLong(g.getString("posted"), 0) * 1000)

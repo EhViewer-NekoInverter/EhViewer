@@ -161,7 +161,7 @@ object GalleryListParser {
                     url = img.attr("src")
                 }
                 if (url.isNotEmpty()) {
-                    gi.thumb = EhUtils.handleThumbUrlResolution(url)
+                    gi.thumb = url
                 }
             }
             // Pages
@@ -193,7 +193,7 @@ object GalleryListParser {
                         gi.thumbWidth = 0
                         gi.thumbHeight = 0
                     }
-                    gi.thumb = EhUtils.handleThumbUrlResolution(img.attr("src"))
+                    gi.thumb = img.attr("src")
                 }
             }
         }

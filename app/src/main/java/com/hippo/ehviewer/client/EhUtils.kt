@@ -87,7 +87,6 @@ object EhUtils {
             EhCookieStore.KEY_HATH_PERKS,
         )?.substringBefore("-")?.contains("q") == true
 
-    @JvmStatic
     fun getCategory(type: String?): Int {
         for (entry in CATEGORY_STRINGS) {
             for (str in entry.first) {
@@ -126,7 +125,6 @@ object EhUtils {
 
     fun needSignedIn(): Boolean = Settings.needSignIn
 
-    @JvmStatic
     fun getSuitableTitle(gi: GalleryInfo): String = if (Settings.showJpnTitle) {
         if (TextUtils.isEmpty(gi.titleJpn)) gi.title else gi.titleJpn
     } else {
@@ -149,24 +147,4 @@ object EhUtils {
 
     fun fixThumbUrl(url: String): String = EhUrl.getThumbUrlPrefix() +
         url.removePrefix(EhUrl.URL_PREFIX_THUMB_E).removePrefix(EhUrl.URL_PREFIX_THUMB_EX_OLD).removePrefix(EhUrl.URL_PREFIX_THUMB_EX)
-
-    @JvmStatic
-    fun handleThumbUrlResolution(url: String?): String? {
-        if (null == url) {
-            return null
-        }
-        val resolution = when (Settings.thumbResolution) {
-            0 -> return url
-            1 -> "250"
-            2 -> "300"
-            else -> return url
-        }
-        val index1 = url.lastIndexOf('_')
-        val index2 = url.lastIndexOf('.')
-        return if (index1 >= 0 && index2 >= 0 && index1 < index2) {
-            url.substring(0, index1 + 1) + resolution + url.substring(index2)
-        } else {
-            url
-        }
-    }
 }
