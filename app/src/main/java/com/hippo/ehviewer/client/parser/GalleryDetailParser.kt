@@ -66,12 +66,8 @@ object GalleryDetailParser {
         Regex("<tr><td[^<>]*>Length:</td><td[^<>]*>([\\d,]+) pages</td></tr>")
     private val PATTERN_PREVIEW_PAGES =
         Regex("<td[^>]+><a[^>]+>([\\d,]+)</a></td><td[^>]+>(?:<a[^>]+>)?&gt;(?:</a>)?</td>")
-    private val PATTERN_NORMAL_PREVIEW =
-        Regex("<div class=\"gdtm\"[^>]*><div[^>]*width:(\\d+)[^>]*height:(\\d+)[^>]*\\(([^)]+)\\)[^>]*-(\\d+)px[^>]*><a[^>]*href=\"([^\"]+)\"[^>]*><img alt=\"([\\d,]+)\"")
-    private val PATTERN_NORMAL_PREVIEW_NEW =
-        Regex("<a href=\"([^\"]+)\">(?:<div>)?<div[^>]*title=\"Page (\\d+):[^>]*width:(\\d+)[^>]*height:(\\d+)[^>]*\\(([^)]+)\\)[^>]*-(\\d+)px[^>]*>")
-    private val PATTERN_LARGE_PREVIEW =
-        Regex("<a href=\"([^\"]+)\">(?:<div>)?<[^>]*title=\"Page (\\d+):[^>]*(?:url\\(|src=\")([^)\"]+)[)\"]")
+    private val PATTERN_PREVIEW =
+        Regex("<a href=\"([^\"]+)\">(?:<div>)?<div title=\"Page (\\d+)(?:[^\"]+\"){2}\\D+(\\d+)\\D+(\\d+)[^(]+\\(([^)]+)\\)(?: -(\\d+))?")
     private val PATTERN_NEWER_DATE = Regex(", added (.+?)<br />")
     private val PATTERN_FAVORITE_SLOT =
         Regex("/fav.png\\); background-position:0px -(\\d+)px")
@@ -480,7 +476,6 @@ object GalleryDetailParser {
     /**
      * Parse preview pages with regular expressions
      */
-    @JvmStatic
     @Throws(ParseException::class)
     fun parsePreviewPages(body: String): Int = PATTERN_PREVIEW_PAGES.find(body)?.groupValues?.get(1)?.toIntOrNull()
         ?: throw ParseException("Parse preview page count error")
@@ -488,64 +483,32 @@ object GalleryDetailParser {
     /**
      * Parse pages with regular expressions
      */
-    @JvmStatic
     @Throws(ParseException::class)
     fun parsePages(body: String): Int = PATTERN_PAGES.find(body)?.groupValues?.get(1)?.toIntOrNull()
         ?: throw ParseException("Parse pages error")
 
-    @JvmStatic
-    @Throws(ParseException::class)
-    fun parsePreviewSet(body: String): PreviewSet = runCatching { parseNormalPreviewSet(body) }.getOrElse { parseLargePreviewSet(body) }
-
     /**
-     * Parse large previews with regular expressions
+     * Parse previews with regular expressions
      */
     @Throws(ParseException::class)
-    private fun parseLargePreviewSet(body: String): LargePreviewSet {
+    fun parsePreviewSet(body: String): PreviewSet {
         val largePreviewSet = LargePreviewSet()
-        PATTERN_LARGE_PREVIEW.findAll(body).forEach {
-            val index = (it.groupValues[2].toIntOrNull() ?: return@forEach) - 1
-            val imageUrl = it.groupValues[3].trim()
-            val pageUrl = it.groupValues[1].trim()
-            largePreviewSet.addItem(index, imageUrl, pageUrl)
-        }
-        if (largePreviewSet.size() == 0) {
-            throw ParseException("Can't parse large preview")
-        }
-        return largePreviewSet
-    }
-
-    /**
-     * Parse normal previews with regular expressions
-     */
-    @Throws(ParseException::class)
-    private fun parseNormalPreviewSet(body: String): NormalPreviewSet {
         val normalPreviewSet = NormalPreviewSet()
-        PATTERN_NORMAL_PREVIEW.findAll(body).forEach {
-            val position = (it.groupValues[6].toIntOrNull() ?: return@forEach) - 1
-            val imageUrl = it.groupValues[3].trim()
-            val xOffset = it.groupValues[4].toIntOrNull() ?: 0
-            val yOffset = 0
-            val width = it.groupValues[1].toIntOrNull() ?: return@forEach
-            val height = it.groupValues[2].toIntOrNull() ?: return@forEach
-            val pageUrl = it.groupValues[5].trim()
-            normalPreviewSet.addItem(position, imageUrl, xOffset, yOffset, width, height, pageUrl)
-        }
-        if (normalPreviewSet.size() == 0) {
-            PATTERN_NORMAL_PREVIEW_NEW.findAll(body).forEach {
-                val position = (it.groupValues[2].toIntOrNull() ?: return@forEach) - 1
-                val imageUrl = it.groupValues[5].trim()
-                val xOffset = it.groupValues[6].toIntOrNull() ?: 0
-                val yOffset = 0
-                val width = it.groupValues[3].toIntOrNull() ?: return@forEach
-                val height = it.groupValues[4].toIntOrNull() ?: return@forEach
-                val pageUrl = it.groupValues[1].trim()
-                normalPreviewSet.addItem(position, imageUrl, xOffset, yOffset, width, height, pageUrl)
+        PATTERN_PREVIEW.findAll(body).forEach {
+            val pageUrl = it.groupValues[1]
+            val position = it.groupValues[2].toInt() - 1
+            val url = it.groupValues[5]
+            val offset = it.groupValues[6]
+            if (offset.isEmpty()) {
+                largePreviewSet.addItem(position, url, pageUrl)
+            } else {
+                val width = it.groupValues[3].toInt()
+                val height = it.groupValues[4].toInt()
+                normalPreviewSet.addItem(position, url, offset.toInt(), 0, width, height, pageUrl)
             }
         }
-        if (normalPreviewSet.size() == 0) {
-            throw ParseException("Can't parse normal preview")
-        }
-        return normalPreviewSet
+        if (largePreviewSet.size() > 0) return largePreviewSet
+        if (normalPreviewSet.size() > 0) return normalPreviewSet
+        throw ParseException("Can't parse preview")
     }
 }
