@@ -31,11 +31,11 @@ object LimitConcurrencyInterceptor : Interceptor {
         return if (url != null) {
             when {
                 // Ex thumb server may not have h2 multiplexing support
-                URL_PREFIX_THUMB_EX in url -> semaphores.withPermit(URL_PREFIX_THUMB_EX) {
+                URL_PREFIX_THUMB_EX in url -> semaphores.withLock(URL_PREFIX_THUMB_EX) {
                     withContext(NonCancellable) { chain.proceed(chain.request) }
                 }
                 // H@H server may not have h2 multiplexing support
-                URL_SIGNATURE_THUMB_NORMAL in url -> semaphores.withPermit(url.substringBefore(URL_SIGNATURE_THUMB_NORMAL)) {
+                URL_SIGNATURE_THUMB_NORMAL in url -> semaphores.withLock(url.substringBefore(URL_SIGNATURE_THUMB_NORMAL)) {
                     withContext(NonCancellable) { chain.proceed(chain.request) }
                 }
                 // H2 multiplexing enabled
