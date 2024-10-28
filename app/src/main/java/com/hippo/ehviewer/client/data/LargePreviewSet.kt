@@ -15,8 +15,8 @@
  */
 package com.hippo.ehviewer.client.data
 
-import com.hippo.ehviewer.client.EhUtils
 import com.hippo.ehviewer.client.getLargePreviewKey
+import com.hippo.ehviewer.client.thumbUrl
 import com.hippo.widget.LoadImageView
 import com.hippo.yorozuya.collect.IntList
 
@@ -50,7 +50,7 @@ class LargePreviewSet(
         view.resetClip()
         view.load(
             getLargePreviewKey(gid, mPositionList[index]),
-            EhUtils.fixThumbUrl(mImageUrlList[index]),
+            mImageUrlList[index].thumbUrl,
         )
     }
 }

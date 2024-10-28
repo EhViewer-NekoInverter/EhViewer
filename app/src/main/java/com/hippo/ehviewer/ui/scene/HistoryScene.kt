@@ -51,6 +51,7 @@ import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.client.EhUtils
 import com.hippo.ehviewer.client.data.GalleryInfo
 import com.hippo.ehviewer.client.getThumbKey
+import com.hippo.ehviewer.client.thumbUrl
 import com.hippo.ehviewer.dao.DownloadInfo
 import com.hippo.ehviewer.dao.HistoryInfo
 import com.hippo.ehviewer.download.DownloadManager
@@ -443,7 +444,7 @@ class HistoryScene : ToolbarScene() {
             val gi: GalleryInfo? = getItem(position)
             gi ?: return
             gi.thumb?.let {
-                holder.thumb.load(getThumbKey(gi.gid), EhUtils.fixThumbUrl(it), hardware = false)
+                holder.thumb.load(getThumbKey(gi.gid), gi.thumbUrl!!, hardware = false)
             }
             holder.title.text = EhUtils.getSuitableTitle(gi)
             holder.uploader.text = gi.uploader

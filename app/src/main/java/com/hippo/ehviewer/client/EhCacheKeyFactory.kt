@@ -15,15 +15,42 @@
  */
 package com.hippo.ehviewer.client
 
-private val NormalPreviewKeyRegex = Regex("(/\\d+-\\d+)\\.\\w+$")
+import com.hippo.ehviewer.Settings
+import com.hippo.ehviewer.client.data.AbstractGalleryInfo
 
-fun getThumbKey(gid: Long): String = "preview:large:$gid:0"
-
-fun getNormalPreviewKey(url: String) = NormalPreviewKeyRegex.find(url)?.groupValues[1] ?: url
-
-fun getLargePreviewKey(gid: Long, index: Int) = "preview:large:$gid:$index"
+// Normal Preview (v2): https://*.hath.network/c(m|1|2)/[timed token]/[gid]-[index].(jpg|webp)
+// ExHentai Large Preview (v1 Cover): https://s.exhentai.org/t/***
+// E-Hentai Large Preview (v1 Cover): https://ehgt.org/***
+// ExHentai v2 Cover: https://s.exhentai.org/**.webp
+// E-Hentai v2 Cover: https://ehgt.org/**.webp
+const val URL_PREFIX_THUMB_E = "https://ehgt.org/"
+const val URL_PREFIX_THUMB_EX = "https://s.exhentai.org/"
+const val URL_SIGNATURE_THUMB_NORMAL = ".hath.network/c"
+private const val URL_PREFIX_V1_THUMB_EX = URL_PREFIX_THUMB_EX + "t/"
+private const val URL_PREFIX_V1_THUMB_EX_OLD = "https://exhentai.org/t/"
 
 fun getImageKey(gid: Long, index: Int) = "image:$gid:$index"
 
+fun getThumbKey(gid: Long): String = "preview:large:$gid:0"
+
+fun getLargePreviewKey(gid: Long, index: Int) = "preview:large:$gid:$index"
+
+fun getNormalPreviewKey(url: String) = "$$url"
+
 val String.isNormalPreviewKey
-    get() = startsWith('/')
+    get() = startsWith("$")
+
+val String.thumbUrl
+    get() = removePrefix(URL_PREFIX_THUMB_E)
+        .removePrefix(URL_PREFIX_V1_THUMB_EX_OLD)
+        .removePrefix(URL_PREFIX_V1_THUMB_EX)
+        .removePrefix(URL_PREFIX_THUMB_EX).let {
+            if (EhUtils.isExHentai && !Settings.forceEhThumb) {
+                if (it.endsWith("webp")) URL_PREFIX_THUMB_EX else URL_PREFIX_V1_THUMB_EX
+            } else {
+                URL_PREFIX_THUMB_E
+            } + it
+        }
+
+val AbstractGalleryInfo.thumbUrl
+    get() = thumb?.thumbUrl

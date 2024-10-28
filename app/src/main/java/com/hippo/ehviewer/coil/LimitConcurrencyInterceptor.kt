@@ -19,8 +19,8 @@ package com.hippo.ehviewer.coil
 
 import coil.intercept.Interceptor
 import coil.request.ImageResult
-import com.hippo.ehviewer.client.EhUrl.URL_PREFIX_THUMB_EX
-import com.hippo.ehviewer.client.EhUrl.URL_SIGNATURE_THUMB_NORMAL
+import com.hippo.ehviewer.client.URL_PREFIX_THUMB_EX
+import com.hippo.ehviewer.client.URL_SIGNATURE_THUMB_NORMAL
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
 

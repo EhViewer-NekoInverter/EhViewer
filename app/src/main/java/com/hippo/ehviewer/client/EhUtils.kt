@@ -144,7 +144,4 @@ object EhUtils {
         }
         return title.ifEmpty { null }
     }
-
-    fun fixThumbUrl(url: String): String = EhUrl.getThumbUrlPrefix() +
-        url.removePrefix(EhUrl.URL_PREFIX_THUMB_E).removePrefix(EhUrl.URL_PREFIX_THUMB_EX_OLD).removePrefix(EhUrl.URL_PREFIX_THUMB_EX)
 }

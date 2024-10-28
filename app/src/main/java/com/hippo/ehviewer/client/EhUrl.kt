@@ -47,10 +47,6 @@ object EhUrl {
     const val URL_FUNDS = HOST_E + "exchange.php?t=gp"
     const val URL_HOME = HOST_E + "home.php"
     const val URL_NEWS = HOST_E + "news.php"
-    const val URL_PREFIX_THUMB_E = "https://ehgt.org/"
-    const val URL_PREFIX_THUMB_EX = "https://s.exhentai.org/t/"
-    const val URL_PREFIX_THUMB_EX_OLD = "https://exhentai.org/t/"
-    const val URL_SIGNATURE_THUMB_NORMAL = ".hath.network/cm/"
     const val REFERER_E = "https://$DOMAIN_E"
     private const val REFERER_EX = "https://$DOMAIN_EX"
     private const val ORIGIN_E = REFERER_E
@@ -151,14 +147,4 @@ object EhUrl {
     fun getDownloadArchive(gid: Long, token: String?): String = host + "archiver.php?gid=" + gid + "&token=" + token
 
     fun getTagDefinitionUrl(tag: String): String = "https://ehwiki.org/wiki/" + tag.replace(' ', '_')
-
-    fun getThumbUrlPrefix(): String = if (Settings.forceEhThumb) {
-        URL_PREFIX_THUMB_E
-    } else {
-        when (Settings.gallerySite) {
-            SITE_E -> URL_PREFIX_THUMB_E
-            SITE_EX -> URL_PREFIX_THUMB_EX
-            else -> URL_PREFIX_THUMB_E
-        }
-    }
 }

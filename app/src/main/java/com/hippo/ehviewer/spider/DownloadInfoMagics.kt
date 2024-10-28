@@ -17,7 +17,7 @@
  */
 package com.hippo.ehviewer.spider
 
-import com.hippo.ehviewer.client.EhUtils
+import com.hippo.ehviewer.client.thumbUrl
 import com.hippo.ehviewer.dao.DownloadInfo
 import com.hippo.ehviewer.download.DownloadManager
 
@@ -26,7 +26,7 @@ object DownloadInfoMagics {
     private const val DOWNLOAD_INFO_DIRNAME_URL_SEPARATOR = "|"
 
     fun encodeMagicRequest(info: DownloadInfo): String {
-        val url = EhUtils.fixThumbUrl(info.thumb!!)
+        val url = info.thumbUrl!!
         val location = DownloadManager.getDownloadDirname(info.gid)
         return if (location.isNullOrBlank()) {
             url

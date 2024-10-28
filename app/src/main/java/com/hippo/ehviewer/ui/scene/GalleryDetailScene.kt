@@ -98,6 +98,7 @@ import com.hippo.ehviewer.client.parser.ArchiveParser
 import com.hippo.ehviewer.client.parser.HomeParser
 import com.hippo.ehviewer.client.parser.RateGalleryParser
 import com.hippo.ehviewer.client.parser.TorrentParser
+import com.hippo.ehviewer.client.thumbUrl
 import com.hippo.ehviewer.coil.DownloadThumbInterceptor.THUMB_FILE
 import com.hippo.ehviewer.dao.DownloadInfo
 import com.hippo.ehviewer.dao.Filter
@@ -751,7 +752,7 @@ class GalleryDetailScene :
         }
         if (ACTION_GALLERY_INFO == mAction && mGalleryInfo != null) {
             val gi: GalleryInfo = mGalleryInfo!!
-            mThumb!!.load(getThumbKey(gi.gid), EhUtils.fixThumbUrl(gi.thumb!!), hardware = false)
+            mThumb!!.load(getThumbKey(gi.gid), gi.thumbUrl!!, hardware = false)
             mTitle!!.text = EhUtils.getSuitableTitle(gi)
             mUploader!!.text = gi.uploader
             mUploader!!.alpha = if (gi.disowned) .5f else 1f
@@ -803,7 +804,7 @@ class GalleryDetailScene :
             return
         }
         val resources = resources
-        mThumb!!.load(getThumbKey(gd.gid), EhUtils.fixThumbUrl(gd.thumb!!), false, hardware = false)
+        mThumb!!.load(getThumbKey(gd.gid), gd.thumbUrl!!, false, hardware = false)
         mTitle!!.text = EhUtils.getSuitableTitle(gd)
         mUploader!!.text = gd.uploader
         mUploader!!.alpha = if (gd.disowned) .5f else 1f

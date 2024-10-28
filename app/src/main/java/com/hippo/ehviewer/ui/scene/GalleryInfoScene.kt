@@ -30,6 +30,7 @@ import com.hippo.ehviewer.UrlOpener
 import com.hippo.ehviewer.client.EhUrl
 import com.hippo.ehviewer.client.EhUtils
 import com.hippo.ehviewer.client.data.GalleryDetail
+import com.hippo.ehviewer.client.thumbUrl
 import com.hippo.util.addTextToClipboard
 import com.hippo.util.getParcelableCompat
 import com.hippo.yorozuya.LayoutUtils
@@ -65,7 +66,7 @@ class GalleryInfoScene : ToolbarScene() {
             mKeys.add(getString(R.string.key_title_jpn))
             mValues.add(it.titleJpn)
             mKeys.add(getString(R.string.key_thumb))
-            mValues.add(EhUtils.fixThumbUrl(it.thumb!!))
+            mValues.add(it.thumbUrl!!)
             mKeys.add(getString(R.string.key_category))
             mValues.add(EhUtils.getCategory(it.category))
             mKeys.add(getString(R.string.key_uploader))
