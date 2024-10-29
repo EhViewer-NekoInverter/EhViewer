@@ -723,7 +723,7 @@ object EhEngine {
         gid: Long,
         token: String?,
     ): List<String> {
-        val url = EhUrl.getGalleryMultiPageViewerUrl(gid, token!!)
+        val url = EhUrl.getGalleryMultiPageViewerUrl(gid, token!!, true)
         val referer = EhUrl.getGalleryDetailUrl(gid, token)
         Log.d(TAG, url)
         return EhRequestBuilder(url, referer).executeAndParsingWith(GalleryMultiPageViewerParser::parseSha1)

@@ -22,23 +22,19 @@ import org.json.JSONArray
 
 object GalleryMultiPageViewerParser {
     private const val IMAGE_LIST_STRING = "var imagelist = "
-
-    private fun parseJson(body: String): JSONArray {
-        val index = body.indexOf(IMAGE_LIST_STRING)
-        val imageList = body.substring(index + IMAGE_LIST_STRING.length, body.indexOf(";", index))
-        return JSONArray(imageList)
-    }
+    private val PATTERN_SHA1 = Regex("data-orghash=\"([^\"]+)\"")
 
     fun parsePToken(body: String): List<String> = runCatching {
-        val ja = parseJson(body)
+        val index = body.indexOf(IMAGE_LIST_STRING)
+        val imageList = body.substring(index + IMAGE_LIST_STRING.length, body.indexOf(";", index))
+        val ja = JSONArray(imageList)
         (0 until ja.length()).map { ja.getJSONObject(it).getString("k") }
     }.getOrElse {
         throw ParseException("Parse pToken from MPV error", it)
     }
 
     fun parseSha1(body: String): List<String> = runCatching {
-        val ja = parseJson(body)
-        (0 until ja.length()).map { ja.getJSONObject(it).getString("t").substringAfterLast("/").substringBefore("-") }
+        PATTERN_SHA1.findAll(body).map { it.groupValues[1] }.toList()
     }.getOrElse {
         throw ParseException("Parse sha1 from MPV error", it)
     }
