@@ -245,7 +245,7 @@
     <string name="archive_original">オリジナル</string>
     <string name="archive_resample">リサンプル</string>
     <string name="archive_free">自由</string>
-    <string name="current_funds">Fund: %1$s - GP: %2$d クレジット</string>
+    <string name="current_funds">Fund: %1$s | GP: %2$d クレジット</string>
     <string name="insufficient_funds">Fund (GP) が不足しています</string>
     <string name="download_archive_started">アーカイブのダウンロードを開始しました</string>
     <string name="download_archive_failure">アーカイブをダウンロードできませんでした</string>
@@ -389,7 +389,7 @@
     <string name="settings_eh_image_limits_summary_ip_ok">制限なし</string>
     <string name="settings_eh_image_limits_summary_ip_restricted">低解像度の画像</string>
     <string name="settings_eh_image_limits_summary_acc">現在: %1$d / %2$d</string>
-    <string name="settings_eh_unlock_cost">%1$d GP を消費することで、24 時間の高解像度クォータのロックを解除できます</string>
+    <string name="settings_eh_unlock_cost">%1$d GP を消費することで、24 時間の高解像度クォータのロックを解除できます。</string>
     <string name="settings_eh_unlock">ロックを解除</string>
     <string name="settings_eh_reset_cost">コストのリセット: %1$d GP</string>
     <string name="settings_eh_reset">リセット</string>
