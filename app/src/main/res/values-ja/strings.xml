@@ -17,23 +17,23 @@
 <resources>
     <!-- App Name -->
     <!-- Login Scene -->
-    <string name="app_waring">このアプリの内容はインターネットから取得したものです。その内容の一部は心身に悪影響を与える可能性があります。それでも続行しますか？</string>
+    <string name="app_waring">このアプリの内容はインターネットから取得したものです。その内容の一部は心身に悪影響を与える可能性があります。\n使用を続行することで規約に同意したとみなされます。</string>
     <string name="username">ユーザー名</string>
     <string name="password">パスワード</string>
     <string name="sign_in">ログイン</string>
     <string name="register">登録</string>
-    <string name="sign_in_via_webview">ウェブでログイン</string>
-    <string name="sign_in_via_cookies">Cookie を使用してログイン</string>
+    <string name="sign_in_via_webview">WebView でログイン</string>
+    <string name="sign_in_via_cookies">Cookie でログイン</string>
     <string name="tourist_mode">ログインをせずに続行</string>
     <string name="error_username_cannot_empty">ユーザー名は空欄にできません</string>
     <string name="error_password_cannot_empty">パスワードは空欄にできません</string>
     <string name="sign_in_failed">ログインに失敗しました</string>
-    <string name="sign_in_failed_tip">この問題が続く場合は「%s」をお試しください。</string>
+    <string name="sign_in_failed_tip">この問題が解決しない場合は「WebView でログイン」か「Cookie でログイン」をお試しください。</string>
     <string name="get_it">了解</string>
     <!-- Cookie Sign In Scene -->
     <string name="cookie_explain">Cookie とは、ウェブブラウザに保存される小さなデータのことです。Cookie が何なのか、または取得方法がわからない場合は Google で検索をしてください。\n\nログインをするには特別な Cookie を入力してください。</string>
     <string name="from_clipboard">クリップボードから</string>
-    <string name="text_is_empty">テキストを入力してください</string>
+    <string name="text_is_empty">テキストが空です</string>
     <string name="wrong_cookie_warning">入力した Cookie が間違っているようです。確認をした方が良いですよ。</string>
     <string name="from_clipboard_error">クリップボードから Cookie が見つかりませんでした。</string>
     <!-- Select Site Scene -->
@@ -50,9 +50,9 @@
     <string name="waring">警告</string>
     <string name="invalid_download_location">ダウンロードパスは現在利用できません。ダウンロードパスを設定してください。</string>
     <string name="press_twice_exit">再度押して終了します</string>
-    <string name="clipboard_gallery_url_snack_message">クリップボードにはギャラリーURLが検出されました。</string>
-    <string name="clipboard_gallery_url_snack_action">移動</string>
-    <string name="please_wait">お待ちください</string>
+    <string name="clipboard_gallery_url_snack_message">クリップボードにギャラリーの URL があります</string>
+    <string name="clipboard_gallery_url_snack_action">表示</string>
+    <string name="please_wait">お待ちください…</string>
     <string name="app_link_not_verified_title">アプリのリンクが確認されていません</string>
     <string name="app_link_not_verified_message">Android 12 以降の場合、EhViewer で E-Hentai のリンクを開くには確認済みのリンクを手動で追加する必要があります。</string>
     <string name="open_settings">設定を開く</string>
@@ -129,7 +129,7 @@
     <string name="name_is_empty">タイトルが空欄です</string>
     <string name="duplicate_name">この名前は既に使用されています。</string>
     <string name="image_search_not_quick_search">画像検索をクイック検索として追加できませんでした</string>
-    <string name="duplicate_quick_search">「%s」のクイック検索は既に存在しています。</string>
+    <string name="duplicate_quick_search">「%s」のクイック検索はすでに存在しています。</string>
     <string name="delete">削除</string>
     <string name="delete_quick_search_title">クイック検索を削除</string>
     <string name="delete_quick_search_message">「%s」を削除しますか？</string>
@@ -245,8 +245,8 @@
     <string name="archive_original">オリジナル</string>
     <string name="archive_resample">リサンプル</string>
     <string name="archive_free">自由</string>
-    <string name="current_funds">現在の Fund:</string>
-    <string name="insufficient_funds">Fund が不足しています</string>
+    <string name="current_funds">Fund: %1$s - GP: %2$d クレジット</string>
+    <string name="insufficient_funds">Fund (GP) が不足しています</string>
     <string name="download_archive_started">アーカイブのダウンロードを開始しました</string>
     <string name="download_archive_failure">アーカイブをダウンロードできませんでした</string>
     <string name="download_archive_failure_no_hath">アーカイブのダウンロードは H@H クライアントが必要です</string>
@@ -351,9 +351,9 @@
     <string name="download_all">すべて</string>
     <string name="add">追加</string>
     <string name="new_label_title">ラベルを作成</string>
-    <string name="label_text_is_empty">ラベルテキストを入力してください</string>
-    <string name="label_text_is_invalid">「デフォルト」は無効なラベルです</string>
-    <string name="label_text_exist">ラベルは既に存在しています</string>
+    <string name="label_text_is_empty">ラベルのテキストが空です</string>
+    <string name="label_text_is_invalid">「すべて」または「デフォルト」は無効なラベルです</string>
+    <string name="label_text_exist">ラベルはすでに存在しています</string>
     <string name="rename_label">名前を変更</string>
     <string name="rename_label_title">ラベルの名前を変更</string>
     <string name="delete_label_title">ラベルを削除</string>
@@ -390,7 +390,7 @@
     <string name="settings_eh_image_limits_summary_ip_restricted">低解像度の画像</string>
     <string name="settings_eh_image_limits_summary_acc">現在: %1$d / %2$d</string>
     <string name="settings_eh_unlock_cost">%1$d GP を消費することで、24 時間の高解像度クォータのロックを解除できます</string>
-    <string name="settings_eh_unlock">ロック解除</string>
+    <string name="settings_eh_unlock">ロックを解除</string>
     <string name="settings_eh_reset_cost">コストのリセット: %1$d GP</string>
     <string name="settings_eh_reset">リセット</string>
     <string name="settings_eh_reset_limits_succeed">画像の制限が正常にリセットされました</string>
@@ -565,8 +565,8 @@
     <!-- Languages -->
     <string name="app_language_system">システム言語 (デフォルト)</string>
     <!-- Proxy -->
-    <string name="proxy_direct">直接</string>
-    <string name="proxy_system">システムプロキシ</string>
+    <string name="proxy_direct">直接接続</string>
+    <string name="proxy_system">システムのプロキシ</string>
     <string name="proxy_host_or_ip">ホストまたは IP</string>
     <string name="proxy_port">ポート</string>
     <string name="proxy_invalid_port">無効なポート</string>
