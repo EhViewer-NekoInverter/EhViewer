@@ -18,6 +18,7 @@ package com.hippo.widget.recyclerview;
 
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -71,7 +72,7 @@ public class AutoStaggeredGridLayoutManager extends StaggeredGridLayoutManager {
     }
 
     @Override
-    public void onMeasure(RecyclerView.Recycler recycler, RecyclerView.State state, int widthSpec, int heightSpec) {
+    public void onMeasure(@NonNull RecyclerView.Recycler recycler, @NonNull RecyclerView.State state, int widthSpec, int heightSpec) {
         if (mColumnSizeChanged && mColumnSize > 0) {
             int totalSpace;
             if (getOrientation() == VERTICAL) {

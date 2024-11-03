@@ -465,7 +465,6 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
 
     private fun isStateDone(state: Int): Boolean = state == STATE_FINISHED || state == STATE_FAILED
 
-    @JvmOverloads
     fun updatePageState(index: Int, @State state: Int, error: String? = null) {
         var oldState: Int
         synchronized<Unit>(mPageStateLock) {
@@ -783,7 +782,6 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
             if (URL_509_PATTERN in url) throw QuotaExceededException()
         }
 
-        @JvmStatic
         fun obtainSpiderQueen(galleryInfo: GalleryInfo, @Mode mode: Int): SpiderQueen {
             val gid = galleryInfo.gid
             return (sQueenMap[gid] ?: SpiderQueen(galleryInfo).also { sQueenMap[gid] = it }).apply {
@@ -792,7 +790,6 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
             }
         }
 
-        @JvmStatic
         fun releaseSpiderQueen(queen: SpiderQueen, @Mode mode: Int) {
             queen.run {
                 clearMode(mode)

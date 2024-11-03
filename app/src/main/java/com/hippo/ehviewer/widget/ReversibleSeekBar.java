@@ -16,11 +16,13 @@
 
 package com.hippo.ehviewer.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatSeekBar;
 
 public class ReversibleSeekBar extends AppCompatSeekBar {
@@ -44,7 +46,7 @@ public class ReversibleSeekBar extends AppCompatSeekBar {
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(@NonNull Canvas canvas) {
         boolean reverse = mReverse;
         int saveCount = 0;
         if (reverse) {
@@ -59,6 +61,7 @@ public class ReversibleSeekBar extends AppCompatSeekBar {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         boolean reverse = mReverse;

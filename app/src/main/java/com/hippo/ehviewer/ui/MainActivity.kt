@@ -78,6 +78,8 @@ import com.hippo.util.addTextToClipboard
 import com.hippo.util.getClipboardManager
 import com.hippo.util.getParcelableExtraCompat
 import com.hippo.util.getUrlFromClipboard
+import com.hippo.util.isAtLeastQ
+import com.hippo.util.isAtLeastS
 import com.hippo.widget.DrawerView
 import com.hippo.widget.LoadImageView
 import com.hippo.yorozuya.SimpleHandler
@@ -244,7 +246,7 @@ class MainActivity :
             if (Settings.meteredNetworkWarning) {
                 checkMeteredNetwork()
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (isAtLeastS) {
                 if (!Settings.appLinkVerifyTip) {
                     try {
                         checkAppLinkVerify()
@@ -316,7 +318,7 @@ class MainActivity :
 
     private fun checkMeteredNetwork() {
         if (connectivityManager.isActiveNetworkMetered) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && mDrawerLayout != null) {
+            if (isAtLeastQ && mDrawerLayout != null) {
                 Snackbar.make(
                     mDrawerLayout!!,
                     R.string.metered_network_warning,

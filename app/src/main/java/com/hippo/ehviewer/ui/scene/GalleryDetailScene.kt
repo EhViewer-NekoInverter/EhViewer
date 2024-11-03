@@ -119,6 +119,8 @@ import com.hippo.util.ExceptionUtils
 import com.hippo.util.ReadableTime
 import com.hippo.util.addTextToClipboard
 import com.hippo.util.getParcelableCompat
+import com.hippo.util.isAtLeastQ
+import com.hippo.util.isAtLeastS
 import com.hippo.util.launchIO
 import com.hippo.util.withUIContext
 import com.hippo.view.ViewTransition
@@ -703,6 +705,7 @@ class GalleryDetailScene :
         }
     }
 
+    @Suppress("KotlinConstantConditions")
     private fun adjustViewVisibility(state: Int, animation: Boolean) {
         if (state == mState || mViewTransition == null || mViewTransition2 == null) {
             return
@@ -1181,7 +1184,7 @@ class GalleryDetailScene :
                 }
             }
             mTorrent -> {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q &&
+                if (!isAtLeastQ &&
                     ContextCompat.checkSelfPermission(
                         activity,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -1805,9 +1808,7 @@ class GalleryDetailScene :
                                 activity.showTip(R.string.added_to_download_list, LENGTH_SHORT)
                             }
                         } catch (e: Exception) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-                                e is ForegroundServiceStartNotAllowedException
-                            ) {
+                            if (isAtLeastS && e is ForegroundServiceStartNotAllowedException) {
                                 // App not in a valid state to start foreground service
                                 withUIContext {
                                     dialog.dismiss()

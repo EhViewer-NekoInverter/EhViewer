@@ -17,17 +17,10 @@ package com.hippo.scene
 
 import android.os.Bundle
 
-class Announcer(@JvmField var clazz: Class<*>) {
-    @JvmField
+class Announcer(var clazz: Class<*>) {
     var args: Bundle? = null
-
-    @JvmField
     var tranHelper: TransitionHelper? = null
-
-    @JvmField
     var requestFrom: SceneFragment? = null
-
-    @JvmField
     var requestCode = 0
 
     fun setArgs(args: Bundle?): Announcer {

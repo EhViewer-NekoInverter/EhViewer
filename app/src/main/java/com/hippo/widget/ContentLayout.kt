@@ -52,7 +52,10 @@ import com.hippo.yorozuya.LayoutUtils
 import com.hippo.yorozuya.collect.IntList
 import rikka.core.res.resolveColor
 
-class ContentLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout(context, attrs) {
+class ContentLayout @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+) : FrameLayout(context, attrs) {
     private lateinit var mContentHelper: ContentHelper<*>
     private val mProgressView: CircularProgressIndicator
     private val mTipView: TextView
@@ -675,7 +678,6 @@ class ContentLayout(context: Context, attrs: AttributeSet? = null) : FrameLayout
         private val isContentShowing: Boolean
             get() = mViewTransition!!.shownViewIndex == 0
 
-        @JvmOverloads
         fun showProgressBar(animation: Boolean = true) {
             mViewTransition!!.showView(1, animation)
         }

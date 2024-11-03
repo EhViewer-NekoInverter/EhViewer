@@ -37,6 +37,7 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.animation.Interpolator;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
 
@@ -138,9 +139,9 @@ public class LockPatternView extends View {
         mPathPaint.setAntiAlias(true);
         mPathPaint.setDither(true);
 
-        mRegularColor = getResources().getColor(R.color.lock_pattern_view_regular_color);
-        mErrorColor = getResources().getColor(R.color.lock_pattern_view_error_color);
-        mSuccessColor = getResources().getColor(R.color.lock_pattern_view_success_color);
+        mRegularColor = ContextCompat.getColor(context, R.color.lock_pattern_view_regular_color);
+        mErrorColor = ContextCompat.getColor(context, R.color.lock_pattern_view_error_color);
+        mSuccessColor = ContextCompat.getColor(context, R.color.lock_pattern_view_success_color);
 
         mPathPaint.setColor(mRegularColor);
 
@@ -283,7 +284,7 @@ public class LockPatternView extends View {
     public void setDisplayMode(DisplayMode displayMode) {
         mPatternDisplayMode = displayMode;
         if (displayMode == DisplayMode.Animate) {
-            if (mPattern.size() == 0) {
+            if (mPattern.isEmpty()) {
                 throw new IllegalStateException("you must have a pattern to "
                         + "animate if you want to set the display mode to animate");
             }
@@ -350,21 +351,14 @@ public class LockPatternView extends View {
         mSquareHeight = height / 3.0f;
     }
 
+    @SuppressLint("SwitchIntDef")
     private int resolveMeasured(int measureSpec, int desired) {
-        int result;
         int specSize = MeasureSpec.getSize(measureSpec);
-        switch (MeasureSpec.getMode(measureSpec)) {
-            case MeasureSpec.UNSPECIFIED:
-                result = desired;
-                break;
-            case MeasureSpec.AT_MOST:
-                result = Math.max(specSize, desired);
-                break;
-            case MeasureSpec.EXACTLY:
-            default:
-                result = specSize;
-        }
-        return result;
+        return switch (MeasureSpec.getMode(measureSpec)) {
+            case MeasureSpec.UNSPECIFIED -> desired;
+            case MeasureSpec.AT_MOST -> Math.max(specSize, desired);
+            default -> specSize;
+        };
     }
 
     @Override
@@ -747,7 +741,7 @@ public class LockPatternView extends View {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(@NonNull Canvas canvas) {
         final ArrayList<Cell> pattern = mPattern;
         final int count = pattern.size();
         final boolean[][] drawLookup = mPatternDrawLookup;
@@ -1043,7 +1037,7 @@ public class LockPatternView extends View {
      */
     private static class SavedState extends BaseSavedState {
         public static final Creator<SavedState> CREATOR =
-                new Creator<SavedState>() {
+                new Creator<>() {
                     @Override
                     public SavedState createFromParcel(Parcel in) {
                         return new SavedState(in);

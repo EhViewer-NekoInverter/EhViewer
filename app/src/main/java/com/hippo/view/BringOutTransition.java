@@ -34,9 +34,7 @@ public class BringOutTransition extends ViewTransition {
         mAnimator1.setDuration(ANIMATE_TIME).setListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (hiddenView != null) {
-                    hiddenView.setVisibility(View.GONE);
-                }
+                hiddenView.setVisibility(View.GONE);
                 mAnimator1 = null;
             }
         }).start();

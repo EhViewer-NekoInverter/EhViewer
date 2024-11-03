@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU General Public License along with EhViewer.
  * If not, see <https://www.gnu.org/licenses/>.
  */
+@file:Suppress("unused")
+
 package com.hippo.ehviewer.gallery
 
 import android.content.Context

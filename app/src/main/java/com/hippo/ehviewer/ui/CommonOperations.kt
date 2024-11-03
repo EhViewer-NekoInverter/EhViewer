@@ -18,7 +18,6 @@ package com.hippo.ehviewer.ui
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
-import android.os.Build
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.hippo.app.EditTextCheckBoxDialogBuilder
@@ -34,6 +33,7 @@ import com.hippo.ehviewer.client.data.GalleryInfo
 import com.hippo.ehviewer.download.DownloadService
 import com.hippo.ehviewer.ui.scene.BaseScene
 import com.hippo.unifile.UniFile
+import com.hippo.util.isAtLeastT
 import com.hippo.yorozuya.collect.LongList
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -170,7 +170,7 @@ object CommonOperations {
         galleryInfos: List<GalleryInfo>,
         forceDefault: Boolean,
     ) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        if (isAtLeastT) {
             application.topActivity?.checkAndRequestNotificationPermission()
         }
         doStartDownload(activity, galleryInfos, forceDefault)

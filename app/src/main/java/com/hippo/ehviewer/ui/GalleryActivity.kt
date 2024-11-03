@@ -31,7 +31,6 @@ import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Typeface
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.ParcelFileDescriptor
@@ -87,6 +86,7 @@ import com.hippo.unifile.UniFile
 import com.hippo.util.ExceptionUtils
 import com.hippo.util.getParcelableCompat
 import com.hippo.util.getParcelableExtraCompat
+import com.hippo.util.isAtLeastQ
 import com.hippo.util.launchIO
 import com.hippo.util.sendTo
 import com.hippo.util.withUIContext
@@ -906,7 +906,7 @@ class GalleryActivity :
         if (null == mGalleryProvider) {
             return
         }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q &&
+        if (!isAtLeastQ &&
             ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -929,7 +929,7 @@ class GalleryActivity :
         values.put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
         values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis())
         values.put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (isAtLeastQ) {
             values.put(
                 MediaStore.MediaColumns.RELATIVE_PATH,
                 Environment.DIRECTORY_PICTURES + File.separator + AppConfig.APP_DIRNAME,
@@ -961,7 +961,7 @@ class GalleryActivity :
             }
             Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show()
             return
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        } else if (isAtLeastQ) {
             val contentValues = ContentValues()
             contentValues.put(MediaStore.MediaColumns.IS_PENDING, 0)
             resolver.update(imageUri, contentValues, null, null)

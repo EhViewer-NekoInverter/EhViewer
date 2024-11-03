@@ -174,7 +174,6 @@ abstract class StageActivity : EhActivity() {
         throw IllegalStateException(clazz.getName() + " can not cast to scene", e)
     }
 
-    @JvmOverloads
     fun startScene(announcer: Announcer, horizontal: Boolean = false) {
         val clazz = announcer.clazz
         val args = announcer.args
@@ -420,7 +419,6 @@ abstract class StageActivity : EhActivity() {
         views.sortWith(mSceneViewComparator)
     }
 
-    @JvmOverloads
     fun finishScene(scene: SceneFragment, transitionHelper: TransitionHelper? = null) {
         finishScene(scene.tag, transitionHelper)
     }

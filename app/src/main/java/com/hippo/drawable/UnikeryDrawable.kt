@@ -15,7 +15,7 @@
  */
 package com.hippo.drawable
 
-import android.graphics.drawable.AnimatedImageDrawable
+import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import coil.imageLoader
 import coil.request.Disposable
@@ -85,6 +85,6 @@ class UnikeryDrawable(private val mTextView: ObservedTextView) :
     private fun onGetValue(newDrawable: Drawable) {
         clearDrawable()
         drawable = newDrawable
-        (newDrawable as? AnimatedImageDrawable)?.start()
+        (newDrawable as? Animatable)?.start()
     }
 }

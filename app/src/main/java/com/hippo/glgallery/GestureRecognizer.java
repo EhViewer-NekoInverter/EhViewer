@@ -128,7 +128,7 @@ class GestureRecognizer {
         }
 
         @Override
-        public boolean onFling(@NonNull MotionEvent e1, @NonNull MotionEvent e2, float velocityX,
+        public boolean onFling(MotionEvent e1, @NonNull MotionEvent e2, float velocityX,
                                float velocityY) {
             return mListener.onFling(e1, e2, velocityX, velocityY);
         }

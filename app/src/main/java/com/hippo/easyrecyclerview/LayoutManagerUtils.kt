@@ -65,7 +65,6 @@ object LayoutManagerUtils {
         }
     }
 
-    @JvmOverloads
     fun smoothScrollToPosition(
         layoutManager: RecyclerView.LayoutManager,
         context: Context?,

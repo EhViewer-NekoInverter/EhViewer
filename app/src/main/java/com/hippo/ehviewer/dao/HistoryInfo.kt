@@ -17,14 +17,15 @@
  */
 package com.hippo.ehviewer.dao
 
+import android.annotation.SuppressLint
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import com.hippo.ehviewer.client.data.BaseGalleryInfo
 import com.hippo.ehviewer.client.data.GalleryInfo
 
+@SuppressLint("ParcelCreator")
 @Entity(tableName = "HISTORY")
 class HistoryInfo() : BaseGalleryInfo() {
-    @JvmField
     @ColumnInfo(name = "TIME")
     var time: Long = 0
 

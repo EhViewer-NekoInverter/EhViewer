@@ -98,7 +98,7 @@ object EhUtils {
         return UNKNOWN
     }
 
-    fun getCategory(type: Int): String = CATEGORY_VALUES.getOrDefault(type, CATEGORY_VALUES[UNKNOWN]!!)[0]
+    fun getCategory(type: Int): String = CATEGORY_VALUES[type]?.let { it[0] } ?: CATEGORY_VALUES[UNKNOWN]!![0]
 
     fun getCategoryColor(category: Int): Int = when (category) {
         DOUJINSHI -> BG_COLOR_DOUJINSHI

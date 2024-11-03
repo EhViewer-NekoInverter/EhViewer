@@ -17,12 +17,11 @@
  */
 package com.hippo.util
 
-import android.os.Build
 import java.net.URLEncoder
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 
-fun encode(s: String, charset: Charset): String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+fun encode(s: String, charset: Charset): String = if (isAtLeastT) {
     URLEncoder.encode(s, charset)
 } else {
     URLEncoder.encode(s, charset.name())

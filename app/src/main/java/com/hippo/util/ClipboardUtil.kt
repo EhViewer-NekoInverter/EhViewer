@@ -21,7 +21,6 @@ import android.content.ClipData
 import android.content.ClipDescription
 import android.content.ClipboardManager
 import android.content.Context
-import android.os.Build
 import android.os.PersistableBundle
 import android.text.TextUtils
 import android.view.textclassifier.TextClassifier
@@ -36,7 +35,7 @@ fun Context.addTextToClipboard(text: CharSequence?, isSensitive: Boolean) {
     getClipboardManager().apply {
         setPrimaryClip(
             ClipData.newPlainText(null, text).apply {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && isSensitive) {
+                if (isAtLeastT && isSensitive) {
                     description.extras = PersistableBundle().apply {
                         putBoolean(ClipDescription.EXTRA_IS_SENSITIVE, true)
                     }
@@ -58,7 +57,7 @@ fun ClipboardManager.getTextFromClipboard(context: Context): String? {
 }
 
 fun ClipboardManager.getUrlFromClipboard(context: Context): String? {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && primaryClipDescription?.classificationStatus == ClipDescription.CLASSIFICATION_COMPLETE) {
+    if (isAtLeastS && primaryClipDescription?.classificationStatus == ClipDescription.CLASSIFICATION_COMPLETE) {
         if ((
                 primaryClipDescription?.getConfidenceScore(TextClassifier.TYPE_URL)
                     ?.let { it <= 0 }

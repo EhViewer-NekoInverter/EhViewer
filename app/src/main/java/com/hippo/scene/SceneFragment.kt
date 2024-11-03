@@ -47,7 +47,6 @@ open class SceneFragment : Fragment() {
         }
     }
 
-    @JvmOverloads
     fun finish(transitionHelper: TransitionHelper? = null) {
         val activity = activity
         if (activity is StageActivity) {

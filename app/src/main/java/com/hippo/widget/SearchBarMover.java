@@ -124,7 +124,7 @@ public class SearchBarMover extends RecyclerView.OnScrollListener {
             va.setDuration(ANIMATE_TIME);
             va.addListener(new SimpleAnimatorListener() {
                 @Override
-                public void onAnimationEnd(Animator animation) {
+                public void onAnimationEnd(@NonNull Animator animation) {
                     mSearchBarMoveAnimator = null;
                 }
             });
@@ -132,7 +132,7 @@ public class SearchBarMover extends RecyclerView.OnScrollListener {
                 int lastValue;
 
                 @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
+                public void onAnimationUpdate(@NonNull ValueAnimator animation) {
                     int value = (Integer) animation.getAnimatedValue();
                     int offsetStep = value - lastValue;
                     lastValue = value;
@@ -183,7 +183,7 @@ public class SearchBarMover extends RecyclerView.OnScrollListener {
             va.setDuration(ANIMATE_TIME);
             va.addListener(new SimpleAnimatorListener() {
                 @Override
-                public void onAnimationEnd(Animator animation) {
+                public void onAnimationEnd(@NonNull Animator animation) {
                     mSearchBarMoveAnimator = null;
                 }
             });
@@ -191,7 +191,7 @@ public class SearchBarMover extends RecyclerView.OnScrollListener {
                 int lastValue;
 
                 @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
+                public void onAnimationUpdate(@NonNull ValueAnimator animation) {
                     int value = (Integer) animation.getAnimatedValue();
                     int offsetStep = value - lastValue;
                     lastValue = value;

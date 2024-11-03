@@ -18,7 +18,6 @@ package com.hippo.ehviewer.ui.fragment
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -42,6 +41,7 @@ import com.hippo.ehviewer.ui.scene.BaseScene
 import com.hippo.util.ExceptionUtils
 import com.hippo.util.LogCat
 import com.hippo.util.ReadableTime
+import com.hippo.util.isAtLeastS
 import com.hippo.util.launchIO
 import com.hippo.util.withUIContext
 import com.hippo.yorozuya.IOUtils
@@ -243,10 +243,10 @@ class AdvancedFragment : BasePreferenceFragment() {
         val exportData = findPreference<Preference>(KEY_EXPORT_DATA)
         val backupFavorite = findPreference<Preference>(KEY_BACKUP_FAVORITE)
         val openByDefault = findPreference<Preference>(KEY_OPEN_BY_DEFAULT)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-            openByDefault!!.isVisible = false
-        } else {
+        if (isAtLeastS) {
             openByDefault!!.onPreferenceClickListener = this
+        } else {
+            openByDefault!!.isVisible = false
         }
         dumpLogcat!!.onPreferenceClickListener = this
         importData!!.onPreferenceClickListener = this

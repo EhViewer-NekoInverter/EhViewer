@@ -32,7 +32,6 @@ import com.hippo.scene.StageActivity
 import rikka.core.res.resolveColor
 
 object UrlOpener {
-    @JvmOverloads
     fun openUrl(
         context: Context,
         url: String?,

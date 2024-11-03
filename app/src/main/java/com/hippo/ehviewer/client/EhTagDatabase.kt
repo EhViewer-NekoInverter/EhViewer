@@ -183,7 +183,6 @@ object EhTagDatabase {
         it["reclass"] = "r"
     }
 
-    @JvmStatic
     fun namespaceToPrefix(namespace: String): String? = NAMESPACE_TO_PREFIX[namespace]
 
     private fun getMetadata(context: Context): Array<String>? = context.resources.getStringArray(R.array.tag_translation_metadata)

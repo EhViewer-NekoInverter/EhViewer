@@ -21,7 +21,6 @@ object InetValidator {
     private const val IPV4_REGEX = "^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$"
     private val IPV4_PATTERN = Pattern.compile(IPV4_REGEX)
 
-    @JvmStatic
     fun isValidInet4Address(inet4Address: String?): Boolean {
         if (null == inet4Address) {
             return false
@@ -52,6 +51,5 @@ object InetValidator {
         return true
     }
 
-    @JvmStatic
     fun isValidInetPort(inetPort: Int): Boolean = inetPort in 0..65535
 }

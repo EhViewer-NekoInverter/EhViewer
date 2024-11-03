@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU General Public License along with EhViewer.
  * If not, see <https://www.gnu.org/licenses/>.
  */
+@file:Suppress("unused")
+
 package com.hippo.image
 
 import android.content.res.Resources
@@ -96,7 +98,7 @@ class Image private constructor(
             updateBitmap()
             mBitmap
         } else {
-            (mObtainedDrawable as BitmapDrawable?)?.bitmap
+            (mObtainedDrawable as? BitmapDrawable)?.bitmap
         }
         bitmap ?: return
         nativeTexImage(
@@ -112,7 +114,7 @@ class Image private constructor(
     fun start() {
         if (!started) {
             started = true
-            (mObtainedDrawable as Animatable?)?.start()
+            (mObtainedDrawable as? Animatable)?.start()
         }
     }
 
@@ -135,7 +137,6 @@ class Image private constructor(
         val screenWidth = EhApplication.application.resources.displayMetrics.widthPixels
         val screenHeight = EhApplication.application.resources.displayMetrics.heightPixels
 
-        @JvmStatic
         fun decode(src: CloseableSource): Image? = runCatching {
             Image(src)
         }.onFailure {

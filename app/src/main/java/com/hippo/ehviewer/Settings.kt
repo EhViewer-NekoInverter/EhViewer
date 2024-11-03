@@ -28,6 +28,7 @@ import com.hippo.unifile.UniFile
 import com.hippo.yorozuya.NumberUtils
 import java.util.Locale
 
+@Suppress("SameParameterValue")
 object Settings {
     /********************
      ****** Eh

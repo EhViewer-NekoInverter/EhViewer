@@ -31,6 +31,7 @@ import androidx.core.content.ContextCompat
 import com.hippo.ehviewer.EhApplication
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
+import com.hippo.util.isAtLeastQ
 import rikka.core.res.resolveColor
 import rikka.insets.WindowInsetsHelper
 import rikka.layoutinflater.view.LayoutInflaterFactory
@@ -57,7 +58,7 @@ abstract class EhActivity : AppCompatActivity() {
         window.decorView.post {
             window.navigationBarColor =
                 theme.resolveColor(android.R.attr.navigationBarColor) and 0x00ffffff or -0x20000000
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (isAtLeastQ) {
                 window.isNavigationBarContrastEnforced = false
             }
         }

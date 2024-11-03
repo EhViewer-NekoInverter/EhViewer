@@ -29,7 +29,7 @@ import java.util.Map;
 public class FavouriteStatusRouter {
     private static final String KEY_DATA_MAP_NEXT_ID = "data_map_next_id";
 
-    private final IntIdGenerator idGenerator = new IntIdGenerator(Settings.INSTANCE.getInt(KEY_DATA_MAP_NEXT_ID, 0));
+    private final IntIdGenerator idGenerator = new IntIdGenerator(Settings.getInt(KEY_DATA_MAP_NEXT_ID, 0));
     @SuppressLint("UseSparseArrays")
     private final HashMap<Integer, Map<Long, GalleryInfo>> maps = new HashMap<>();
 
@@ -38,7 +38,7 @@ public class FavouriteStatusRouter {
     public int saveDataMap(Map<Long, GalleryInfo> map) {
         int id = idGenerator.nextId();
         maps.put(id, map);
-        Settings.INSTANCE.putInt(KEY_DATA_MAP_NEXT_ID, idGenerator.nextId());
+        Settings.putInt(KEY_DATA_MAP_NEXT_ID, idGenerator.nextId());
         return id;
     }
 

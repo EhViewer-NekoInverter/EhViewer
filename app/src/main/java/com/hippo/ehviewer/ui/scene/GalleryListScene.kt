@@ -1701,7 +1701,6 @@ class GalleryListScene :
             }
         }
 
-        @JvmStatic
         fun startScene(scene: SceneFragment, lub: ListUrlBuilder?) {
             scene.startScene(getStartAnnouncer(lub))
         }

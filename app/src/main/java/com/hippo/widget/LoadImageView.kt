@@ -40,6 +40,7 @@ open class LoadImageView @JvmOverloads constructor(
     private var mClipHeight = Int.MIN_VALUE
     private var mKey: String? = null
     private var mUrl: String? = null
+    private var mCrossfade = true
     private var mHardware = true
 
     @RetryType
@@ -86,6 +87,7 @@ open class LoadImageView @JvmOverloads constructor(
     ) {
         mKey = key
         mUrl = url
+        mCrossfade = crossfade
         mHardware = hardware
         load(url) {
             // https://coil-kt.github.io/coil/recipes/#shared-element-transitions
@@ -115,7 +117,7 @@ open class LoadImageView @JvmOverloads constructor(
     }
 
     private fun reload() {
-        mKey?.let { this.load(it, mUrl!!, hardware = mHardware) }
+        mKey?.let { this.load(it, mUrl!!, mCrossfade, mHardware) }
     }
 
     override fun setImageDrawable(drawable: Drawable?) {

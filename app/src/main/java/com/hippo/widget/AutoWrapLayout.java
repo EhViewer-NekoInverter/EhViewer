@@ -214,7 +214,7 @@ public class AutoWrapLayout extends ViewGroup {
         else {
             measuredHeight = maxBottom + paddingBottom;
             if (heightMode == MeasureSpec.AT_MOST)
-                measuredHeight = measuredHeight > maxHeight ? maxHeight : measuredHeight;
+                measuredHeight = Math.min(measuredHeight, maxHeight);
         }
 
         setMeasuredDimension(measuredWidth, measuredHeight);

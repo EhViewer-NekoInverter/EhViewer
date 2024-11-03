@@ -19,7 +19,6 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.content.res.Resources.Theme
-import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.SparseArray
@@ -36,6 +35,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.hippo.ehviewer.ui.MainActivity
 import com.hippo.scene.SceneFragment
 import com.hippo.util.getSparseParcelableArrayCompat
+import com.hippo.util.isAtLeastR
 
 abstract class BaseScene : SceneFragment() {
     private var drawerView: View? = null
@@ -163,7 +163,7 @@ abstract class BaseScene : SceneFragment() {
         val decorView = activity.window.decorView
         val isLight = set && (activity.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_YES) <= 0
         // https://github.com/EhViewer-NekoInverter/EhViewer/issues/55
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+        if (isAtLeastR) {
             WindowCompat.getInsetsController(activity.window, decorView).isAppearanceLightStatusBars = isLight
         } else {
             val flags = decorView.systemUiVisibility

@@ -186,7 +186,6 @@ object EhDB {
         }
     }
 
-    @JvmStatic
     @Synchronized
     fun containLocalFavorites(gid: Long): Boolean {
         val dao = db.localFavoritesDao()

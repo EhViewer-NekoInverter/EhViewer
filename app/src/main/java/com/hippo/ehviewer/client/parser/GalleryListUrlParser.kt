@@ -16,10 +16,10 @@
 package com.hippo.ehviewer.client.parser
 
 import android.net.Uri
-import android.os.Build
 import android.text.TextUtils
 import com.hippo.ehviewer.client.EhUrl
 import com.hippo.ehviewer.client.data.ListUrlBuilder
+import com.hippo.util.isAtLeastT
 import com.hippo.yorozuya.Utilities
 import java.io.UnsupportedEncodingException
 import java.net.MalformedURLException
@@ -78,7 +78,7 @@ object GalleryListUrlParser {
         } else {
             path.substring(prefixLength, index)
         }
-        uploader = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        uploader = if (isAtLeastT) {
             URLDecoder.decode(uploader, StandardCharsets.UTF_8)
         } else {
             try {
@@ -107,7 +107,7 @@ object GalleryListUrlParser {
         } else {
             path.substring(prefixLength, index)
         }
-        tag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        tag = if (isAtLeastT) {
             URLDecoder.decode(tag, StandardCharsets.UTF_8)
         } else {
             try {

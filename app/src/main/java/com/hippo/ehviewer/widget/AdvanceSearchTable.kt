@@ -15,6 +15,7 @@
  */
 package com.hippo.ehviewer.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
@@ -113,6 +114,8 @@ class AdvanceSearchTable @JvmOverloads constructor(
         } else {
             -1
         }
+
+        @SuppressLint("SetTextI18n")
         set(pageFrom) {
             if (pageFrom > 0) {
                 mSpf.setText(pageFrom.toString())
@@ -129,6 +132,8 @@ class AdvanceSearchTable @JvmOverloads constructor(
         } else {
             -1
         }
+
+        @SuppressLint("SetTextI18n")
         set(pageTo) {
             if (pageTo > 0) {
                 mSpt.setText(pageTo.toString())
@@ -167,7 +172,7 @@ class AdvanceSearchTable @JvmOverloads constructor(
         const val SFU = 0x200
         const val SFT = 0x400
         private const val STATE_KEY_SUPER = "super"
-        private const val STATE_KEY_ADVANCE_SEARCH = "advance_earch"
+        private const val STATE_KEY_ADVANCE_SEARCH = "advance_search"
         private const val STATE_KEY_MIN_RATING = "min_rating"
         private const val STATE_KEY_PAGE_FROM = "page_from"
         private const val STATE_KEY_PAGE_TO = "page_to"

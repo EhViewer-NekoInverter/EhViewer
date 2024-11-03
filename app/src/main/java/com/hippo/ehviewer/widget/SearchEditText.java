@@ -16,6 +16,7 @@
 
 package com.hippo.ehviewer.widget;
 
+import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.Context;
 import android.net.Uri;
@@ -79,6 +80,7 @@ public class SearchEditText extends AppCompatEditText {
         return super.onKeyPreIme(keyCode, event);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP && mListener != null) {
