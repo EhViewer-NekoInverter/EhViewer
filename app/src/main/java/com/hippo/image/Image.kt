@@ -24,7 +24,6 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ImageDecoder
-import android.graphics.ImageDecoder.ALLOCATOR_SOFTWARE
 import android.graphics.ImageDecoder.ImageInfo
 import android.graphics.ImageDecoder.Source
 import android.graphics.PorterDuff
@@ -33,34 +32,18 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.drawable.toDrawable
 import com.hippo.ehviewer.EhApplication
+import com.hippo.unifile.UniFile
+import com.hippo.util.isAtLeastU
 import java.nio.ByteBuffer
 import kotlin.math.min
 
 class Image private constructor(
-    private val src: CloseableSource? = null,
-    drawable: Drawable? = null,
+    drawable: Drawable,
+    private val src: AutoCloseable? = null,
 ) {
-    private var mObtainedDrawable: Drawable?
+    private var mObtainedDrawable: Drawable? = drawable
     private var mBitmap: Bitmap? = null
     private var mCanvas: Canvas? = null
-
-    init {
-        mObtainedDrawable = null
-        src?.let { src ->
-            mObtainedDrawable =
-                ImageDecoder.decodeDrawable(src.source) { decoder: ImageDecoder, info: ImageInfo, _: Source ->
-                    decoder.allocator = ALLOCATOR_SOFTWARE
-                    decoder.setTargetSampleSize(
-                        calculateSampleSize(info, 2 * screenHeight, 2 * screenWidth),
-                    )
-                }.also {
-                    if (it !is Animatable) src.close()
-                }
-        }
-        if (mObtainedDrawable == null) {
-            mObtainedDrawable = drawable!!
-        }
-    }
 
     val animated = mObtainedDrawable is Animatable
     val width = mObtainedDrawable!!.intrinsicWidth
@@ -120,7 +103,7 @@ class Image private constructor(
 
     val delay: Int
         get() {
-            return if (animated) 10 else 0
+            return if (animated) 20 else 0
         }
 
     val isOpaque: Boolean
@@ -129,27 +112,76 @@ class Image private constructor(
         }
 
     companion object {
-        fun calculateSampleSize(info: ImageInfo, targetHeight: Int, targetWeight: Int): Int = min(
+        private val appCtx = EhApplication.application
+        private val targetWidth = appCtx.resources.displayMetrics.widthPixels * 2
+        private val targetHeight = appCtx.resources.displayMetrics.heightPixels * 2
+
+        @Suppress("SameParameterValue")
+        private fun calculateSampleSize(info: ImageInfo, targetHeight: Int, targetWeight: Int): Int = min(
             info.size.width / targetWeight,
             info.size.height / targetHeight,
         ).coerceAtLeast(1)
 
-        val screenWidth = EhApplication.application.resources.displayMetrics.widthPixels
-        val screenHeight = EhApplication.application.resources.displayMetrics.heightPixels
+        private fun decodeDrawable(src: Source) = ImageDecoder.decodeDrawable(src) { decoder, info, _ ->
+            decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
+            decoder.setTargetSampleSize(
+                calculateSampleSize(info, targetHeight, targetWidth),
+            )
+        }
 
-        fun decode(src: CloseableSource): Image? = runCatching {
-            Image(src)
-        }.onFailure {
-            src.close()
-            it.printStackTrace()
-        }.getOrNull()
+        fun decode(src: AutoCloseable): Image? {
+            return runCatching {
+                when (src) {
+                    is UniFileSource -> {
+                        if (!isAtLeastU) {
+                            src.source.openFileDescriptor("rw").use {
+                                val fd = it.fd
+                                if (isGif(fd)) {
+                                    val buffer = mmap(fd)!!
+                                    val source = object : ByteBufferSource {
+                                        override val source = buffer
+                                        override fun close() {
+                                            munmap(buffer)
+                                            src.close()
+                                        }
+                                    }
+                                    return decode(source)
+                                }
+                            }
+                        }
+                        val drawable = decodeDrawable(src.source.imageSource)
+                        if (drawable !is Animatable) src.close()
+                        Image(drawable, src)
+                    }
+
+                    is ByteBufferSource -> {
+                        if (!isAtLeastU) {
+                            rewriteGifSource(src.source)
+                        }
+                        val source = ImageDecoder.createSource(src.source)
+                        val drawable = decodeDrawable(source)
+                        if (drawable !is Animatable) src.close()
+                        Image(drawable, src)
+                    }
+
+                    else -> null
+                }
+            }.onFailure {
+                src.close()
+                it.printStackTrace()
+            }.getOrNull()
+        }
 
         @JvmStatic
-        fun create(bitmap: Bitmap): Image = Image(drawable = bitmap.toDrawable(Resources.getSystem()))
+        fun create(bitmap: Bitmap): Image = Image(bitmap.toDrawable(Resources.getSystem()), null)
     }
 
-    interface CloseableSource : AutoCloseable {
-        val source: Source
+    interface UniFileSource : AutoCloseable {
+        val source: UniFile
+    }
+
+    interface ByteBufferSource : AutoCloseable {
+        val source: ByteBuffer
     }
 }
 
@@ -161,5 +193,7 @@ private external fun nativeTexImage(
     width: Int,
     height: Int,
 )
+external fun isGif(fd: Int): Boolean
 external fun rewriteGifSource(buffer: ByteBuffer)
-external fun rewriteGifSource2(fd: Int)
+external fun mmap(fd: Int): ByteBuffer?
+external fun munmap(buffer: ByteBuffer)

@@ -20,7 +20,6 @@
 package com.hippo.ehviewer.gallery
 
 import android.content.Context
-import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.ParcelFileDescriptor
 import android.util.Log
@@ -28,7 +27,6 @@ import com.hippo.ehviewer.GetText
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
 import com.hippo.image.Image
-import com.hippo.image.rewriteGifSource
 import com.hippo.unifile.UniFile
 import com.hippo.yorozuya.FileUtils
 import kotlinx.coroutines.CoroutineScope
@@ -109,12 +107,8 @@ class ArchiveGalleryProvider(context: Context, private val uri: Uri, passwdFlow:
         val buffer = extractToByteBuffer(index)
         buffer ?: return
         check(buffer.isDirect)
-        rewriteGifSource(buffer)
-        val source = ImageDecoder.createSource(buffer)
-        val src = object : Image.CloseableSource {
-            override val source: ImageDecoder.Source
-                get() = source
-
+        val src = object : Image.ByteBufferSource {
+            override val source: ByteBuffer = buffer
             override fun close() {
                 releaseByteBuffer(buffer)
             }
