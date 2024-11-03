@@ -20,6 +20,7 @@ google-android-material = "1.12.0"
 jsoup = "1.18.1"
 kotlin = "2.0.20"
 kotlinx-coroutines = "1.9.0"
+kotlinx-datetime = "0.6.1"
 kotlinx-serialization = "1.7.3"
 ksp = "2.0.20-1.0.25"
 ktor-utils = "3.0.0"
@@ -49,6 +50,7 @@ coil = { module = "io.coil-kt:coil", version.ref = "coil" }
 drawer = { module = "com.drakeet.drawer:drawer", version.ref = "drawer" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinx-serialization-cbor = { module = "org.jetbrains.kotlinx:kotlinx-serialization-cbor", version.ref = "kotlinx-serialization" }
 ktlint = "com.pinterest:ktlint:1.4.0"
 ktor-utils = { module = "io.ktor:ktor-utils", version.ref = "ktor-utils" }

@@ -21,12 +21,9 @@ import android.os.Parcelable
 import com.hippo.ehviewer.EhApplication
 import com.hippo.ehviewer.FavouriteStatusRouter
 import com.hippo.ehviewer.client.data.GalleryInfo
+import com.hippo.util.toLocalDateTime
 import com.hippo.widget.ContentLayout.ContentHelper
 import com.hippo.yorozuya.IntIdGenerator
-import java.time.Instant
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 abstract class GalleryInfoContentHelper : ContentHelper<GalleryInfo?>() {
     var jumpTo: String? = null
@@ -91,9 +88,7 @@ abstract class GalleryInfoContentHelper : ContentHelper<GalleryInfo?>() {
     }
 
     fun goTo(time: Long, isNext: Boolean) {
-        val formatter = DateTimeFormatter
-            .ofPattern("yyyy-MM-dd", Locale.US).withZone(ZoneOffset.UTC)
-        jumpTo = formatter.format(Instant.ofEpochMilli(time))
+        jumpTo = time.toLocalDateTime().date.toString()
         if (isNext) {
             goTo(mNext ?: "2", true)
         } else {

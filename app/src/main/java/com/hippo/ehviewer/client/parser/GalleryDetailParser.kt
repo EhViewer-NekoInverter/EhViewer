@@ -34,10 +34,14 @@ import com.hippo.ehviewer.client.exception.ParseException
 import com.hippo.ehviewer.client.exception.PiningException
 import com.hippo.util.ExceptionUtils
 import com.hippo.util.JsoupUtils
+import com.hippo.util.toEpochMillis
 import com.hippo.yorozuya.NumberUtils
 import com.hippo.yorozuya.StringUtils
 import com.hippo.yorozuya.trimAnd
 import com.hippo.yorozuya.unescapeXml
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.format.MonthNames
+import kotlinx.datetime.format.char
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -45,10 +49,6 @@ import org.jsoup.nodes.Node
 import org.jsoup.select.Elements
 import org.jsoup.select.NodeTraversor
 import org.jsoup.select.NodeVisitor
-import java.time.Instant
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 object GalleryDetailParser {
     private val PATTERN_ERROR = Regex("<div class=\"d\">\n<p>([^<]+)</p>")
@@ -70,11 +70,21 @@ object GalleryDetailParser {
     private val PATTERN_NEWER_DATE = Regex(", added (.+?)<br />")
     private val PATTERN_FAVORITE_SLOT =
         Regex("/fav.png\\); background-position:0px -(\\d+)px")
-
     private val EMPTY_GALLERY_TAG_GROUP_ARRAY = arrayOf<GalleryTagGroup>()
     private val EMPTY_GALLERY_COMMENT_ARRAY = GalleryCommentList(arrayOf(), false)
-    private val WEB_COMMENT_DATE_FORMAT = DateTimeFormatter
-        .ofPattern("dd MMMM yyyy, HH:mm", Locale.US).withZone(ZoneOffset.UTC)
+
+    // dd MMMM yyyy, HH:mm
+    private val WEB_COMMENT_DATE_FORMAT = LocalDateTime.Format {
+        dayOfMonth()
+        char(' ')
+        monthName(MonthNames.ENGLISH_FULL)
+        char(' ')
+        year()
+        chars(", ")
+        hour()
+        char(':')
+        minute()
+    }
     private const val OFFENSIVE_STRING =
         "<p>(And if you choose to ignore this warning, you lose all rights to complain about it in the future.)</p>"
     private const val PINING_STRING = "<p>This gallery is pining for the fjords.</p>"
@@ -390,7 +400,7 @@ object GalleryDetailParser {
             val temp = c3!!.ownText()
             val hasUserName = temp.endsWith(":")
             val time = if (hasUserName) temp.substring("Posted on ".length, temp.length - " by:".length) else temp.substring("Posted on ".length)
-            comment.time = Instant.from(WEB_COMMENT_DATE_FORMAT.parse(time)).toEpochMilli()
+            comment.time = WEB_COMMENT_DATE_FORMAT.parse(time).toEpochMillis()
             // User
             comment.user = if (hasUserName) c3.child(0).text() else "Anonymous"
             // Comment
@@ -418,8 +428,7 @@ object GalleryDetailParser {
             if (c8 != null) {
                 val e = c8.children().first()
                 if (e != null) {
-                    comment.lastEdited =
-                        Instant.from(WEB_COMMENT_DATE_FORMAT.parse(e.text())).toEpochMilli()
+                    comment.lastEdited = WEB_COMMENT_DATE_FORMAT.parse(e.text()).toEpochMillis()
                 }
             }
             comment

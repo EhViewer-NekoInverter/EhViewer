@@ -139,7 +139,7 @@ public class AppConfig {
             return;
         }
 
-        File file = new File(dir, ReadableTime.getFilenamableTime(System.currentTimeMillis()) + ".txt");
+        File file = new File(dir, ReadableTime.INSTANCE.getFilenamableTime() + ".txt");
         OutputStream os = null;
         try {
             os = new FileOutputStream(file);

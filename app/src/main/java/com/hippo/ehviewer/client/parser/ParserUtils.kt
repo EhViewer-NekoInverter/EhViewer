@@ -15,19 +15,27 @@
  */
 package com.hippo.ehviewer.client.parser
 
+import com.hippo.util.toLocalDateTime
 import com.hippo.yorozuya.NumberUtils
 import com.hippo.yorozuya.StringUtils
-import java.time.Instant
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
-import java.util.Locale
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.format.char
 
 object ParserUtils {
-    private val formatter =
-        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", Locale.US).withZone(ZoneOffset.UTC)
+    // yyyy-MM-dd HH:mm
+    private val formatter = LocalDateTime.Format {
+        year()
+        char('-')
+        monthNumber()
+        char('-')
+        dayOfMonth()
+        char(' ')
+        hour()
+        char(':')
+        minute()
+    }
 
-    @Synchronized
-    fun formatDate(time: Long): String = formatter.format(Instant.ofEpochMilli(time))
+    fun formatDate(time: Long): String = formatter.format(time.toLocalDateTime())
 
     fun trim(str: String?): String = str?.let { StringUtils.unescapeXml(it).trim() } ?: ""
 

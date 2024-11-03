@@ -102,6 +102,7 @@ import com.hippo.scene.Announcer
 import com.hippo.scene.SceneFragment
 import com.hippo.util.getParcelableCompat
 import com.hippo.util.launchIO
+import com.hippo.util.toEpochMillis
 import com.hippo.util.withUIContext
 import com.hippo.view.BringOutTransition
 import com.hippo.view.ViewTransition
@@ -115,10 +116,13 @@ import com.hippo.yorozuya.LayoutUtils
 import com.hippo.yorozuya.MathUtils
 import com.hippo.yorozuya.SimpleAnimatorListener
 import com.hippo.yorozuya.ViewUtils
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
+import kotlinx.datetime.todayIn
 import rikka.core.res.resolveColor
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZoneOffset
 
 class GalleryListScene :
     BaseScene(),
@@ -744,21 +748,21 @@ class GalleryListScene :
                 dialog.dismiss()
             }
         } else {
-            val local = LocalDateTime.of(2007, 3, 21, 0, 0)
-            val fromDate =
-                local.atZone(ZoneId.ofOffset("UTC", ZoneOffset.UTC)).toInstant().toEpochMilli()
-            val toDate = MaterialDatePicker.todayInUtcMilliseconds()
+            val initial = LocalDate(2007, 3, 21)
+            val yesterday = Clock.System.todayIn(TimeZone.UTC).minus(1, DateTimeUnit.DAY)
+            val initialMillis = initial.toEpochMillis()
+            val yesterdayMillis = yesterday.toEpochMillis()
             val listValidators = ArrayList<DateValidator>()
-            listValidators.add(DateValidatorPointForward.from(fromDate))
-            listValidators.add(DateValidatorPointBackward.before(toDate))
+            listValidators.add(DateValidatorPointForward.from(initialMillis))
+            listValidators.add(DateValidatorPointBackward.before(yesterdayMillis))
             val constraintsBuilder = CalendarConstraints.Builder()
-                .setStart(fromDate)
-                .setEnd(toDate)
+                .setStart(initialMillis)
+                .setEnd(yesterdayMillis)
                 .setValidator(CompositeDateValidator.allOf(listValidators))
             val datePicker = MaterialDatePicker.Builder.datePicker()
                 .setCalendarConstraints(constraintsBuilder.build())
                 .setTitleText(R.string.go_to)
-                .setSelection(toDate)
+                .setSelection(yesterdayMillis)
                 .build()
             datePicker.show(requireActivity().supportFragmentManager, "date-picker")
             datePicker.addOnPositiveButtonClickListener { v: Long? ->

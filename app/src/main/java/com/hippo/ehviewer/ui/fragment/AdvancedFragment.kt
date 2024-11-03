@@ -154,7 +154,7 @@ class AdvancedFragment : BasePreferenceFragment() {
                         }
                     }
                     val entry =
-                        ZipEntry("logcat-" + ReadableTime.getFilenamableTime(System.currentTimeMillis()) + ".txt")
+                        ZipEntry("logcat-" + ReadableTime.getFilenamableTime() + ".txt")
                     out.putNextEntry(entry)
                     LogCat.save(out)
                     out.closeEntry()
@@ -259,7 +259,7 @@ class AdvancedFragment : BasePreferenceFragment() {
         val key = preference.key
         if (KEY_DUMP_LOGCAT == key) {
             try {
-                dumpLogcatLauncher.launch("log-" + ReadableTime.getFilenamableTime(System.currentTimeMillis()) + ".zip")
+                dumpLogcatLauncher.launch("log-" + ReadableTime.getFilenamableTime() + ".zip")
             } catch (e: Throwable) {
                 ExceptionUtils.throwIfFatal(e)
                 showTip(R.string.error_cant_find_activity, BaseScene.LENGTH_SHORT)
@@ -275,7 +275,7 @@ class AdvancedFragment : BasePreferenceFragment() {
             return true
         } else if (KEY_EXPORT_DATA == key) {
             try {
-                exportLauncher.launch(ReadableTime.getFilenamableTime(System.currentTimeMillis()) + ".db")
+                exportLauncher.launch(ReadableTime.getFilenamableTime() + ".db")
             } catch (e: Throwable) {
                 ExceptionUtils.throwIfFatal(e)
                 showTip(R.string.error_cant_find_activity, BaseScene.LENGTH_SHORT)
