@@ -16,6 +16,7 @@
 package com.hippo.ehviewer.client.data
 
 import com.hippo.ehviewer.client.getNormalPreviewKey
+import com.hippo.util.isAtLeastQ
 import com.hippo.widget.LoadImageView
 import com.hippo.yorozuya.collect.IntList
 
@@ -74,6 +75,6 @@ class NormalPreviewSet(
             mClipWidthList[index],
             mClipHeightList[index],
         )
-        view.load(mImageKeyList[index], mImageUrlList[index])
+        view.load(mImageKeyList[index], mImageUrlList[index], isAtLeastQ)
     }
 }
