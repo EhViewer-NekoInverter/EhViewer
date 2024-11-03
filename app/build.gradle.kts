@@ -25,7 +25,7 @@ android {
                 include("arm64-v8a", "x86_64", "armeabi-v7a", "x86")
                 isUniversalApk = true
             } else {
-                include("arm64-v8a")
+                include("arm64-v8a", "x86")
             }
         }
     }
