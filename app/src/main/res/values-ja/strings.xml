@@ -245,7 +245,7 @@
     <string name="archive_original">オリジナル</string>
     <string name="archive_resample">リサンプル</string>
     <string name="archive_free">自由</string>
-    <string name="current_funds">資金: %1$s | GP: %2$d Credits</string>
+    <string name="current_funds">資金: %1$s GP: %2$d Credits</string>
     <string name="insufficient_funds">資金 (GP) が不足しています</string>
     <string name="download_archive_started">アーカイブのダウンロードを開始しました</string>
     <string name="download_archive_failure">アーカイブをダウンロードできませんでした</string>
