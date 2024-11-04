@@ -245,7 +245,7 @@
     <string name="archive_original">オリジナル</string>
     <string name="archive_resample">リサンプル</string>
     <string name="archive_free">自由</string>
-    <string name="current_funds">Fund: %1$s | GP: %2$d クレジット</string>
+    <string name="current_funds">Fund: %1$s | GP: %2$d Credit</string>
     <string name="insufficient_funds">Fund (GP) が不足しています</string>
     <string name="download_archive_started">アーカイブのダウンロードを開始しました</string>
     <string name="download_archive_failure">アーカイブをダウンロードできませんでした</string>
@@ -367,9 +367,9 @@
     <string name="stat_509_alert_title">509 アラート</string>
     <string name="stat_509_alert_text">ダウンロード制限に達しました。しばらくしてからもう一度やり直してください。</string>
     <string name="stat_download_done_title">ダウンロード完了</string>
-    <string name="stat_download_done_text_succeeded">%d 件が成功</string>
-    <string name="stat_download_done_text_failed">%d 件が失敗</string>
-    <string name="stat_download_done_text_mix">%1$d 件のダウンロードが成功、%2$d 件が失敗</string>
+    <string name="stat_download_done_text_succeeded">%d 件が成功しました</string>
+    <string name="stat_download_done_text_failed">%d 件が失敗しました</string>
+    <string name="stat_download_done_text_mix">%1$d 件のダウンロードが成功、%2$d 件が失敗しました</string>
     <string name="stat_download_done_line_succeeded">成功: %s</string>
     <string name="stat_download_done_line_failed">失敗: %s</string>
     <!-- Settings -->
