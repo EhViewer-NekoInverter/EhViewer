@@ -274,7 +274,7 @@
     <string name="archive_resample">Resample archive</string>
     <string name="archive_free">Free</string>
     <string name="current_funds">Funds: %1$s GP, %2$d Credits</string>
-    <string name="insufficient_funds">Insufficient Funds (GP)</string>
+    <string name="insufficient_funds">Insufficient GP</string>
     <string name="download_archive_started">Archive download started</string>
     <string name="download_archive_failure">Failed to download archive</string>
     <string name="download_archive_failure_no_hath">Need H@H client for archive download</string>
