@@ -16,6 +16,7 @@
 package com.hippo.ehviewer
 
 import android.app.Activity
+import android.content.Context
 import android.os.StrictMode
 import android.text.Html
 import android.text.method.LinkMovementMethod
@@ -24,17 +25,20 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.collection.LruCache
-import coil.ImageLoader
-import coil.ImageLoaderFactory
-import coil.disk.DiskCache
-import coil.util.DebugLogger
+import coil3.ImageLoader
+import coil3.SingletonImageLoader
+import coil3.disk.DiskCache
+import coil3.network.ConnectivityChecker
+import coil3.network.NetworkFetcher
+import coil3.request.crossfade
+import coil3.util.DebugLogger
 import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.EhEngine
 import com.hippo.ehviewer.client.EhTagDatabase
 import com.hippo.ehviewer.client.data.GalleryDetail
 import com.hippo.ehviewer.coil.DownloadThumbInterceptor
-import com.hippo.ehviewer.coil.LimitConcurrencyInterceptor
 import com.hippo.ehviewer.coil.MergeInterceptor
+import com.hippo.ehviewer.coil.limitConcurrency
 import com.hippo.ehviewer.dao.buildMainDB
 import com.hippo.ehviewer.download.DownloadManager
 import com.hippo.ehviewer.ui.EhActivity
@@ -48,11 +52,12 @@ import eu.kanade.tachiyomi.network.interceptor.CloudflareInterceptor
 import kotlinx.coroutines.DelicateCoroutinesApi
 import okhttp3.Cache
 import okhttp3.OkHttpClient
-import java.io.File
+import okio.FileSystem
+import okio.Path.Companion.toOkioPath
 
 class EhApplication :
     SceneApplication(),
-    ImageLoaderFactory {
+    SingletonImageLoader.Factory {
     private val mIdGenerator = IntIdGenerator()
     private val mGlobalStuffMap = HashMap<Int, Any>()
     private val mActivityList = ArrayList<Activity>()
@@ -194,12 +199,11 @@ class EhApplication :
         mActivityList.remove(activity)
     }
 
-    override fun newImageLoader(): ImageLoader = ImageLoader.Builder(this).apply {
-        okHttpClient(nonCacheOkHttpClient)
+    override fun newImageLoader(context: Context) = ImageLoader.Builder(context).apply {
         components {
+            add(NetworkFetcher.Factory({ nonCacheOkHttpClient.limitConcurrency() }) { ConnectivityChecker.ONLINE })
             add(MergeInterceptor)
             add(DownloadThumbInterceptor)
-            add(LimitConcurrencyInterceptor)
         }
         crossfade(300)
         diskCache(thumbCache)
@@ -211,6 +215,8 @@ class EhApplication :
 
         lateinit var application: EhApplication
             private set
+
+        val cacheDir by lazy { application.cacheDir.toOkioPath() }
 
         val ehProxySelector by lazy { EhProxySelector() }
 
@@ -231,7 +237,7 @@ class EhApplication :
         // Never use this okhttp client to download large blobs!!!
         val okHttpClient by lazy {
             nonCacheOkHttpClient.newBuilder()
-                .cache(Cache(File(application.cacheDir, "http_cache"), 20 * 1024 * 1024))
+                .cache(Cache(FileSystem.SYSTEM, cacheDir / "http_cache", 20 * 1024 * 1024))
                 .build()
         }
 
@@ -249,14 +255,14 @@ class EhApplication :
 
         val thumbCache by lazy {
             DiskCache.Builder()
-                .directory(File(application.cacheDir, "thumb"))
+                .directory(cacheDir / "thumb")
                 .maxSizeBytes((Settings.readCacheSize / 5).coerceIn(64, 1024).toLong() * 1024 * 1024)
                 .build()
         }
 
         val imageCache by lazy {
             DiskCache.Builder()
-                .directory(File(application.cacheDir, "image"))
+                .directory(cacheDir / "image")
                 .maxSizeBytes((Settings.readCacheSize / 5 * 4).coerceIn(256, 4096).toLong() * 1024 * 1024)
                 .build()
         }

@@ -14,7 +14,7 @@ androidx-preference = "1.2.1"
 androidx-recyclerview = "1.3.2"
 androidx-room = "2.6.1"
 androidx-swiperefreshlayout = "1.2.0-alpha01"
-coil = "2.7.0"
+coil = "3.0.0"
 drawer = "1.0.3"
 google-android-material = "1.12.0"
 jsoup = "1.18.1"
@@ -46,7 +46,10 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "androidx-room" }
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "androidx-swiperefreshlayout" }
 
-coil = { module = "io.coil-kt:coil", version.ref = "coil" }
+coil = { module = "io.coil-kt.coil3:coil" }
+coil-bom = { module = "io.coil-kt.coil3:coil-bom", version.ref = "coil" }
+coil-network = { module = "io.coil-kt.coil3:coil-network-okhttp" }
+
 drawer = { module = "com.drakeet.drawer:drawer", version.ref = "drawer" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
@@ -67,6 +70,7 @@ rikkax-material = { module = "dev.rikka.rikkax.material:material", version.ref =
 rikkax-simplemenu-preference = "dev.rikka.rikkax.preference:simplemenu-preference:1.0.3"
 
 [bundles]
+coil = ["coil", "coil-network"]
 rikkax = ["rikkax-core", "rikkax-insets", "rikkax-layoutinflater", "rikkax-material", "rikkax-simplemenu-preference"]
 
 [plugins]

@@ -90,7 +90,7 @@ android {
             "-progressive",
             "-Xwhen-guards",
 
-            "-opt-in=coil.annotation.ExperimentalCoilApi",
+            "-opt-in=coil3.annotation.ExperimentalCoilApi",
             "-opt-in=kotlin.contracts.ExperimentalContracts",
             "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
             "-opt-in=kotlinx.coroutines.FlowPreview",
@@ -175,7 +175,8 @@ dependencies {
     implementation(libs.bundles.rikkax)
 
     // https://coil-kt.github.io/coil/changelog/
-    implementation(libs.coil)
+    implementation(platform(libs.coil.bom))
+    implementation(libs.bundles.coil)
 
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.datetime)

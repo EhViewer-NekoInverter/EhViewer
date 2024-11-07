@@ -17,9 +17,11 @@ package com.hippo.drawable
 
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
-import coil.imageLoader
-import coil.request.Disposable
-import coil.request.ImageRequest
+import coil3.Image
+import coil3.asDrawable
+import coil3.imageLoader
+import coil3.request.Disposable
+import coil3.request.ImageRequest
 import com.hippo.widget.ObservedTextView
 
 class UnikeryDrawable(private val mTextView: ObservedTextView) :
@@ -48,13 +50,8 @@ class UnikeryDrawable(private val mTextView: ObservedTextView) :
                 ImageRequest.Builder(mTextView.context).data(url)
                     .memoryCacheKey(url)
                     .diskCacheKey(url)
-                    .target(
-                        { },
-                        { },
-                        { drawable: Drawable ->
-                            onGetValue(drawable)
-                        },
-                    ).build()
+                    .target(onSuccess = ::onGetValue)
+                    .build()
             task = mTextView.context.imageLoader.enqueue(request)
         }
     }
@@ -82,9 +79,9 @@ class UnikeryDrawable(private val mTextView: ObservedTextView) :
         mTextView.text = cs
     }
 
-    private fun onGetValue(newDrawable: Drawable) {
+    private fun onGetValue(image: Image) {
         clearDrawable()
-        drawable = newDrawable
-        (newDrawable as? Animatable)?.start()
+        drawable = image.asDrawable(mTextView.resources)
+        (drawable as? Animatable)?.start()
     }
 }
