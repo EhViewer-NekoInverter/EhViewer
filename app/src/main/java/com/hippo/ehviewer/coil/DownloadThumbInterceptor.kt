@@ -17,9 +17,9 @@
  */
 package com.hippo.ehviewer.coil
 
-import coil.intercept.Interceptor
-import coil.request.ImageResult
-import coil.request.SuccessResult
+import coil3.intercept.Interceptor
+import coil3.request.ImageResult
+import coil3.request.SuccessResult
 import com.hippo.ehviewer.EhApplication.Companion.thumbCache
 import com.hippo.ehviewer.Settings.downloadLocation
 import com.hippo.ehviewer.spider.DownloadInfoMagics.decodeMagicRequestOrUrl
@@ -36,17 +36,17 @@ object DownloadThumbInterceptor : Interceptor {
                 val thumb = downloadLocation?.subFile(location)?.subFile(THUMB_FILE)
                 if (thumb?.isFile == true) {
                     val new = chain.request.newBuilder().data(thumb.uri).build()
-                    val result = chain.withRequest(new).proceed(new)
+                    val result = chain.withRequest(new).proceed()
                     if (result is SuccessResult) return result
                 }
                 val new = chain.request.newBuilder().data(url).build()
-                val result = chain.withRequest(new).proceed(new)
+                val result = chain.withRequest(new).proceed()
                 if (result is SuccessResult && thumb?.parentFile?.isDirectory == true) {
                     // Accessing the recreated file immediately after deleting it throws
                     // FileNotFoundException, so we just overwrite the existing file.
                     chain.request.memoryCacheKey?.let {
                         if (!thumb.exists()) thumb.ensureFile()
-                        thumbCache.read(it.key) {
+                        thumbCache.read(it) {
                             UniFile.fromFile(data.toFile())!! sendTo thumb
                         }
                     }
@@ -54,6 +54,6 @@ object DownloadThumbInterceptor : Interceptor {
                 }
             }
         }
-        return chain.proceed(chain.request)
+        return chain.proceed()
     }
 }

@@ -22,8 +22,10 @@ import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.IntDef
 import androidx.core.content.ContextCompat
-import coil.load
-import coil.size.Size
+import coil3.load
+import coil3.request.allowHardware
+import coil3.request.crossfade
+import coil3.size.Size
 import com.hippo.drawable.PreciselyClipDrawable
 import com.hippo.ehviewer.R
 
