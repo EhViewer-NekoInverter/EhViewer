@@ -1201,17 +1201,26 @@ class GalleryDetailScene :
                 }
             }
             mArchive -> {
-                if (galleryDetail.apiUid < 0) {
-                    showTip(R.string.error_please_login_first, LENGTH_LONG)
-                    return
+                if (!isAtLeastQ &&
+                    ContextCompat.checkSelfPermission(
+                        activity,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    requestStoragePermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                } else {
+                    if (galleryDetail.apiUid < 0) {
+                        showTip(R.string.error_please_login_first, LENGTH_LONG)
+                        return
+                    }
+                    val helper = ArchiveListDialogHelper()
+                    val dialog = AlertDialog.Builder(context)
+                        .setTitle(R.string.settings_download)
+                        .setView(R.layout.dialog_archive_list)
+                        .setOnDismissListener(helper)
+                        .show()
+                    helper.setDialog(dialog, galleryDetail.archiveUrl)
                 }
-                val helper = ArchiveListDialogHelper()
-                val dialog = AlertDialog.Builder(context)
-                    .setTitle(R.string.settings_download)
-                    .setView(R.layout.dialog_archive_list)
-                    .setOnDismissListener(helper)
-                    .show()
-                helper.setDialog(dialog, galleryDetail.archiveUrl)
             }
             mRate -> {
                 if (galleryDetail.apiUid < 0) {
