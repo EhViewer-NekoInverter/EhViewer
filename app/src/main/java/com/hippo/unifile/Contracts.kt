@@ -16,7 +16,6 @@
 package com.hippo.unifile
 
 import android.content.Context
-import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.ParcelFileDescriptor
 import java.io.IOException
@@ -61,6 +60,4 @@ internal object Contracts {
         mode: String?,
     ): ParcelFileDescriptor = context.contentResolver.openFileDescriptor(uri!!, mode!!)
         ?: throw IOException("Can't open ParcelFileDescriptor")
-
-    fun getImageSource(context: Context, uri: Uri?): ImageDecoder.Source = ImageDecoder.createSource(context.contentResolver, uri!!)
 }

@@ -25,7 +25,7 @@ import com.hippo.ehviewer.coil.edit
 import com.hippo.ehviewer.coil.read
 import com.hippo.ehviewer.download.DownloadManager
 import com.hippo.ehviewer.gallery.GalleryProvider2.Companion.SUPPORT_IMAGE_EXTENSIONS
-import com.hippo.image.Image.UniFileSource
+import com.hippo.image.UniFileSource
 import com.hippo.unifile.UniFile
 import com.hippo.unifile.openOutputStream
 import com.hippo.unifile.sha1

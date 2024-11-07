@@ -16,7 +16,6 @@
 package com.hippo.unifile
 
 import android.content.Context
-import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.ParcelFileDescriptor
 import java.io.IOException
@@ -70,9 +69,6 @@ internal class MediaFile(context: Context, override val uri: Uri) : UniFile(null
     override fun findFile(displayName: String): UniFile? = null
 
     override fun renameTo(displayName: String): Boolean = false
-
-    override val imageSource: ImageDecoder.Source
-        get() = Contracts.getImageSource(mContext, uri)
 
     override fun openFileDescriptor(mode: String): ParcelFileDescriptor = Contracts.openFileDescriptor(mContext, uri, mode)
 

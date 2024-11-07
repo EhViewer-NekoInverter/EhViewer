@@ -48,6 +48,7 @@ androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefre
 
 coil = { module = "io.coil-kt.coil3:coil" }
 coil-bom = { module = "io.coil-kt.coil3:coil-bom", version.ref = "coil" }
+coil-gif = { module = "io.coil-kt.coil3:coil-gif" }
 coil-network = { module = "io.coil-kt.coil3:coil-network-okhttp" }
 
 drawer = { module = "com.drakeet.drawer:drawer", version.ref = "drawer" }
@@ -70,7 +71,7 @@ rikkax-material = { module = "dev.rikka.rikkax.material:material", version.ref =
 rikkax-simplemenu-preference = "dev.rikka.rikkax.preference:simplemenu-preference:1.0.3"
 
 [bundles]
-coil = ["coil", "coil-network"]
+coil = ["coil", "coil-gif", "coil-network"]
 rikkax = ["rikkax-core", "rikkax-insets", "rikkax-layoutinflater", "rikkax-material", "rikkax-simplemenu-preference"]
 
 [plugins]
