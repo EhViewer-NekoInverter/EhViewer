@@ -19,49 +19,58 @@
 
 package com.hippo.image
 
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.ImageDecoder
-import android.graphics.ImageDecoder.ImageInfo
-import android.graphics.ImageDecoder.Source
 import android.graphics.PorterDuff
 import android.graphics.drawable.Animatable
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import androidx.core.graphics.drawable.toDrawable
+import coil3.BitmapImage
+import coil3.DrawableImage
+import coil3.asImage
+import coil3.imageLoader
+import coil3.request.CachePolicy
+import coil3.request.ErrorResult
+import coil3.request.ImageRequest
+import coil3.request.SuccessResult
+import coil3.request.allowHardware
+import coil3.size.Dimension
+import coil3.size.Precision
 import com.hippo.ehviewer.EhApplication
 import com.hippo.unifile.UniFile
 import com.hippo.util.isAtLeastU
 import java.nio.ByteBuffer
-import kotlin.math.min
+import coil3.Image as CoilImage
 
 class Image private constructor(
-    drawable: Drawable,
-    private val src: AutoCloseable? = null,
+    private val image: CoilImage,
+    private val src: ImageSource? = null,
 ) {
-    private var mObtainedDrawable: Drawable? = drawable
     private var mBitmap: Bitmap? = null
     private var mCanvas: Canvas? = null
 
-    val animated = mObtainedDrawable is Animatable
-    val width = mObtainedDrawable!!.intrinsicWidth
-    val height = mObtainedDrawable!!.intrinsicHeight
-    val isRecycled = mObtainedDrawable == null
+    val animated get() = image is DrawableImage && image.drawable is Animatable
+    val width get() = image.width
+    val height get() = image.height
+    var isRecycled = false
+        private set
     var started = false
+        private set
 
     @Synchronized
     fun recycle() {
-        mObtainedDrawable ?: return
-        (mObtainedDrawable as? Animatable)?.stop()
-        (mObtainedDrawable as? BitmapDrawable)?.bitmap?.recycle()
-        mObtainedDrawable?.callback = null
-        if (mObtainedDrawable is Animatable) src?.close()
-        mObtainedDrawable = null
-        mCanvas = null
-        mBitmap?.recycle()
-        mBitmap = null
+        if (isRecycled) return
+        when (image) {
+            is DrawableImage -> {
+                (image.drawable as? Animatable)?.stop()
+                image.drawable.callback = null
+                src?.close()
+                mCanvas = null
+                mBitmap?.recycle()
+                mBitmap = null
+            }
+            is BitmapImage -> image.bitmap.recycle()
+        }
+        isRecycled = true
     }
 
     private fun prepareBitmap() {
@@ -73,17 +82,16 @@ class Image private constructor(
     private fun updateBitmap() {
         prepareBitmap()
         mCanvas!!.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-        mObtainedDrawable!!.draw(mCanvas!!)
+        image.draw(mCanvas!!)
     }
 
     fun texImage(init: Boolean, offsetX: Int, offsetY: Int, width: Int, height: Int) {
-        val bitmap: Bitmap? = if (animated) {
-            updateBitmap()
-            mBitmap
+        val bitmap = if (image is BitmapImage) {
+            image.bitmap
         } else {
-            (mObtainedDrawable as? BitmapDrawable)?.bitmap
+            updateBitmap()
+            mBitmap!!
         }
-        bitmap ?: return
         nativeTexImage(
             bitmap,
             init,
@@ -97,7 +105,7 @@ class Image private constructor(
     fun start() {
         if (!started) {
             started = true
-            (mObtainedDrawable as? Animatable)?.start()
+            if (image is DrawableImage) (image.drawable as? Animatable)?.start()
         }
     }
 
@@ -114,24 +122,24 @@ class Image private constructor(
     companion object {
         private val appCtx = EhApplication.application
         private val targetWidth = appCtx.resources.displayMetrics.widthPixels * 2
-        private val targetHeight = appCtx.resources.displayMetrics.heightPixels * 2
 
-        @Suppress("SameParameterValue")
-        private fun calculateSampleSize(info: ImageInfo, targetHeight: Int, targetWeight: Int): Int = min(
-            info.size.width / targetWeight,
-            info.size.height / targetHeight,
-        ).coerceAtLeast(1)
-
-        private fun decodeDrawable(src: Source) = ImageDecoder.decodeDrawable(src) { decoder, info, _ ->
-            decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
-            decoder.setTargetSampleSize(
-                calculateSampleSize(info, targetHeight, targetWidth),
-            )
+        private suspend fun decodeCoil(data: Any): CoilImage {
+            val req = ImageRequest.Builder(appCtx).apply {
+                data(data)
+                size(Dimension(targetWidth), Dimension.Undefined)
+                precision(Precision.INEXACT)
+                allowHardware(false)
+                memoryCachePolicy(CachePolicy.DISABLED)
+            }.build()
+            return when (val result = appCtx.imageLoader.execute(req)) {
+                is SuccessResult -> result.image
+                is ErrorResult -> throw result.throwable
+            }
         }
 
-        fun decode(src: AutoCloseable): Image? {
+        suspend fun decode(src: ImageSource): Image? {
             return runCatching {
-                when (src) {
+                val image = when (src) {
                     is UniFileSource -> {
                         if (!isAtLeastU) {
                             src.source.openFileDescriptor("rw").use {
@@ -149,23 +157,23 @@ class Image private constructor(
                                 }
                             }
                         }
-                        val drawable = decodeDrawable(src.source.imageSource)
-                        if (drawable !is Animatable) src.close()
-                        Image(drawable, src)
+                        decodeCoil(src.source.uri)
                     }
 
                     is ByteBufferSource -> {
                         if (!isAtLeastU) {
                             rewriteGifSource(src.source)
                         }
-                        val source = ImageDecoder.createSource(src.source)
-                        val drawable = decodeDrawable(source)
-                        if (drawable !is Animatable) src.close()
-                        Image(drawable, src)
+                        decodeCoil(src.source)
                     }
-
-                    else -> null
                 }
+                when (image) {
+                    is DrawableImage -> image.drawable.apply {
+                        setBounds(0, 0, intrinsicWidth, intrinsicHeight)
+                    }
+                    is BitmapImage -> src.close()
+                }
+                Image(image, src)
             }.onFailure {
                 src.close()
                 it.printStackTrace()
@@ -173,16 +181,18 @@ class Image private constructor(
         }
 
         @JvmStatic
-        fun create(bitmap: Bitmap): Image = Image(bitmap.toDrawable(Resources.getSystem()), null)
+        fun create(bitmap: Bitmap): Image = Image(bitmap.asImage(), null)
     }
+}
 
-    interface UniFileSource : AutoCloseable {
-        val source: UniFile
-    }
+sealed interface ImageSource : AutoCloseable
 
-    interface ByteBufferSource : AutoCloseable {
-        val source: ByteBuffer
-    }
+interface UniFileSource : ImageSource {
+    val source: UniFile
+}
+
+interface ByteBufferSource : ImageSource {
+    val source: ByteBuffer
 }
 
 private external fun nativeTexImage(

@@ -18,7 +18,6 @@ package com.hippo.unifile
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
-import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.os.ParcelFileDescriptor
@@ -242,7 +241,6 @@ abstract class UniFile internal constructor(private val parent: UniFile?) {
      * @see android.provider.DocumentsContract.renameDocument
      */
     abstract fun renameTo(displayName: String): Boolean
-    abstract val imageSource: ImageDecoder.Source
 
     abstract fun openFileDescriptor(mode: String): ParcelFileDescriptor
 

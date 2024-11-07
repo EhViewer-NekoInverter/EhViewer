@@ -26,6 +26,7 @@ import android.util.Log
 import com.hippo.ehviewer.GetText
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
+import com.hippo.image.ByteBufferSource
 import com.hippo.image.Image
 import com.hippo.unifile.UniFile
 import com.hippo.yorozuya.FileUtils
@@ -107,7 +108,7 @@ class ArchiveGalleryProvider(context: Context, private val uri: Uri, passwdFlow:
         val buffer = extractToByteBuffer(index)
         buffer ?: return
         check(buffer.isDirect)
-        val src = object : Image.ByteBufferSource {
+        val src = object : ByteBufferSource {
             override val source: ByteBuffer = buffer
             override fun close() {
                 releaseByteBuffer(buffer)

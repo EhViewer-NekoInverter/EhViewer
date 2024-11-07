@@ -28,9 +28,11 @@ import androidx.collection.LruCache
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
 import coil3.disk.DiskCache
+import coil3.gif.AnimatedImageDecoder
 import coil3.network.ConnectivityChecker
 import coil3.network.NetworkFetcher
 import coil3.request.crossfade
+import coil3.serviceLoaderEnabled
 import coil3.util.DebugLogger
 import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.EhEngine
@@ -200,10 +202,12 @@ class EhApplication :
     }
 
     override fun newImageLoader(context: Context) = ImageLoader.Builder(context).apply {
+        serviceLoaderEnabled(false)
         components {
             add(NetworkFetcher.Factory({ nonCacheOkHttpClient.limitConcurrency() }) { ConnectivityChecker.ONLINE })
             add(MergeInterceptor)
             add(DownloadThumbInterceptor)
+            add(AnimatedImageDecoder.Factory(false))
         }
         crossfade(300)
         diskCache(thumbCache)
