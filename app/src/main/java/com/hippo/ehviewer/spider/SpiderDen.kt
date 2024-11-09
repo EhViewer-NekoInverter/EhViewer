@@ -131,10 +131,13 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
     suspend fun saveImageFromUrl(
         url: String,
         referer: String?,
-        dst: UniFile,
-    ): Boolean {
+        dir: UniFile,
+        filename: String,
+    ): UniFile? {
         nonCacheOkHttpClient.newCall(EhRequestBuilder(url, referer).build()).executeAsync().use {
-            if (it.code >= 400) return false
+            if (it.code >= 400) return null
+            val ext = it.body.contentType()?.subtype ?: "jpg"
+            val dst = dir.subFile("$filename.$ext") ?: return null
             return runSuspendCatching {
                 var ret = 0L
                 runInterruptibleOkio {
@@ -149,12 +152,10 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
                         }
                     }
                 }
-                ret == it.body.contentLength()
+                if (ret == it.body.contentLength()) dst else null
             }.onFailure { e ->
                 e.printStackTrace()
-            }.getOrElse {
-                false
-            }
+            }.getOrNull()
         }
     }
 

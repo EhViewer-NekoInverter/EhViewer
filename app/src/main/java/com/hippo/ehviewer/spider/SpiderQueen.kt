@@ -294,15 +294,13 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
     }
 
     suspend fun downloadOriginal(index: Int, dir: UniFile, filename: String): UniFile? {
-        val ext = getExtension(index)
-        val dst = dir.subFile(if (null != ext) "$filename.$ext" else filename) ?: return null
         val pToken = getPToken(index) ?: return null
         val pageUrl = EhUrl.getPageUrl(mSpiderInfo.gid, index, pToken)
         val originImageUrl = EhEngine.getGalleryPage(pageUrl, mSpiderInfo.gid, mSpiderInfo.token)
             .originImageUrl ?: return save(index, dir, filename)
         return runSuspendCatching {
             val targetImageUrl = EhEngine.getOriginalImageUrl(originImageUrl, pageUrl)
-            if (mSpiderDen.saveImageFromUrl(targetImageUrl, pageUrl, dst)) dst else null
+            mSpiderDen.saveImageFromUrl(targetImageUrl, pageUrl, dir, filename)
         }.onFailure {
             it.printStackTrace()
         }.getOrNull()
