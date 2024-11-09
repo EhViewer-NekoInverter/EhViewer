@@ -39,8 +39,10 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.getSystemService
 import androidx.core.view.GravityCompat
+import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
@@ -93,6 +95,7 @@ class MainActivity :
             if (it.resultCode == RESULT_OK) refreshTopScene()
         }
     private lateinit var connectivityManager: ConnectivityManager
+    private var mSnackBar: CoordinatorLayout? = null
     private var mDrawerLayout: DrawerLayout? = null
     private var mStageLayout: EhStageLayout? = null
     private var mNavView: NavigationView? = null
@@ -214,6 +217,7 @@ class MainActivity :
     override fun onCreate2(savedInstanceState: Bundle?) {
         connectivityManager = getSystemService()!!
         setContentView(R.layout.activity_main)
+        mSnackBar = ViewUtils.`$$`(this, R.id.snackbar) as CoordinatorLayout
         mStageLayout = ViewUtils.`$$`(this, R.id.fragment_container) as EhStageLayout
         mDrawerLayout = ViewUtils.`$$`(this, R.id.draw_view) as DrawerLayout
         mNavView = ViewUtils.`$$`(this, R.id.nav_view) as NavigationView
@@ -318,9 +322,9 @@ class MainActivity :
 
     private fun checkMeteredNetwork() {
         if (connectivityManager.isActiveNetworkMetered) {
-            if (isAtLeastQ && mDrawerLayout != null) {
+            if (isAtLeastQ && mSnackBar != null) {
                 Snackbar.make(
-                    mDrawerLayout!!,
+                    mSnackBar!!,
                     R.string.metered_network_warning,
                     Snackbar.LENGTH_LONG,
                 )
@@ -405,9 +409,9 @@ class MainActivity :
         val hashCode = text?.hashCode() ?: 0
         if (text != null && hashCode != 0 && Settings.clipboardTextHashCode != hashCode) {
             val announcer = createAnnouncerFromClipboardUrl(text)
-            if (announcer != null && mDrawerLayout != null) {
+            if (announcer != null && mSnackBar != null) {
                 val snackbar = Snackbar.make(
-                    mDrawerLayout!!,
+                    mSnackBar!!,
                     R.string.clipboard_gallery_url_snack_message,
                     Snackbar.LENGTH_SHORT,
                 )
@@ -521,31 +525,31 @@ class MainActivity :
         showTip(getString(id), length)
     }
 
+    private val isDrawerOpen
+        get() = mNavView?.isVisible == true || mRightDrawer?.isVisible == true
+
     /**
      * If activity is running, show snack bar, otherwise show toast
      */
     fun showTip(message: CharSequence, length: Int) {
-        findViewById<View>(R.id.snackbar)?.apply {
+        if (mSnackBar != null && !isDrawerOpen) {
             Snackbar.make(
-                this,
+                mSnackBar!!,
                 message,
                 if (length == BaseScene.LENGTH_LONG) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT,
             ).show()
-        } ?: Toast.makeText(
-            this,
-            message,
-            if (length == BaseScene.LENGTH_LONG) Toast.LENGTH_LONG else Toast.LENGTH_SHORT,
-        ).show()
+        } else {
+            Toast.makeText(
+                this,
+                message,
+                if (length == BaseScene.LENGTH_LONG) Toast.LENGTH_LONG else Toast.LENGTH_SHORT,
+            ).show()
+        }
     }
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        if (mDrawerLayout != null &&
-            (
-                mDrawerLayout!!.isDrawerOpen(GravityCompat.START) ||
-                    mDrawerLayout!!.isDrawerOpen(GravityCompat.END)
-                )
-        ) {
+        if (isDrawerOpen) {
             mDrawerLayout!!.closeDrawers()
         } else {
             @Suppress("DEPRECATION")
