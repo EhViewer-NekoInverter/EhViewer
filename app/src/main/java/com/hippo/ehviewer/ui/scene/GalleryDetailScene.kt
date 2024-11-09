@@ -186,7 +186,6 @@ class GalleryDetailScene :
     private var mShare: TextView? = null
     private var mRate: View? = null
     private var mSimilar: TextView? = null
-    private var mSearchCover: TextView? = null
 
     // Tags
     private var mTags: LinearLayout? = null
@@ -530,7 +529,6 @@ class GalleryDetailScene :
         mShare = ViewUtils.`$$`(mActions, R.id.share) as TextView
         mRate = ViewUtils.`$$`(mActions, R.id.rate)
         mSimilar = ViewUtils.`$$`(mActions, R.id.similar) as TextView
-        mSearchCover = ViewUtils.`$$`(mActions, R.id.search_cover) as TextView
         mNewerVersion!!.setOnClickListener(this)
         mHeartGroup!!.setOnClickListener(this)
         mHeartGroup!!.setOnLongClickListener(this)
@@ -539,7 +537,6 @@ class GalleryDetailScene :
         mShare!!.setOnClickListener(this)
         mRate!!.setOnClickListener(this)
         mSimilar!!.setOnClickListener(this)
-        mSearchCover!!.setOnClickListener(this)
         ensureActionDrawable()
         mTags = ViewUtils.`$$`(belowHeader, R.id.tags) as LinearLayout
         mNoTags = ViewUtils.`$$`(mTags, R.id.no_tags) as TextView
@@ -611,7 +608,6 @@ class GalleryDetailScene :
         mShare = null
         mRate = null
         mSimilar = null
-        mSearchCover = null
         mTags = null
         mNoTags = null
         mComments = null
@@ -677,7 +673,6 @@ class GalleryDetailScene :
         setActionDrawable(mArchive, R.drawable.v_archive_primary_x48)
         setActionDrawable(mShare, R.drawable.v_share_primary_x48)
         setActionDrawable(mSimilar, R.drawable.v_similar_primary_x48)
-        setActionDrawable(mSearchCover, R.drawable.v_file_find_primary_x48)
     }
 
     private fun createCircularReveal(): Boolean {
@@ -1021,14 +1016,6 @@ class GalleryDetailScene :
         }
     }
 
-    private fun showCoverGalleryList() {
-        val uri = mGalleryDetail?.thumb ?: return
-        val lub = ListUrlBuilder()
-        lub.mode = ListUrlBuilder.MODE_IMAGE_SEARCH
-        lub.hash = uri.substringAfterLast("/").substringBefore("-")
-        GalleryListScene.startScene(this, lub)
-    }
-
     override fun onClick(v: View) {
         val context = context
         val activity = mainActivity
@@ -1238,9 +1225,6 @@ class GalleryDetailScene :
             }
             mSimilar -> {
                 showSimilarGalleryList()
-            }
-            mSearchCover -> {
-                showCoverGalleryList()
             }
             mComments -> {
                 val args = Bundle()

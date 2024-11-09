@@ -122,18 +122,6 @@
                 android:text="@string/similar_gallery"
                 android:textColor="?android:attr/textColorPrimary" />
 
-            <TextView
-                android:id="@+id/search_cover"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:drawablePadding="8dp"
-                android:focusable="true"
-                android:gravity="center_horizontal"
-                android:text="@string/search_cover"
-                android:textColor="?android:attr/textColorPrimary" />
-
         </LinearLayout>
     </HorizontalScrollView>
 

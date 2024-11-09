@@ -189,7 +189,6 @@
     <string name="torrent_count">种子 (%d)</string>
     <string name="archive">压缩包</string>
     <string name="similar_gallery">相似画廊</string>
-    <string name="search_cover">搜索封面</string>
     <string name="no_tags">暂无标签</string>
     <string name="no_comments">暂无评论</string>
     <string name="more_comment">查看更多评论</string>
