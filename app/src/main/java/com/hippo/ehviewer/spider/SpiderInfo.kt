@@ -142,6 +142,5 @@ private fun readLegacySpiderInfo(inputStream: InputStream): SpiderInfo? {
     return SpiderInfo(gid, token, pages, pTokenMap, startPage, previewPages, previewPerPage)
 }
 
-const val TOKEN_FAILED = "failed"
 private const val VERSION_STR = "VERSION"
 private const val VERSION = 2
