@@ -1,9 +1,9 @@
 <p align="right">
-  <strong>English</strong>
-  <span> | </span>
-  <a href="/docs/README/zh-cn.md">
-  简体中文
+  <a href="/README.md">
+  English
   </a>
+  <span> | </span>
+  <strong>简体中文</strong>
 </p>
 
 <h1 align="center">
@@ -28,57 +28,57 @@
 
 <div align="center">
   <h3>
-    <a href="#description">
-    Description
+    <a href="#描述">
+    描述
     </a>
     <span> | </span>
-    <a href="#download">
-    Download
+    <a href="#下载">
+    下载
     </a>
     <span> | </span>
-    <a href="#screenshot">
-    Screenshot
+    <a href="#截图">
+    截图
     </a>
     <span> | </span>
-    <a href="#thanks">
-    Thanks
+    <a href="#感谢">
+    感谢
     </a>
     <span> | </span>
-    <a href="#license">
-    License
+    <a href="#许可证">
+    许可证
     </a>
   </h3>
 </div>
 
-# Description
+# 描述
 
-An EhViewer fork with classic Material Design 2 style
+沿用 Material Design 2 经典风格的 EhViewer 分支
 
-This fork is for personal use and does not accept feature requests; for common usage issues, please refer to the [Q&A](https://github.com/EhViewer-NekoInverter/EhViewer/issues/18)
+本分支为自用性质，不接受功能请求，软件常见使用问题请参阅 [Q&A](https://github.com/EhViewer-NekoInverter/EhViewer/issues/18)
 
-If you prefer Material Design 3, consider using [EhViewer-Overhauled](https://github.com/FooIbar/EhViewer)
+如果您可以接受 Material Design 3，建议使用 [EhViewer-Overhauled](https://github.com/FooIbar/EhViewer)
 
-# Download
+# 下载
 
-| Flavor      | Minimum Android Version | Notes                                                |
-|-------------|-------------------------|------------------------------------------------------|
-| Default     | 9.0                     | Full support                                         |
-| Marshmallow | 6.0                     | No support for animated WebP, no CI version provided |
+| 变种          | 最低 Android 版本 | 备注                  |
+|-------------|---------------|---------------------|
+| Default     | 9.0           | 完整支持                |
+| Marshmallow | 6.0           | 不支持动画 WebP，不提供 CI 版 |
 
-<em>* Devices running Android 6 require the [ISRG Root X1](https://letsencrypt.org/certs/isrgrootx1.pem) certificate to be installed</em>
+<em>* 运行 Android 6 的设备需要安装 [ISRG Root X1](https://letsencrypt.org/certs/isrgrootx1.pem) 证书</em>
 
-- Please go to **[GitHub Releases](https://github.com/EhViewer-NekoInverter/EhViewer/releases)** to download the release version
+- 请前往 [Github Releases](https://github.com/EhViewer-NekoInverter/EhViewer/releases) 下载发行版
 
-- If the release version has unresolved issues, go to **[GitHub Actions](https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml?query=branch%3Amaster)** to download the CI version (GitHub account login required)
+- 如果发行版存在未修复的问题，前往 [Github Actions](https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml) 下载 CI 版，需要登录 Github 账号
 
-# Screenshot
+# 截图
 
 ![screenshot-01](https://github.com/EhViewer-NekoInverter/Arts/blob/main/screenshot-01.webp)
 ![screenshot-02](https://github.com/EhViewer-NekoInverter/Arts/blob/main/screenshot-02.webp)
 
-# Thanks
+# 感谢
 
-Here are the libraries
+本项目受到了诸多开源项目的帮助
 
 - [AOSP & AndroidX](https://source.android.com/)
 - [Kotlin & KotlinX](https://kotlinlang.org/)
@@ -91,15 +91,15 @@ Here are the libraries
 - [OkHttp](https://square.github.io/okhttp/)
 - [RikkaX](https://github.com/RikkaApps/RikkaX)
 
-Tag translation
+标签翻译数据
 
 - [EhTagTranslation](https://github.com/EhTagTranslation/Database)
 
-Translators
+翻译人员
 
 - ja: [Re*Index. (ot_inc)](https://github.com/reindex-ot)
 
-# License
+# 许可证
 
     Copyright 2014-2019 Hippo Seven
     Copyright 2020-2022 NekoInverter

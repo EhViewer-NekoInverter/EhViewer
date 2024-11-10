@@ -22,9 +22,7 @@ jobs:
           java-version: 21
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-home-cache-cleanup: true
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Spotless Check
         run: ./gradlew spotlessCheck
@@ -55,6 +53,12 @@ jobs:
         with:
           name: x86-${{ github.sha }}
           path: app/build/outputs/apk/release/app-x86-release.apk
+
+      - name: Upload Universal
+        uses: actions/upload-artifact@v4
+        with:
+          name: universal-${{ github.sha }}
+          path: app/build/outputs/apk/release/app-universal-release.apk
 
       - name: Upload mapping
         uses: actions/upload-artifact@v4
