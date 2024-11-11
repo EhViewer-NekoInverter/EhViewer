@@ -15,8 +15,6 @@
  * You should have received a copy of the GNU General Public License along with EhViewer.
  * If not, see <https://www.gnu.org/licenses/>.
  */
-@file:Suppress("unused")
-
 package com.hippo.ehviewer.gallery
 
 import android.content.Context
@@ -26,6 +24,14 @@ import android.util.Log
 import com.hippo.ehviewer.GetText
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
+import com.hippo.ehviewer.jni.closeArchive
+import com.hippo.ehviewer.jni.extractToByteBuffer
+import com.hippo.ehviewer.jni.extractToFd
+import com.hippo.ehviewer.jni.getFilename
+import com.hippo.ehviewer.jni.needPassword
+import com.hippo.ehviewer.jni.openArchive
+import com.hippo.ehviewer.jni.providePassword
+import com.hippo.ehviewer.jni.releaseByteBuffer
 import com.hippo.image.ByteBufferSource
 import com.hippo.image.Image
 import com.hippo.unifile.UniFile
@@ -53,7 +59,7 @@ class ArchiveGalleryProvider(context: Context, private val uri: Uri, passwdFlow:
     private val hostJob = launch(start = CoroutineStart.LAZY) {
         Log.d(DEBUG_TAG, "Open archive $uri")
         pfd = context.contentResolver.openFileDescriptor(uri, "r")!!
-        size = openArchive(pfd.fd, pfd.statSize)
+        size = openArchive(pfd.fd, pfd.statSize, true)
         if (size == 0) {
             return@launch
         }
@@ -150,16 +156,13 @@ class ArchiveGalleryProvider(context: Context, private val uri: Uri, passwdFlow:
 
     override fun getImageFilenameWithExtension(index: Int): String = FileUtils.sanitizeFilename(getFilename(index))
 
-    override fun save(index: Int, file: UniFile): Boolean {
-        runCatching {
-            file.openFileDescriptor("w").use {
-                extractToFd(index, it.fd)
-            }
-        }.onFailure {
-            it.printStackTrace()
-            return false
+    override fun save(index: Int, file: UniFile) = runCatching {
+        file.openFileDescriptor("w").use {
+            extractToFd(index, it.fd)
         }
-        return true
+    }.getOrElse {
+        it.printStackTrace()
+        false
     }
 
     override fun save(index: Int, dir: UniFile, filename: String): UniFile {
@@ -175,11 +178,3 @@ class ArchiveGalleryProvider(context: Context, private val uri: Uri, passwdFlow:
 }
 
 private const val DEBUG_TAG = "ArchiveGalleryProvider"
-private external fun releaseByteBuffer(buffer: ByteBuffer)
-private external fun openArchive(fd: Int, size: Long): Int
-private external fun extractToByteBuffer(index: Int): ByteBuffer?
-private external fun extractToFd(index: Int, fd: Int)
-private external fun getFilename(index: Int): String
-private external fun needPassword(): Boolean
-private external fun providePassword(str: String): Boolean
-private external fun closeArchive()

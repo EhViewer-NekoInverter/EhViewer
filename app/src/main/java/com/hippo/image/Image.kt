@@ -15,8 +15,6 @@
  * You should have received a copy of the GNU General Public License along with EhViewer.
  * If not, see <https://www.gnu.org/licenses/>.
  */
-@file:Suppress("unused")
-
 package com.hippo.image
 
 import android.graphics.Bitmap
@@ -36,6 +34,11 @@ import coil3.request.allowHardware
 import coil3.size.Dimension
 import coil3.size.Precision
 import com.hippo.ehviewer.EhApplication
+import com.hippo.ehviewer.jni.isGif
+import com.hippo.ehviewer.jni.mmap
+import com.hippo.ehviewer.jni.munmap
+import com.hippo.ehviewer.jni.nativeTexImage
+import com.hippo.ehviewer.jni.rewriteGifSource
 import com.hippo.unifile.UniFile
 import com.hippo.util.isAtLeastU
 import java.nio.ByteBuffer
@@ -194,16 +197,3 @@ interface UniFileSource : ImageSource {
 interface ByteBufferSource : ImageSource {
     val source: ByteBuffer
 }
-
-private external fun nativeTexImage(
-    bitmap: Bitmap,
-    init: Boolean,
-    offsetX: Int,
-    offsetY: Int,
-    width: Int,
-    height: Int,
-)
-external fun isGif(fd: Int): Boolean
-external fun rewriteGifSource(buffer: ByteBuffer)
-external fun mmap(fd: Int): ByteBuffer?
-external fun munmap(buffer: ByteBuffer)

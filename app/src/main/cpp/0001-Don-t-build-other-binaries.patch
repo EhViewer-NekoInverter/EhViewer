@@ -1,6 +1,6 @@
-From 65859186be23927bcde9ebf214bdad1997da9254 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?=E5=B0=8F=E7=99=BD-=E7=99=BD?= <i@moedog.org>
-Date: Tue, 12 Mar 2024 14:45:57 +0800
+From d1db03ebd9989d10a5a905b792b712c6487a0057 Mon Sep 17 00:00:00 2001
+From: FooIbar <118464521+FooIbar@users.noreply.github.com>
+Date: Sat, 24 Feb 2024 12:03:15 +0000
 Subject: [PATCH] Don't build other binaries
 
 ---
@@ -14,7 +14,7 @@ index a346dd02..52b5d0d8 100644
 @@ -1567,7 +1567,7 @@ endif()
  # xzdec and lzmadec
  #############################################################################
-
+ 
 -if(HAVE_DECODERS AND (NOT MSVC OR MSVC_VERSION GREATER_EQUAL 1900))
 +if(0)
      foreach(XZDEC xzdec lzmadec)
@@ -23,7 +23,7 @@ index a346dd02..52b5d0d8 100644
 @@ -1624,7 +1624,7 @@ endif()
  # lzmainfo
  #############################################################################
-
+ 
 -if(HAVE_DECODERS AND (NOT MSVC OR MSVC_VERSION GREATER_EQUAL 1900))
 +if(0)
      add_executable(lzmainfo
@@ -32,7 +32,7 @@ index a346dd02..52b5d0d8 100644
 @@ -1680,7 +1680,7 @@ endif()
  # xz
  #############################################################################
-
+ 
 -if(NOT MSVC OR MSVC_VERSION GREATER_EQUAL 1900)
 +if(0)
      add_executable(xz
@@ -41,9 +41,12 @@ index a346dd02..52b5d0d8 100644
 @@ -1914,7 +1914,7 @@ endif()
  # Scripts
  #############################################################################
-
+ 
 -if(UNIX)
 +if(0)
      # NOTE: This isn't as sophisticated as in the Autotools build which
      # uses posix-shell.m4 but hopefully this doesn't need to be either.
      # CMake likely won't be used on as many (old) obscure systems as the
+-- 
+2.34.1
+

@@ -123,7 +123,7 @@ bool copy_pixels(const void *src, int src_w, int src_h, int src_x, int src_y,
 }
 
 JNIEXPORT void JNICALL
-Java_com_hippo_image_ImageKt_nativeTexImage(JNIEnv *env, jclass clazz, jobject bitmap, jboolean init,
+Java_com_hippo_ehviewer_jni_ImageKt_nativeTexImage(JNIEnv *env, jclass clazz, jobject bitmap, jboolean init,
                                           jint offset_x, jint offset_y, jint width, jint height) {
     if (width * height > IMAGE_TILE_MAX_SIZE)
         return;

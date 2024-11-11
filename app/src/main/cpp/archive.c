@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Tarsin Norbin
+ * Copyright 2022-2024 Tarsin Norbin
  *
  * This file is part of EhViewer
  *
@@ -34,7 +34,6 @@
 
 #include "natsort/strnatcmp.h"
 #include "ehviewer.h"
-#include "spinlock.h"
 
 typedef struct {
     int using;
@@ -46,31 +45,25 @@ typedef struct {
 typedef struct {
     const char *filename;
     int index;
-    size_t size;
+    ssize_t size;
+    void *addr;
 } entry;
 
-_Atomic mcs_lock ctx_lock;
-static archive_ctx **ctx_pool;
 #define CTX_POOL_SIZE 20
+#define MAX_PARALLEL_DECOMP 4
+#define max(a, b) ((a) > (b) ? (a) : (b))
 
-static void *mempool = NULL;
-static size_t *mempoolofs = NULL;
-
-#define PAGE_ALIGN(x) ((x + ~PAGE_MASK) & PAGE_MASK)
-
-#define MEMPOOL_ADDR_BY_SORTED_IDX(x) (mempool + (index ? mempoolofs[index - 1] : 0))
-#define MEMPOOL_SIZE (mempoolofs[entryCount - 1])
-#define MEMPOOL_ENTITY_SIZE(x) PAGE_ALIGN(entries[x].size)
-
-#define PROT_RW (PROT_WRITE | PROT_READ)
-#define MAP_ANON_POOL (MAP_ANONYMOUS | MAP_NORESERVE | MAP_PRIVATE | MAP_UNINITIALIZED)
-
+static pthread_mutex_t ctx_pool_mutex = PTHREAD_MUTEX_INITIALIZER;
+static archive_ctx **ctx_pool = NULL;
+static pthread_mutex_t buffer_mutex = PTHREAD_MUTEX_INITIALIZER;
+static void *decode_buffer[MAX_PARALLEL_DECOMP];
 static bool need_encrypt = false;
 static char *passwd = NULL;
-static void *archiveAddr = NULL;
+static void *archiveAddr = MAP_FAILED;
 static size_t archiveSize = 0;
 static entry *entries = NULL;
 static size_t entryCount = 0;
+static ssize_t max_file_size = 0;
 
 const char supportExt[10][6] = {
         "jpeg",
@@ -86,6 +79,8 @@ const char supportExt[10][6] = {
 };
 
 static inline int filename_is_playable_file(const char *name) {
+    if (!name)
+        return false;
     const char *dotptr = strrchr(name, '.');
     if (!dotptr++)
         return false;
@@ -96,78 +91,91 @@ static inline int filename_is_playable_file(const char *name) {
     return false;
 }
 
+static inline const char *archive_entry_pathname2(struct archive_entry *entry) {
+    const char *name = archive_entry_pathname_utf8(entry);
+    return name ? name : archive_entry_pathname(entry);
+}
+
+static inline bool archive_entry_is_file(struct archive_entry *entry) {
+    return archive_entry_filetype(entry) == AE_IFREG;
+}
+
+static inline bool archive_entry_is_playable(struct archive_entry *entry) {
+    return archive_entry_is_file(entry) &&
+           filename_is_playable_file(archive_entry_pathname2(entry));
+}
+
 static inline int compare_entries(const void *a, const void *b) {
     const char *fa = ((entry *) a)->filename;
     const char *fb = ((entry *) b)->filename;
     return strnatcmp(fa, fb);
 }
 
-static long archive_map_entries_index(archive_ctx *ctx) {
-    long count = 0;
+#define ADDR_IN_FILE_MAPPING(addr) (addr >= archiveAddr && addr < archiveAddr + archiveSize)
+
+static bool fill_entry_zero_copy(struct archive *arc, entry *entry) {
+    void *buffer = NULL;
+    size_t buffer_size = 0;
+    la_int64_t output_ofs = 0;
+    archive_read_data_block(arc, (const void **) &buffer, &buffer_size, &output_ofs);
+    bool zero_copy = ADDR_IN_FILE_MAPPING(buffer) && !output_ofs && buffer_size == entry->size;
+    entry->addr = zero_copy ? buffer : NULL;
+    return zero_copy;
+}
+
+static void archive_map_entries_index(archive_ctx *ctx, bool sort) {
+    int count = 0;
+    bool zero_copy = true;
     while (archive_read_next_header(ctx->arc, &ctx->entry) == ARCHIVE_OK) {
-        const char *name = archive_entry_pathname(ctx->entry);
-        if (filename_is_playable_file(name)) {
+        const char *name = archive_entry_pathname2(ctx->entry);
+        if (archive_entry_is_file(ctx->entry) && filename_is_playable_file(name)) {
             entries[count].filename = strdup(name);
             entries[count].index = count;
-            entries[count].size = archive_entry_size(ctx->entry);
+            ssize_t size = archive_entry_size(ctx->entry);
+            max_file_size = max(size, max_file_size);
+            entries[count].size = size;
+            // We don't expect zero copy if first content can't do zero copy
+            if (zero_copy) zero_copy = fill_entry_zero_copy(ctx->arc, &entries[count]);
             count++;
         }
     }
-    if (!count)
-        LOGE("%s", archive_error_string(ctx->arc));
-    qsort(entries, entryCount, sizeof(entry), compare_entries);
-    return count;
+    if (sort) qsort(entries, entryCount, sizeof(entry), compare_entries);
 }
 
-static bool archive_prealloc_mempool() {
-    mempoolofs = calloc(entryCount, sizeof(size_t));
-    for (int i = 0; i < entryCount; ++i) {
-        if (!i)
-            mempoolofs[i] = PAGE_ALIGN(entries[i].size);
-        else
-            mempoolofs[i] = PAGE_ALIGN(entries[i].size) + mempoolofs[i - 1];
+static void *acquire_decode_buffer() {
+    void *addr = NULL;
+    pthread_mutex_lock(&buffer_mutex);
+    for (int i = 0; i < MAX_PARALLEL_DECOMP; ++i) {
+        addr = decode_buffer[i];
+        if (addr) {
+            decode_buffer[i] = NULL;
+            break;
+        }
     }
-    mempool = mmap(0, MEMPOOL_SIZE, PROT_RW, MAP_ANON_POOL, -1, 0);
-    if (mempool == MAP_FAILED) {
-        LOGE("%s%s", "mmap failed with error ", strerror(errno));
-        return false;
+    pthread_mutex_unlock(&buffer_mutex);
+    if (!addr) addr = malloc(max_file_size);
+    return addr;
+}
+
+static void release_decode_buffer(void *buffer) {
+    pthread_mutex_lock(&buffer_mutex);
+    for (int i = 0; i < MAX_PARALLEL_DECOMP; ++i) {
+        void *addr = decode_buffer[i];
+        if (!addr) {
+            decode_buffer[i] = buffer;
+            pthread_mutex_unlock(&buffer_mutex);
+            return;
+        }
     }
-    return true;
+    pthread_mutex_unlock(&buffer_mutex);
+    free(buffer);
 }
 
-
-// Mincore does not support anon mapping yet
-// Now that we use MADV_FREE, how can we detect whether pages is reclaimed?
-static bool is_mempool_pages_present_and_lock(int index) {
-    void *addr = MEMPOOL_ADDR_BY_SORTED_IDX(index);
-    size_t size = MEMPOOL_ENTITY_SIZE(index);
-    mlock(addr, size);
-#if 0
-    unsigned char vec[size / PAGE_SIZE];
-    unsigned char r = 1;
-    mincore(addr, size, vec);
-    for (int i = 0; i < size / PAGE_SIZE; ++i) r &= vec[i];
-    return r;
-#endif
-    return false;
-}
-
-#define MEMPOOL_IN_CORE_AND_LOCK(x) is_mempool_pages_present_and_lock(x)
-
-static void mempool_release_pages(void *addr, size_t size) {
-    size = PAGE_ALIGN(size);
-    munlock(addr, size);
-    int ret = madvise(addr, size, MADV_FREE);
-    if (ret == -EINVAL) madvise(addr, size, MADV_DONTNEED);
-}
-
-static long archive_list_all_entries(archive_ctx *ctx) {
-    long count = 0;
+static int archive_list_all_entries(archive_ctx *ctx) {
+    int count = 0;
     while (archive_read_next_header(ctx->arc, &ctx->entry) == ARCHIVE_OK)
-        if (filename_is_playable_file(archive_entry_pathname(ctx->entry)))
+        if (archive_entry_is_playable(ctx->entry))
             count++;
-    if (!count)
-        LOGE("%s", archive_error_string(ctx->arc));
     return count;
 }
 
@@ -179,18 +187,10 @@ static void archive_release_ctx(archive_ctx *ctx) {
     }
 }
 
-static int archive_alloc_ctx(archive_ctx **ctxptr) {
-    archive_ctx *ctx;
-    int err;
-    ctx = calloc(1, sizeof(archive_ctx));
-    if (!ctx)
-        return -ENOMEM;
+static archive_ctx *archive_alloc_ctx() {
+    archive_ctx *ctx = calloc(1, sizeof(archive_ctx));
     ctx->arc = archive_read_new();
     ctx->using = 1;
-    if (!ctx->arc) {
-        free(ctx);
-        return -ENOMEM;
-    }
     archive_read_support_format_tar(ctx->arc);
     archive_read_support_format_7zip(ctx->arc);
     archive_read_support_format_rar5(ctx->arc);
@@ -200,19 +200,19 @@ static int archive_alloc_ctx(archive_ctx **ctxptr) {
     archive_read_set_option(ctx->arc, "zip", "ignorecrc32", "1");
     if (passwd)
         archive_read_add_passphrase(ctx->arc, passwd);
-    err = archive_read_open_memory(ctx->arc, archiveAddr, archiveSize);
-    if (err) {
+    int err = archive_read_open_memory(ctx->arc, archiveAddr, archiveSize);
+    if (err < ARCHIVE_OK) {
+        LOGE("%s%s", "Open archive failed: ", archive_error_string(ctx->arc));
         archive_read_free(ctx->arc);
         free(ctx);
-        return err;
+        return NULL;
     }
-    *ctxptr = ctx;
-    return 0;
+    return ctx;
 }
 
 static int archive_skip_to_index(archive_ctx *ctx, int index) {
     while (archive_read_next_header(ctx->arc, &ctx->entry) == ARCHIVE_OK) {
-        if (!filename_is_playable_file(archive_entry_pathname(ctx->entry)))
+        if (!archive_entry_is_playable(ctx->entry))
             continue;
         if (ctx->next_index++ == index) {
             return ctx->next_index - 1;
@@ -224,8 +224,7 @@ static int archive_skip_to_index(archive_ctx *ctx, int index) {
 static int archive_get_ctx(archive_ctx **ctxptr, int idx) {
     int ret;
     archive_ctx *ctx = NULL;
-    mcs_lock_t local_lock;
-    lock_mcs(&ctx_lock, &local_lock);
+    pthread_mutex_lock(&ctx_pool_mutex);
     for (int i = 0; i < CTX_POOL_SIZE; i++) {
         if (!ctx_pool[i])
             continue;
@@ -240,16 +239,14 @@ static int archive_get_ctx(archive_ctx **ctxptr, int idx) {
     }
     if (ctx)
         ctx->using = 1;
-    unlock_mcs((mcs_lock *) &ctx_lock, &local_lock);
+    pthread_mutex_unlock(&ctx_pool_mutex);
 
     if (!ctx) {
         archive_ctx *victimCtx = NULL;
         int victimIdx = 0;
         int replace = 1;
-        ret = archive_alloc_ctx(&ctx);
-        if (ret)
-            return ret;
-        lock_mcs(&ctx_lock, &local_lock);
+        ctx = archive_alloc_ctx();
+        pthread_mutex_lock(&ctx_pool_mutex);
         for (int i = 0; i < CTX_POOL_SIZE; i++) {
             if (!ctx_pool[i]) {
                 ctx_pool[i] = ctx;
@@ -264,7 +261,7 @@ static int archive_get_ctx(archive_ctx **ctxptr, int idx) {
             }
         }
         if (replace) ctx_pool[victimIdx] = ctx;
-        unlock_mcs((mcs_lock *) &ctx_lock, &local_lock);
+        pthread_mutex_unlock(&ctx_pool_mutex);
         if (replace) archive_release_ctx(victimCtx);
     }
     ret = archive_skip_to_index(ctx, idx);
@@ -279,160 +276,139 @@ static int archive_get_ctx(archive_ctx **ctxptr, int idx) {
 }
 
 JNIEXPORT jint JNICALL
-Java_com_hippo_ehviewer_gallery_ArchiveGalleryProviderKt_openArchive(JNIEnv *env, jclass thiz,
-                                                                     jint fd, jlong size) {
+Java_com_hippo_ehviewer_jni_ArchiveKt_openArchive(JNIEnv *env, jclass thiz, jint fd, jlong size, jboolean sort_entries) {
     EH_UNUSED(env);
     EH_UNUSED(thiz);
     archive_ctx *ctx = NULL;
-    int mmap_flags = MAP_PRIVATE;
-    archiveAddr = mmap64(0, size, PROT_READ, mmap_flags, fd, 0);
+    archiveAddr = mmap(0, size, PROT_READ, MAP_PRIVATE, fd, 0);
     if (archiveAddr == MAP_FAILED) {
-        LOGE("%s%s", "mmap64 failed with error ", strerror(errno));
+        LOGE("%s%s", "mmap failed with error ", strerror(errno));
         return 0;
     }
     archiveSize = size;
-    madvise_log_if_error(archiveAddr, archiveSize, MADV_WILLNEED);
     ctx_pool = calloc(CTX_POOL_SIZE, sizeof(archive_ctx **));
-    if (!ctx_pool) {
-        LOGE("Allocate archive ctx pool failed:ENOMEM");
+    ctx = archive_alloc_ctx();
+    if (!ctx) return 0;
+
+    entryCount = archive_list_all_entries(ctx);
+    LOGI("%s%zu%s", "Found ", entryCount, " images in archive");
+    if (!entryCount) {
+        archive_release_ctx(ctx);
         return 0;
     }
-    long r = archive_alloc_ctx(&ctx);
-    if (r) {
-        if (r == -ENOMEM)
-            LOGE("%s", "Mem alloc failed");
-        LOGE("%s%s", "Archive open failed:", archive_error_string(ctx->arc));
-    } else {
-        entryCount = archive_list_all_entries(ctx);
-        LOGI("%s%zu%s", "Found ", entryCount, " image entries in archive");
 
-        // We must read through the file|vm then we can know whether it is encrypted
-        int encryptRet = archive_read_has_encrypted_entries(ctx->arc);
-        switch (encryptRet) {
-            case 1: // At lease 1 encrypted entry
-                need_encrypt = true;
-                break;
-            case 0: // format supports but no encrypted entry found
-            default:
-                need_encrypt = false;
-        }
-
-        int format = archive_format(ctx->arc);
-        switch (format) {
-            case ARCHIVE_FORMAT_ZIP:
-            case ARCHIVE_FORMAT_RAR_V5:
-                madvise_log_if_error(archiveAddr, archiveSize, MADV_SEQUENTIAL);
-                break;
-            case ARCHIVE_FORMAT_7ZIP: // Seek is bad
-                madvise_log_if_error(archiveAddr, archiveSize, MADV_RANDOM);
-                break;
-            default:;
-        }
+    // We must read through the file|vm then we can know whether it is encrypted
+    int encryptRet = archive_read_has_encrypted_entries(ctx->arc);
+    switch (encryptRet) {
+        case 1: // At lease 1 encrypted entry
+            need_encrypt = true;
+            break;
+        case 0: // format supports but no encrypted entry found
+        default:
+            need_encrypt = false;
     }
 
-    archive_release_ctx(ctx);
-
-    r = archive_alloc_ctx(&ctx);
-    if (r) {
-        if (r == -ENOMEM)
-            LOGE("%s", "Mem alloc failed");
-        r = 0;
-        LOGE("%s%s", "Archive open failed:", archive_error_string(ctx->arc));
-    } else {
-        entries = calloc(entryCount, sizeof(entry));
-        r = archive_map_entries_index(ctx);
-        if (!archive_prealloc_mempool()) {
-            r = 0;
-            for (int i = 0; i < entryCount; ++i) {
-                free((void *) entries[i].filename);
-            }
-            free(entries);
-        }
+    int format = archive_format(ctx->arc);
+    switch (format) {
+        case ARCHIVE_FORMAT_ZIP:
+        case ARCHIVE_FORMAT_RAR_V5:
+            madvise_log_if_error(archiveAddr, archiveSize, MADV_SEQUENTIAL);
+            break;
+        case ARCHIVE_FORMAT_7ZIP: // Seek is bad
+            madvise_log_if_error(archiveAddr, archiveSize, MADV_RANDOM);
+            break;
+        default:;
     }
-
     archive_release_ctx(ctx);
-    return r;
+
+    ctx = archive_alloc_ctx();
+    entries = calloc(entryCount, sizeof(entry));
+    archive_map_entries_index(ctx, sort_entries);
+    archive_release_ctx(ctx);
+    return (int) entryCount;
 }
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "ConstantConditionsOC"
-#pragma ide diagnostic ignored "UnreachableCode"
-
 JNIEXPORT jobject JNICALL
-Java_com_hippo_ehviewer_gallery_ArchiveGalleryProviderKt_extractToByteBuffer(JNIEnv *env,
-                                                                             jclass thiz,
-                                                                             jint index) {
+Java_com_hippo_ehviewer_jni_ArchiveKt_extractToByteBuffer(JNIEnv *env, jclass thiz, jint index) {
     EH_UNUSED(env);
     EH_UNUSED(thiz);
-    void *addr = MEMPOOL_ADDR_BY_SORTED_IDX(index);
-    size_t size = entries[index].size;
-    if (!MEMPOOL_IN_CORE_AND_LOCK(index)) {
-        index = entries[index].index;
-        archive_ctx *ctx = NULL;
-        int ret;
-        ret = archive_get_ctx(&ctx, index);
-        if (ret) return 0;
-        ret = archive_read_data(ctx->arc, addr, size);
-        ctx->using = 0;
-        if (ret == size)
-            return (*env)->NewDirectByteBuffer(env, addr, size);
-        if (ret != size)
-            LOGE("%s", "No enough data read, WTF?");
-        if (ret < 0)
-            LOGE("%s%s", "Archive read failed:", archive_error_string(ctx->arc));
-        mempool_release_pages(addr, size);
+    entry *entry = &entries[index];
+    ssize_t size = entry->size;
+    if (entry->addr) {
+        return (*env)->NewDirectByteBuffer(env, entry->addr, size);
     } else {
-        return (*env)->NewDirectByteBuffer(env, addr, size);
+        archive_ctx *ctx = NULL;
+        if (!archive_get_ctx(&ctx, entry->index)) {
+            void *addr = acquire_decode_buffer();
+            ssize_t bytes = archive_read_data(ctx->arc, addr, size);
+            ctx->using = 0;
+            if (bytes == size) {
+                return (*env)->NewDirectByteBuffer(env, addr, size);
+            } else {
+                if (bytes < 0) {
+                    LOGE("%s%s", "Archive read failed:", archive_error_string(ctx->arc));
+                } else {
+                    LOGE("%s", "No enough data read, WTF?");
+                }
+            }
+            release_decode_buffer(addr);
+        }
     }
     return 0;
 }
 
-#pragma clang diagnostic pop
-
 JNIEXPORT void JNICALL
-Java_com_hippo_ehviewer_gallery_ArchiveGalleryProviderKt_closeArchive(JNIEnv *env, jclass thiz) {
+Java_com_hippo_ehviewer_jni_ArchiveKt_closeArchive(JNIEnv *env, jclass thiz) {
     EH_UNUSED(env);
     EH_UNUSED(thiz);
-    for (int i = 0; i < CTX_POOL_SIZE; i++)
-        archive_release_ctx(ctx_pool[i]);
+    if (ctx_pool) {
+        for (int i = 0; i < CTX_POOL_SIZE; i++)
+            archive_release_ctx(ctx_pool[i]);
+        free(ctx_pool);
+        ctx_pool = NULL;
+    }
     free(passwd);
-    free(ctx_pool);
     passwd = NULL;
     need_encrypt = false;
-    munmap(archiveAddr, archiveSize);
-    munmap(mempool, MEMPOOL_SIZE);
-    free(mempoolofs);
-    for (int i = 0; i < entryCount; ++i) {
-        free((void *) entries[i].filename);
+    if (archiveAddr != MAP_FAILED) {
+        munmap(archiveAddr, archiveSize);
+        archiveAddr = MAP_FAILED;
     }
-    free(entries);
+    for (int i = 0; i < MAX_PARALLEL_DECOMP; ++i) {
+        free(decode_buffer[i]);
+        decode_buffer[i] = NULL;
+    }
+    max_file_size = 0;
+    if (entries) {
+        for (int i = 0; i < entryCount; ++i) {
+            free((void *) entries[i].filename);
+        }
+        free(entries);
+        entries = NULL;
+    }
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_hippo_ehviewer_gallery_ArchiveGalleryProviderKt_needPassword(JNIEnv *env, jclass thiz) {
+Java_com_hippo_ehviewer_jni_ArchiveKt_needPassword(JNIEnv *env, jclass thiz) {
     EH_UNUSED(env);
     EH_UNUSED(thiz);
     return need_encrypt;
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_hippo_ehviewer_gallery_ArchiveGalleryProviderKt_providePassword(JNIEnv *env, jclass thiz,
-                                                                         jstring str) {
+Java_com_hippo_ehviewer_jni_ArchiveKt_providePassword(JNIEnv *env, jclass thiz, jstring str) {
     EH_UNUSED(thiz);
     struct archive_entry *entry;
     archive_ctx *ctx;
     jboolean ret = true;
     int len = (*env)->GetStringUTFLength(env, str);
-    passwd = realloc(passwd, len * sizeof(char));
-    if (!passwd) {
-        LOGE("Allocate passwd buffer failed");
-        return false;
-    }
-    strcpy(passwd, (*env)->GetStringUTFChars(env, str, NULL));
-    archive_alloc_ctx(&ctx);
-    void *tmpBuf = alloca(4096);
+    passwd = realloc(passwd, len + 1);
+    (*env)->GetStringUTFRegion(env, str, 0, len, passwd);
+    passwd[len] = 0;
+    ctx = archive_alloc_ctx();
+    char tmpBuf[4096];
     while (archive_read_next_header(ctx->arc, &entry) == ARCHIVE_OK) {
-        if (!filename_is_playable_file(archive_entry_pathname(entry)))
+        if (!archive_entry_is_playable(entry))
             continue;
         if (!archive_entry_is_encrypted(entry))
             continue;
@@ -447,8 +423,7 @@ Java_com_hippo_ehviewer_gallery_ArchiveGalleryProviderKt_providePassword(JNIEnv 
 }
 
 JNIEXPORT jstring JNICALL
-Java_com_hippo_ehviewer_gallery_ArchiveGalleryProviderKt_getFilename(JNIEnv *env, jclass thiz,
-                                                                     jint index) {
+Java_com_hippo_ehviewer_jni_ArchiveKt_getFilename(JNIEnv *env, jclass thiz, jint index) {
     EH_UNUSED(env);
     EH_UNUSED(thiz);
     index = entries[index].index;
@@ -457,14 +432,13 @@ Java_com_hippo_ehviewer_gallery_ArchiveGalleryProviderKt_getFilename(JNIEnv *env
     ret = archive_get_ctx(&ctx, index);
     if (ret)
         return NULL;
-    jstring str = (*env)->NewStringUTF(env, archive_entry_pathname(ctx->entry));
+    jstring str = (*env)->NewStringUTF(env, archive_entry_pathname2(ctx->entry));
     ctx->using = 0;
     return str;
 }
 
-JNIEXPORT void JNICALL
-Java_com_hippo_ehviewer_gallery_ArchiveGalleryProviderKt_extractToFd(JNIEnv *env, jclass thiz,
-                                                                     jint index, jint fd) {
+JNIEXPORT jboolean JNICALL
+Java_com_hippo_ehviewer_jni_ArchiveKt_extractToFd(JNIEnv *env, jclass thiz, jint index, jint fd) {
     EH_UNUSED(env);
     EH_UNUSED(thiz);
     index = entries[index].index;
@@ -472,16 +446,17 @@ Java_com_hippo_ehviewer_gallery_ArchiveGalleryProviderKt_extractToFd(JNIEnv *env
     int ret;
     ret = archive_get_ctx(&ctx, index);
     if (!ret) {
-        archive_read_data_into_fd(ctx->arc, fd);
+        ret = archive_read_data_into_fd(ctx->arc, fd);
         ctx->using = 0;
     }
+    return ret == ARCHIVE_OK;
 }
 
 JNIEXPORT void JNICALL
-Java_com_hippo_ehviewer_gallery_ArchiveGalleryProviderKt_releaseByteBuffer(JNIEnv *env, jclass thiz,
-                                                                           jobject buffer) {
+Java_com_hippo_ehviewer_jni_ArchiveKt_releaseByteBuffer(JNIEnv *env, jclass thiz, jobject buffer) {
     EH_UNUSED(thiz);
     void *addr = (*env)->GetDirectBufferAddress(env, buffer);
-    size_t size = (*env)->GetDirectBufferCapacity(env, buffer);
-    mempool_release_pages(addr, size);
+    if (!ADDR_IN_FILE_MAPPING(addr)) {
+        release_decode_buffer(addr);
+    }
 }
