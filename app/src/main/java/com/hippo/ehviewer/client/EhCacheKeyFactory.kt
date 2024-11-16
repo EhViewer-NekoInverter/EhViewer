@@ -18,11 +18,12 @@ package com.hippo.ehviewer.client
 import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.client.data.AbstractGalleryInfo
 
-// Normal Preview (v2): https://*.hath.network/c(m|1|2)/[timed token]/[gid]-[index].(jpg|webp)
-// ExHentai Large Preview (v1 Cover): https://s.exhentai.org/t/***
-// E-Hentai Large Preview (v1 Cover): https://ehgt.org/***
-// ExHentai v2 Cover: https://s.exhentai.org/**.webp
-// E-Hentai v2 Cover: https://ehgt.org/**.webp
+// E-Hentai Large Preview (v1 Cover): https://ehgt.org/**.jpg
+// ExHentai Large Preview (v1 Cover): https://s.exhentai.org/t/**.jpg
+// E-Hentai v2 Cover: https://ehgt.org/w/**.webp
+// ExHentai v2 Cover: https://s.exhentai.org/w/**.webp
+// Normal Preview (v1 v2): https://*.hath.network/c(m|1|2)/[timed token]/[gid]-[index].(jpg|webp)
+// Large Preview (v2): https://*.hath.network/[timed token]/**.webp
 const val URL_PREFIX_THUMB_E = "https://ehgt.org/"
 const val URL_PREFIX_THUMB_EX = "https://s.exhentai.org/"
 const val URL_SIGNATURE_THUMB_NORMAL = ".hath.network/c"
@@ -46,11 +47,15 @@ val String.thumbUrl
         .removePrefix(URL_PREFIX_V1_THUMB_EX_OLD)
         .removePrefix(URL_PREFIX_V1_THUMB_EX)
         .removePrefix(URL_PREFIX_THUMB_EX).let {
-            if (EhUtils.isExHentai && !Settings.forceEhThumb) {
-                if (it.endsWith("webp")) URL_PREFIX_THUMB_EX else URL_PREFIX_V1_THUMB_EX
+            if (it.startsWith("https:")) {
+                it
             } else {
-                URL_PREFIX_THUMB_E
-            } + it
+                if (EhUtils.isExHentai && !Settings.forceEhThumb) {
+                    if (it.endsWith("webp")) URL_PREFIX_THUMB_EX else URL_PREFIX_V1_THUMB_EX
+                } else {
+                    URL_PREFIX_THUMB_E
+                } + it
+            }
         }
 
 val AbstractGalleryInfo.thumbUrl
