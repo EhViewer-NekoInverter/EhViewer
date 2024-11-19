@@ -197,7 +197,6 @@ class SignInScene :
             runCatching {
                 EhEngine.signIn(username, password)
             }.onFailure {
-                it.printStackTrace()
                 withUIContext {
                     hideProgress()
                     showResultErrorDialog(it)
@@ -218,8 +217,14 @@ class SignInScene :
                     Settings.putDisplayName(displayName)
                     Settings.putAvatar(avatar)
                 }
+            }.onFailure {
+                withUIContext {
+                    hideProgress()
+                    showResultErrorDialog(it)
+                }
+            }.onSuccess {
+                finishSignIn()
             }
-            finishSignIn()
         }
     }
 
