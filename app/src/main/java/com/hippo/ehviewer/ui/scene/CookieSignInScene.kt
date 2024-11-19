@@ -51,10 +51,8 @@ class CookieSignInScene :
     private var mProgress: View? = null
     private var mIpbMemberIdLayout: TextInputLayout? = null
     private var mIpbPassHashLayout: TextInputLayout? = null
-    private var mIgneousLayout: TextInputLayout? = null
     private var mIpbMemberId: EditText? = null
     private var mIpbPassHash: EditText? = null
-    private var mIgneous: EditText? = null
     private var mOk: View? = null
     private var mFromClipboard: TextView? = null
     private var mSignInJob: Job? = null
@@ -73,8 +71,6 @@ class CookieSignInScene :
         mIpbMemberId = mIpbMemberIdLayout!!.editText!!
         mIpbPassHashLayout = ViewUtils.`$$`(loginForm, R.id.ipb_pass_hash_layout) as TextInputLayout
         mIpbPassHash = mIpbPassHashLayout!!.editText!!
-        mIgneousLayout = ViewUtils.`$$`(loginForm, R.id.igneous_layout) as TextInputLayout
-        mIgneous = mIgneousLayout!!.editText!!
         mOk = ViewUtils.`$$`(loginForm, R.id.ok)
         mFromClipboard = ViewUtils.`$$`(loginForm, R.id.from_clipboard) as TextView
         mFromClipboard!!.run {
@@ -91,10 +87,8 @@ class CookieSignInScene :
         mProgress = null
         mIpbMemberIdLayout = null
         mIpbPassHashLayout = null
-        mIgneousLayout = null
         mIpbMemberId = null
         mIpbPassHash = null
-        mIgneous = null
         mSignInJob = null
     }
 
@@ -130,16 +124,13 @@ class CookieSignInScene :
         if (mSignInJob?.isActive == true ||
             null == mIpbMemberIdLayout ||
             null == mIpbPassHashLayout ||
-            null == mIgneousLayout ||
             null == mIpbMemberId ||
-            null == mIpbPassHash ||
-            null == mIgneous
+            null == mIpbPassHash
         ) {
             return
         }
         val ipbMemberId = mIpbMemberId!!.text.toString().trim { it <= ' ' }
         val ipbPassHash = mIpbPassHash!!.text.toString().trim { it <= ' ' }
-        val igneous = mIgneous!!.text.toString().trim { it <= ' ' }
         if (TextUtils.isEmpty(ipbMemberId)) {
             mIpbMemberIdLayout!!.error = getString(R.string.text_is_empty)
             return
@@ -157,7 +148,7 @@ class CookieSignInScene :
         mSignInJob = viewLifecycleOwner.lifecycleScope.launchIO {
             EhUtils.signOut()
             runCatching {
-                storeCookie(ipbMemberId, ipbPassHash, igneous)
+                storeCookie(ipbMemberId, ipbPassHash)
                 EhEngine.getProfile().run {
                     Settings.putDisplayName(displayName)
                     Settings.putAvatar(avatar)
@@ -184,14 +175,11 @@ class CookieSignInScene :
             .show()
     }
 
-    private suspend fun storeCookie(id: String, hash: String, igneous: String) {
+    private suspend fun storeCookie(id: String, hash: String) {
         EhCookieStore.addCookie(newCookie(EhCookieStore.KEY_IPB_MEMBER_ID, id, EhUrl.DOMAIN_E))
         EhCookieStore.addCookie(newCookie(EhCookieStore.KEY_IPB_MEMBER_ID, id, EhUrl.DOMAIN_EX))
         EhCookieStore.addCookie(newCookie(EhCookieStore.KEY_IPB_PASS_HASH, hash, EhUrl.DOMAIN_E))
         EhCookieStore.addCookie(newCookie(EhCookieStore.KEY_IPB_PASS_HASH, hash, EhUrl.DOMAIN_EX))
-        if (igneous.isNotEmpty()) {
-            EhCookieStore.addCookie(newCookie(EhCookieStore.KEY_IGNEOUS, igneous, EhUrl.DOMAIN_EX))
-        }
     }
 
     private fun fillCookiesFromClipboard() {
@@ -229,7 +217,6 @@ class CookieSignInScene :
                     when (kv[0].trim().lowercase(Locale.getDefault())) {
                         EhCookieStore.KEY_IPB_MEMBER_ID -> mIpbMemberId?.setText(kv[1].trim())
                         EhCookieStore.KEY_IPB_PASS_HASH -> mIpbPassHash?.setText(kv[1].trim())
-                        EhCookieStore.KEY_IGNEOUS -> mIgneous?.setText(kv[1].trim())
                     }
                 }
                 enter()
