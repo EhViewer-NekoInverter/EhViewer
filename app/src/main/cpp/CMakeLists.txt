@@ -87,4 +87,4 @@ include_directories(${libarchive_SOURCE_DIR}/libarchive)
 
 # Build and link our app's native lib
 add_library(${PROJECT_NAME} SHARED archive.c image.c gifutils.c hash.c natsort/strnatcmp.c)
-target_link_libraries(${PROJECT_NAME} archive_static log jnigraphics GLESv2 -Wl,--exclude-libs,ALL)
+target_link_libraries(${PROJECT_NAME} archive_static log jnigraphics GLESv3 -Wl,--exclude-libs,ALL)

@@ -24,7 +24,7 @@
 #include <android/data_space.h>
 #include <android/log.h>
 
-#include <GLES2/gl2.h>
+#include <GLES3/gl3.h>
 #include <jni.h>
 
 #define TAG "ImageDecoder_wrapper"
@@ -33,11 +33,11 @@
 
 #define IMAGE_TILE_MAX_SIZE (512 * 512)
 
-static char tile_buffer[IMAGE_TILE_MAX_SIZE * 4];
+static char tile_buffer[IMAGE_TILE_MAX_SIZE * 8];
 
 bool copy_pixels(const void *src, int src_w, int src_h, int src_x, int src_y,
                  void *dst, int dst_w, int dst_h, int dst_x, int dst_y,
-                 int width, int height) {
+                 int width, int height, int stride) {
     int left;
     int line;
     size_t line_stride;
@@ -97,12 +97,12 @@ bool copy_pixels(const void *src, int src_w, int src_h, int src_x, int src_y,
     }
 
     // Init
-    line_stride = (size_t) (width * 4);
-    src_stride = src_w * 4;
-    src_pos = src_y * src_stride + src_x * 4;
+    line_stride = (size_t) (width * stride);
+    src_stride = src_w * stride;
+    src_pos = src_y * src_stride + src_x * stride;
     dst_pos = 0;
 
-    dst_blank_length = (size_t) (dst_y * dst_w + dst_x) * 4;
+    dst_blank_length = (size_t) (dst_y * dst_w + dst_x) * stride;
 
     // First line
     dst_pos += (int) dst_blank_length;
@@ -111,7 +111,7 @@ bool copy_pixels(const void *src, int src_w, int src_h, int src_x, int src_y,
     src_pos += src_stride;
 
     // Other lines
-    dst_blank_length = (size_t) ((dst_w - width) * 4);
+    dst_blank_length = (size_t) ((dst_w - width) * stride);
     for (line = 1; line < height; line++) {
         dst_pos += (int) dst_blank_length;
         memcpy(dst + dst_pos, src + src_pos, line_stride);
@@ -131,13 +131,14 @@ Java_com_hippo_ehviewer_jni_ImageKt_nativeTexImage(JNIEnv *env, jclass clazz, jo
     void *pixels = NULL;
     AndroidBitmap_lockPixels(env, bitmap, &pixels);
     AndroidBitmap_getInfo(env, bitmap, &info);
-    copy_pixels(pixels, info.width, info.height, offset_x, offset_y, tile_buffer, width, height, 0, 0, width, height);
+    bool is_f16 = info.format == ANDROID_BITMAP_FORMAT_RGBA_F16;
+    copy_pixels(pixels, info.width, info.height, offset_x, offset_y, tile_buffer, width, height, 0, 0, width, height, is_f16 ? 8 : 4);
     AndroidBitmap_unlockPixels(env, bitmap);
     if (init) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
-                     tile_buffer);
+        glTexImage2D(GL_TEXTURE_2D, 0, is_f16 ? GL_RGBA16F : GL_RGBA8, width, height, 0, GL_RGBA,
+                     is_f16 ? GL_HALF_FLOAT : GL_UNSIGNED_BYTE, tile_buffer);
     } else {
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE,
-                        tile_buffer);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA,
+                        is_f16 ? GL_HALF_FLOAT : GL_UNSIGNED_BYTE, tile_buffer);
     }
 }
