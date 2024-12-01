@@ -30,7 +30,7 @@
         android:maxSdkVersion="28" />
 
     <uses-feature
-        android:glEsVersion="0x00020000"
+        android:glEsVersion="0x00030000"
         android:required="true" />
 
     <application
