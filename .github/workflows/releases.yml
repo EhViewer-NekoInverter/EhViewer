@@ -21,8 +21,9 @@ jobs:
 
       - name: Gradle Build
         uses: gradle/actions/setup-gradle@v4
-        with:
-          arguments: assembleRelease
+
+      - name: Gradle Build
+        run: ./gradlew assembleRelease
 
       - name: Rename Apks
         run: |
