@@ -70,8 +70,7 @@ internal abstract class GalleryAdapter(
             val recyclerView = mRecyclerView
             when (type) {
                 TYPE_LIST -> {
-                    val columnWidth = Settings.detailSize
-                    mLayoutManager.setColumnSize(columnWidth)
+                    mLayoutManager.setColumnSize(Settings.detailSize)
                     mLayoutManager.setStrategy(AutoStaggeredGridLayoutManager.STRATEGY_MIN_SIZE)
                     if (null != mGirdDecoration) {
                         recyclerView.removeItemDecoration(mGirdDecoration!!)
@@ -91,8 +90,7 @@ internal abstract class GalleryAdapter(
                 }
 
                 TYPE_GRID -> {
-                    val columnWidth = Settings.thumbSize
-                    mLayoutManager.setColumnSize(columnWidth)
+                    mLayoutManager.setColumnSize(Settings.thumbSize)
                     mLayoutManager.setStrategy(AutoStaggeredGridLayoutManager.STRATEGY_SUITABLE_SIZE)
                     if (null != mListDecoration) {
                         recyclerView.removeItemDecoration(mListDecoration!!)
@@ -149,6 +147,7 @@ internal abstract class GalleryAdapter(
                 lp.width = mListThumbWidth
                 lp.height = mListThumbHeight
                 holder.thumb.layoutParams = lp
+                holder.title.maxLines = if (Settings.listTitleSingleLine) 1 else 2
             }
             TYPE_GRID -> {
                 val columnWidth = Settings.thumbSize

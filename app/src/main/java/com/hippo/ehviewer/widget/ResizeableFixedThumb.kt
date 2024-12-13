@@ -26,6 +26,6 @@ class ResizeableFixedThumb @JvmOverloads constructor(
     attrs: AttributeSet? = null,
 ) : FixedThumb(context, attrs) {
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        setMeasuredDimension(Settings.listThumbSize * 2, Settings.listThumbSize * 3)
+        setMeasuredDimension(Settings.listThumbSize, Settings.listThumbSize / 2 * 3)
     }
 }

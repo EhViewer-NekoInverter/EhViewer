@@ -13,68 +13,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.hippo.ehviewer.widget
 
-package com.hippo.ehviewer.widget;
+import android.content.Context
+import android.graphics.drawable.Drawable
+import android.util.AttributeSet
+import android.widget.ImageView.ScaleType
+import com.hippo.ehviewer.R
+import com.hippo.widget.LoadImageView
 
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
-import android.util.AttributeSet;
+open class FixedThumb @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
+) : LoadImageView(context, attrs, defStyleAttr) {
+    private var minAspect = 0f
+    private var maxAspect = 0f
+    private var alwaysCutAndScale = false
 
-import com.hippo.ehviewer.R;
-import com.hippo.widget.LoadImageView;
-
-public class FixedThumb extends LoadImageView {
-    private float minAspect;
-    private float maxAspect;
-    private boolean alwaysCutAndScale;
-
-    public FixedThumb(Context context) {
-        super(context);
-        init(context, null, 0, 0);
+    init {
+        val a = context.obtainStyledAttributes(attrs, R.styleable.FixedThumb, defStyleAttr, defStyleAttr)
+        minAspect = a.getFloat(R.styleable.FixedThumb_minAspect, 0f)
+        maxAspect = a.getFloat(R.styleable.FixedThumb_maxAspect, 0f)
+        alwaysCutAndScale = a.getBoolean(R.styleable.FixedThumb_alwaysCutAndScale, false)
+        a.recycle()
     }
 
-    public FixedThumb(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context, attrs, 0, 0);
-    }
-
-    public FixedThumb(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        init(context, attrs, defStyle, 0);
-    }
-
-    private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FixedThumb, defStyleAttr, defStyleRes);
-        minAspect = a.getFloat(R.styleable.FixedThumb_minAspect, 0.0f);
-        maxAspect = a.getFloat(R.styleable.FixedThumb_maxAspect, 0.0f);
-        alwaysCutAndScale = a.getBoolean(R.styleable.FixedThumb_alwaysCutAndScale, false);
-        a.recycle();
-    }
-
-    @Override
-    public void onPreSetImageDrawable(Drawable drawable, boolean isTarget) {
+    override fun onPreSetImageDrawable(drawable: Drawable?, isTarget: Boolean) {
         if (alwaysCutAndScale) {
-            setScaleType(ScaleType.CENTER_CROP);
-            return;
+            setScaleType(ScaleType.CENTER_CROP)
+            return
         }
         if (isTarget && drawable != null) {
-            int width = drawable.getIntrinsicWidth();
-            int height = drawable.getIntrinsicHeight();
+            val width = drawable.intrinsicWidth
+            val height = drawable.intrinsicHeight
             if (width > 0 && height > 0) {
-                float aspect = (float) width / (float) height;
+                val aspect = width.toFloat() / height.toFloat()
                 if (aspect < maxAspect && aspect > minAspect) {
-                    setScaleType(ScaleType.CENTER_CROP);
-                    return;
+                    setScaleType(ScaleType.CENTER_CROP)
+                    return
                 }
             }
         }
 
-        setScaleType(ScaleType.FIT_CENTER);
+        setScaleType(ScaleType.FIT_CENTER)
     }
 
-    @Override
-    public void onPreSetImageResource(int resId, boolean isTarget) {
-        setScaleType(ScaleType.FIT_CENTER);
+    override fun onPreSetImageResource(resId: Int, isTarget: Boolean) {
+        setScaleType(ScaleType.FIT_CENTER)
     }
 }

@@ -105,7 +105,6 @@ class EhFragment : BasePreferenceFragment() {
         } else if (Settings.KEY_DETAIL_SIZE == key) {
             requireActivity().setResult(Activity.RESULT_OK)
         } else if (Settings.KEY_LIST_THUMB_SIZE == key) {
-            Settings.listThumbSizeInited = false
             requireActivity().setResult(Activity.RESULT_OK)
         } else if (Settings.KEY_THUMB_SIZE == key) {
             requireActivity().setResult(Activity.RESULT_OK)
