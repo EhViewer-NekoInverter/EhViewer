@@ -1,3 +1,4 @@
+import com.android.build.api.variant.FilterConfiguration.FilterType.ABI
 import java.io.ByteArrayOutputStream
 import java.time.Instant
 import java.time.ZoneOffset
@@ -140,6 +141,21 @@ android {
     }
 
     namespace = "com.hippo.ehviewer"
+}
+
+val abiCodes = mapOf("arm64-v8a" to 1, "armeabi-v7a" to 2, "x8_646" to 3, "x86" to 4)
+
+androidComponents {
+    onVariants { variant ->
+
+        variant.outputs.forEach { output ->
+            val name = output.filters.find { it.filterType == ABI }?.identifier
+            val baseAbiCode = abiCodes[name]
+            if (baseAbiCode != null) {
+                output.versionCode.set(10 * output.versionCode.get() + baseAbiCode)
+            }
+        }
+    }
 }
 
 dependencies {
