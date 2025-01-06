@@ -17,15 +17,20 @@ android {
     buildToolsVersion = "35.0.0"
     ndkVersion = "27.2.12479018"
 
+    val abiFilterList = (properties["ABI_FILTERS"] as? String)?.split(';')
     splits {
         abi {
             isEnable = true
             reset()
-            if (gradle.startParameter.taskNames.any { it.contains("Release") }) {
-                include("arm64-v8a", "x86_64", "armeabi-v7a", "x86")
-                isUniversalApk = true
+            if (abiFilterList != null && abiFilterList.isNotEmpty()) {
+                include(*abiFilterList.toTypedArray())
             } else {
-                include("arm64-v8a", "x86")
+                if (gradle.startParameter.taskNames.any { it.contains("Release") }) {
+                    include("arm64-v8a", "x86_64", "armeabi-v7a", "x86")
+                    isUniversalApk = true
+                } else {
+                    include("arm64-v8a", "x86")
+                }
             }
         }
     }
