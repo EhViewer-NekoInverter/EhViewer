@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 project(ehviewer C)
+add_link_options("-Wl,--build-id=none")
 include(FetchContent)
 
 if (NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
