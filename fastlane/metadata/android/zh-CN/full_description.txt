@@ -1,0 +1,60 @@
+<h3>描述</h3>
+
+<p>沿用 Material Design 2 经典风格的 EhViewer 分支</p>
+
+<p>本分支为自用性质，不接受功能请求，软件常见使用问题请参阅 <a href="https://github.com/EhViewer-NekoInverter/EhViewer/issues/18">Q&amp;A</a></p>
+
+<p>如果您可以接受 Material Design 3，建议使用 <a href="https://github.com/FooIbar/EhViewer">EhViewer-Overhauled</a></p>
+
+<ul>
+<li><p>请前往 <a href="https://github.com/EhViewer-NekoInverter/EhViewer/releases">Github Releases</a> 下载发行版</p></li>
+<li><p>如果发行版存在未修复的问题，前往 <a href="https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml">Github Actions</a> 下载 CI 版，需要登录 Github 账号</p></li>
+</ul>
+
+<h3>感谢</h3>
+
+<p>本项目受到了诸多开源项目的帮助</p>
+
+<ul>
+<li><a href="https://source.android.com/">AOSP &amp; AndroidX</a></li>
+<li><a href="https://kotlinlang.org/">Kotlin &amp; KotlinX</a></li>
+<li><a href="https://coil-kt.github.io/coil/">Coil</a></li>
+<li><a href="https://github.com/PureWriter/FullDraggableDrawer">FullDraggableDrawer</a></li>
+<li><a href="https://jsoup.org/">Jsoup</a></li>
+<li><a href="https://ktor.io/">Ktor</a></li>
+<li><a href="http://www.libarchive.org/">Libarchive</a></li>
+<li><a href="https://github.com/material-components/material-components-android">MDC-Android</a></li>
+<li><a href="https://square.github.io/okhttp/">OkHttp</a></li>
+<li><a href="https://github.com/RikkaApps/RikkaX">RikkaX</a></li>
+</ul>
+
+<p>标签翻译数据</p>
+
+<ul>
+<li><a href="https://github.com/EhTagTranslation/Database">EhTagTranslation</a></li>
+</ul>
+
+<p>翻译人员</p>
+
+<ul>
+<li>ja: <a href="https://github.com/reindex-ot">Re*Index. (ot_inc)</a></li>
+</ul>
+
+<h1>许可证</h1>
+
+<pre><code>Copyright 2014-2019 Hippo Seven
+Copyright 2020-2022 NekoInverter
+Copyright 2022-2024 Moedog
+
+EhViewer is free software:
+you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
+either version 3 of the License, or (at your option) any later version.
+
+EhViewer is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with EhViewer.
+If not, see &lt;https://www.gnu.org/licenses/&gt;.
+</code></pre>
+

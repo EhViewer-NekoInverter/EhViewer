@@ -1,0 +1,55 @@
+<h3>Description</h3>
+
+<p>An EhViewer fork with classic Material Design 2 style</p>
+
+<p>This fork is for personal use and does not accept feature requests; for common usage issues, please refer to the <a href="https://github.com/EhViewer-NekoInverter/EhViewer/issues/18">Q&amp;A</a></p>
+
+<p>If you prefer Material Design 3, consider using <a href="https://github.com/FooIbar/EhViewer">EhViewer-Overhauled</a></p>
+
+<h3>Thanks</h3>
+
+<p>Here are the libraries</p>
+
+<ul>
+<li><a href="https://source.android.com/">AOSP &amp; AndroidX</a></li>
+<li><a href="https://kotlinlang.org/">Kotlin &amp; KotlinX</a></li>
+<li><a href="https://coil-kt.github.io/coil/">Coil</a></li>
+<li><a href="https://github.com/PureWriter/FullDraggableDrawer">FullDraggableDrawer</a></li>
+<li><a href="https://jsoup.org/">Jsoup</a></li>
+<li><a href="https://ktor.io/">Ktor</a></li>
+<li><a href="http://www.libarchive.org/">Libarchive</a></li>
+<li><a href="https://github.com/material-components/material-components-android">MDC-Android</a></li>
+<li><a href="https://square.github.io/okhttp/">OkHttp</a></li>
+<li><a href="https://github.com/RikkaApps/RikkaX">RikkaX</a></li>
+</ul>
+
+<p>Tag translation</p>
+
+<ul>
+<li><a href="https://github.com/EhTagTranslation/Database">EhTagTranslation</a></li>
+</ul>
+
+<p>Translators</p>
+
+<ul>
+<li>ja: <a href="https://github.com/reindex-ot">Re*Index. (ot_inc)</a></li>
+</ul>
+
+<h1>License</h1>
+
+<pre><code>Copyright 2014-2019 Hippo Seven
+Copyright 2020-2022 NekoInverter
+Copyright 2022-2024 Moedog
+
+EhViewer is free software:
+you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,
+either version 3 of the License, or (at your option) any later version.
+
+EhViewer is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with EhViewer.
+If not, see &lt;https://www.gnu.org/licenses/&gt;.
+</code></pre>
+
