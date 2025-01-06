@@ -143,7 +143,7 @@ android {
     namespace = "com.hippo.ehviewer"
 }
 
-val abiCodes = mapOf("arm64-v8a" to 1, "armeabi-v7a" to 2, "x8_646" to 3, "x86" to 4)
+val abiCodes = mapOf("arm64-v8a" to 1, "armeabi-v7a" to 2, "x86_64" to 3, "x86" to 4)
 
 androidComponents {
     onVariants { variant ->
