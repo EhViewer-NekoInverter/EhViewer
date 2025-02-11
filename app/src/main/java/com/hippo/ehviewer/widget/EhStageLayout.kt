@@ -66,7 +66,7 @@ class EhStageLayout @JvmOverloads constructor(
 
     override fun getBehavior(): Behavior = Behavior()
 
-    class Behavior : CoordinatorLayout.Behavior<EhStageLayout?>() {
+    class Behavior : CoordinatorLayout.Behavior<EhStageLayout>() {
         @SuppressLint("RestrictedApi")
         override fun layoutDependsOn(
             parent: CoordinatorLayout,
