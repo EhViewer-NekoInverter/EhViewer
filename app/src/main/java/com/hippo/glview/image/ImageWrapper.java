@@ -121,6 +121,13 @@ public class ImageWrapper {
     }
 
     /**
+     * @see Image#setFrameUpdateAllowed(boolean)
+     */
+    public void setFrameUpdateAllowed(boolean allowed) {
+        mImage.setFrameUpdateAllowed(allowed);
+    }
+
+    /**
      * @see Image#texImage(boolean, int, int, int, int)
      */
     public void texImage(boolean init, int offsetX, int offsetY, int width, int height) {

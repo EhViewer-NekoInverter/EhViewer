@@ -52,8 +52,11 @@ class Image private constructor(
     private var mCanvas: Canvas? = null
 
     val animated get() = image is DrawableImage && image.drawable is Animatable
+    val delay get() = if (animated) 40 else 0
+    val isOpaque get() = false
     val width get() = image.width
     val height get() = image.height
+    var frameUpdateAllowed = true
     var isRecycled = false
         private set
     var started = false
@@ -83,9 +86,12 @@ class Image private constructor(
     }
 
     private fun updateBitmap() {
-        prepareBitmap()
-        mCanvas!!.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-        image.draw(mCanvas!!)
+        if (frameUpdateAllowed) {
+            frameUpdateAllowed = false
+            prepareBitmap()
+            mCanvas!!.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+            image.draw(mCanvas!!)
+        }
     }
 
     fun texImage(init: Boolean, offsetX: Int, offsetY: Int, width: Int, height: Int) {
@@ -111,16 +117,6 @@ class Image private constructor(
             if (image is DrawableImage) (image.drawable as? Animatable)?.start()
         }
     }
-
-    val delay: Int
-        get() {
-            return if (animated) 20 else 0
-        }
-
-    val isOpaque: Boolean
-        get() {
-            return false
-        }
 
     companion object {
         private val appCtx = EhApplication.application

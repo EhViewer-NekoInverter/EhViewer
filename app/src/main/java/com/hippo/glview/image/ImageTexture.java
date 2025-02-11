@@ -29,7 +29,6 @@ import com.hippo.glview.glrenderer.NativeTexture;
 import com.hippo.glview.glrenderer.Texture;
 import com.hippo.glview.view.GLRoot;
 import com.hippo.yorozuya.thread.InfiniteThreadExecutor;
-import com.hippo.yorozuya.thread.PVLock;
 import com.hippo.yorozuya.thread.PriorityThreadFactory;
 
 import java.lang.annotation.Retention;
@@ -55,15 +54,13 @@ public class ImageTexture implements Texture, Animatable {
     // In this 16ms, we use about 4~8 ms to upload tiles.
     private static final long UPLOAD_TILE_LIMIT = 4; // ms
     private static final Executor sThreadExecutor;
-    private static final PVLock sPVLock;
     private static final Object sFreeTileLock = new Object();
     private static Tile sSmallFreeTileHead = null;
     private static Tile sLargeFreeTileHead = null;
 
     static {
-        sThreadExecutor = new InfiniteThreadExecutor(10 * 1000, new LinkedList<Runnable>(),
+        sThreadExecutor = new InfiniteThreadExecutor(10 * 1000, new LinkedList<>(),
                 new PriorityThreadFactory("ImageTexture$AnimateTask", Process.THREAD_PRIORITY_BACKGROUND));
-        sPVLock = new PVLock(3);
     }
 
     private final ImageWrapper mImage;
@@ -124,20 +121,18 @@ public class ImageTexture implements Texture, Animatable {
                     tile.offsetX = x;
                     tile.offsetY = y;
                     tile.image = image;
-                    tile.setSize(TILE_SMALL, Math.min(SMALL_CONTENT_SIZE, w), h);
+                    tile.setSize(TILE_SMALL, SMALL_CONTENT_SIZE, h);
                     tile.setOpaque(opaque);
                     list.add(tile);
 
                     int nextWidth = w - SMALL_CONTENT_SIZE;
-                    if (nextWidth > 0) {
-                        Tile nextTile = obtainSmallTile();
-                        nextTile.offsetX = x + SMALL_CONTENT_SIZE;
-                        nextTile.offsetY = y;
-                        nextTile.image = image;
-                        nextTile.setSize(TILE_SMALL, nextWidth, h);
-                        nextTile.setOpaque(opaque);
-                        list.add(nextTile);
-                    }
+                    Tile nextTile = obtainSmallTile();
+                    nextTile.offsetX = x + SMALL_CONTENT_SIZE;
+                    nextTile.offsetY = y;
+                    nextTile.image = image;
+                    nextTile.setSize(TILE_SMALL, nextWidth, h);
+                    nextTile.setOpaque(opaque);
+                    list.add(nextTile);
                 } else {
                     Tile tile = obtainLargeTile();
                     tile.offsetX = x;
@@ -150,7 +145,7 @@ public class ImageTexture implements Texture, Animatable {
             }
         }
 
-        mTiles = list.toArray(new Tile[list.size()]);
+        mTiles = list.toArray(new Tile[0]);
     }
 
     private static Tile obtainSmallTile() {
@@ -301,6 +296,7 @@ public class ImageTexture implements Texture, Animatable {
             for (Tile tile : mTiles) {
                 tile.invalidateContent();
             }
+            mImage.setFrameUpdateAllowed(true);
         }
     }
 
@@ -475,7 +471,7 @@ public class ImageTexture implements Texture, Animatable {
                 long dueTime = now + UPLOAD_TILE_LIMIT;
                 while (now < dueTime && !deque.isEmpty()) {
                     ImageTexture t = deque.peekFirst();
-                    if (t.uploadNextTile(canvas)) {
+                    if (t != null && t.uploadNextTile(canvas)) {
                         deque.removeFirst();
                         mGlRoot.requestRender();
                     }
