@@ -15,7 +15,6 @@
  */
 package com.hippo.ehviewer.client
 
-import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.client.data.AbstractGalleryInfo
 
 // E-Hentai Large Preview (v1 Cover): https://ehgt.org/**.jpg
@@ -26,7 +25,6 @@ import com.hippo.ehviewer.client.data.AbstractGalleryInfo
 // Large Preview (v2): https://*.hath.network/[timed token]/**.webp
 const val URL_PREFIX_THUMB_E = "https://ehgt.org/"
 const val URL_PREFIX_THUMB_EX = "https://s.exhentai.org/"
-const val URL_SIGNATURE_THUMB_NORMAL = ".hath.network/c"
 private const val URL_PREFIX_V1_THUMB_EX = URL_PREFIX_THUMB_EX + "t/"
 private const val URL_PREFIX_V1_THUMB_EX_OLD = "https://exhentai.org/t/"
 private val NormalPreviewKeyRegex = Regex("/(c[12m])/[^/]+/(\\d+-\\d+)")
@@ -50,7 +48,7 @@ val String.thumbUrl
             if (it.startsWith("https:")) {
                 it
             } else {
-                if (EhUtils.isExHentai && !Settings.forceEhThumb) {
+                if (EhUtils.isExHentai) {
                     if (it.endsWith("webp")) URL_PREFIX_THUMB_EX else URL_PREFIX_V1_THUMB_EX
                 } else {
                     URL_PREFIX_THUMB_E

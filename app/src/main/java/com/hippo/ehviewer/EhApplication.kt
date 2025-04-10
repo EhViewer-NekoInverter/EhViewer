@@ -31,6 +31,7 @@ import coil3.disk.DiskCache
 import coil3.gif.AnimatedImageDecoder
 import coil3.network.ConnectivityChecker
 import coil3.network.NetworkFetcher
+import coil3.network.okhttp.asNetworkClient
 import coil3.request.crossfade
 import coil3.serviceLoaderEnabled
 import coil3.util.DebugLogger
@@ -40,7 +41,6 @@ import com.hippo.ehviewer.client.EhTagDatabase
 import com.hippo.ehviewer.client.data.GalleryDetail
 import com.hippo.ehviewer.coil.DownloadThumbInterceptor
 import com.hippo.ehviewer.coil.MergeInterceptor
-import com.hippo.ehviewer.coil.limitConcurrency
 import com.hippo.ehviewer.dao.buildMainDB
 import com.hippo.ehviewer.download.DownloadManager
 import com.hippo.ehviewer.ui.EhActivity
@@ -204,7 +204,12 @@ class EhApplication :
     override fun newImageLoader(context: Context) = ImageLoader.Builder(context).apply {
         serviceLoaderEnabled(false)
         components {
-            add(NetworkFetcher.Factory({ nonCacheOkHttpClient.limitConcurrency() }) { ConnectivityChecker.ONLINE })
+            add(
+                NetworkFetcher.Factory(
+                    networkClient = { nonCacheOkHttpClient.asNetworkClient() },
+                    connectivityChecker = { ConnectivityChecker.ONLINE },
+                ),
+            )
             add(MergeInterceptor)
             add(DownloadThumbInterceptor)
             add(AnimatedImageDecoder.Factory(false))

@@ -28,8 +28,6 @@ import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.EhEngine
 import com.hippo.ehviewer.client.EhTagDatabase
-import com.hippo.ehviewer.client.EhUrl.SITE_EX
-import com.hippo.ehviewer.client.EhUtils.isExHentai
 import com.hippo.util.launchNonCancellable
 
 class EhFragment : BasePreferenceFragment() {
@@ -37,7 +35,6 @@ class EhFragment : BasePreferenceFragment() {
     private lateinit var listThumbSize: Preference
     private lateinit var thumbSize: Preference
     private lateinit var thumbShowTitle: Preference
-    private lateinit var forceEhThumb: Preference
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.eh_settings)
@@ -52,7 +49,6 @@ class EhFragment : BasePreferenceFragment() {
         listThumbSize = findPreference<Preference>(Settings.KEY_LIST_THUMB_SIZE)!!
         thumbSize = findPreference<Preference>(Settings.KEY_THUMB_SIZE)!!
         thumbShowTitle = findPreference<Preference>(Settings.KEY_THUMB_SHOW_TITLE)!!
-        forceEhThumb = findPreference<Preference>(Settings.KEY_FORCE_EH_THUMB)!!
 
         gallerySite!!.onPreferenceChangeListener = this
         theme!!.onPreferenceChangeListener = this
@@ -76,7 +72,6 @@ class EhFragment : BasePreferenceFragment() {
                 preferenceScreen.removePreference(preference!!)
             }
         }
-        showForceEhThumb(isExHentai)
         updateListPreference(Settings.listMode)
     }
 
@@ -90,7 +85,6 @@ class EhFragment : BasePreferenceFragment() {
                 EhApplication.application.recreateAllActivity()
             }
         } else if (Settings.KEY_GALLERY_SITE == key) {
-            showForceEhThumb((newValue as String).toInt() == SITE_EX)
             requireActivity().setResult(Activity.RESULT_OK)
             lifecycleScope.launchNonCancellable {
                 runCatching {
@@ -121,10 +115,6 @@ class EhFragment : BasePreferenceFragment() {
     @get:StringRes
     override val fragmentTitle: Int
         get() = R.string.settings_eh
-
-    private fun showForceEhThumb(newValue: Boolean) {
-        forceEhThumb.isVisible = newValue
-    }
 
     private fun updateListPreference(newValue: Int) {
         val isDetailMode = newValue == 0

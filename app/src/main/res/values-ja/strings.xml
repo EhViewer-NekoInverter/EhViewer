@@ -404,8 +404,6 @@
     <string name="settings_eh_list_tile_thumb_size">詳細モードのサムネイルのサイズ</string>
     <string name="settings_eh_thumb_size">サムネイルモードのサムネイルのサイズ</string>
     <string name="settings_eh_thumb_show_title">タイトル表示のサムネイルモード</string>
-    <string name="settings_eh_force_eh_thumb">E-Hentai サムネイルサーバーを使用する</string>
-    <string name="settings_eh_force_eh_thumb_summary">サムネイルの読み込みに問題がある場合は無効化してください</string>
     <string name="settings_eh_show_jpn_title">日本語のタイトルを表示</string>
     <string name="settings_eh_show_jpn_title_summary">E-Hentai ウェブサイトの設定で日本語のタイトルを有効化する必要があります</string>
     <string name="settings_eh_show_gallery_pages">ギャラリーページ数を表示</string>
