@@ -41,6 +41,7 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.webkit.MimeTypeMap
 import android.widget.CompoundButton
@@ -391,29 +392,17 @@ class GalleryActivity :
             }
             if (event.action == MotionEvent.ACTION_SCROLL) {
                 val scroll = event.getAxisValue(MotionEvent.AXIS_VSCROLL) * 300
-                if (scroll < 0.0f) {
-                    when (mLayoutMode) {
-                        GalleryView.LAYOUT_RIGHT_TO_LEFT -> {
-                            mGalleryView!!.pageLeft()
-                        }
-                        GalleryView.LAYOUT_LEFT_TO_RIGHT -> {
-                            mGalleryView!!.pageRight()
-                        }
-                        GalleryView.LAYOUT_TOP_TO_BOTTOM -> {
-                            mGalleryView!!.onScroll(0f, -scroll, 0f, -scroll, 0f, -scroll)
-                        }
+                val isNext = scroll < 0.0f
+
+                when (mLayoutMode) {
+                    GalleryView.LAYOUT_RIGHT_TO_LEFT -> {
+                        mGalleryView?.run { if (isNext) pageLeft() else pageRight() }
                     }
-                } else {
-                    when (mLayoutMode) {
-                        GalleryView.LAYOUT_RIGHT_TO_LEFT -> {
-                            mGalleryView!!.pageRight()
-                        }
-                        GalleryView.LAYOUT_LEFT_TO_RIGHT -> {
-                            mGalleryView!!.pageLeft()
-                        }
-                        GalleryView.LAYOUT_TOP_TO_BOTTOM -> {
-                            mGalleryView!!.onScroll(0f, -scroll, 0f, -scroll, 0f, -scroll)
-                        }
+                    GalleryView.LAYOUT_LEFT_TO_RIGHT -> {
+                        mGalleryView?.run { if (isNext) pageRight() else pageLeft() }
+                    }
+                    GalleryView.LAYOUT_TOP_TO_BOTTOM -> {
+                        mGalleryView?.onScroll(0f, -scroll, 0f, -scroll, 0f, -scroll)
                     }
                 }
             }
@@ -517,30 +506,44 @@ class GalleryActivity :
         updateSlider()
     }
 
+    private fun pageTurn(isPrevious: Boolean) {
+        val isRTL = mLayoutMode == GalleryView.LAYOUT_RIGHT_TO_LEFT
+        if (isPrevious xor isRTL) {
+            mGalleryView?.pageLeft()
+        } else {
+            mGalleryView?.pageRight()
+        }
+    }
+
     private fun autoTransfer() {
         if (mAutoTransferJob == null && mCurrentIndex + 1 != mSize) {
-            mAutoTransfer?.setImageResource(R.drawable.v_pause_x24)
-            mAutoTransferJob = lifecycleScope.launch {
-                repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                    repeat(Int.MAX_VALUE) {
-                        delay(mTurnPageIntervalVal * 1000L)
-                        if (mLayoutMode == GalleryView.LAYOUT_RIGHT_TO_LEFT) {
-                            mGalleryView!!.pageLeft()
-                        } else {
-                            mGalleryView!!.pageRight()
-                        }
-                    }
+            startAutoTransfer()
+        } else {
+            stopAutoTransfer()
+        }
+    }
+
+    private fun startAutoTransfer() {
+        mAutoTransfer?.setImageResource(R.drawable.v_pause_x24)
+        mAutoTransferJob = lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                while (true) {
+                    delay(mTurnPageIntervalVal * 1000L)
+                    pageTurn(false)
                 }
             }
-        } else if (mAutoTransferJob != null) {
-            mAutoTransfer?.setImageResource(R.drawable.v_play_x24)
-            if (mAutoTransferJob!!.isActive) mAutoTransferJob!!.cancel()
-            mAutoTransferJob = null
         }
+    }
+
+    private fun stopAutoTransfer() {
+        mAutoTransfer?.setImageResource(R.drawable.v_play_x24)
+        mAutoTransferJob?.cancel()
+        mAutoTransferJob = null
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        mAutoTransferJob?.cancel()
         mGLRootView = null
         mGalleryView = null
         if (mGalleryAdapter != null) {
@@ -577,71 +580,35 @@ class GalleryActivity :
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        var mKeyCode = keyCode
-        if (mGalleryView == null) {
-            return super.onKeyDown(mKeyCode, event)
-        }
+        mGalleryView ?: return super.onKeyDown(keyCode, event)
 
-        // Check volume
-        if (Settings.volumePage) {
-            if (Settings.reverseVolumePage) {
-                if (mKeyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-                    mKeyCode = KeyEvent.KEYCODE_VOLUME_DOWN
-                } else if (mKeyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-                    mKeyCode = KeyEvent.KEYCODE_VOLUME_UP
-                }
-            }
-            if (mKeyCode == KeyEvent.KEYCODE_VOLUME_UP) {
-                if (mLayoutMode == GalleryView.LAYOUT_RIGHT_TO_LEFT) {
-                    mGalleryView!!.pageRight()
+        return when (keyCode) {
+            KeyEvent.KEYCODE_VOLUME_UP, KeyEvent.KEYCODE_VOLUME_DOWN -> {
+                if (!Settings.volumePage) {
+                    false
                 } else {
-                    mGalleryView!!.pageLeft()
+                    val isPrevious = Settings.reverseVolumePage.xor(keyCode == KeyEvent.KEYCODE_VOLUME_UP)
+                    val shouldTurn = event.repeatCount % (Settings.volumePageInterval + 1) == 0
+
+                    if (shouldTurn) pageTurn(isPrevious)
+                    true
                 }
-                return true
-            } else if (mKeyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
-                if (mLayoutMode == GalleryView.LAYOUT_RIGHT_TO_LEFT) {
-                    mGalleryView!!.pageLeft()
-                } else {
-                    mGalleryView!!.pageRight()
-                }
-                return true
-            }
-        }
-        when (mKeyCode) {
-            KeyEvent.KEYCODE_PAGE_UP, KeyEvent.KEYCODE_DPAD_UP -> {
-                if (mLayoutMode == GalleryView.LAYOUT_RIGHT_TO_LEFT) {
-                    mGalleryView!!.pageRight()
-                } else {
-                    mGalleryView!!.pageLeft()
-                }
-                return true
             }
 
-            KeyEvent.KEYCODE_DPAD_LEFT -> {
-                mGalleryView!!.pageLeft()
-                return true
-            }
+            KeyEvent.KEYCODE_PAGE_UP, KeyEvent.KEYCODE_DPAD_UP -> pageTurn(true).let { true }
+            KeyEvent.KEYCODE_PAGE_DOWN, KeyEvent.KEYCODE_DPAD_DOWN -> pageTurn(false).let { true }
 
-            KeyEvent.KEYCODE_PAGE_DOWN, KeyEvent.KEYCODE_DPAD_DOWN -> {
-                if (mLayoutMode == GalleryView.LAYOUT_RIGHT_TO_LEFT) {
-                    mGalleryView!!.pageLeft()
-                } else {
-                    mGalleryView!!.pageRight()
-                }
-                return true
-            }
-
-            KeyEvent.KEYCODE_DPAD_RIGHT -> {
-                mGalleryView!!.pageRight()
-                return true
-            }
+            KeyEvent.KEYCODE_DPAD_LEFT -> mGalleryView!!.pageLeft().let { true }
+            KeyEvent.KEYCODE_DPAD_RIGHT -> mGalleryView!!.pageRight().let { true }
 
             KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_SPACE, KeyEvent.KEYCODE_MENU -> {
                 onTapMenuArea()
-                return true
+                true
             }
-        }
-        return super.onKeyDown(mKeyCode, event)
+
+            else -> false
+        } ||
+            super.onKeyDown(keyCode, event)
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
@@ -1109,6 +1076,7 @@ class GalleryActivity :
         private val mShowPageInterval: Switch = view.findViewById(R.id.show_page_interval)
         private val mTurnPageInterval: SeekBar = view.findViewById(R.id.turn_page_interval)
         private val mVolumePage: Switch = view.findViewById(R.id.volume_page)
+        private val mVolumePageInterval: SeekBar = view.findViewById(R.id.volume_page_interval)
         private val mReverseVolumePage: Switch = view.findViewById(R.id.reverse_volume_page)
         private val mReadingFullscreen: Switch = view.findViewById(R.id.reading_fullscreen)
         private val mCustomScreenLightness: Switch = view.findViewById(R.id.custom_screen_lightness)
@@ -1128,8 +1096,11 @@ class GalleryActivity :
             mTurnPageInterval.progress = Settings.turnPageInterval
             mVolumePage.isChecked = Settings.volumePage
             mVolumePage.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+                (mVolumePageInterval.parent as? ViewGroup)?.visibility = if (isChecked) View.VISIBLE else View.GONE
                 mReverseVolumePage.visibility = if (isChecked) View.VISIBLE else View.GONE
             }
+            (mVolumePageInterval.parent as? ViewGroup)?.visibility = if (Settings.volumePage) View.VISIBLE else View.GONE
+            mVolumePageInterval.progress = Settings.volumePageInterval
             mReverseVolumePage.visibility = if (Settings.volumePage) View.VISIBLE else View.GONE
             mReverseVolumePage.isChecked = Settings.reverseVolumePage
             mReadingFullscreen.isChecked = Settings.readingFullscreen
@@ -1158,6 +1129,7 @@ class GalleryActivity :
             val showPageInterval = mShowPageInterval.isChecked
             val turnPageInterval = mTurnPageInterval.progress
             val volumePage = mVolumePage.isChecked
+            val volumePageInterval = mVolumePageInterval.progress
             val reverseVolumePage = mReverseVolumePage.isChecked
             val readingFullscreen = mReadingFullscreen.isChecked
             val customScreenLightness = mCustomScreenLightness.isChecked
@@ -1176,6 +1148,7 @@ class GalleryActivity :
             Settings.putShowPageInterval(showPageInterval)
             Settings.putTurnPageInterval(turnPageInterval)
             Settings.putVolumePage(volumePage)
+            Settings.putVolumePageInterval(volumePageInterval)
             Settings.putReverseVolumePage(reverseVolumePage)
             Settings.putReadingFullscreen(readingFullscreen)
             Settings.putCustomScreenLightness(customScreenLightness)

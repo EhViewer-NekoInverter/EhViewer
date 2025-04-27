@@ -114,6 +114,8 @@ object Settings {
     private const val DEFAULT_TURN_PAGE_INTERVAL = 5
     private const val KEY_VOLUME_PAGE = "volume_page"
     private const val DEFAULT_VOLUME_PAGE = false
+    private const val KEY_VOLUME_PAGE_INTERVAL = "volume_page_interval"
+    private const val DEFAULT_VOLUME_PAGE_INTERVAL = 1
     private const val KEY_REVERSE_VOLUME_PAGE = "reserve_volume_page"
     private const val DEFAULT_REVERSE_VOLUME_PAGE = false
     private const val KEY_READING_FULLSCREEN = "reading_fullscreen"
@@ -517,6 +519,12 @@ object Settings {
         get() = getBoolean(KEY_VOLUME_PAGE, DEFAULT_VOLUME_PAGE)
     fun putVolumePage(value: Boolean) {
         putBoolean(KEY_VOLUME_PAGE, value)
+    }
+
+    val volumePageInterval: Int
+        get() = getInt(KEY_VOLUME_PAGE_INTERVAL, DEFAULT_VOLUME_PAGE_INTERVAL)
+    fun putVolumePageInterval(value: Int) {
+        putInt(KEY_VOLUME_PAGE_INTERVAL, value)
     }
 
     val reverseVolumePage: Boolean

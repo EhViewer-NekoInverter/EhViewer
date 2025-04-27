@@ -98,7 +98,7 @@
         android:max="15"
         android:title="@string/settings_read_turn_page_interval"
         app:iconSpaceReserved="false"
-        app:min="2"
+        app:min="1"
         app:showSeekBarValue="true" />
 
     <SwitchPreferenceCompat
@@ -106,6 +106,16 @@
         android:key="volume_page"
         android:title="@string/settings_read_volume_page"
         app:iconSpaceReserved="false" />
+
+    <SeekBarPreference
+        android:defaultValue="1"
+        android:dependency="volume_page"
+        android:key="volume_page_interval"
+        android:max="14"
+        android:title="@string/settings_read_volume_page_interval"
+        app:iconSpaceReserved="false"
+        app:min="0"
+        app:showSeekBarValue="true" />
 
     <SwitchPreferenceCompat
         android:defaultValue="false"

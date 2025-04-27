@@ -466,6 +466,7 @@
     <string name="settings_read_show_page_interval">显示页面间隔</string>
     <string name="settings_read_turn_page_interval">自动翻页间隔（秒）</string>
     <string name="settings_read_volume_page">使用音量键翻页</string>
+    <string name="settings_read_volume_page_interval">音量键翻页间隔</string>
     <string name="settings_read_reverse_volume">翻转音量键</string>
     <string name="settings_read_reading_fullscreen">全屏</string>
     <string name="settings_read_custom_screen_lightness">自定义屏幕亮度</string>
