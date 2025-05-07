@@ -1,4 +1,4 @@
-import java.io.ByteArrayOutputStream
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -13,9 +13,15 @@ plugins {
 }
 
 android {
-    compileSdk = 35
-    buildToolsVersion = "36.0.0"
-    ndkVersion = "28.0.13004108"
+    androidResources {
+        localeFilters += listOf(
+            "zh",
+            "zh-rCN",
+            "zh-rHK",
+            "zh-rTW",
+            "ja",
+        )
+    }
 
     splits {
         abi {
@@ -40,12 +46,10 @@ android {
     }
 
     val commitSha by lazy {
-        val stdout = ByteArrayOutputStream()
-        exec {
+        val stdout = providers.exec {
             commandLine = "git rev-parse --short=7 HEAD".split(' ')
-            standardOutput = stdout
-        }
-        stdout.toString().trim()
+        }.standardOutput
+        stdout.asText.get().trim()
     }
 
     val buildTime by lazy {
@@ -55,19 +59,8 @@ android {
 
     defaultConfig {
         applicationId = "org.moedog.ehviewer"
-        minSdk = 28
-        targetSdk = 35
         versionCode = 180010
         versionName = "1.8.9"
-        resourceConfigurations.addAll(
-            listOf(
-                "zh",
-                "zh-rCN",
-                "zh-rHK",
-                "zh-rTW",
-                "ja",
-            ),
-        )
         buildConfigField("String", "VERSION_CODE", "\"${defaultConfig.versionCode}\"")
         buildConfigField("String", "COMMIT_SHA", "\"$commitSha\"")
     }
@@ -81,22 +74,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
-    }
-
-    kotlinOptions {
-        jvmTarget = "21"
-        freeCompilerArgs = listOf(
-            // https://kotlinlang.org/docs/compiler-reference.html#progressive
-            "-progressive",
-            "-Xwhen-guards",
-
-            "-opt-in=coil3.annotation.ExperimentalCoilApi",
-            "-opt-in=kotlin.contracts.ExperimentalContracts",
-            "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-            "-opt-in=kotlinx.coroutines.FlowPreview",
-            "-opt-in=kotlinx.coroutines.InternalCoroutinesApi",
-            "-opt-in=kotlinx.serialization.ExperimentalSerializationApi",
-        )
     }
 
     lint {
@@ -183,6 +160,24 @@ dependencies {
     implementation(libs.kotlinx.serialization.cbor)
     implementation(libs.ktor.utils)
     implementation(libs.jsoup)
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_21
+        progressiveMode = true
+        optIn.addAll(
+            "coil3.annotation.ExperimentalCoilApi",
+            "kotlin.contracts.ExperimentalContracts",
+            "kotlinx.coroutines.ExperimentalCoroutinesApi",
+            "kotlinx.coroutines.FlowPreview",
+            "kotlinx.coroutines.InternalCoroutinesApi",
+            "kotlinx.serialization.ExperimentalSerializationApi",
+        )
+        freeCompilerArgs.addAll(
+            "-Xwhen-guards",
+        )
+    }
 }
 
 configurations.all {
