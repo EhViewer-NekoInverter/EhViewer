@@ -3,7 +3,6 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
-        maven("https://storage.googleapis.com/r8-releases/raw")
     }
 }
 
@@ -12,10 +11,19 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven("https://jcenter.bintray.com")
-        maven("https://jitpack.io")
-        maven("https://oss.sonatype.org/content/repositories/snapshots/")
     }
+}
+
+plugins {
+    id("com.android.settings") version "8.10.0"
+}
+
+android {
+    compileSdk = 36
+    minSdk = 28
+    targetSdk = 36
+    ndkVersion = "28.1.13356709"
+    buildToolsVersion = "36.0.0"
 }
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
