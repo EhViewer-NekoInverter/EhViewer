@@ -94,7 +94,7 @@ open class LoadImageView @JvmOverloads constructor(
         load(url) {
             // https://coil-kt.github.io/coil/recipes/#shared-element-transitions
             allowHardware(hardware)
-            data(url)
+            placeholderMemoryCacheKey(key)
             memoryCacheKey(key)
             diskCacheKey(key)
             size(Size.ORIGINAL)
