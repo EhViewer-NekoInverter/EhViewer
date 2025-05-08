@@ -3,6 +3,10 @@ import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
+val isRelease: Boolean
+    get() = gradle.startParameter.taskNames.any { it.contains("Release") }
+val supportedAbis = arrayOf("arm64-v8a", "x86_64", "armeabi-v7a")
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -12,8 +16,10 @@ plugins {
     alias(libs.plugins.spotless)
 }
 
+@Suppress("UnstableApiUsage")
 android {
     androidResources {
+        generateLocaleConfig = true
         localeFilters += listOf(
             "zh",
             "zh-rCN",
@@ -27,8 +33,8 @@ android {
         abi {
             isEnable = true
             reset()
-            if (gradle.startParameter.taskNames.any { it.contains("Release") }) {
-                include("arm64-v8a", "x86_64", "armeabi-v7a", "x86")
+            if (isRelease) {
+                include(*supportedAbis)
                 isUniversalApk = true
             } else {
                 include("arm64-v8a", "x86")
@@ -63,6 +69,12 @@ android {
         versionName = "1.8.9"
         buildConfigField("String", "VERSION_CODE", "\"${defaultConfig.versionCode}\"")
         buildConfigField("String", "COMMIT_SHA", "\"$commitSha\"")
+        ndk {
+            if (isRelease) {
+                abiFilters.addAll(supportedAbis)
+            }
+            debugSymbolLevel = "FULL"
+        }
     }
 
     externalNativeBuild {

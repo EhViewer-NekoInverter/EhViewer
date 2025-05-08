@@ -32,7 +32,7 @@ import java.net.URLDecoder
 
 @Parcelize
 data class ListUrlBuilder(
-    @get:Mode @Mode
+    @get:Mode @param:Mode
     var mode: Int = MODE_NORMAL,
     private var mPrev: String? = null,
     private var mNext: String? = null,

@@ -31,9 +31,9 @@ class MutexTracker(mutex: Mutex = Mutex(), private var count: Int = 0) : Mutex b
 
 object MutexPool : DefaultPool<MutexTracker>(capacity = 32) {
     override fun produceInstance() = MutexTracker()
-    override fun validateInstance(mutex: MutexTracker) {
-        check(!mutex.isLocked)
-        check(mutex.isFree)
+    override fun validateInstance(instance: MutexTracker) {
+        check(!instance.isLocked)
+        check(instance.isFree)
     }
 }
 
