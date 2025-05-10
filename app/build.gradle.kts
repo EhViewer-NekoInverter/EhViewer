@@ -19,7 +19,6 @@ plugins {
 @Suppress("UnstableApiUsage")
 android {
     androidResources {
-        generateLocaleConfig = true
         localeFilters += listOf(
             "zh",
             "zh-rCN",
