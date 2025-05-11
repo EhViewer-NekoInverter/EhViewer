@@ -33,7 +33,6 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -112,7 +111,6 @@ import com.hippo.ehviewer.widget.GalleryRatingBar
 import com.hippo.ehviewer.widget.GalleryRatingBar.OnUserRateListener
 import com.hippo.scene.Announcer
 import com.hippo.scene.TransitionHelper
-import com.hippo.text.URLImageGetter
 import com.hippo.util.AppHelper
 import com.hippo.util.ExceptionUtils
 import com.hippo.util.ReadableTime
@@ -121,6 +119,7 @@ import com.hippo.util.getParcelableCompat
 import com.hippo.util.isAtLeastQ
 import com.hippo.util.isAtLeastS
 import com.hippo.util.launchIO
+import com.hippo.util.loadHtml
 import com.hippo.util.withUIContext
 import com.hippo.view.ViewTransition
 import com.hippo.widget.AutoWrapLayout
@@ -925,12 +924,7 @@ class GalleryDetailScene :
             time.text = ReadableTime.getTimeAgo(comment.time)
             val c = v.findViewById<ObservedTextView>(R.id.comment)
             c.maxLines = 5
-            c.text = Html.fromHtml(
-                comment.comment,
-                Html.FROM_HTML_MODE_LEGACY,
-                URLImageGetter(c),
-                null,
-            )
+            c.text = loadHtml(comment.comment, c)
             v.setBackgroundColor(Color.TRANSPARENT)
         }
     }

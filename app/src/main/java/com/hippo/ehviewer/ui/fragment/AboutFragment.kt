@@ -16,20 +16,16 @@
 package com.hippo.ehviewer.ui.fragment
 
 import android.os.Bundle
-import android.text.Html
 import androidx.annotation.StringRes
 import androidx.preference.Preference
 import com.hippo.ehviewer.R
+import com.hippo.util.loadHtml
 
 class AboutFragment : BasePreferenceFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.about_settings)
         val author = findPreference<Preference>(KEY_AUTHOR)
-        author!!.summary =
-            Html.fromHtml(
-                getString(R.string.settings_about_author_summary).replace("$", "@"),
-                Html.FROM_HTML_MODE_LEGACY,
-            )
+        author!!.summary = loadHtml(getString(R.string.settings_about_author_summary).replace('$', '@'))
     }
 
     @get:StringRes

@@ -23,7 +23,6 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Looper
-import android.text.Html
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.TextUtils
@@ -75,12 +74,12 @@ import com.hippo.ehviewer.client.data.ListUrlBuilder
 import com.hippo.ehviewer.client.parser.VoteCommentParser
 import com.hippo.ehviewer.dao.Filter
 import com.hippo.ehviewer.ui.MainActivity
-import com.hippo.text.URLImageGetter
 import com.hippo.util.ExceptionUtils
 import com.hippo.util.ReadableTime
 import com.hippo.util.TextUrl
 import com.hippo.util.addTextToClipboard
 import com.hippo.util.getParcelableCompat
+import com.hippo.util.loadHtml
 import com.hippo.util.toBBCode
 import com.hippo.view.ViewTransition
 import com.hippo.widget.FabLayout
@@ -885,12 +884,7 @@ class GalleryCommentsScene :
             textView: ObservedTextView,
             comment: GalleryComment,
         ): CharSequence {
-            sp = Html.fromHtml(
-                comment.comment,
-                Html.FROM_HTML_MODE_LEGACY,
-                URLImageGetter(textView),
-                null,
-            )
+            sp = loadHtml(comment.comment, textView)
             val ssb = SpannableStringBuilder(sp)
             if (0L != comment.id && 0 != comment.score) {
                 val score = comment.score

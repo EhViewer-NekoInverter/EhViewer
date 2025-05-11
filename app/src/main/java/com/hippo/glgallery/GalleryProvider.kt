@@ -24,6 +24,7 @@ import com.hippo.glview.image.ImageWrapper
 import com.hippo.glview.view.GLRoot
 import com.hippo.glview.view.GLRoot.OnGLIdleListener
 import com.hippo.image.Image
+import com.hippo.util.isAtLeastO
 import com.hippo.yorozuya.ConcurrentPool
 import com.hippo.yorozuya.MathUtils
 import com.hippo.yorozuya.OSUtils
@@ -31,7 +32,11 @@ import com.hippo.yorozuya.OSUtils
 abstract class GalleryProvider {
     private val mNotifyTaskPool = ConcurrentPool<NotifyTask>(5)
     private val mImageCache = lruCache<Int, ImageWrapper>(
-        maxSize = (OSUtils.getTotalMemory() / 12).toInt().coerceIn(MIN_CACHE_SIZE, MAX_CACHE_SIZE),
+        maxSize = if (isAtLeastO) {
+            (OSUtils.getTotalMemory() / 12).toInt().coerceIn(MIN_CACHE_SIZE, MAX_CACHE_SIZE)
+        } else {
+            (OSUtils.getAppMaxMemory() / 3 * 2).toInt()
+        },
         sizeOf = { _, v -> v.width * v.height * if (v.animated) 20 else 4 },
         onEntryRemoved = { _, _, o, _ -> o.release() },
     )

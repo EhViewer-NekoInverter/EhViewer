@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Tarsin Norbin
+ * Copyright 2024 Moedog
  *
  * This file is part of EhViewer
  *
@@ -15,23 +15,22 @@
  * You should have received a copy of the GNU General Public License along with EhViewer.
  * If not, see <https://www.gnu.org/licenses/>.
  */
-package com.hippo.yorozuya
+package com.hippo.util
 
-import com.hippo.util.isAtLeastN
-import okhttp3.ResponseBody
-import okio.buffer
-import okio.sink
-import java.io.File
+import android.text.Html
+import com.hippo.text.URLImageGetter
+import com.hippo.widget.ObservedTextView
 
-fun ResponseBody.copyToFile(file: File) {
-    file.outputStream().use { os ->
-        source().use {
-            // Prior to the adoption of OpenJDK, transferFrom will call ByteBuffer.allocate((int) count)
-            if (isAtLeastN) {
-                os.channel.transferFrom(it, 0, Long.MAX_VALUE)
-            } else {
-                os.sink().buffer().use { it.writeAll(source()) }
-            }
-        }
-    }
+@Suppress("DEPRECATION")
+fun loadHtml(source: String) = if (isAtLeastN) {
+    Html.fromHtml(source, Html.FROM_HTML_MODE_LEGACY)
+} else {
+    Html.fromHtml(source)
+}
+
+@Suppress("DEPRECATION")
+fun loadHtml(source: String?, textView: ObservedTextView) = if (isAtLeastN) {
+    Html.fromHtml(source, Html.FROM_HTML_MODE_LEGACY, URLImageGetter(textView), null)
+} else {
+    Html.fromHtml(source, URLImageGetter(textView), null)
 }

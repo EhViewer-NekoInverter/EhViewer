@@ -87,6 +87,7 @@ import com.hippo.unifile.UniFile
 import com.hippo.util.ExceptionUtils
 import com.hippo.util.getParcelableCompat
 import com.hippo.util.getParcelableExtraCompat
+import com.hippo.util.isAtLeastP
 import com.hippo.util.isAtLeastQ
 import com.hippo.util.launchIO
 import com.hippo.util.sendTo
@@ -426,8 +427,10 @@ class GalleryActivity :
         insetsController!!.isAppearanceLightStatusBars = !night
 
         // Cutout
-        window.attributes.layoutInDisplayCutoutMode =
-            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        if (isAtLeastP) {
+            window.attributes.layoutInDisplayCutoutMode =
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        }
         val galleryHeader = findViewById<GalleryHeader>(R.id.gallery_header)
         ViewCompat.setOnApplyWindowInsetsListener(galleryHeader) { _: View?, insets: WindowInsetsCompat ->
             if (!Settings.readingFullscreen) {

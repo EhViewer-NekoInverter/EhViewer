@@ -60,10 +60,10 @@ If you prefer Material Design 3, consider using [EhViewer-Overhauled](https://gi
 
 # Download
 
-| Flavor      | Minimum Android Version | Notes                                                |
-|-------------|-------------------------|------------------------------------------------------|
-| Default     | 9.0                     | Full support                                         |
-| Marshmallow | 6.0                     | No support for animated WebP, no CI version provided |
+| Android Version | Notes                        |
+|-----------------|------------------------------|
+| 6.0-8.1         | No support for animated WebP |
+| 9.0+            | Full support                 |
 
 <em>* Devices running Android 6 require the [ISRG Root X1](https://letsencrypt.org/certs/isrgrootx1.pem) certificate to be installed</em>
 
@@ -103,7 +103,7 @@ Translators
 
     Copyright 2014-2019 Hippo Seven
     Copyright 2020-2022 NekoInverter
-    Copyright 2022-2024 Moedog
+    Copyright 2022-2025 Moedog
 
     EhViewer is free software:
     you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,

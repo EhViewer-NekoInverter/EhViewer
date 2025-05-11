@@ -18,7 +18,6 @@ package com.hippo.ehviewer
 import android.app.Activity
 import android.content.Context
 import android.os.StrictMode
-import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.TextView
@@ -29,6 +28,7 @@ import coil3.ImageLoader
 import coil3.SingletonImageLoader
 import coil3.disk.DiskCache
 import coil3.gif.AnimatedImageDecoder
+import coil3.gif.GifDecoder
 import coil3.network.ConnectivityChecker
 import coil3.network.NetworkFetcher
 import coil3.network.okhttp.asNetworkClient
@@ -47,7 +47,9 @@ import com.hippo.ehviewer.ui.EhActivity
 import com.hippo.ehviewer.ui.keepNoMediaFileStatus
 import com.hippo.scene.SceneApplication
 import com.hippo.util.ReadableTime
+import com.hippo.util.isAtLeastP
 import com.hippo.util.launchIO
+import com.hippo.util.loadHtml
 import com.hippo.yorozuya.FileUtils
 import com.hippo.yorozuya.IntIdGenerator
 import eu.kanade.tachiyomi.network.interceptor.CloudflareInterceptor
@@ -150,7 +152,7 @@ class EhApplication :
         val activity = topActivity
         activity?.runOnUiThread {
             val dialog = AlertDialog.Builder(activity)
-                .setMessage(Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY))
+                .setMessage(loadHtml(html))
                 .setPositiveButton(android.R.string.ok, null)
                 .create()
             dialog.setOnShowListener {
@@ -204,6 +206,11 @@ class EhApplication :
     override fun newImageLoader(context: Context) = ImageLoader.Builder(context).apply {
         serviceLoaderEnabled(false)
         components {
+            if (isAtLeastP) {
+                add(AnimatedImageDecoder.Factory(false))
+            } else {
+                add(GifDecoder.Factory())
+            }
             add(
                 NetworkFetcher.Factory(
                     networkClient = { nonCacheOkHttpClient.asNetworkClient() },
@@ -212,7 +219,6 @@ class EhApplication :
             )
             add(MergeInterceptor)
             add(DownloadThumbInterceptor)
-            add(AnimatedImageDecoder.Factory(false))
         }
         crossfade(300)
         diskCache(thumbCache)

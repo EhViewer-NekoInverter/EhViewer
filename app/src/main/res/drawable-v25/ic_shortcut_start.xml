@@ -16,12 +16,17 @@
   ~ If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<network-security-config>
-    <base-config>
-        <trust-anchors>
-            <certificates src="@raw/isrgrootx1"/>
-            <certificates src="system"/>
-            <certificates src="user"/>
-        </trust-anchors>
-    </base-config>
-</network-security-config>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillAlpha="1"
+        android:fillColor="@color/shortcut_bg"
+        android:pathData="M46,24A22,22 0,0 1,24 46,22 22,0 0,1 2,24 22,22 0,0 1,24 2,22 22,0 0,1 46,24Z" />
+    <path
+        android:fillAlpha="1"
+        android:fillColor="@color/colorPrimary"
+        android:pathData="M20,17V31L31,24Z" />
+</vector>

@@ -60,10 +60,10 @@
 
 # 下载
 
-| 变种          | 最低 Android 版本 | 备注                  |
-|-------------|---------------|---------------------|
-| Default     | 9.0           | 完整支持                |
-| Marshmallow | 6.0           | 不支持动画 WebP，不提供 CI 版 |
+| Android 版本 | 备注         |
+|------------|------------|
+| 6.0-8.1    | 不支持动画 WebP |
+| 9.0+       | 完整支持       |
 
 <em>* 运行 Android 6 的设备需要安装 [ISRG Root X1](https://letsencrypt.org/certs/isrgrootx1.pem) 证书</em>
 
@@ -103,7 +103,7 @@
 
     Copyright 2014-2019 Hippo Seven
     Copyright 2020-2022 NekoInverter
-    Copyright 2022-2024 Moedog
+    Copyright 2022-2025 Moedog
 
     EhViewer is free software:
     you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation,

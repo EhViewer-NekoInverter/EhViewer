@@ -39,7 +39,6 @@ import okio.buffer
 import okio.sink
 import java.io.IOException
 import java.util.Locale
-import kotlin.io.path.readText
 import com.hippo.ehviewer.EhApplication.Companion.imageCache as sCache
 
 class SpiderDen(private val mGalleryInfo: GalleryInfo) {
@@ -256,7 +255,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
 
     fun getExtension(index: Int): String? {
         val key = getImageKey(mGid, index)
-        return sCache.openSnapshot(key)?.use { it.metadata.toNioPath().readText() }
+        return sCache.openSnapshot(key)?.use { it.metadata.toFile().readText() }
             ?: downloadDir?.let { findImageFile(it, index) }
                 ?.name.let { FileUtils.getExtensionFromFilename(it) }
     }

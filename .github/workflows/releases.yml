@@ -27,21 +27,21 @@ jobs:
 
       - name: Rename Apks
         run: |
-          mv app/build/outputs/apk/release/app-universal-release.apk EhViewer-default-${{ github.ref_name }}-universal.apk
-          mv app/build/outputs/apk/release/app-arm64-v8a-release.apk EhViewer-default-${{ github.ref_name }}-arm64-v8a.apk
-          mv app/build/outputs/apk/release/app-armeabi-v7a-release.apk EhViewer-default-${{ github.ref_name }}-armeabi-v7a.apk
-          mv app/build/outputs/apk/release/app-x86_64-release.apk EhViewer-default-${{ github.ref_name }}-x86_64.apk
-          mv app/build/outputs/mapping/release/mapping.txt EhViewer-default-${{ github.ref_name }}-mapping.txt
-          mv app/build/outputs/native-debug-symbols/release/native-debug-symbols.zip EhViewer-default-${{ github.ref_name }}-native-debug-symbols.zip
+          mv app/build/outputs/apk/release/app-universal-release.apk EhViewer-${{ github.ref_name }}-universal.apk
+          mv app/build/outputs/apk/release/app-arm64-v8a-release.apk EhViewer-${{ github.ref_name }}-arm64-v8a.apk
+          mv app/build/outputs/apk/release/app-armeabi-v7a-release.apk EhViewer-${{ github.ref_name }}-armeabi-v7a.apk
+          mv app/build/outputs/apk/release/app-x86_64-release.apk EhViewer-${{ github.ref_name }}-x86_64.apk
+          mv app/build/outputs/mapping/release/mapping.txt EhViewer-${{ github.ref_name }}-mapping.txt
+          mv app/build/outputs/native-debug-symbols/release/native-debug-symbols.zip EhViewer-${{ github.ref_name }}-native-debug-symbols.zip
 
       - name: Releases
         uses: softprops/action-gh-release@v2
         with:
           body: Bump Version
           files: |
-            EhViewer-default-${{ github.ref_name }}-universal.apk
-            EhViewer-default-${{ github.ref_name }}-arm64-v8a.apk
-            EhViewer-default-${{ github.ref_name }}-armeabi-v7a.apk
-            EhViewer-default-${{ github.ref_name }}-x86_64.apk
-            EhViewer-default-${{ github.ref_name }}-mapping.txt
-            EhViewer-default-${{ github.ref_name }}-native-debug-symbols.zip
+            EhViewer-${{ github.ref_name }}-universal.apk
+            EhViewer-${{ github.ref_name }}-arm64-v8a.apk
+            EhViewer-${{ github.ref_name }}-armeabi-v7a.apk
+            EhViewer-${{ github.ref_name }}-x86_64.apk
+            EhViewer-${{ github.ref_name }}-mapping.txt
+            EhViewer-${{ github.ref_name }}-native-debug-symbols.zip
