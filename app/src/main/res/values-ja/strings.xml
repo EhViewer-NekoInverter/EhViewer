@@ -155,7 +155,7 @@
     <string name="search_sp_err0">ページ範囲の最大値を 1000 以下にすることはできません</string>
     <string name="search_sp_err1">ページ範囲の最大値を 10 以下にすることはできません</string>
     <string name="search_sp_err2">ページ範囲が狭すぎます</string>
-    <string name="search_sp_err3">ページ範囲の比率を 0.8 以上にすることはできません</string>
+    <string name="search_sp_err3">ページ範囲の比率を 0.5 以上にすることはできません</string>
     <string name="search_sf">デフォルトのフィルターで無効:</string>
     <string name="search_sfl">言語</string>
     <string name="search_sfu">アップローダー</string>

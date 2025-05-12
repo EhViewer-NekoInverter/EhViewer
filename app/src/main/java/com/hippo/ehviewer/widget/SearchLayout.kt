@@ -241,7 +241,7 @@ class SearchLayout @JvmOverloads constructor(
                         throw EhException(getString(R.string.search_sp_err1))
                     } else if (pageFrom != -1 && pageTo != -1 && pageTo - pageFrom < 20) {
                         throw EhException(getString(R.string.search_sp_err2))
-                    } else if (pageFrom != -1 && pageTo != -1 && pageFrom.toFloat() / pageTo > 0.8) {
+                    } else if (pageFrom != -1 && pageTo != -1 && pageFrom.toFloat() / pageTo > 0.5) {
                         throw EhException(getString(R.string.search_sp_err3))
                     }
                     urlBuilder.pageFrom = pageFrom
