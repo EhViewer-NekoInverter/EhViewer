@@ -114,7 +114,6 @@
         android:max="14"
         android:title="@string/settings_read_volume_page_interval"
         app:iconSpaceReserved="false"
-        app:min="0"
         app:showSeekBarValue="true" />
 
     <SwitchPreferenceCompat

@@ -195,8 +195,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="5"
-                android:max="15"
-                android:min="1" />
+                android:max="14" />
 
         </LinearLayout>
 
@@ -225,8 +224,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="5"
-                android:max="14"
-                android:min="0" />
+                android:max="14" />
 
         </LinearLayout>
 

@@ -531,7 +531,7 @@ class GalleryActivity :
         mAutoTransferJob = lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 while (true) {
-                    delay(mTurnPageIntervalVal * 1000L)
+                    delay(mTurnPageIntervalVal.coerceAtLeast(1) * 1000L)
                     pageTurn(false)
                 }
             }
@@ -1096,7 +1096,7 @@ class GalleryActivity :
             mShowProgress.isChecked = Settings.showProgress
             mShowBattery.isChecked = Settings.showBattery
             mShowPageInterval.isChecked = Settings.showPageInterval
-            mTurnPageInterval.progress = Settings.turnPageInterval
+            mTurnPageInterval.progress = Settings.turnPageInterval - 1
             mVolumePage.isChecked = Settings.volumePage
             mVolumePage.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
                 (mVolumePageInterval.parent as? ViewGroup)?.visibility = if (isChecked) View.VISIBLE else View.GONE
@@ -1130,7 +1130,7 @@ class GalleryActivity :
             val showProgress = mShowProgress.isChecked
             val showBattery = mShowBattery.isChecked
             val showPageInterval = mShowPageInterval.isChecked
-            val turnPageInterval = mTurnPageInterval.progress
+            val turnPageInterval = mTurnPageInterval.progress + 1
             val volumePage = mVolumePage.isChecked
             val volumePageInterval = mVolumePageInterval.progress
             val reverseVolumePage = mReverseVolumePage.isChecked
