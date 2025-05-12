@@ -157,6 +157,7 @@ dependencies {
     // https://square.github.io/okhttp/changelogs/changelog/
     implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp.coroutines)
+    implementation(libs.okhttp.tls)
 
     implementation(libs.okio.jvm)
 

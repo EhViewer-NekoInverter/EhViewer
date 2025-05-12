@@ -56,8 +56,11 @@ import eu.kanade.tachiyomi.network.interceptor.CloudflareInterceptor
 import kotlinx.coroutines.DelicateCoroutinesApi
 import okhttp3.Cache
 import okhttp3.OkHttpClient
+import okhttp3.tls.HandshakeCertificates
 import okio.FileSystem
 import okio.Path.Companion.toOkioPath
+import java.security.cert.CertificateFactory
+import java.security.cert.X509Certificate
 
 class EhApplication :
     SceneApplication(),
@@ -236,9 +239,18 @@ class EhApplication :
         val ehProxySelector by lazy { EhProxySelector() }
 
         val nonCacheOkHttpClient by lazy {
+            val cf = CertificateFactory.getInstance("X.509")
+            val cert = application.resources.openRawResource(R.raw.isrgrootx1).use {
+                cf.generateCertificates(it).first() as X509Certificate
+            }
+            val certs = HandshakeCertificates.Builder()
+                .addPlatformTrustedCertificates()
+                .addTrustedCertificate(cert)
+                .build()
             OkHttpClient.Builder().apply {
                 cookieJar(EhCookieStore)
                 proxySelector(ehProxySelector)
+                sslSocketFactory(certs.sslSocketFactory(), certs.trustManager)
                 addInterceptor(CloudflareInterceptor(application))
             }.build()
         }
