@@ -46,8 +46,8 @@ public class AutoStaggeredGridLayoutManager extends StaggeredGridLayoutManager {
             return 1;
         }
         int span2 = span + 1;
-        float deviation = Math.abs(1 - (total / span / (float) single));
-        float deviation2 = Math.abs(1 - (total / span2 / (float) single));
+        float deviation = Math.abs(1 - ((float) total / span / (float) single));
+        float deviation2 = Math.abs(1 - ((float) total / span2 / (float) single));
         return deviation < deviation2 ? span : span2;
     }
 
@@ -88,14 +88,10 @@ public class AutoStaggeredGridLayoutManager extends StaggeredGridLayoutManager {
             }
 
             int spanCount;
-            switch (mStrategy) {
-                default:
-                case STRATEGY_MIN_SIZE:
-                    spanCount = getSpanCountForMinSize(totalSpace, mColumnSize);
-                    break;
-                case STRATEGY_SUITABLE_SIZE:
-                    spanCount = getSpanCountForSuitableSize(totalSpace, mColumnSize);
-                    break;
+            if (mStrategy == STRATEGY_SUITABLE_SIZE) {
+                spanCount = getSpanCountForSuitableSize(totalSpace, mColumnSize);
+            } else {
+                spanCount = getSpanCountForMinSize(totalSpace, mColumnSize);
             }
             setSpanCount(spanCount);
             mColumnSizeChanged = false;

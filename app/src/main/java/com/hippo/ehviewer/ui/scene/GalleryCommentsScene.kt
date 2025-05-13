@@ -51,6 +51,7 @@ import androidx.core.text.inSpans
 import androidx.core.text.set
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsAnimationCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -692,7 +693,7 @@ class GalleryCommentsScene :
         if (mInAnimation) {
             return
         }
-        if (null != mEditPanel && mEditPanel!!.visibility == View.VISIBLE) {
+        if (null != mEditPanel && mEditPanel!!.isVisible) {
             hideEditPanel()
         } else {
             finish()

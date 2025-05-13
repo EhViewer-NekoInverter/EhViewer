@@ -65,7 +65,6 @@ If you prefer Material Design 3, consider using [EhViewer-Overhauled](https://gi
 | 6.0-8.1         | No support for animated WebP |
 | 9.0+            | Full support                 |
 
-
 - Please go to **[GitHub Releases](https://github.com/EhViewer-NekoInverter/EhViewer/releases)** to download the release version
 
 - If the release version has unresolved issues, go to **[GitHub Actions](https://github.com/EhViewer-NekoInverter/EhViewer/actions/workflows/ci.yml?query=branch%3Amaster)** to download the CI version (GitHub account login required)

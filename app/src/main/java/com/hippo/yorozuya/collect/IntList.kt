@@ -18,10 +18,21 @@ package com.hippo.yorozuya.collect
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
+@Suppress("JavaDefaultMethodsNotOverriddenByDelegation")
 @Parcelize
 class IntList @JvmOverloads constructor(
     private val delegate: MutableList<Int> = mutableListOf(),
-) : Parcelable,
-    MutableList<Int> by delegate {
+) : Parcelable, MutableList<Int> by delegate {
+    override val size: Int
+        get() = delegate.size
+
+    override fun isEmpty(): Boolean = delegate.isEmpty()
+
+    override fun clear() = delegate.clear()
+
+    override fun add(element: Int): Boolean = delegate.add(element)
+
+    override fun removeAt(index: Int): Int = delegate.removeAt(index)
+
     fun getInternalArray(): IntArray = delegate.toIntArray()
 }

@@ -44,24 +44,24 @@ public final class MathUtils {
     }
 
     public static float max(float a, float b) {
-        return a > b ? a : b;
+        return Math.max(a, b);
     }
 
     public static float max(int a, int b) {
-        return a > b ? a : b;
+        return Math.max(a, b);
     }
 
     public static float max(float a, float b, float c) {
-        return a > b ? (a > c ? a : c) : (b > c ? b : c);
+        return a > b ? Math.max(a, c) : Math.max(b, c);
     }
 
     public static float max(int a, int b, int c) {
-        return a > b ? (a > c ? a : c) : (b > c ? b : c);
+        return a > b ? Math.max(a, c) : Math.max(b, c);
     }
 
     public static float max(float... arg) {
         int length = arg.length;
-        if (length <= 0) {
+        if (length == 0) {
             throw new IllegalArgumentException("Empty argument");
         } else {
             float n = arg[0];
@@ -77,7 +77,7 @@ public final class MathUtils {
 
     public static int max(int... arg) {
         int length = arg.length;
-        if (length <= 0) {
+        if (length == 0) {
             throw new IllegalArgumentException("Empty argument");
         } else {
             int n = arg[0];
@@ -92,24 +92,24 @@ public final class MathUtils {
     }
 
     public static float min(float a, float b) {
-        return a < b ? a : b;
+        return Math.min(a, b);
     }
 
     public static float min(int a, int b) {
-        return a < b ? a : b;
+        return Math.min(a, b);
     }
 
     public static float min(float a, float b, float c) {
-        return a < b ? (a < c ? a : c) : (b < c ? b : c);
+        return a < b ? Math.min(a, c) : Math.min(b, c);
     }
 
     public static float min(int a, int b, int c) {
-        return a < b ? (a < c ? a : c) : (b < c ? b : c);
+        return a < b ? Math.min(a, c) : Math.min(b, c);
     }
 
     public static float min(float... args) {
         int length = args.length;
-        if (length <= 0) {
+        if (length == 0) {
             throw new IllegalArgumentException("Empty argument");
         } else {
             float n = args[0];
@@ -125,7 +125,7 @@ public final class MathUtils {
 
     public static int min(int... args) {
         int length = args.length;
-        if (length <= 0) {
+        if (length == 0) {
             throw new IllegalArgumentException("Empty argument");
         } else {
             int n = args[0];
@@ -241,8 +241,7 @@ public final class MathUtils {
      */
     public static int clamp(int x, int min, int max) {
         if (x > max) return max;
-        if (x < min) return min;
-        return x;
+        return Math.max(x, min);
     }
 
     /**
@@ -250,8 +249,7 @@ public final class MathUtils {
      */
     public static float clamp(float x, float min, float max) {
         if (x > max) return max;
-        if (x < min) return min;
-        return x;
+        return Math.max(x, min);
     }
 
     /**
@@ -259,8 +257,7 @@ public final class MathUtils {
      */
     public static long clamp(long x, long min, long max) {
         if (x > max) return max;
-        if (x < min) return min;
-        return x;
+        return Math.max(x, min);
     }
 
     /**

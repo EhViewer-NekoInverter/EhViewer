@@ -32,6 +32,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.content.withStyledAttributes
 import androidx.preference.Preference
 import com.hippo.ehviewer.R
 
@@ -67,19 +68,19 @@ abstract class DialogPreference(
     private var mWhichButtonClicked = 0
 
     init {
-        val a = context.obtainStyledAttributes(attrs, R.styleable.DialogPreference, 0, 0)
-        mDialogTitle = a.getString(R.styleable.DialogPreference_dialogTitle)
-        if (mDialogTitle == null) {
-            // Fallback on the regular title of the preference
-            // (the one that is seen in the list)
-            mDialogTitle = title
+        context.withStyledAttributes(attrs, R.styleable.DialogPreference, 0, 0) {
+            mDialogTitle = getString(R.styleable.DialogPreference_dialogTitle)
+            if (mDialogTitle == null) {
+                // Fallback on the regular title of the preference
+                // (the one that is seen in the list)
+                mDialogTitle = title
+            }
+            mDialogIcon = getDrawable(R.styleable.DialogPreference_dialogIcon)
+            mPositiveButtonText = getString(R.styleable.DialogPreference_positiveButtonText)
+            mNegativeButtonText = getString(R.styleable.DialogPreference_negativeButtonText)
+            mDialogLayoutResId =
+                getResourceId(R.styleable.DialogPreference_dialogLayout, mDialogLayoutResId)
         }
-        mDialogIcon = a.getDrawable(R.styleable.DialogPreference_dialogIcon)
-        mPositiveButtonText = a.getString(R.styleable.DialogPreference_positiveButtonText)
-        mNegativeButtonText = a.getString(R.styleable.DialogPreference_negativeButtonText)
-        mDialogLayoutResId =
-            a.getResourceId(R.styleable.DialogPreference_dialogLayout, mDialogLayoutResId)
-        a.recycle()
     }
 
     var dialogTitle: CharSequence?

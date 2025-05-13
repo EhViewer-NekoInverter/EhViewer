@@ -56,10 +56,14 @@ public class SimpleGridLayout extends ViewGroup {
     }
 
     private void init(Context context, AttributeSet attrs) {
+        //noinspection resource
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SimpleGridLayout);
-        mColumnCount = a.getInteger(R.styleable.SimpleGridLayout_columnCount, DEFAULT_COLUMN_COUNT);
-        mItemMargin = a.getDimensionPixelOffset(R.styleable.SimpleGridLayout_itemMargin, 0);
-        a.recycle();
+        try {
+            mColumnCount = a.getInteger(R.styleable.SimpleGridLayout_columnCount, DEFAULT_COLUMN_COUNT);
+            mItemMargin = a.getDimensionPixelOffset(R.styleable.SimpleGridLayout_itemMargin, 0);
+        } finally {
+            a.recycle();
+        }
     }
 
     public void setItemMargin(int itemMargin) {

@@ -18,9 +18,9 @@ package com.hippo.ehviewer.client.data
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
+@Suppress("JavaDefaultMethodsNotOverriddenByDelegation")
 @Parcelize
 class GalleryTagGroup(
     private val mTagList: ArrayList<String> = arrayListOf(),
     var groupName: String? = null,
-) : Parcelable,
-    MutableList<String> by mTagList
+) : Parcelable, MutableList<String> by mTagList

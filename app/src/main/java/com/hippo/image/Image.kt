@@ -22,6 +22,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.Animatable
+import androidx.core.graphics.createBitmap
 import coil3.BitmapImage
 import coil3.DrawableImage
 import coil3.asImage
@@ -81,7 +82,7 @@ class Image private constructor(
 
     private fun prepareBitmap() {
         if (mBitmap != null) return
-        mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        mBitmap = createBitmap(width, height)
         mCanvas = Canvas(mBitmap!!)
     }
 

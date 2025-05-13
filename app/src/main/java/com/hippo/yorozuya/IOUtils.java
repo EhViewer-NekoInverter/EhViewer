@@ -53,7 +53,7 @@ public final class IOUtils {
      * @param input  the InputStream
      * @param output the OutputStream
      * @return the number of bytes copied
-     * @throws IOException
+     * @throws IOException the exception
      */
     public static long copy(InputStream input, OutputStream output)
             throws IOException {

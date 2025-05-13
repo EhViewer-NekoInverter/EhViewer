@@ -228,18 +228,17 @@
         <item>zh-TW</item>
     </string-array>
 
-    <string-array name="tag_translation_metadata" tools:ignore="InconsistentArrays">
+    <string-array name="tag_translation_metadata">
         <item>tag-translations-zh-rCN.json.sha1</item>
         <item>https://raw.githubusercontent.com/EhViewer-NekoInverter/EhTagTranslation/tag-translations/tag-translations/tag-translations-zh-rCN.json.sha1</item>
         <item>tag-translations-zh-rCN.json</item>
         <item>https://raw.githubusercontent.com/EhViewer-NekoInverter/EhTagTranslation/tag-translations/tag-translations/tag-translations-zh-rCN.json</item>
     </string-array>
 
-    <string-array name="proxy_types">
+    <string-array name="proxy_types" tools:ignore="InconsistentArrays">
         <item>@string/proxy_direct</item>
         <item>@string/proxy_system</item>
         <item>HTTP</item>
-        <item>SOCKS</item>
     </string-array>
 
     <string-array name="night_mode_entries" translatable="false">

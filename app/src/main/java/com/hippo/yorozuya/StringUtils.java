@@ -27,8 +27,8 @@ import java.util.List;
 public final class StringUtils {
     public static final String[] EMPTY_STRING_ARRAY = new String[0];
     public static final char[] WHITE_SPACE_ARRAY = {
-            '\u0009', // TAB
-            '\u0020', // SPACE
+            '\t', // TAB
+            ' ', // SPACE
             '\u00A0', // NO-BREAK SPACE
             '\u3000', // IDEOGRAPHIC SPACE
     };
@@ -109,8 +109,8 @@ public final class StringUtils {
         }
         final int replLength = searchString.length();
         int increase = replacement.length() - replLength;
-        increase = increase < 0 ? 0 : increase;
-        increase *= max < 0 ? 16 : max > 64 ? 64 : max;
+        increase = Math.max(increase, 0);
+        increase *= max < 0 ? 16 : Math.min(max, 64);
         final StringBuilder buf = new StringBuilder(text.length() + increase);
         while (end >= 0) {
             buf.append(text.substring(start, end)).append(replacement);
@@ -125,8 +125,8 @@ public final class StringUtils {
     }
 
     public static boolean endsWith(String string, String[] suffixs) {
-        for (int i = 0, n = suffixs.length; i < n; i++) {
-            if (string.endsWith(suffixs[i])) {
+        for (String suffix : suffixs) {
+            if (string.endsWith(suffix)) {
                 return true;
             }
         }
@@ -203,10 +203,11 @@ public final class StringUtils {
             match = true;
             i++;
         }
+        //noinspection ConstantValue
         if (match || preserveAllTokens && lastMatch) {
             list.add(str.substring(start, i));
         }
-        return list.toArray(new String[list.size()]);
+        return list.toArray(new String[0]);
     }
 
     public static String avoidNull(String value) {
@@ -260,7 +261,7 @@ public final class StringUtils {
      * Works like {@link String#trim()}, but more white space is excluded.
      * The white space characters is {@link #WHITE_SPACE_ARRAY}.
      *
-     * @see {@link #trim(String, char[])}
+     * @see #trim(String, char[])
      */
     public static String trim(String str) {
         return trim(str, WHITE_SPACE_ARRAY);
@@ -269,7 +270,7 @@ public final class StringUtils {
     /**
      * Works like {@link String#trim()}, but custom characters is excluded.
      *
-     * @see {@link #trim(String)}
+     * @see #trim(String)
      */
     public static String trim(String str, char[] excluded) {
         if (null == str) {

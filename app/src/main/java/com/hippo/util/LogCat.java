@@ -16,8 +16,8 @@
 
 package com.hippo.util;
 
+import android.util.Log;
 import com.hippo.yorozuya.IOUtils;
-
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -31,7 +31,7 @@ public final class LogCat {
             IOUtils.copy(p.getInputStream(), outputStream);
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("LogCat", "Error saving logcat output", e);
             return false;
         }
     }

@@ -20,6 +20,8 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.opengl.GLUtils;
 
+import androidx.annotation.NonNull;
+
 import java.util.HashMap;
 
 import javax.microedition.khronos.opengles.GL11;
@@ -158,7 +160,7 @@ public abstract class UploadedTexture extends BasicTexture {
     /**
      * Updates the content on GPU's memory.
      *
-     * @param canvas
+     * @param canvas canvas
      */
     public void updateContent(GLCanvas canvas) {
         if (!isLoaded()) {
@@ -282,6 +284,7 @@ public abstract class UploadedTexture extends BasicTexture {
                     && config == o.config && length == o.length;
         }
 
+        @NonNull
         @Override
         public BorderKey clone() {
             try {

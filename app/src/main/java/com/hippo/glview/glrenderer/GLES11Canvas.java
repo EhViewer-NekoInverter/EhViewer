@@ -33,6 +33,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL11;
@@ -104,8 +105,8 @@ public class GLES11Canvas implements GLCanvas {
     // x1, y1, x2, y2.
     private final float[] mMapPointsBuffer = new float[4];
     private final float[] mTextureColor = new float[4];
-    private final ArrayList<RawTexture> mTargetStack = new ArrayList<RawTexture>();
-    private final ArrayList<ConfigState> mRestoreStack = new ArrayList<ConfigState>();
+    private final ArrayList<RawTexture> mTargetStack = new ArrayList<>();
+    private final ArrayList<ConfigState> mRestoreStack = new ArrayList<>();
     private final RectF mDrawTextureSourceRect = new RectF();
     private final RectF mDrawTextureTargetRect = new RectF();
     private final float[] mTempMatrix = new float[32];
@@ -201,30 +202,22 @@ public class GLES11Canvas implements GLCanvas {
     private static void checkFramebufferStatus(GL11ExtensionPack gl11ep) {
         int status = gl11ep.glCheckFramebufferStatusOES(GL11ExtensionPack.GL_FRAMEBUFFER_OES);
         if (status != GL11ExtensionPack.GL_FRAMEBUFFER_COMPLETE_OES) {
-            String msg = "";
-            switch (status) {
-                case GL11ExtensionPack.GL_FRAMEBUFFER_INCOMPLETE_FORMATS_OES:
-                    msg = "FRAMEBUFFER_FORMATS";
-                    break;
-                case GL11ExtensionPack.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_OES:
-                    msg = "FRAMEBUFFER_ATTACHMENT";
-                    break;
-                case GL11ExtensionPack.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_OES:
-                    msg = "FRAMEBUFFER_MISSING_ATTACHMENT";
-                    break;
-                case GL11ExtensionPack.GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_OES:
-                    msg = "FRAMEBUFFER_DRAW_BUFFER";
-                    break;
-                case GL11ExtensionPack.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_OES:
-                    msg = "FRAMEBUFFER_READ_BUFFER";
-                    break;
-                case GL11ExtensionPack.GL_FRAMEBUFFER_UNSUPPORTED_OES:
-                    msg = "FRAMEBUFFER_UNSUPPORTED";
-                    break;
-                case GL11ExtensionPack.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_OES:
-                    msg = "FRAMEBUFFER_INCOMPLETE_DIMENSIONS";
-                    break;
-            }
+            String msg = switch (status) {
+                case GL11ExtensionPack.GL_FRAMEBUFFER_INCOMPLETE_FORMATS_OES ->
+                        "FRAMEBUFFER_FORMATS";
+                case GL11ExtensionPack.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_OES ->
+                        "FRAMEBUFFER_ATTACHMENT";
+                case GL11ExtensionPack.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT_OES ->
+                        "FRAMEBUFFER_MISSING_ATTACHMENT";
+                case GL11ExtensionPack.GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER_OES ->
+                        "FRAMEBUFFER_DRAW_BUFFER";
+                case GL11ExtensionPack.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER_OES ->
+                        "FRAMEBUFFER_READ_BUFFER";
+                case GL11ExtensionPack.GL_FRAMEBUFFER_UNSUPPORTED_OES -> "FRAMEBUFFER_UNSUPPORTED";
+                case GL11ExtensionPack.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_OES ->
+                        "FRAMEBUFFER_INCOMPLETE_DIMENSIONS";
+                default -> "";
+            };
             throw new RuntimeException(msg + ":" + Integer.toHexString(status));
         }
     }
@@ -431,7 +424,7 @@ public class GLES11Canvas implements GLCanvas {
     public void drawMesh(BasicTexture tex, int x, int y, int xyBuffer,
                          int uvBuffer, int indexBuffer, int indexCount) {
         float alpha = mAlpha;
-        if (!bindTexture(tex)) return;
+        if (notBindTexture(tex)) return;
 
         mGLState.setBlendEnabled(mBlendEnabled
                 && (!tex.isOpaque() || alpha < OPAQUE_ALPHA));
@@ -530,7 +523,7 @@ public class GLES11Canvas implements GLCanvas {
 
         mGLState.setBlendEnabled(mBlendEnabled
                 && (!texture.isOpaque() || alpha < OPAQUE_ALPHA));
-        if (!bindTexture(texture)) return;
+        if (notBindTexture(texture)) return;
         mGLState.setTextureAlpha(alpha);
         drawBoundTexture(texture, x, y, width, height);
     }
@@ -547,7 +540,7 @@ public class GLES11Canvas implements GLCanvas {
 
         mGLState.setBlendEnabled(mBlendEnabled
                 && (!texture.isOpaque() || mAlpha < OPAQUE_ALPHA));
-        if (!bindTexture(texture)) return;
+        if (notBindTexture(texture)) return;
         convertCoordinate(source, target, texture);
         setTextureCoords(source);
         mGLState.setTextureAlpha(mAlpha);
@@ -559,7 +552,7 @@ public class GLES11Canvas implements GLCanvas {
                             int x, int y, int w, int h) {
         mGLState.setBlendEnabled(mBlendEnabled
                 && (!texture.isOpaque() || mAlpha < OPAQUE_ALPHA));
-        if (!bindTexture(texture)) return;
+        if (notBindTexture(texture)) return;
         setTextureCoords(mTextureTransform);
         mGLState.setTextureAlpha(mAlpha);
         textureRect(x, y, w, h);
@@ -571,12 +564,12 @@ public class GLES11Canvas implements GLCanvas {
         drawMixed(from, toColor, ratio, x, y, w, h, mAlpha);
     }
 
-    private boolean bindTexture(BasicTexture texture) {
-        if (!texture.onBind(this)) return false;
+    private boolean notBindTexture(BasicTexture texture) {
+        if (!texture.onBind(this)) return true;
         int target = texture.getTarget();
         mGLState.setTextureTarget(target);
         mGL.glBindTexture(target, texture.getId());
-        return true;
+        return false;
     }
 
     private void setTextureColor(float r, float g, float b, float alpha) {
@@ -652,7 +645,7 @@ public class GLES11Canvas implements GLCanvas {
         mGLState.setBlendEnabled(mBlendEnabled && (!from.isOpaque()
                 || Color.alpha(toColor) != 255 || alpha < OPAQUE_ALPHA));
 
-        if (!bindTexture(from)) return;
+        if (notBindTexture(from)) return;
 
         // Interpolate the RGB and alpha values between both textures.
         mGLState.setTexEnvMode(GL11.GL_COMBINE);
@@ -677,8 +670,7 @@ public class GLES11Canvas implements GLCanvas {
         mGLState.setBlendEnabled(mBlendEnabled && (!from.isOpaque()
                 || Color.alpha(toColor) != 255 || alpha < OPAQUE_ALPHA));
 
-        final GL11 gl = mGL;
-        if (!bindTexture(from)) return;
+        if (notBindTexture(from)) return;
 
         // Interpolate the RGB and alpha values between both textures.
         mGLState.setTexEnvMode(GL11.GL_COMBINE);
@@ -748,13 +740,13 @@ public class GLES11Canvas implements GLCanvas {
     public void deleteRecycledResources() {
         synchronized (mUnboundTextures) {
             IntList ids = mUnboundTextures;
-            if (ids.size() > 0) {
+            if (!ids.isEmpty()) {
                 mGLId.glDeleteTextures(mGL, ids.size(), ids.getInternalArray(), 0);
                 ids.clear();
             }
 
             ids = mDeleteBuffers;
-            if (ids.size() > 0) {
+            if (!ids.isEmpty()) {
                 mGLId.glDeleteBuffers(mGL, ids.size(), ids.getInternalArray(), 0);
                 ids.clear();
             }
@@ -788,6 +780,7 @@ public class GLES11Canvas implements GLCanvas {
     @Override
     public void restore() {
         if (mRestoreStack.isEmpty()) throw new IllegalStateException();
+        //noinspection SequencedCollectionMethodCanBeUsed
         ConfigState config = mRestoreStack.remove(mRestoreStack.size() - 1);
         config.restore(this);
         freeRestoreConfig(config);
@@ -810,6 +803,7 @@ public class GLES11Canvas implements GLCanvas {
     @Override
     public void dumpStatisticsAndClear() {
         String line = String.format(
+                Locale.US,
                 "MESH:%d, TEX_OES:%d, TEX_RECT:%d, FILL_RECT:%d, LINE:%d",
                 mCountDrawMesh, mCountTextureRect, mCountTextureOES,
                 mCountFillRect, mCountDrawLine);
@@ -861,6 +855,7 @@ public class GLES11Canvas implements GLCanvas {
 
     @Override
     public void endRenderTarget() {
+        //noinspection SequencedCollectionMethodCanBeUsed
         RawTexture texture = mTargetStack.remove(mTargetStack.size() - 1);
         setRenderTarget(texture);
         restore(); // restore matrix and alpha
@@ -956,7 +951,6 @@ public class GLES11Canvas implements GLCanvas {
 
     private static class GLState {
         private final GL11 mGL;
-        private final boolean mLineSmooth = false;
         private int mTexEnvMode = GL11.GL_REPLACE;
         private float mTextureAlpha = 1.0f;
         private int mTextureTarget = GL11.GL_TEXTURE_2D;

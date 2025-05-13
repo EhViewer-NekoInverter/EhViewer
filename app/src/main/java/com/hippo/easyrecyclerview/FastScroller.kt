@@ -26,6 +26,8 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
+import androidx.core.content.withStyledAttributes
+import androidx.core.graphics.withTranslation
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import com.hippo.ehviewer.R
@@ -74,10 +76,10 @@ class FastScroller @JvmOverloads constructor(
 
     private fun init(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
         mSimpleHandler = SimpleHandler.getInstance()
-        val a = context.obtainStyledAttributes(attrs, R.styleable.FastScroller, defStyleAttr, 0)
-        mHandler = a.getDrawable(R.styleable.FastScroller_handler)
-        mDraggable = a.getBoolean(R.styleable.FastScroller_draggable, true)
-        a.recycle()
+        context.withStyledAttributes(attrs, R.styleable.FastScroller, defStyleAttr, 0) {
+            mHandler = getDrawable(R.styleable.FastScroller_handler)
+            mDraggable = getBoolean(R.styleable.FastScroller_draggable, true)
+        }
         setAlpha(0.0f)
         visibility = INVISIBLE
         mMinHandlerHeight = LayoutUtils.dp2pix(context, MIN_HANDLER_HEIGHT_DP.toFloat())
@@ -241,11 +243,10 @@ class FastScroller @JvmOverloads constructor(
             return
         }
         val paddingLeft = getPaddingLeft()
-        val saved = canvas.save()
-        canvas.translate(paddingLeft.toFloat(), mHandlerOffset.toFloat())
-        mHandler!!.setBounds(0, 0, width - paddingLeft - getPaddingRight(), mHandlerHeight)
-        mHandler!!.draw(canvas)
-        canvas.restoreToCount(saved)
+        canvas.withTranslation(paddingLeft.toFloat(), mHandlerOffset.toFloat()) {
+            mHandler!!.setBounds(0, 0, width - paddingLeft - getPaddingRight(), mHandlerHeight)
+            mHandler!!.draw(canvas)
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")

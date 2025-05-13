@@ -17,6 +17,7 @@
 package com.hippo.yorozuya;
 
 import android.os.Looper;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -75,7 +76,7 @@ public final class OSUtils {
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e("OSUtils", "Error getting total memory", e);
             } finally {
                 IOUtils.closeQuietly(reader);
             }

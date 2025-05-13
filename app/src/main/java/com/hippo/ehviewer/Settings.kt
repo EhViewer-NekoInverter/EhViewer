@@ -18,6 +18,7 @@ package com.hippo.ehviewer
 import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Log
+import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import com.hippo.ehviewer.EhApplication.Companion.application
 import com.hippo.ehviewer.client.data.FavListUrlBuilder
@@ -284,7 +285,7 @@ object Settings {
     }
 
     private fun putBoolean(key: String, value: Boolean) {
-        sSettingsPre.edit().putBoolean(key, value).apply()
+        sSettingsPre.edit { putBoolean(key, value) }
     }
 
     @JvmStatic
@@ -297,7 +298,7 @@ object Settings {
 
     @JvmStatic
     fun putInt(key: String, value: Int) {
-        sSettingsPre.edit().putInt(key, value).apply()
+        sSettingsPre.edit { putInt(key, value) }
     }
 
     private fun getLong(key: String, defValue: Long): Long = try {
@@ -308,7 +309,7 @@ object Settings {
     }
 
     private fun putLong(key: String, value: Long) {
-        sSettingsPre.edit().putLong(key, value).apply()
+        sSettingsPre.edit { putLong(key, value) }
     }
 
     private fun getString(key: String, defValue: String?): String? = try {
@@ -319,7 +320,7 @@ object Settings {
     }
 
     private fun putString(key: String, value: String?) {
-        sSettingsPre.edit().putString(key, value).apply()
+        sSettingsPre.edit { putString(key, value) }
     }
 
     private fun getStringSet(key: String): MutableSet<String>? = sSettingsPre.getStringSet(key, null)
@@ -334,7 +335,7 @@ object Settings {
         } else {
             set.add(value)
         }
-        sSettingsPre.edit().putStringSet(key, set).apply()
+        sSettingsPre.edit { putStringSet(key, set) }
     }
 
     private fun getIntFromStr(key: String, defValue: Int): Int = try {
@@ -348,7 +349,7 @@ object Settings {
     }
 
     private fun putIntToStr(key: String, value: Int) {
-        sSettingsPre.edit().putString(key, value.toString()).apply()
+        sSettingsPre.edit { putString(key, value.toString()) }
     }
 
     private fun dip2px(dpValue: Int): Int {
@@ -668,18 +669,18 @@ object Settings {
         )
         set(value) {
             check(value.size == 10)
-            sSettingsPre.edit()
-                .putString(KEY_FAV_CAT_0, value[0])
-                .putString(KEY_FAV_CAT_1, value[1])
-                .putString(KEY_FAV_CAT_2, value[2])
-                .putString(KEY_FAV_CAT_3, value[3])
-                .putString(KEY_FAV_CAT_4, value[4])
-                .putString(KEY_FAV_CAT_5, value[5])
-                .putString(KEY_FAV_CAT_6, value[6])
-                .putString(KEY_FAV_CAT_7, value[7])
-                .putString(KEY_FAV_CAT_8, value[8])
-                .putString(KEY_FAV_CAT_9, value[9])
-                .apply()
+            sSettingsPre.edit {
+                putString(KEY_FAV_CAT_0, value[0])
+                    .putString(KEY_FAV_CAT_1, value[1])
+                    .putString(KEY_FAV_CAT_2, value[2])
+                    .putString(KEY_FAV_CAT_3, value[3])
+                    .putString(KEY_FAV_CAT_4, value[4])
+                    .putString(KEY_FAV_CAT_5, value[5])
+                    .putString(KEY_FAV_CAT_6, value[6])
+                    .putString(KEY_FAV_CAT_7, value[7])
+                    .putString(KEY_FAV_CAT_8, value[8])
+                    .putString(KEY_FAV_CAT_9, value[9])
+            }
         }
 
     var favCount: IntArray
@@ -697,30 +698,30 @@ object Settings {
         )
         set(count) {
             check(count.size == 10)
-            sSettingsPre.edit()
-                .putInt(KEY_FAV_COUNT_0, count[0])
-                .putInt(KEY_FAV_COUNT_1, count[1])
-                .putInt(KEY_FAV_COUNT_2, count[2])
-                .putInt(KEY_FAV_COUNT_3, count[3])
-                .putInt(KEY_FAV_COUNT_4, count[4])
-                .putInt(KEY_FAV_COUNT_5, count[5])
-                .putInt(KEY_FAV_COUNT_6, count[6])
-                .putInt(KEY_FAV_COUNT_7, count[7])
-                .putInt(KEY_FAV_COUNT_8, count[8])
-                .putInt(KEY_FAV_COUNT_9, count[9])
-                .apply()
+            sSettingsPre.edit {
+                putInt(KEY_FAV_COUNT_0, count[0])
+                    .putInt(KEY_FAV_COUNT_1, count[1])
+                    .putInt(KEY_FAV_COUNT_2, count[2])
+                    .putInt(KEY_FAV_COUNT_3, count[3])
+                    .putInt(KEY_FAV_COUNT_4, count[4])
+                    .putInt(KEY_FAV_COUNT_5, count[5])
+                    .putInt(KEY_FAV_COUNT_6, count[6])
+                    .putInt(KEY_FAV_COUNT_7, count[7])
+                    .putInt(KEY_FAV_COUNT_8, count[8])
+                    .putInt(KEY_FAV_COUNT_9, count[9])
+            }
         }
 
     val favLocalCount: Int
         get() = sSettingsPre.getInt(KEY_FAV_LOCAL, DEFAULT_FAV_COUNT)
     fun putFavLocalCount(count: Int) {
-        sSettingsPre.edit().putInt(KEY_FAV_LOCAL, count).apply()
+        sSettingsPre.edit { putInt(KEY_FAV_LOCAL, count) }
     }
 
     val favCloudCount: Int
         get() = sSettingsPre.getInt(KEY_FAV_CLOUD, DEFAULT_FAV_COUNT)
     fun putFavCloudCount(count: Int) {
-        sSettingsPre.edit().putInt(KEY_FAV_CLOUD, count).apply()
+        sSettingsPre.edit { putInt(KEY_FAV_CLOUD, count) }
     }
 
     val recentFavCat: Int

@@ -25,6 +25,7 @@ import android.graphics.PixelFormat
 import android.graphics.drawable.Drawable
 import androidx.annotation.ColorInt
 import androidx.annotation.Keep
+import androidx.core.graphics.withTranslation
 import com.hippo.ehviewer.R
 import com.hippo.yorozuya.MathUtils
 import kotlin.math.cos
@@ -132,15 +133,14 @@ class DrawerArrowDrawable(context: Context, color: Int) : Drawable() {
         mPath.moveTo(arrowEdge, -topBottomBarOffset)
         mPath.rLineTo(arrowWidth, -arrowHeight)
         mPath.close()
-        canvas.save()
-        // Rotate the whole canvas if spinning, if not, rotate it 180 to get
-        // the arrow pointing the other way for RTL.
-        canvas.translate(bounds.centerX().toFloat(), bounds.centerY().toFloat())
-        if (mSpin) {
-            canvas.rotate(canvasRotate * if (mVerticalMirror) -1 else 1)
+        canvas.withTranslation(bounds.centerX().toFloat(), bounds.centerY().toFloat()) {
+            // Rotate the whole canvas if spinning, if not, rotate it 180 to get
+            // the arrow pointing the other way for RTL.
+            if (mSpin) {
+                rotate(canvasRotate * if (mVerticalMirror) -1 else 1)
+            }
+            drawPath(mPath, mPaint)
         }
-        canvas.drawPath(mPath, mPaint)
-        canvas.restore()
     }
 
     fun setColor(@ColorInt color: Int) {

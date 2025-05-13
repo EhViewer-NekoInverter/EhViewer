@@ -36,7 +36,7 @@ public abstract class BasicTexture implements Texture {
     private static final int MAX_TEXTURE_SIZE = 4096;
     private final static WeakHashMap<BasicTexture, Object> sAllTextures
             = new WeakHashMap<>();
-    private static final ThreadLocal<Class> sInFinalizer = new ThreadLocal<>();
+    private static final ThreadLocal<Class<?>> sInFinalizer = new ThreadLocal<>();
     protected int mId = -1;
     protected int mState;
     protected int mWidth = UNSPECIFIED;
@@ -205,7 +205,7 @@ public abstract class BasicTexture implements Texture {
         try {
             sInFinalizer.set(BasicTexture.class);
             recycle();
-            sInFinalizer.set(null);
+            sInFinalizer.remove();
         } finally {
             super.finalize();
         }

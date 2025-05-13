@@ -51,15 +51,17 @@ public class AutoWrapLayout extends ViewGroup {
     public AutoWrapLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
+        //noinspection resource
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.AutoWrapLayout, defStyle, 0);
-
-        int index = a.getInt(R.styleable.AutoWrapLayout_alignment, -1);
-        if (index >= 0) {
-            setAlignment(sBaseLineArray[index]);
+        try {
+            int index = a.getInt(R.styleable.AutoWrapLayout_alignment, -1);
+            if (index >= 0) {
+                setAlignment(sBaseLineArray[index]);
+            }
+        } finally {
+            a.recycle();
         }
-
-        a.recycle();
     }
 
     public Alignment getAlignment() {

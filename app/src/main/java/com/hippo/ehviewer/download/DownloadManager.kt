@@ -19,6 +19,7 @@ import android.util.Log
 import android.util.SparseLongArray
 import androidx.collection.LongSparseArray
 import androidx.collection.keyIterator
+import androidx.core.util.size
 import com.hippo.ehviewer.EhDB
 import com.hippo.ehviewer.client.data.GalleryInfo
 import com.hippo.ehviewer.dao.DownloadInfo
@@ -1196,7 +1197,7 @@ object DownloadManager : OnSpiderListener {
                     var downloadingCount = 0
                     var downloadingContentLengthSum: Long = 0
                     var totalSize: Long = 0
-                    for (i in 0 until maxOf(mContentLengthMap.size(), mReceivedSizeMap.size())) {
+                    for (i in 0 until maxOf(mContentLengthMap.size, mReceivedSizeMap.size)) {
                         val contentLength = mContentLengthMap.valueAt(i)
                         val receivedSize = mReceivedSizeMap.valueAt(i)
                         downloadingCount++

@@ -16,12 +16,10 @@
 
 package com.hippo.yorozuya;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -263,21 +261,15 @@ public final class ViewUtils {
      *
      * @param v The view
      */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static void removeHardwareAccelerationSupport(View v) {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
-            if (v.getLayerType() != View.LAYER_TYPE_SOFTWARE) {
-                v.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-            }
+        if (v.getLayerType() != View.LAYER_TYPE_SOFTWARE) {
+            v.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static void addHardwareAccelerationSupport(View v) {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
-            if (v.getLayerType() != View.LAYER_TYPE_HARDWARE) {
-                v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            }
+        if (v.getLayerType() != View.LAYER_TYPE_HARDWARE) {
+            v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         }
     }
 
@@ -314,12 +306,8 @@ public final class ViewUtils {
         if (view == null) {
             return false;
         } else {
-            float translationX = 0.0f;
-            float translationY = 0.0f;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                translationX = view.getTranslationX();
-                translationY = view.getTranslationY();
-            }
+            float translationX = view.getTranslationX();
+            float translationY = view.getTranslationY();
             return x >= view.getLeft() + translationX - slop &&
                     x < view.getRight() + translationX + slop &&
                     y >= view.getTop() + translationY - slop &&
@@ -343,7 +331,6 @@ public final class ViewUtils {
 
         switch (specMode) {
             case View.MeasureSpec.UNSPECIFIED:
-                result = size;
                 break;
             case View.MeasureSpec.EXACTLY:
                 result = specSize;
@@ -360,7 +347,6 @@ public final class ViewUtils {
      * @param viewTreeObserver the ViewTreeObserver
      * @param l                the OnGlobalLayoutListener
      */
-    @SuppressWarnings("deprecation")
     public static void removeOnGlobalLayoutListener(ViewTreeObserver viewTreeObserver,
                                                     ViewTreeObserver.OnGlobalLayoutListener l) {
         viewTreeObserver.removeOnGlobalLayoutListener(l);

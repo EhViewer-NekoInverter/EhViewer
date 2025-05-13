@@ -321,7 +321,7 @@ object GalleryDetailParser {
             }
             group.add(tag)
         }
-        if (group.isNotEmpty()) group else null
+        group.ifEmpty { null }
     } catch (e: Throwable) {
         ExceptionUtils.throwIfFatal(e)
         e.printStackTrace()

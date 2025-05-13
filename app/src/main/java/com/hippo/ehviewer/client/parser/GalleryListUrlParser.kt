@@ -15,8 +15,8 @@
  */
 package com.hippo.ehviewer.client.parser
 
-import android.net.Uri
 import android.text.TextUtils
+import androidx.core.net.toUri
 import com.hippo.ehviewer.client.EhUrl
 import com.hippo.ehviewer.client.data.ListUrlBuilder
 import com.hippo.util.isAtLeastT
@@ -128,8 +128,8 @@ object GalleryListUrlParser {
 
     // TODO get page
     private fun parseToplist(path: String): ListUrlBuilder? {
-        val uri = Uri.parse(path)
-        if (uri == null || TextUtils.isEmpty(uri.getQueryParameter("tl"))) {
+        val uri = path.toUri()
+        if (TextUtils.isEmpty(uri.getQueryParameter("tl"))) {
             return null
         }
         val tl = uri.getQueryParameter("tl")!!.toInt()

@@ -20,7 +20,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 public class SimpleGridAutoSpanLayout extends SimpleGridLayout {
-    public static final int STRATEGY_MIN_SIZE = 0;
     public static final int STRATEGY_SUITABLE_SIZE = 1;
 
     private int mColumnSize = -1;
@@ -45,8 +44,8 @@ public class SimpleGridAutoSpanLayout extends SimpleGridLayout {
             return 1;
         }
         int span2 = span + 1;
-        float deviation = Math.abs(1 - (total / span / (float) single));
-        float deviation2 = Math.abs(1 - (total / span2 / (float) single));
+        float deviation = Math.abs(1 - ((float) total / span / (float) single));
+        float deviation2 = Math.abs(1 - ((float) total / span2 / (float) single));
         return deviation < deviation2 ? span : span2;
     }
 
@@ -78,14 +77,10 @@ public class SimpleGridAutoSpanLayout extends SimpleGridLayout {
         if (mColumnSizeChanged && mColumnSize > 0 && widthMode == MeasureSpec.EXACTLY) {
             int totalSpace = widthSize - getPaddingRight() - getPaddingLeft();
             int spanCount;
-            switch (mStrategy) {
-                default:
-                case STRATEGY_MIN_SIZE:
-                    spanCount = getSpanCountForMinSize(totalSpace, mColumnSize);
-                    break;
-                case STRATEGY_SUITABLE_SIZE:
-                    spanCount = getSpanCountForSuitableSize(totalSpace, mColumnSize);
-                    break;
+            if (mStrategy == STRATEGY_SUITABLE_SIZE) {
+                spanCount = getSpanCountForSuitableSize(totalSpace, mColumnSize);
+            } else {
+                spanCount = getSpanCountForMinSize(totalSpace, mColumnSize);
             }
             setColumnCount(spanCount);
             mColumnSizeChanged = false;

@@ -100,21 +100,21 @@ public final class AssertUtils {
         }
     }
 
-    public static void assertInstanceOf(Object obj, Class clazz) {
+    public static void assertInstanceOf(Object obj, Class<?> clazz) {
         assertInstanceOf("The object should be instance of " + clazz.getName(), obj, clazz);
     }
 
-    public static void assertInstanceOfEx(Object obj, Class clazz) throws AssertException {
+    public static void assertInstanceOfEx(Object obj, Class<?> clazz) throws AssertException {
         assertInstanceOfEx("The object should be instance of " + clazz.getName(), obj, clazz);
     }
 
-    public static void assertInstanceOf(String message, Object obj, Class clazz) {
+    public static void assertInstanceOf(String message, Object obj, Class<?> clazz) {
         if (!clazz.isInstance(obj)) {
             throw new AssertError(message);
         }
     }
 
-    public static void assertInstanceOfEx(String message, Object obj, Class clazz) throws AssertException {
+    public static void assertInstanceOfEx(String message, Object obj, Class<?> clazz) throws AssertException {
         if (!clazz.isInstance(obj)) {
             throw new AssertException(message);
         }

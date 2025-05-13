@@ -61,7 +61,8 @@ public class WindowInsetsAnimationHelper extends WindowInsetsAnimationCompat.Cal
                 continue;
             }
             endPaddings.put(view, view.getPaddingBottom());
-            int startPadding = startPaddings.containsKey(view) ? startPaddings.get(view) : 0;
+            Integer padding = startPaddings.get(view);
+            int startPadding = (padding != null) ? padding : 0;
             view.setTranslationY(-(startPadding - view.getPaddingBottom()));
         }
         return bounds;
@@ -85,8 +86,10 @@ public class WindowInsetsAnimationHelper extends WindowInsetsAnimationCompat.Cal
                 if (view == null) {
                     continue;
                 }
-                int startPadding = startPaddings.containsKey(view) ? startPaddings.get(view) : 0;
-                int endPadding = endPaddings.containsKey(view) ? endPaddings.get(view) : 0;
+                Integer padding1 = startPaddings.get(view);
+                int startPadding = (padding1 != null) ? padding1 : 0;
+                Integer padding2 = endPaddings.get(view);
+                int endPadding = (padding2 != null) ? padding2 : 0;
                 view.setTranslationY(MathUtils.lerp(endPadding - startPadding, 0, animation.getInterpolatedFraction()));
             }
         }

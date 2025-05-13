@@ -37,6 +37,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.Keep
+import androidx.core.graphics.withSave
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
@@ -72,26 +74,25 @@ class SearchBar @JvmOverloads constructor(
     private val mRect = Rect()
     private val mSearchDatabase by lazy { SearchDatabase.getInstance(context) }
     private var mState = STATE_NORMAL
-    private var mBaseHeight = 0
     private var mWidth = 0
     private var mHeight = 0
     private var mProgress = 0f
-    private var mMenuButton: ImageView? = null
-    private var mTitleTextView: TextView? = null
-    private var mActionButton: ImageView? = null
-    private var mEditText: SearchEditText? = null
-    private var mListContainer: View? = null
-    private var mListView: EasyRecyclerView? = null
-    private var mListHeader: View? = null
-    private var mViewTransition: ViewTransition? = null
-    private var mSuggestionList: List<Suggestion>? = null
-    private var mSuggestionAdapter: SuggestionAdapter? = null
+    private var mMenuButton: ImageView
+    private var mTitleTextView: TextView
+    private var mActionButton: ImageView
+    private var mEditText: SearchEditText
+    private var mListContainer: View
+    private var mListView: EasyRecyclerView
+    private var mListHeader: View
+    private var mViewTransition: ViewTransition
+    private var mSuggestionAdapter: SuggestionAdapter
+    private var mSuggestionList = arrayListOf<Suggestion>()
+    private val suggestionLock = Mutex()
+    private var mAllowEmptySearch = true
+    private var mInAnimation = false
     private var mHelper: Helper? = null
     private var mSuggestionProvider: SuggestionProvider? = null
     private var mOnStateChangeListener: OnStateChangeListener? = null
-    private var mAllowEmptySearch = true
-    private var mInAnimation = false
-    private val suggestionLock = Mutex()
 
     init {
         val inflater = LayoutInflater.from(context)
@@ -104,12 +105,13 @@ class SearchBar @JvmOverloads constructor(
         mListView = ViewUtils.`$$`(mListContainer, R.id.search_bar_list) as EasyRecyclerView
         mListHeader = ViewUtils.`$$`(mListContainer, R.id.list_header)
         mViewTransition = ViewTransition(mTitleTextView, mEditText)
-        mTitleTextView!!.setOnClickListener(this)
-        mMenuButton!!.setOnClickListener(this)
-        mActionButton!!.setOnClickListener(this)
-        mEditText!!.setSearchEditTextListener(this)
-        mEditText!!.setOnEditorActionListener(this)
-        mEditText!!.addTextChangedListener(this)
+
+        mMenuButton.setOnClickListener(this)
+        mTitleTextView.setOnClickListener(this)
+        mActionButton.setOnClickListener(this)
+        mEditText.setSearchEditTextListener(this)
+        mEditText.setOnEditorActionListener(this)
+        mEditText.addTextChangedListener(this)
 
         // Get base height
         ViewUtils.measureView(
@@ -117,27 +119,25 @@ class SearchBar @JvmOverloads constructor(
             LayoutParams.WRAP_CONTENT,
             LayoutParams.WRAP_CONTENT,
         )
-        mBaseHeight = measuredHeight
 
-        mSuggestionList = ArrayList()
-        mSuggestionAdapter = SuggestionAdapter(LayoutInflater.from(context))
-        mListView!!.adapter = mSuggestionAdapter
+        mSuggestionAdapter = SuggestionAdapter(inflater)
+        mListView.adapter = mSuggestionAdapter
         val decoration = LinearDividerItemDecoration(
             LinearDividerItemDecoration.VERTICAL,
             context.theme.resolveColor(R.attr.dividerColor),
             LayoutUtils.dp2pix(context, 1f),
         )
         decoration.setShowLastDivider(false)
-        mListView!!.addItemDecoration(decoration)
-        mListView!!.layoutManager = LinearLayoutManager(context)
+        mListView.addItemDecoration(decoration)
+        mListView.layoutManager = LinearLayoutManager(context)
     }
 
     private fun addListHeader() {
-        mListHeader!!.visibility = VISIBLE
+        mListHeader.visibility = VISIBLE
     }
 
     private fun removeListHeader() {
-        mListHeader!!.visibility = GONE
+        mListHeader.visibility = GONE
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -145,28 +145,27 @@ class SearchBar @JvmOverloads constructor(
     private fun updateSuggestions(scrollToTop: Boolean = true) {
         launchIO {
             suggestionLock.withLock {
-                val suggestions = ArrayList<Suggestion>()
+                mSuggestionList.clear()
                 mergedSuggestionFlow().collect {
-                    suggestions.add(it)
+                    mSuggestionList.add(it)
                 }
                 withUIContext {
-                    mSuggestionList = suggestions
-                    if (mSuggestionList?.size == 0) {
+                    if (mSuggestionList.isEmpty()) {
                         removeListHeader()
                     } else {
                         addListHeader()
                     }
-                    mSuggestionAdapter?.notifyDataSetChanged()
+                    mSuggestionAdapter.notifyDataSetChanged()
                 }
             }
         }
         if (scrollToTop) {
-            mListView!!.scrollToPosition(0)
+            mListView.scrollToPosition(0)
         }
     }
 
     private fun mergedSuggestionFlow(): Flow<Suggestion> = flow {
-        val text = mEditText!!.text.toString()
+        val text = mEditText.text.toString()
         mSuggestionProvider?.run { providerSuggestions(text)?.forEach { emit(it) } }
         mSearchDatabase.getSuggestions(text, 128).forEach { emit(KeywordSuggestion(it)) }
         EhTagDatabase.takeIf { it.isInitialized() }?.run {
@@ -188,7 +187,7 @@ class SearchBar @JvmOverloads constructor(
     }
 
     fun setEditTextHint(hint: CharSequence) {
-        mEditText!!.hint = hint
+        mEditText.hint = hint
     }
 
     fun setHelper(helper: Helper) {
@@ -204,27 +203,27 @@ class SearchBar @JvmOverloads constructor(
     }
 
     fun setText(text: String) {
-        mEditText!!.setText(text)
+        mEditText.setText(text)
     }
 
     fun cursorToEnd() {
-        mEditText!!.setSelection(mEditText!!.text!!.length)
+        mEditText.setSelection(mEditText.length())
     }
 
     fun setTitle(title: String) {
-        mTitleTextView!!.text = title
+        mTitleTextView.text = title
     }
 
     fun setLeftDrawable(drawable: Drawable) {
-        mMenuButton!!.setImageDrawable(drawable)
+        mMenuButton.setImageDrawable(drawable)
     }
 
     fun setRightDrawable(drawable: Drawable) {
-        mActionButton!!.setImageDrawable(drawable)
+        mActionButton.setImageDrawable(drawable)
     }
 
     fun applySearch() {
-        val query = mEditText!!.text.toString().trim { it <= ' ' }
+        val query = mEditText.text.toString().trim { it <= ' ' }
         if (!mAllowEmptySearch && query.isEmpty()) {
             return
         }
@@ -262,8 +261,8 @@ class SearchBar @JvmOverloads constructor(
             mState = state
             when (oldState) {
                 STATE_NORMAL -> {
-                    mViewTransition!!.showView(1, animation)
-                    mEditText!!.requestFocus()
+                    mViewTransition.showView(1, animation)
+                    mEditText.requestFocus()
                     if (state == STATE_SEARCH_LIST) {
                         showImeAndSuggestionsList(animation)
                     }
@@ -272,7 +271,7 @@ class SearchBar @JvmOverloads constructor(
 
                 STATE_SEARCH -> {
                     if (state == STATE_NORMAL) {
-                        mViewTransition!!.showView(0, animation)
+                        mViewTransition.showView(0, animation)
                     } else if (state == STATE_SEARCH_LIST) {
                         showImeAndSuggestionsList(animation)
                     }
@@ -282,7 +281,7 @@ class SearchBar @JvmOverloads constructor(
                 STATE_SEARCH_LIST -> {
                     hideImeAndSuggestionsList(animation)
                     if (state == STATE_NORMAL) {
-                        mViewTransition!!.showView(0, animation)
+                        mViewTransition.showView(0, animation)
                     }
                     mOnStateChangeListener?.onStateChange(this, state, oldState, animation)
                 }
@@ -304,7 +303,7 @@ class SearchBar @JvmOverloads constructor(
             oa.interpolator = AnimationUtils.FAST_SLOW_INTERPOLATOR
             oa.addListener(object : SimpleAnimatorListener() {
                 override fun onAnimationStart(animation: Animator) {
-                    mListContainer!!.visibility = VISIBLE
+                    mListContainer.visibility = VISIBLE
                     mInAnimation = true
                 }
 
@@ -315,7 +314,7 @@ class SearchBar @JvmOverloads constructor(
             oa.setAutoCancel(true)
             oa.start()
         } else {
-            mListContainer!!.visibility = VISIBLE
+            mListContainer.visibility = VISIBLE
             progress = 1f
         }
     }
@@ -335,7 +334,7 @@ class SearchBar @JvmOverloads constructor(
                 }
 
                 override fun onAnimationEnd(animation: Animator) {
-                    mListContainer!!.visibility = GONE
+                    mListContainer.visibility = GONE
                     mInAnimation = false
                 }
             })
@@ -343,13 +342,13 @@ class SearchBar @JvmOverloads constructor(
             oa.start()
         } else {
             progress = 0f
-            mListContainer!!.visibility = GONE
+            mListContainer.visibility = GONE
         }
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
-        if (mListContainer!!.visibility == VISIBLE && (!mInAnimation || mHeight == 0)) {
+        if (mListContainer.isVisible && (!mInAnimation || mHeight == 0)) {
             mWidth = right - left
             mHeight = bottom - top
         }
@@ -363,17 +362,17 @@ class SearchBar @JvmOverloads constructor(
         invalidate()
     }
 
-    fun getEditText(): SearchEditText = mEditText!!
+    fun getEditText(): SearchEditText = mEditText
 
     override fun draw(canvas: Canvas) {
         if (mInAnimation && mHeight != 0) {
-            val state = canvas.save()
-            val bottom = MathUtils.lerp(mBaseHeight, mHeight, mProgress)
-            mRect.set(0, 0, mWidth, bottom)
-            clipBounds = mRect
-            canvas.clipRect(mRect)
-            super.draw(canvas)
-            canvas.restoreToCount(state)
+            canvas.withSave {
+                val bottom = MathUtils.lerp(measuredHeight, mHeight, mProgress)
+                mRect.set(0, 0, mWidth, bottom)
+                setClipBounds(mRect)
+                canvas.clipRect(mRect)
+                super.draw(canvas)
+            }
         } else {
             clipBounds = null
             super.draw(canvas)
@@ -463,9 +462,9 @@ class SearchBar @JvmOverloads constructor(
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SuggestionHolder = SuggestionHolder(mInflater.inflate(R.layout.item_simple_list_2, parent, false))
 
         override fun onBindViewHolder(holder: SuggestionHolder, position: Int) {
-            val suggestion = mSuggestionList?.get(position)
-            val text1 = suggestion?.getText(holder.text1)
-            val text2 = suggestion?.getText(holder.text2)
+            val suggestion = mSuggestionList[position]
+            val text1 = suggestion.getText(holder.text1)
+            val text2 = suggestion.getText(holder.text2)
             holder.text1.text = text1
             if (text2 == null) {
                 holder.text2.visibility = GONE
@@ -476,14 +475,14 @@ class SearchBar @JvmOverloads constructor(
             }
 
             holder.itemView.setOnClickListener {
-                mSuggestionList?.run {
+                mSuggestionList.run {
                     if (position < size) {
                         this[position].onClick()
                     }
                 }
             }
             holder.itemView.setOnLongClickListener {
-                mSuggestionList?.run {
+                mSuggestionList.run {
                     if (position < size) {
                         return@setOnLongClickListener this[position].onLongClick()
                     }
@@ -494,7 +493,7 @@ class SearchBar @JvmOverloads constructor(
 
         override fun getItemId(position: Int): Long = position.toLong()
 
-        override fun getItemCount(): Int = mSuggestionList?.size ?: 0
+        override fun getItemCount(): Int = mSuggestionList.size
     }
 
     inner class TagSuggestion(
@@ -508,12 +507,12 @@ class SearchBar @JvmOverloads constructor(
         }
 
         override fun onClick() {
-            val editable = mEditText!!.text as Editable
+            val editable = mEditText.text as Editable
             val keywords = editable.toString().substringBeforeLast(" ", "")
             val keyword = wrapTagKeyword(mKeyword)
             val newKeywords = if (keywords.isNotEmpty()) "$keywords $keyword" else keyword
-            mEditText!!.setText(newKeywords)
-            mEditText!!.setSelection(newKeywords.length)
+            mEditText.setText(newKeywords)
+            mEditText.setSelection(newKeywords.length)
         }
     }
 
@@ -527,8 +526,8 @@ class SearchBar @JvmOverloads constructor(
         }
 
         override fun onClick() {
-            mEditText!!.setText(mKeyword)
-            mEditText!!.setSelection(mEditText!!.length())
+            mEditText.setText(mKeyword)
+            mEditText.setSelection(mEditText.length())
         }
 
         override fun onLongClick(): Boolean {

@@ -27,6 +27,7 @@ public final class JsoupUtils {
     public static Element getElementByClass(Document doc, String className) {
         Elements elements = doc.getElementsByClass(className);
         if (!elements.isEmpty()) {
+            //noinspection SequencedCollectionMethodCanBeUsed
             return elements.get(0);
         } else {
             return null;
@@ -37,6 +38,7 @@ public final class JsoupUtils {
     public static Element getElementByClass(Element element, String className) {
         Elements elements = element.getElementsByClass(className);
         if (!elements.isEmpty()) {
+            //noinspection SequencedCollectionMethodCanBeUsed
             return elements.get(0);
         } else {
             return null;
@@ -47,6 +49,7 @@ public final class JsoupUtils {
     public static Element getElementByTag(Element element, String tagName) {
         Elements elements = element.getElementsByTag(tagName);
         if (!elements.isEmpty()) {
+            //noinspection SequencedCollectionMethodCanBeUsed
             return elements.get(0);
         } else {
             return null;

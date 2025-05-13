@@ -23,6 +23,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Interpolator
+import androidx.core.view.isGone
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.hippo.ehviewer.R
 import com.hippo.util.getParcelableCompat
@@ -76,7 +77,7 @@ class FabLayout @JvmOverloads constructor(
 
     fun setSecondaryFabVisibilityAt(index: Int, visible: Boolean) {
         getSecondaryFabAt(index)?.run {
-            if (visible && visibility == GONE) {
+            if (visible && isGone) {
                 animate().cancel()
                 visibility = if (mExpanded) VISIBLE else INVISIBLE
             } else if (!visible && visibility != GONE) {
@@ -104,7 +105,7 @@ class FabLayout @JvmOverloads constructor(
         val count = childCount
         for (i in 0 until count) {
             val child = getChildAt(i)
-            if (child.visibility == GONE) {
+            if (child.isGone) {
                 continue
             }
             maxWidth = maxWidth.coerceAtLeast(child.measuredWidth)
@@ -127,7 +128,7 @@ class FabLayout @JvmOverloads constructor(
         var i = count
         while (--i >= 0) {
             val child = getChildAt(i)
-            if (child.visibility == GONE) {
+            if (child.isGone) {
                 continue
             }
             val childWidth = child.measuredWidth
@@ -228,7 +229,7 @@ class FabLayout @JvmOverloads constructor(
                     val checkCount = if (mHidePrimaryFab) count else count - 1
                     for (i in 0 until checkCount) {
                         val child = getChildAt(i)
-                        if (child.visibility == GONE) {
+                        if (child.isGone) {
                             continue
                         }
                         child.visibility = if (expanded) VISIBLE else INVISIBLE
@@ -242,7 +243,7 @@ class FabLayout @JvmOverloads constructor(
                     }
                     for (i in 0 until count - 1) {
                         val child = getChildAt(i)
-                        if (child.visibility == GONE) {
+                        if (child.isGone) {
                             continue
                         }
                         setSecondaryFabAnimation(child, expanded, expanded)

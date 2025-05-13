@@ -19,10 +19,10 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.net.Uri
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.net.toUri
 import com.hippo.ehviewer.client.EhUrlOpener.parseUrl
 import com.hippo.ehviewer.client.data.GalleryDetail
 import com.hippo.ehviewer.client.parser.GalleryPageUrlParser
@@ -42,7 +42,7 @@ object UrlOpener {
             return
         }
         var intent: Intent
-        val uri = Uri.parse(url)
+        val uri = url.toUri()
         if (ehUrl) {
             galleryDetail?.let {
                 val result = GalleryPageUrlParser.parse(url)

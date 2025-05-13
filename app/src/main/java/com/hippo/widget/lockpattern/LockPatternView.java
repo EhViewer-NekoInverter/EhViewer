@@ -289,6 +289,7 @@ public class LockPatternView extends View {
                         + "animate if you want to set the display mode to animate");
             }
             mAnimatingPeriodStart = SystemClock.elapsedRealtime();
+            //noinspection SequencedCollectionMethodCanBeUsed
             final Cell first = mPattern.get(0);
             mInProgressX = getCenterXForColumn(first.getColumn());
             mInProgressY = getCenterYForRow(first.getRow());
@@ -400,6 +401,7 @@ public class LockPatternView extends View {
             // check for gaps in existing pattern
             final ArrayList<Cell> pattern = mPattern;
             if (!pattern.isEmpty()) {
+                //noinspection SequencedCollectionMethodCanBeUsed
                 final Cell lastCell = pattern.get(pattern.size() - 1);
                 int dRow = cell.row - lastCell.row;
                 int dColumn = cell.column - lastCell.column;

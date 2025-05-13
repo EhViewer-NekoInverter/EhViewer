@@ -16,6 +16,7 @@
 
 package com.hippo.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -57,16 +58,21 @@ public class CuteSpinner extends AppCompatSpinner {
         init(context, attrs, defStyleAttr);
     }
 
+    @SuppressLint("CustomViewStyleable")
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
+        //noinspection resource
         TypedArray a = context.obtainStyledAttributes(attrs,
                 androidx.appcompat.R.styleable.Spinner, defStyleAttr, 0);
-        final CharSequence[] entries = a.getTextArray(androidx.appcompat.R.styleable.Spinner_android_entries);
-        if (entries != null) {
-            final ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(context,
-                    R.layout.item_cute_spinner_item, entries);
-            adapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item);
-            setAdapter(adapter);
+        try {
+            final CharSequence[] entries = a.getTextArray(androidx.appcompat.R.styleable.Spinner_android_entries);
+            if (entries != null) {
+                final ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(context,
+                        R.layout.item_cute_spinner_item, entries);
+                adapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item);
+                setAdapter(adapter);
+            }
+        } finally {
+            a.recycle();
         }
-        a.recycle();
     }
 }

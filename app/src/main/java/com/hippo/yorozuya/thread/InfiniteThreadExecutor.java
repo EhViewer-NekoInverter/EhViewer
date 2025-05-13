@@ -16,6 +16,8 @@
 
 package com.hippo.yorozuya.thread;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import java.util.Queue;
@@ -77,7 +79,7 @@ public class InfiniteThreadExecutor implements Executor {
                 try {
                     command.run();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.e("InfiniteThreadExecutor", "Error running command", e);
                 }
 
                 synchronized (mLock) {

@@ -221,11 +221,11 @@ public class GLRootView extends GLSurfaceView
             if (mCompensation % 180 != 0) {
                 mCompensationMatrix.setRotate(mCompensation);
                 // move center to origin before rotation
-                mCompensationMatrix.preTranslate(-w / 2, -h / 2);
+                mCompensationMatrix.preTranslate((float) -w / 2, (float) -h / 2);
                 // align with the new origin after rotation
-                mCompensationMatrix.postTranslate(h / 2, w / 2);
+                mCompensationMatrix.postTranslate((float) h / 2, (float) w / 2);
             } else {
-                mCompensationMatrix.setRotate(mCompensation, w / 2, h / 2);
+                mCompensationMatrix.setRotate(mCompensation, (float) w / 2, (float) h / 2);
             }
         }
         mDisplayRotation = displayRotation;
@@ -429,7 +429,7 @@ public class GLRootView extends GLSurfaceView
     public void setLightsOutMode(boolean enabled) {
         int flags = 0;
         if (enabled) {
-            flags = STATUS_BAR_HIDDEN | SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            flags = SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_LAYOUT_STABLE;
         }
         setSystemUiVisibility(flags);
     }

@@ -568,101 +568,96 @@ public class ImageTexture implements Texture, Animatable {
     }
 
     private class AnimateRunnable implements Runnable {
-        public void doRun() {
-            long lastTime = System.nanoTime();
-            long lastDelay = -1L;
-
-            synchronized (mImage) {
-                // Check released, image busy, Need release
-                if (mReleased.get() || mImage.isImageRecycled() || mImageBusy || mNeedRelease.get()) {
-                    mAnimateRunnable = null;
-                    return;
-                }
-                // Obtain image
-                mImageBusy = true;
-            }
-
-            synchronized (mImage) {
-                // Release image
-                mImageBusy = false;
-                // Check need release, frameCount <= 1
-                if (mNeedRelease.get() || !mImage.getAnimated()) {
-                    mAnimateRunnable = null;
-                    return;
-                }
-            }
+        @Override
+        public void run() {
+            if (!prepareAnimation()) return;
 
             if (mRequestAnimation.get()) {
                 mRunning.lazySet(true);
             }
 
-            for (; ; ) {
-                // Obtain
-                synchronized (mImage) {
-                    // Check released, image busy, Need release, not running
-                    if (mReleased.get() || mImage.isImageRecycled() || mImageBusy || mNeedRelease.get() || !mRunning.get()) {
-                        mAnimateRunnable = null;
-                        return;
-                    }
-                    // Obtain image
-                    mImageBusy = true;
+            runAnimationLoop();
+
+            if (mNeedRelease.get()) {
+                performReleaseIfNeeded();
+            }
+        }
+
+        private boolean prepareAnimation() {
+            synchronized (mImage) {
+                if (mReleased.get() || mImage.isImageRecycled() || mImageBusy || mNeedRelease.get()) {
+                    mAnimateRunnable = null;
+                    return false;
+                }
+                mImageBusy = true;
+            }
+            synchronized (mImage) {
+                mImageBusy = false;
+                if (mNeedRelease.get() || !mImage.getAnimated()) {
+                    mAnimateRunnable = null;
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private void runAnimationLoop() {
+            long nextFrameTime = System.nanoTime();
+            long delay = mImage.getDelay();
+
+            while (true) {
+                if (!shouldContinueAnimation()) {
+                    mAnimateRunnable = null;
+                    return;
                 }
 
+                setImageBusy(true);
+
                 mImage.start();
-                long delay = mImage.getDelay();
-                long time = System.nanoTime();
-                if (-1L != lastDelay) {
-                    delay -= (time - lastTime) / 1000000 - lastDelay;
-                }
-                lastTime = time;
-                lastDelay = delay;
                 mFrameDirty.lazySet(true);
                 invalidateSelf();
 
-                synchronized (mImage) {
-                    // Release image
-                    mImageBusy = false;
-                }
+                setImageBusy(false);
 
-                if (delay > 0) {
+                nextFrameTime += delay * 1000000;
+                long sleepTimeMs = (nextFrameTime - System.nanoTime()) / 1000000;
+                if (sleepTimeMs > 0) {
                     try {
-                        Thread.sleep(delay);
-                    } catch (InterruptedException e) {
-                        // Ignore
+                        //noinspection BusyWait
+                        Thread.sleep(sleepTimeMs);
+                    } catch (InterruptedException ignored) {
                     }
+                } else {
+                    nextFrameTime = System.nanoTime();
                 }
             }
         }
 
-        @Override
-        public void run() {
-            doRun();
+        private boolean shouldContinueAnimation() {
+            synchronized (mImage) {
+                return !(mReleased.get() || mImage.isImageRecycled() || mImageBusy || mNeedRelease.get()) && mRunning.get();
+            }
+        }
 
+        private void setImageBusy(boolean busy) {
+            synchronized (mImage) {
+                mImageBusy = busy;
+            }
+        }
+
+        private void performReleaseIfNeeded() {
             while (mNeedRelease.get()) {
-                // Obtain
                 synchronized (mImage) {
-                    // Check released
-                    if (mReleased.get() || mImage.isImageRecycled()) {
+                    if (mReleased.get() || mImage.isImageRecycled() || mImageBusy) {
                         break;
                     }
-                    // Check image busy
-                    if (mImageBusy) {
-                        // Image is busy, means it is recycling
-                        break;
-                    }
-                    // Obtain image
                     mImageBusy = true;
                 }
-
                 if (!mReleased.get()) {
                     mImage.release();
                     mReleased.lazySet(true);
                 }
-
-                synchronized (mImage) {
-                    // Release image
-                    mImageBusy = false;
-                }
+                setImageBusy(false);
             }
         }
     }

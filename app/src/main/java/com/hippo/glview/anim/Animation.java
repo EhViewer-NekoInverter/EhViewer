@@ -68,7 +68,6 @@ abstract public class Animation {
     private long mDuration;
     private Interpolator mInterpolator;
     private int mRepeatCount;
-    private int mRepeatMode;
 
     private int mRunnedCount;
     private long mLastFrameTime;
@@ -83,10 +82,6 @@ abstract public class Animation {
 
     public void setRepeatCount(int repeatCount) {
         mRepeatCount = repeatCount;
-    }
-
-    public void setRepeatMode(int repeatMode) {
-        mRepeatMode = repeatMode;
     }
 
     public boolean isRunning() {
@@ -129,7 +124,6 @@ abstract public class Animation {
         mLastFrameTime = 0;
     }
 
-    // TODO mRepeatMode
     public boolean calculate(long currentTimeMillis) {
         if (mStartTime == NO_ANIMATION) {
             return false;

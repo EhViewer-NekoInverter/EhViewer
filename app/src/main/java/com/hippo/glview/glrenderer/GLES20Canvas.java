@@ -68,21 +68,18 @@ public class GLES20Canvas implements GLCanvas {
     private static final String TEXTURE_SAMPLER_UNIFORM = "uTextureSampler";
     private static final String ALPHA_UNIFORM = "uAlpha";
     private static final String TEXTURE_COORD_ATTRIBUTE = "aTextureCoordinate";
-    private static final String DRAW_VERTEX_SHADER = ""
-            + "uniform mat4 " + MATRIX_UNIFORM + ";\n"
+    private static final String DRAW_VERTEX_SHADER = "uniform mat4 " + MATRIX_UNIFORM + ";\n"
             + "attribute vec2 " + POSITION_ATTRIBUTE + ";\n"
             + "void main() {\n"
             + "  vec4 pos = vec4(" + POSITION_ATTRIBUTE + ", 0.0, 1.0);\n"
             + "  gl_Position = " + MATRIX_UNIFORM + " * pos;\n"
             + "}\n";
-    private static final String DRAW_FRAGMENT_SHADER = ""
-            + "precision mediump float;\n"
+    private static final String DRAW_FRAGMENT_SHADER = "precision mediump float;\n"
             + "uniform vec4 " + COLOR_UNIFORM + ";\n"
             + "void main() {\n"
             + "  gl_FragColor = " + COLOR_UNIFORM + ";\n"
             + "}\n";
-    private static final String TEXTURE_VERTEX_SHADER = ""
-            + "uniform mat4 " + MATRIX_UNIFORM + ";\n"
+    private static final String TEXTURE_VERTEX_SHADER = "uniform mat4 " + MATRIX_UNIFORM + ";\n"
             + "uniform mat4 " + TEXTURE_MATRIX_UNIFORM + ";\n"
             + "attribute vec2 " + POSITION_ATTRIBUTE + ";\n"
             + "varying vec2 vTextureCoord;\n"
@@ -91,8 +88,7 @@ public class GLES20Canvas implements GLCanvas {
             + "  gl_Position = " + MATRIX_UNIFORM + " * pos;\n"
             + "  vTextureCoord = (" + TEXTURE_MATRIX_UNIFORM + " * pos).xy;\n"
             + "}\n";
-    private static final String MESH_VERTEX_SHADER = ""
-            + "uniform mat4 " + MATRIX_UNIFORM + ";\n"
+    private static final String MESH_VERTEX_SHADER = "uniform mat4 " + MATRIX_UNIFORM + ";\n"
             + "attribute vec2 " + POSITION_ATTRIBUTE + ";\n"
             + "attribute vec2 " + TEXTURE_COORD_ATTRIBUTE + ";\n"
             + "varying vec2 vTextureCoord;\n"
@@ -101,8 +97,7 @@ public class GLES20Canvas implements GLCanvas {
             + "  gl_Position = " + MATRIX_UNIFORM + " * pos;\n"
             + "  vTextureCoord = " + TEXTURE_COORD_ATTRIBUTE + ";\n"
             + "}\n";
-    private static final String TEXTURE_FRAGMENT_SHADER = ""
-            + "precision mediump float;\n"
+    private static final String TEXTURE_FRAGMENT_SHADER = "precision mediump float;\n"
             + "varying vec2 vTextureCoord;\n"
             + "uniform float " + ALPHA_UNIFORM + ";\n"
             + "uniform sampler2D " + TEXTURE_SAMPLER_UNIFORM + ";\n"
@@ -309,21 +304,16 @@ public class GLES20Canvas implements GLCanvas {
     private static void checkFramebufferStatus() {
         int status = GLES20.glCheckFramebufferStatus(GLES20.GL_FRAMEBUFFER);
         if (status != GLES20.GL_FRAMEBUFFER_COMPLETE) {
-            String msg = "";
-            switch (status) {
-                case GLES20.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-                    msg = "GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT";
-                    break;
-                case GLES20.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
-                    msg = "GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS";
-                    break;
-                case GLES20.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-                    msg = "GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT";
-                    break;
-                case GLES20.GL_FRAMEBUFFER_UNSUPPORTED:
-                    msg = "GL_FRAMEBUFFER_UNSUPPORTED";
-                    break;
-            }
+            String msg = switch (status) {
+                case GLES20.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT ->
+                        "GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT";
+                case GLES20.GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS ->
+                        "GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS";
+                case GLES20.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT ->
+                        "GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT";
+                case GLES20.GL_FRAMEBUFFER_UNSUPPORTED -> "GL_FRAMEBUFFER_UNSUPPORTED";
+                default -> "";
+            };
             throw new RuntimeException(msg + ":" + Integer.toHexString(status));
         }
     }
@@ -369,8 +359,8 @@ public class GLES20Canvas implements GLCanvas {
             GLES20.glDeleteProgram(program);
             program = 0;
         }
-        for (int i = 0; i < params.length; i++) {
-            params[i].loadHandle(program);
+        for (ShaderParameter param : params) {
+            param.loadHandle(program);
         }
         return program;
     }
@@ -821,13 +811,13 @@ public class GLES20Canvas implements GLCanvas {
     public void deleteRecycledResources() {
         synchronized (mUnboundTextures) {
             IntList ids = mUnboundTextures;
-            if (mUnboundTextures.size() > 0) {
+            if (!mUnboundTextures.isEmpty()) {
                 mGLId.glDeleteTextures(null, ids.size(), ids.getInternalArray(), 0);
                 ids.clear();
             }
 
             ids = mDeleteBuffers;
-            if (ids.size() > 0) {
+            if (!ids.isEmpty()) {
                 mGLId.glDeleteBuffers(null, ids.size(), ids.getInternalArray(), 0);
                 ids.clear();
             }
@@ -847,6 +837,7 @@ public class GLES20Canvas implements GLCanvas {
 
     @Override
     public void endRenderTarget() {
+        //noinspection SequencedCollectionMethodCanBeUsed
         RawTexture oldTexture = mTargetTextures.remove(mTargetTextures.size() - 1);
         RawTexture texture = getTargetTexture();
         setRenderTarget(oldTexture, texture);
@@ -862,6 +853,7 @@ public class GLES20Canvas implements GLCanvas {
     }
 
     private RawTexture getTargetTexture() {
+        //noinspection SequencedCollectionMethodCanBeUsed
         return mTargetTextures.get(mTargetTextures.size() - 1);
     }
 

@@ -23,6 +23,7 @@ import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
 import androidx.appcompat.widget.AppCompatCheckedTextView
+import androidx.core.content.withStyledAttributes
 import com.hippo.ehviewer.R
 
 open class CheckTextView @JvmOverloads constructor(
@@ -39,24 +40,24 @@ open class CheckTextView @JvmOverloads constructor(
     private var mForegroundGravity = Gravity.FILL
 
     init {
-        val a = context.obtainStyledAttributes(
+        context.withStyledAttributes(
             attrs,
             R.styleable.CheckTextView,
             defStyleAttr,
             0,
-        )
-        mForegroundGravity = a.getInt(
-            R.styleable.CheckTextView_android_foregroundGravity,
-            mForegroundGravity,
-        )
-        a.getDrawable(R.styleable.CheckTextView_android_foreground)?.let {
-            foreground = it
+        ) {
+            mForegroundGravity = getInt(
+                R.styleable.CheckTextView_android_foregroundGravity,
+                mForegroundGravity,
+            )
+            getDrawable(R.styleable.CheckTextView_android_foreground)?.let {
+                foreground = it
+            }
+            mForegroundInPadding = getBoolean(
+                R.styleable.CheckTextView_foregroundInsidePadding,
+                true,
+            )
         }
-        mForegroundInPadding = a.getBoolean(
-            R.styleable.CheckTextView_foregroundInsidePadding,
-            true,
-        )
-        a.recycle()
         setOnClickListener(this)
     }
 

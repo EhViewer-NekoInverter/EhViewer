@@ -21,7 +21,7 @@ import java.util.regex.Pattern
 
 object SignInParser {
     private val NAME_PATTERN = Pattern.compile("<p>You are now logged in as: (.+?)<")
-    val ERROR_PATTERN = Pattern.compile(
+    val ERROR_PATTERN: Pattern = Pattern.compile(
         "<h4>The error returned was:</h4>\\s*<p>(.+?)</p>" +
             "|<span class=\"postcolor\">(.+?)</span>",
     )

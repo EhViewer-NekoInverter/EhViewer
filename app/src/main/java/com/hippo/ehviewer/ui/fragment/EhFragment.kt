@@ -45,10 +45,10 @@ class EhFragment : BasePreferenceFragment() {
         val listMode = findPreference<Preference>(Settings.KEY_LIST_MODE)
         val showTagTranslations = findPreference<Preference>(Settings.KEY_SHOW_TAG_TRANSLATIONS)
         val tagTranslationsSource = findPreference<Preference>(Settings.KEY_TAG_TRANSLATIONS_SOURCE)
-        detailSize = findPreference<Preference>(Settings.KEY_DETAIL_SIZE)!!
-        listThumbSize = findPreference<Preference>(Settings.KEY_LIST_THUMB_SIZE)!!
-        thumbSize = findPreference<Preference>(Settings.KEY_THUMB_SIZE)!!
-        thumbShowTitle = findPreference<Preference>(Settings.KEY_THUMB_SHOW_TITLE)!!
+        detailSize = findPreference(Settings.KEY_DETAIL_SIZE)!!
+        listThumbSize = findPreference(Settings.KEY_LIST_THUMB_SIZE)!!
+        thumbSize = findPreference(Settings.KEY_THUMB_SIZE)!!
+        thumbShowTitle = findPreference(Settings.KEY_THUMB_SHOW_TITLE)!!
 
         gallerySite!!.onPreferenceChangeListener = this
         theme!!.onPreferenceChangeListener = this

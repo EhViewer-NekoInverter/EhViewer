@@ -87,8 +87,6 @@ public class GLView implements TouchOwner {
     protected int mMeasuredHeight = 0;
     protected int mScrollY = 0;
     protected int mScrollX = 0;
-    protected int mScrollHeight = 0;
-    protected int mScrollWidth = 0;
     private GLRoot mRoot;
     private ArrayList<GLView> mComponents;
     private GLView mMotionTarget;
@@ -165,7 +163,6 @@ public class GLView implements TouchOwner {
 
         switch (specMode) {
             case MeasureSpec.UNSPECIFIED:
-                result = size;
                 break;
             case MeasureSpec.EXACTLY:
                 result = specSize;
@@ -192,15 +189,11 @@ public class GLView implements TouchOwner {
         int specMode = MeasureSpec.getMode(measureSpec);
         int specSize = MeasureSpec.getSize(measureSpec);
 
-        switch (specMode) {
-            case MeasureSpec.UNSPECIFIED:
-                result = size;
-                break;
-            case MeasureSpec.EXACTLY:
-            case MeasureSpec.AT_MOST:
-                result = specSize;
-                break;
-        }
+        result = switch (specMode) {
+            case MeasureSpec.UNSPECIFIED -> size;
+            case MeasureSpec.EXACTLY, MeasureSpec.AT_MOST -> specSize;
+            default -> result;
+        };
         return result;
     }
 
@@ -256,16 +249,6 @@ public class GLView implements TouchOwner {
                     // Child wants a specific size... let him have it
                     resultSize = childSize;
                     resultMode = MeasureSpec.EXACTLY;
-                } else if (childSize == LayoutParams.MATCH_PARENT) {
-                    // Child wants to be our size... find out how big it should
-                    // be
-                    resultSize = 0;
-                    resultMode = MeasureSpec.UNSPECIFIED;
-                } else if (childSize == LayoutParams.WRAP_CONTENT) {
-                    // Child wants to determine its own size.... find out how
-                    // big it should be
-                    resultSize = 0;
-                    resultMode = MeasureSpec.UNSPECIFIED;
                 }
                 break;
         }
@@ -438,13 +421,11 @@ public class GLView implements TouchOwner {
     }
 
     // Removes a child from this GLView.
-    public boolean removeComponent(GLView component) {
-        if (mComponents == null) return false;
+    public void removeComponent(GLView component) {
+        if (mComponents == null) return;
         if (mComponents.remove(component)) {
             removeOneComponent(component);
-            return true;
         }
-        return false;
     }
 
     public boolean removeComponentAt(int index) {
@@ -545,11 +526,10 @@ public class GLView implements TouchOwner {
     }
 
     @Override
-    public boolean performClick() {
+    public void performClick() {
         if (mOnClickListener != null) {
-            return mOnClickListener.onClick(this);
+            mOnClickListener.onClick(this);
         } else {
-            return false;
         }
     }
 
@@ -1170,7 +1150,7 @@ public class GLView implements TouchOwner {
          * Measure specification mode: The parent has not imposed any constraint
          * on the child. It can be whatever size it wants.
          */
-        public static final int UNSPECIFIED = 0 << MODE_SHIFT;
+        public static final int UNSPECIFIED = 0;
         /**
          * Measure specification mode: The parent has determined an exact size
          * for the child. The child is going to be given those bounds regardless
@@ -1183,10 +1163,6 @@ public class GLView implements TouchOwner {
          */
         public static final int AT_MOST = 2 << MODE_SHIFT;
         private static final int MODE_MASK = 0x3 << MODE_SHIFT;
-        /**
-         * The max size allowed
-         */
-        public static final int MAX_SIZE = ~MODE_MASK;
 
         /**
          * Creates a measure specification based on the supplied size and mode.

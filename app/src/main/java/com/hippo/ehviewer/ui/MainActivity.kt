@@ -41,6 +41,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.getSystemService
+import androidx.core.net.toUri
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
@@ -286,13 +287,13 @@ class MainActivity :
                     try {
                         val intent = Intent(
                             android.provider.Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS,
-                            Uri.parse("package:$packageName"),
+                            "package:$packageName".toUri(),
                         )
                         startActivity(intent)
                     } catch (_: Throwable) {
                         val intent = Intent(
                             android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                            Uri.parse("package:$packageName"),
+                            "package:$packageName".toUri(),
                         )
                         startActivity(intent)
                     }

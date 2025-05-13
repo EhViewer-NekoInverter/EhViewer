@@ -24,6 +24,7 @@ import android.graphics.Path
 import android.graphics.PixelFormat
 import android.graphics.drawable.Drawable
 import androidx.annotation.Keep
+import androidx.core.graphics.withTranslation
 import com.hippo.ehviewer.R
 import com.hippo.yorozuya.MathUtils
 import kotlin.math.roundToInt
@@ -62,11 +63,10 @@ class AddDeleteDrawable(context: Context, color: Int) : Drawable() {
         } else {
             MathUtils.lerp(0f, 135f, mProgress)
         }
-        canvas.save()
-        canvas.translate(bounds.centerX().toFloat(), bounds.centerY().toFloat())
-        canvas.rotate(canvasRotate)
-        canvas.drawPath(mPath, mPaint)
-        canvas.restore()
+        canvas.withTranslation(bounds.centerX().toFloat(), bounds.centerY().toFloat()) {
+            rotate(canvasRotate)
+            drawPath(mPath, mPaint)
+        }
     }
 
     fun setColor(color: Int) {

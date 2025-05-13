@@ -24,6 +24,7 @@ import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.net.toUri
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
@@ -294,13 +295,13 @@ class AdvancedFragment : BasePreferenceFragment() {
                 @SuppressLint("InlinedApi")
                 val intent = Intent(
                     Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS,
-                    Uri.parse("package:" + requireContext().packageName),
+                    "package:${requireContext().packageName}".toUri(),
                 )
                 startActivity(intent)
             } catch (_: Throwable) {
                 val intent = Intent(
                     Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                    Uri.parse("package:" + requireContext().packageName),
+                    "package:${requireContext().packageName}".toUri(),
                 )
                 startActivity(intent)
             }

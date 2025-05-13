@@ -18,7 +18,7 @@ package com.hippo.ehviewer.widget
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.widget.ImageView.ScaleType
+import androidx.core.content.withStyledAttributes
 import com.hippo.ehviewer.R
 import com.hippo.widget.LoadImageView
 
@@ -32,11 +32,11 @@ open class FixedThumb @JvmOverloads constructor(
     private var alwaysCutAndScale = false
 
     init {
-        val a = context.obtainStyledAttributes(attrs, R.styleable.FixedThumb, defStyleAttr, defStyleAttr)
-        minAspect = a.getFloat(R.styleable.FixedThumb_minAspect, 0f)
-        maxAspect = a.getFloat(R.styleable.FixedThumb_maxAspect, 0f)
-        alwaysCutAndScale = a.getBoolean(R.styleable.FixedThumb_alwaysCutAndScale, false)
-        a.recycle()
+        context.withStyledAttributes(attrs, R.styleable.FixedThumb, defStyleAttr, defStyleAttr) {
+            minAspect = getFloat(R.styleable.FixedThumb_minAspect, 0f)
+            maxAspect = getFloat(R.styleable.FixedThumb_maxAspect, 0f)
+            alwaysCutAndScale = getBoolean(R.styleable.FixedThumb_alwaysCutAndScale, false)
+        }
     }
 
     override fun onPreSetImageDrawable(drawable: Drawable?, isTarget: Boolean) {

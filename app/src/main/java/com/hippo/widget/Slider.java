@@ -123,22 +123,25 @@ public class Slider extends View {
         mPopup.setTouchable(false);
         mPopup.setFocusable(false);
 
+        //noinspection resource
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.Slider);
-        textPaint.setColor(a.getColor(R.styleable.Slider_textColor, Color.WHITE));
-        textPaint.setTextSize(a.getDimensionPixelSize(R.styleable.Slider_textSize, 12));
+        try {
+            textPaint.setColor(a.getColor(R.styleable.Slider_textColor, Color.WHITE));
+            textPaint.setTextSize(a.getDimensionPixelSize(R.styleable.Slider_textSize, 12));
 
-        updateTextSize();
+            updateTextSize();
 
-        setRange(a.getInteger(R.styleable.Slider_start, 0), a.getInteger(R.styleable.Slider_end, 0));
-        setProgress(a.getInteger(R.styleable.Slider_slider_progress, 0));
-        mThickness = a.getDimension(R.styleable.Slider_thickness, 2);
-        mRadius = a.getDimension(R.styleable.Slider_radius, 6);
-        setColor(a.getColor(R.styleable.Slider_color, Color.BLACK));
+            setRange(a.getInteger(R.styleable.Slider_start, 0), a.getInteger(R.styleable.Slider_end, 0));
+            setProgress(a.getInteger(R.styleable.Slider_slider_progress, 0));
+            mThickness = a.getDimension(R.styleable.Slider_thickness, 2);
+            mRadius = a.getDimension(R.styleable.Slider_radius, 6);
+            setColor(a.getColor(R.styleable.Slider_color, Color.BLACK));
 
-        mBgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mBgPaint.setColor(a.getBoolean(R.styleable.Slider_dark, false) ? 0x4dffffff : 0x42000000);
-
-        a.recycle();
+            mBgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            mBgPaint.setColor(a.getBoolean(R.styleable.Slider_dark, false) ? 0x4dffffff : 0x42000000);
+        } finally {
+            a.recycle();
+        }
 
         mProgressAnimation = new ValueAnimator();
         mProgressAnimation.setInterpolator(AnimationUtils.FAST_SLOW_INTERPOLATOR);
@@ -199,9 +202,9 @@ public class Slider extends View {
 
         mPopupWidth = (int) (width - mRadius - mRadius + mBubbleWidth);
         int popupHeight = mBubbleHeight;
-        mPopupX = (int) (mTemp[0] + mRadius - (mBubbleWidth / 2));
+        mPopupX = (int) (mTemp[0] + mRadius - ((float) mBubbleWidth / 2));
         mPopupY = (int) (mTemp[1] - popupHeight + paddingTop +
-                ((getHeight() - paddingTop - paddingBottom) / 2) -
+                ((float) (getHeight() - paddingTop - paddingBottom) / 2) -
                 mRadius - LayoutUtils.dp2pix(mContext, 2));
 
         mPopup.update(mPopupX, mPopupY, mPopupWidth, popupHeight, false);
@@ -224,7 +227,7 @@ public class Slider extends View {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
-        mPopup.showAtLocation(this, Gravity.TOP | Gravity.LEFT, mPopupX, mPopupY);
+        mPopup.showAtLocation(this, Gravity.TOP | Gravity.START, mPopupX, mPopupY);
     }
 
     @Override
@@ -339,7 +342,7 @@ public class Slider extends View {
 
             int saved = canvas.save();
 
-            canvas.translate(0, paddingTop + ((height - paddingTop - paddingBottom) / 2));
+            canvas.translate(0, paddingTop + ((float) (height - paddingTop - paddingBottom) / 2));
 
             float currentX = paddingLeft + radius + (width - radius - radius - paddingLeft - paddingRight) *
                     (mReverse ? (1.0f - mDrawPercent) : mDrawPercent);
@@ -488,7 +491,7 @@ public class Slider extends View {
         @Override
         protected void onSizeChanged(int w, int h, int oldw, int oldh) {
             super.onSizeChanged(w, h, oldw, oldh);
-            setPivotX(w / 2);
+            setPivotX((float) w / 2);
             setPivotY(h);
         }
 
@@ -499,7 +502,7 @@ public class Slider extends View {
             int width = getWidth();
             int height = getHeight();
             int x = width / 2;
-            int y = (int) ((height * TEXT_CENTER) + (mRect.height() / 2));
+            int y = (int) ((height * TEXT_CENTER) + ((float) mRect.height() / 2));
             canvas.drawText(mProgressStr, x, y, mTextPaint);
         }
     }

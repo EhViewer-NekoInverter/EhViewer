@@ -16,6 +16,7 @@
 
 package com.hippo.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -49,12 +50,17 @@ public class IndicatingListView extends ListView {
         init(context, attrs);
     }
 
+    @SuppressLint("CustomViewStyleable")
     private void init(Context context, AttributeSet attrs) {
+        //noinspection resource
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.Indicating);
-        mIndicatorHeight = a.getDimensionPixelOffset(R.styleable.Indicating_indicatorHeight, 1);
-        mPaint.setColor(a.getColor(R.styleable.Indicating_indicatorColor, Color.BLACK));
-        mPaint.setStyle(Paint.Style.FILL);
-        a.recycle();
+        try {
+            mIndicatorHeight = a.getDimensionPixelOffset(R.styleable.Indicating_indicatorHeight, 1);
+            mPaint.setColor(a.getColor(R.styleable.Indicating_indicatorColor, Color.BLACK));
+            mPaint.setStyle(Paint.Style.FILL);
+        } finally {
+            a.recycle();
+        }
     }
 
     private void fillTopIndicatorDrawRect() {

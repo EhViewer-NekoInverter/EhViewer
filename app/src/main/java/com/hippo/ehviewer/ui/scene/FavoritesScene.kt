@@ -31,6 +31,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.Toolbar
+import androidx.core.util.size
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsAnimationCompat
@@ -627,7 +628,7 @@ class FavoritesScene :
         }
         mModifyGiList.clear()
         mRecyclerView!!.checkedItemPositions?.let {
-            for (i in 0 until it.size()) {
+            for (i in 0 until it.size) {
                 if (it.valueAt(i)) {
                     mHelper!!.getDataAtEx(it.keyAt(i))?.let { gi ->
                         mModifyGiList.add(gi)

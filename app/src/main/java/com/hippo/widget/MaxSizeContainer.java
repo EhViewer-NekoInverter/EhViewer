@@ -40,10 +40,14 @@ public class MaxSizeContainer extends ViewGroup {
     }
 
     private void init(Context context, AttributeSet attrs) {
+        //noinspection resource
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MaxSizeContainer);
-        mMaxWidth = a.getDimensionPixelOffset(R.styleable.MaxSizeContainer_maxWidth, -1);
-        mMaxHeight = a.getDimensionPixelOffset(R.styleable.MaxSizeContainer_maxHeight, -1);
-        a.recycle();
+        try {
+            mMaxWidth = a.getDimensionPixelOffset(R.styleable.MaxSizeContainer_maxWidth, -1);
+            mMaxHeight = a.getDimensionPixelOffset(R.styleable.MaxSizeContainer_maxHeight, -1);
+        } finally {
+            a.recycle();
+        }
     }
 
     private int getMeasureSpec(int measureSpec, int max) {

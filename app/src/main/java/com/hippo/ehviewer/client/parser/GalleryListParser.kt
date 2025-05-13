@@ -286,7 +286,7 @@ object GalleryListParser {
             result.noWatchedTags = body.contains("<p>You do not have any watched tags")
             if (body.contains("No hits found</p>")) {
                 val warn = d.getElementsByClass("searchwarn").text()
-                if (warn.isNullOrEmpty()) {
+                if (warn.isEmpty()) {
                     return result
                 } else {
                     throw EhException(warn)

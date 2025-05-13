@@ -110,60 +110,72 @@ public final class ObjectUtils {
         writer.write('[');
         writer.write('\n');
 
-        if (array instanceof Object[] a) {
-            for (int i = 0, l = a.length; i < l; i++) {
-                dump(a[i], writer, newPrefix, false);
+        switch (array) {
+            case Object[] a -> {
+                for (Object o : a) {
+                    dump(o, writer, newPrefix, false);
+                }
             }
-        } else if (array instanceof boolean[] a) {
-            for (int i = 0, l = a.length; i < l; i++) {
-                dumpBoolean(a[i], writer, newPrefix);
+            case boolean[] a -> {
+                for (boolean b : a) {
+                    dumpBoolean(b, writer, newPrefix);
+                }
             }
-        } else if (array instanceof byte[] a) {
-            for (int i = 0, l = a.length; i < l; i++) {
-                dumpByte(a[i], writer, newPrefix);
+            case byte[] a -> {
+                for (byte b : a) {
+                    dumpByte(b, writer, newPrefix);
+                }
             }
-        } else if (array instanceof char[] a) {
-            for (int i = 0, l = a.length; i < l; i++) {
-                dumpChar(a[i], writer, newPrefix);
+            case char[] a -> {
+                for (char c : a) {
+                    dumpChar(c, writer, newPrefix);
+                }
             }
-        } else if (array instanceof short[] a) {
-            for (int i = 0, l = a.length; i < l; i++) {
-                dumpShort(a[i], writer, newPrefix);
+            case short[] a -> {
+                for (short value : a) {
+                    dumpShort(value, writer, newPrefix);
+                }
             }
-        } else if (array instanceof int[] a) {
-            for (int i = 0, l = a.length; i < l; i++) {
-                dumpInt(a[i], writer, newPrefix);
+            case int[] a -> {
+                for (int j : a) {
+                    dumpInt(j, writer, newPrefix);
+                }
             }
-        } else if (array instanceof long[] a) {
-            for (int i = 0, l = a.length; i < l; i++) {
-                dumpLong(a[i], writer, newPrefix);
+            case long[] a -> {
+                for (long value : a) {
+                    dumpLong(value, writer, newPrefix);
+                }
             }
-        } else if (array instanceof float[] a) {
-            for (int i = 0, l = a.length; i < l; i++) {
-                dumpFloat(a[i], writer, newPrefix);
+            case float[] a -> {
+                for (float v : a) {
+                    dumpFloat(v, writer, newPrefix);
+                }
             }
-        } else if (array instanceof double[] a) {
-            for (int i = 0, l = a.length; i < l; i++) {
-                dumpDouble(a[i], writer, newPrefix);
+            case double[] a -> {
+                for (double v : a) {
+                    dumpDouble(v, writer, newPrefix);
+                }
             }
-        } else if (array instanceof List) {
-            for (Object o : (List) array) {
-                dump(o, writer, newPrefix);
+            case List<?> list -> {
+                for (Object o : list) {
+                    dump(o, writer, newPrefix);
+                }
             }
-        } else if (array instanceof Set) {
-            for (Object o : (Set) array) {
-                dump(o, writer, newPrefix);
+            case Set<?> set -> {
+                for (Object o : set) {
+                    dump(o, writer, newPrefix);
+                }
             }
-        } else if (array instanceof Map map) {
-            for (Object key : map.keySet()) {
-                Object value = map.get(key);
-                writer.write(newPrefix);
-                writer.write(key.toString());
-                writer.write(": ");
-                dump(value, writer, newPrefix, true);
+            case Map<?, ?> map -> {
+                for (Object key : map.keySet()) {
+                    Object value = map.get(key);
+                    writer.write(newPrefix);
+                    writer.write(key.toString());
+                    writer.write(": ");
+                    dump(value, writer, newPrefix, true);
+                }
             }
-        } else {
-            throw new IllegalStateException(array + " is not array");
+            default -> throw new IllegalStateException(array + " is not array");
         }
 
         writer.write(newPrefix);

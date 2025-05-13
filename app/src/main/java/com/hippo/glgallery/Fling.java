@@ -124,7 +124,7 @@ abstract class Fling extends Animation {
             final float t_inf = SPLINE_TIME[index];
             final float t_sup = SPLINE_TIME[index + 1];
             final float timeCoef = t_inf + (x - x_inf) / (x_sup - x_inf) * (t_sup - t_inf);
-            duration *= timeCoef;
+            duration *= (int) timeCoef;
         }
         return duration;
     }

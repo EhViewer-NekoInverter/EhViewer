@@ -34,6 +34,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.util.size
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -580,7 +581,7 @@ class DownloadsScene :
                 downloadInfoList = LinkedList()
             }
             recyclerView.checkedItemPositions?.let {
-                for (i in 0 until it.size()) {
+                for (i in 0 until it.size) {
                     if (it.valueAt(i)) {
                         val info = list[it.keyAt(i)]
                         if (collectDownloadInfo) {

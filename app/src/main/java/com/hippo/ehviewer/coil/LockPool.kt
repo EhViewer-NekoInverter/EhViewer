@@ -28,6 +28,7 @@ interface LockPool<Lock, K> {
     fun Lock.unlock()
 }
 
+@Suppress("KotlinUnreachableCode")
 suspend inline fun <Lock, K, R> LockPool<Lock, K>.withLock(key: K, action: () -> R): R {
     contract {
         callsInPlace(action, InvocationKind.EXACTLY_ONCE)
@@ -45,6 +46,7 @@ suspend inline fun <Lock, K, R> LockPool<Lock, K>.withLock(key: K, action: () ->
     }
 }
 
+@Suppress("KotlinUnreachableCode")
 suspend inline fun <Lock, K, R> LockPool<Lock, K>.withLockNeedSuspend(key: K, action: () -> R): Pair<R, Boolean> {
     contract {
         callsInPlace(action, InvocationKind.EXACTLY_ONCE)

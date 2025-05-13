@@ -477,7 +477,7 @@
     <string name="settings_download_preload_image">画像をプリロード</string>
     <string name="settings_download_preload_image_summary">%s 枚の画像をプリロードします</string>
     <string name="settings_download_download_origin_image">オリジナルの画像をダウンロードする</string>
-    <string name="settings_download_download_origin_image_summary">注意！GP が必要になる可能性があります</string>
+    <string name="settings_download_download_origin_image_summary">%s、注意！GP が必要になる可能性があります</string>
     <string name="settings_download_download_origin_image_never">しない</string>
     <string name="settings_download_download_origin_image_force">常にする</string>
     <string name="settings_download_download_origin_image_only">ダウンロードのみ</string>

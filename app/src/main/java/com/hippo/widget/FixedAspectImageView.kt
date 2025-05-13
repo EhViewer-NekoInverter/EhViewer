@@ -17,8 +17,8 @@ package com.hippo.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.TypedArray
 import android.util.AttributeSet
+import androidx.core.content.withStyledAttributes
 import com.google.android.material.imageview.ShapeableImageView
 import com.hippo.ehviewer.R
 import com.hippo.yorozuya.MathUtils
@@ -47,23 +47,23 @@ open class FixedAspectImageView @JvmOverloads constructor(
     @SuppressLint("ResourceType")
     private fun init(context: Context, attrs: AttributeSet?, defStyle: Int) {
         // Make sure we get value from xml
-        var a: TypedArray = context.obtainStyledAttributes(attrs, MIN_ATTRS, defStyle, 0)
-        setMinimumWidth(a.getDimensionPixelSize(0, 0))
-        setMinimumHeight(a.getDimensionPixelSize(1, 0))
-        a.recycle()
-        a = context.obtainStyledAttributes(attrs, ATTRS, defStyle, 0)
-        setAdjustViewBounds(a.getBoolean(0, false))
-        setMaxWidth(a.getDimensionPixelSize(1, Int.MAX_VALUE))
-        setMaxHeight(a.getDimensionPixelSize(2, Int.MAX_VALUE))
-        a.recycle()
-        a = context.obtainStyledAttributes(
+        context.withStyledAttributes(attrs, MIN_ATTRS, defStyle, 0) {
+            setMinimumWidth(getDimensionPixelSize(0, 0))
+            setMinimumHeight(getDimensionPixelSize(1, 0))
+        }
+        context.withStyledAttributes(attrs, ATTRS, defStyle, 0) {
+            setAdjustViewBounds(getBoolean(0, false))
+            setMaxWidth(getDimensionPixelSize(1, Int.MAX_VALUE))
+            setMaxHeight(getDimensionPixelSize(2, Int.MAX_VALUE))
+        }
+        context.withStyledAttributes(
             attrs,
             R.styleable.FixedAspectImageView,
             defStyle,
             0,
-        )
-        aspect = a.getFloat(R.styleable.FixedAspectImageView_aspect, -1f)
-        a.recycle()
+        ) {
+            aspect = getFloat(R.styleable.FixedAspectImageView_aspect, -1f)
+        }
     }
 
     override fun setMinimumWidth(minWidth: Int) {

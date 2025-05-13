@@ -17,6 +17,7 @@
 package com.hippo.yorozuya;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -64,7 +65,7 @@ public final class FileUtils {
 
     /**
      * Convert byte to human readable string.<br/>
-     * http://stackoverflow.com/questions/3758606/
+     * <a href="http://stackoverflow.com/questions/3758606/">...</a>
      *
      * @param bytes the bytes to convert
      * @param si    si units
@@ -137,7 +138,7 @@ public final class FileUtils {
             is = new FileInputStream(file);
             return IOUtils.readString(is, "utf-8");
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("FileUtils", "Error reading file", e);
             return null;
         } finally {
             IOUtils.closeQuietly(is);
@@ -158,7 +159,7 @@ public final class FileUtils {
             os.write(str.getBytes(StandardCharsets.UTF_8));
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("FileUtils", "Error writing file", e);
             return false;
         } finally {
             IOUtils.closeQuietly(os);
@@ -290,6 +291,7 @@ public final class FileUtils {
 
     /**
      * Only support file now
+     * @noinspection ResultOfMethodCallIgnored
      */
     public static boolean rename(@NonNull File from, @NonNull File to) {
         if (!from.isFile() || to.exists()) {

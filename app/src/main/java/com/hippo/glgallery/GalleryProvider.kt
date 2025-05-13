@@ -77,8 +77,8 @@ abstract class GalleryProvider {
         } else {
             index - 1 downTo (index - mPreloads).coerceAtLeast(0)
         }
-        var start = if (preloadRange.step > 0) preloadRange.first else preloadRange.last
-        var end = if (preloadRange.step > 0) preloadRange.last else preloadRange.first
+        val start = if (preloadRange.step > 0) preloadRange.first else preloadRange.last
+        val end = if (preloadRange.step > 0) preloadRange.last else preloadRange.first
         preloadPages(
             preloadRange.filter { mImageCache[it] == null },
             start - 8 to end + 8,

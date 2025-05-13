@@ -274,13 +274,9 @@ object EhDB {
         get() = db.historyDao().listLazy()
 
     @Synchronized
-    fun putHistoryInfo(galleryInfo: GalleryInfo?) {
+    fun putHistoryInfo(galleryInfo: GalleryInfo) {
         val dao = db.historyDao()
-        val info: HistoryInfo = if (galleryInfo is HistoryInfo) {
-            galleryInfo
-        } else {
-            HistoryInfo(galleryInfo!!)
-        }
+        val info = galleryInfo as? HistoryInfo ?: HistoryInfo(galleryInfo)
         info.time = System.currentTimeMillis()
         if (null != dao.load(info.gid)) {
             dao.update(info)

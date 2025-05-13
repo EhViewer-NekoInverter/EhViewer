@@ -48,9 +48,13 @@ public class DrawerView extends FrameLayout {
     }
 
     private void init(Context context, AttributeSet attrs) {
+        //noinspection resource
         TypedArray a = context.obtainStyledAttributes(attrs, SIZE_ATTRS);
-        mMaxWidth = a.getDimensionPixelOffset(0, LayoutUtils.dp2pix(context, DEFAULT_MAX_WIDTH));
-        a.recycle();
+        try {
+            mMaxWidth = a.getDimensionPixelOffset(0, LayoutUtils.dp2pix(context, DEFAULT_MAX_WIDTH));
+        } finally {
+            a.recycle();
+        }
     }
 
     @Override

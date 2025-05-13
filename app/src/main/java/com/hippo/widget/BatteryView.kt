@@ -24,6 +24,7 @@ import android.graphics.Color
 import android.os.BatteryManager
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.content.withStyledAttributes
 import com.hippo.drawable.BatteryDrawable
 import com.hippo.ehviewer.R
 
@@ -84,15 +85,15 @@ class BatteryView @JvmOverloads constructor(
 
     init {
         init()
-        val typedArray = context.obtainStyledAttributes(
+        context.withStyledAttributes(
             attrs,
             R.styleable.BatteryView,
             defStyleAttr,
             0,
-        )
-        mColor = typedArray.getColor(R.styleable.BatteryView_color, Color.WHITE)
-        mWarningColor = typedArray.getColor(R.styleable.BatteryView_warningColor, Color.RED)
-        typedArray.recycle()
+        ) {
+            mColor = getColor(R.styleable.BatteryView_color, Color.WHITE)
+            mWarningColor = getColor(R.styleable.BatteryView_warningColor, Color.RED)
+        }
         mDrawable!!.setColor(mColor)
         mDrawable!!.setWarningColor(mWarningColor)
     }

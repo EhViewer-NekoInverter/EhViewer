@@ -17,6 +17,7 @@ package com.hippo.preference
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.core.content.withStyledAttributes
 import androidx.preference.Preference
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.UrlOpener
@@ -25,12 +26,12 @@ class UrlPreference(
     context: Context,
     attrs: AttributeSet? = null,
 ) : Preference(context, attrs) {
-    private val mUrl: String?
+    private var mUrl: String? = null
 
     init {
-        val a = context.obtainStyledAttributes(attrs, R.styleable.UrlPreference, 0, 0)
-        mUrl = a.getString(R.styleable.UrlPreference_url)
-        a.recycle()
+        context.withStyledAttributes(attrs, R.styleable.UrlPreference, 0, 0) {
+            mUrl = getString(R.styleable.UrlPreference_url)
+        }
     }
 
     override fun getSummary(): CharSequence? = mUrl ?: super.getSummary()

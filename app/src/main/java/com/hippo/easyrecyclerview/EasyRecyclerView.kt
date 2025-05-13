@@ -26,6 +26,8 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Checkable
 import androidx.collection.LongSparseArray
+import androidx.core.util.isEmpty
+import androidx.core.util.size
 import androidx.recyclerview.widget.RecyclerView
 import com.hippo.util.readParcelableCompat
 import com.hippo.yorozuya.NumberUtils
@@ -163,12 +165,12 @@ open class EasyRecyclerView @JvmOverloads constructor(
             // Copy mCheckStates
             mTempCheckStates!!.clear()
             run {
-                for (i in 0 until mCheckStates!!.size()) {
+                for (i in 0 until mCheckStates!!.size) {
                     mTempCheckStates!!.put(mCheckStates!!.keyAt(i), mCheckStates!!.valueAt(i))
                 }
             }
             // Uncheck remain checked items
-            for (i in 0 until mTempCheckStates!!.size()) {
+            for (i in 0 until mTempCheckStates!!.size) {
                 if (mTempCheckStates!!.valueAt(i)) {
                     setItemChecked(mTempCheckStates!!.keyAt(i), false)
                 }
@@ -324,7 +326,7 @@ open class EasyRecyclerView @JvmOverloads constructor(
                     mCheckedIdStates!!.put(mAdapter!!.getItemId(position), position)
                 }
                 checkedItemCount = 1
-            } else if (mCheckStates!!.size() == 0 || !mCheckStates!!.valueAt(0)) {
+            } else if (mCheckStates!!.isEmpty() || !mCheckStates!!.valueAt(0)) {
                 checkedItemCount = 0
             }
         }
@@ -500,7 +502,7 @@ open class EasyRecyclerView @JvmOverloads constructor(
             val n = `in`.readInt()
             if (n > 0) {
                 checkIdState = LongSparseArray()
-                for (i in 0 until n) {
+                (0 until n).forEach { i ->
                     val key = `in`.readLong()
                     val value = `in`.readInt()
                     checkIdState!!.put(key, value)

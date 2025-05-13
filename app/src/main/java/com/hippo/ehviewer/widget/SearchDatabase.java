@@ -41,6 +41,7 @@ public final class SearchDatabase {
     private static SearchDatabase sInstance;
     private final SQLiteDatabase mDatabase;
 
+    @SuppressWarnings("resource")
     private SearchDatabase(Context context) {
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
         mDatabase = databaseHelper.getWritableDatabase();
@@ -79,7 +80,7 @@ public final class SearchDatabase {
                 }
             }
             cursor.close();
-            return queryList.toArray(new String[queryList.size()]);
+            return queryList.toArray(new String[0]);
         } catch (SQLException e) {
             return new String[0];
         }
@@ -146,7 +147,7 @@ public final class SearchDatabase {
         public void onCreate(SQLiteDatabase db) {
             db.execSQL("CREATE TABLE " + TABLE_SUGGESTIONS + " (" +
                     "_id INTEGER PRIMARY KEY" +
-                    "," + COLUMN_QUERY + " TEXT" +
+                    ", `" + COLUMN_QUERY + "` TEXT" +
                     "," + COLUMN_DATE + " LONG" +
                     ");");
         }

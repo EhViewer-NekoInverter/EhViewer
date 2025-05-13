@@ -24,6 +24,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import androidx.biometric.BiometricManager
+import androidx.core.view.isVisible
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
 import com.hippo.widget.lockpattern.LockPatternUtils
@@ -82,7 +83,7 @@ class SetSecurityFragment :
                 }
                 Settings.putSecurity(security)
                 Settings.putEnableFingerprint(
-                    mFingerprint!!.visibility == View.VISIBLE &&
+                    mFingerprint!!.isVisible &&
                         mFingerprint!!.isChecked &&
                         security.isNotEmpty(),
                 )

@@ -29,7 +29,7 @@ public interface TouchOwner {
 
     boolean isLongClickable();
 
-    boolean performClick();
+    void performClick();
 
     boolean performLongClick();
 

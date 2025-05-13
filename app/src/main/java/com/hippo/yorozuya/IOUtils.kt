@@ -30,7 +30,7 @@ fun ResponseBody.copyToFile(file: File) {
             if (isAtLeastN) {
                 os.channel.transferFrom(it, 0, Long.MAX_VALUE)
             } else {
-                os.sink().buffer().use { it.writeAll(source()) }
+                os.sink().buffer().use { buffer -> buffer.writeAll(source()) }
             }
         }
     }

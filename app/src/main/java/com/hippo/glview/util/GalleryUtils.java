@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GalleryUtils {
-    private static final String TAG = "GalleryUtils";
     private static final List<Integer> sRenderThreads = new CopyOnWriteArrayList<>();
 
     public static float[] intColorToFloatARGBArray(int from) {

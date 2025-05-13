@@ -25,6 +25,7 @@ import android.widget.CompoundButton;
 import android.widget.RadioButton;
 
 import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
 
 import com.hippo.yorozuya.ViewUtils;
 
@@ -53,12 +54,16 @@ public class RadioGridGroup extends SimpleGridLayout {
     }
 
     private void init(Context context, AttributeSet attrs) {
+        //noinspection resource
         final TypedArray a = context.obtainStyledAttributes(attrs, RADIO_ATTRS);
-        int value = a.getResourceId(0, View.NO_ID);
-        if (value != View.NO_ID) {
-            mCheckedId = value;
+        try {
+            int value = a.getResourceId(0, View.NO_ID);
+            if (value != View.NO_ID) {
+                mCheckedId = value;
+            }
+        } finally {
+            a.recycle();
         }
-        a.recycle();
 
         mChildOnCheckedChangeListener = new CheckedStateTracker();
         mPassThroughListener = new PassThroughHierarchyChangeListener();
@@ -198,7 +203,7 @@ public class RadioGridGroup extends SimpleGridLayout {
 
     private class CheckedStateTracker implements CompoundButton.OnCheckedChangeListener {
         @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        public void onCheckedChanged(@NonNull CompoundButton buttonView, boolean isChecked) {
             // prevents from infinite recursion
             if (mProtectFromCheckedChange) {
                 return;

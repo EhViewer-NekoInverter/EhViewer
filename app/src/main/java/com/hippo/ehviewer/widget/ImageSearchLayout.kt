@@ -27,6 +27,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.client.data.ListUrlBuilder
 import com.hippo.ehviewer.client.exception.EhException
@@ -94,7 +95,7 @@ class ImageSearchLayout @JvmOverloads constructor(
         }
         FileInputStream(imagePath).use {
             val bitmap = BitmapFactory.decodeStream(it) ?: return
-            mImageUri = Uri.parse(imagePath)
+            mImageUri = imagePath.toUri()
             mPreview!!.setImageBitmap(bitmap)
             mPreview!!.setVisibility(VISIBLE)
         }

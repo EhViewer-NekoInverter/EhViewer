@@ -84,8 +84,8 @@ public class GalleryGuideView extends ViewGroup implements View.OnClickListener 
             case 0:
                 bind1();
                 break;
-            default:
             case 1:
+            default:
                 bind2();
                 break;
         }
@@ -127,8 +127,8 @@ public class GalleryGuideView extends ViewGroup implements View.OnClickListener 
                 mProgressText.measure(MeasureSpec.makeMeasureSpec(widthSize / 3, MeasureSpec.EXACTLY),
                         MeasureSpec.makeMeasureSpec(heightSize / 2, MeasureSpec.EXACTLY));
                 break;
-            default:
             case 1:
+            default:
                 mLongClickText.measure(MeasureSpec.makeMeasureSpec(widthSize, MeasureSpec.EXACTLY),
                         MeasureSpec.makeMeasureSpec(heightSize, MeasureSpec.EXACTLY));
                 break;
@@ -149,8 +149,8 @@ public class GalleryGuideView extends ViewGroup implements View.OnClickListener 
                 mMenuText.layout(width / 3, 0, width * 2 / 3, height / 2);
                 mProgressText.layout(width / 3, height / 2, width * 2 / 3, height);
                 break;
-            default:
             case 1:
+            default:
                 mLongClickText.layout(0, 0, width, height);
                 break;
         }
@@ -161,20 +161,20 @@ public class GalleryGuideView extends ViewGroup implements View.OnClickListener 
         super.onSizeChanged(w, h, oldw, oldh);
 
         if (0 == mStep) {
-            mPoints[0] = w / 3;
+            mPoints[0] = (float) w / 3;
             mPoints[1] = 0;
-            mPoints[2] = w / 3;
+            mPoints[2] = (float) w / 3;
             mPoints[3] = h;
 
-            mPoints[4] = w * 2 / 3;
+            mPoints[4] = (float) (w * 2) / 3;
             mPoints[5] = 0;
-            mPoints[6] = w * 2 / 3;
+            mPoints[6] = (float) (w * 2) / 3;
             mPoints[7] = h;
 
-            mPoints[8] = w / 3;
-            mPoints[9] = h / 2;
-            mPoints[10] = w * 2 / 3;
-            mPoints[11] = h / 2;
+            mPoints[8] = (float) w / 3;
+            mPoints[9] = (float) h / 2;
+            mPoints[10] = (float) (w * 2) / 3;
+            mPoints[11] = (float) h / 2;
         }
     }
 
@@ -194,8 +194,8 @@ public class GalleryGuideView extends ViewGroup implements View.OnClickListener 
                 mStep++;
                 bind();
                 break;
-            default:
             case 1:
+            default:
                 Settings.INSTANCE.putGuideGallery(false);
                 ViewUtils.removeFromParent(this);
                 break;

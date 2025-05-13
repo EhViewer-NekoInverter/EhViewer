@@ -59,10 +59,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -1060,7 +1062,7 @@ class GalleryActivity :
     override fun onProvideAssistContent(outContent: AssistContent) {
         super.onProvideAssistContent(outContent)
         galleryDetailUrl?.let {
-            outContent.webUri = Uri.parse(it)
+            outContent.webUri = it.toUri()
         }
     }
 
@@ -1225,7 +1227,7 @@ class GalleryActivity :
                 return
             }
             SimpleHandler.getInstance().removeCallbacks(mHideSliderRunnable)
-            if (mSeekBarPanel!!.visibility == View.VISIBLE) {
+            if (mSeekBarPanel!!.isVisible) {
                 hideSlider(mSeekBarPanel!!)
             } else {
                 showSlider(mSeekBarPanel!!)

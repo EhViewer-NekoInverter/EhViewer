@@ -25,7 +25,7 @@ import androidx.room.Update
 
 @Dao
 interface FilterDao : BasicDao<Filter> {
-    @Query("SELECT * FROM FILTER")
+    @Query("SELECT * FROM `FILTER`")
     override fun list(): List<Filter>
 
     @Update
@@ -37,6 +37,6 @@ interface FilterDao : BasicDao<Filter> {
     @Delete
     fun delete(filter: Filter)
 
-    @Query("SELECT * FROM FILTER WHERE TEXT = :text AND MODE = :mode")
+    @Query("SELECT * FROM `FILTER` WHERE TEXT = :text AND MODE = :mode")
     fun load(text: String, mode: Int): Filter?
 }

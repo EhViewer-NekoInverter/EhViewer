@@ -150,8 +150,8 @@ public class GLProgressView extends GLView {
         int width = right - left;
         int height = bottom - top;
         mGLPaint.setLineWidth(Math.min(width, height) / 12.0f);
-        mCx = width / 2;
-        mCy = height / 2;
+        mCx = (float) width / 2;
+        mCy = (float) height / 2;
         mRadiusX = width / 48.0f * 19.0f;
         mRadiusY = height / 48.0f * 19.0f;
     }
