@@ -65,6 +65,7 @@ desugar = "com.android.tools:desugar_jdk_libs:2.1.5"
 
 okhttp-bom = { module = "com.squareup.okhttp3:okhttp-bom", version.ref = "okhttp3" }
 okhttp-coroutines = { module = "com.squareup.okhttp3:okhttp-coroutines" }
+okhttp-tls = { module = "com.squareup.okhttp3:okhttp-tls" }
 okio-jvm = { module = "com.squareup.okio:okio-jvm", version.ref = "okio" }
 
 rikkax-core = "dev.rikka.rikkax.core:core-ktx:1.4.1"

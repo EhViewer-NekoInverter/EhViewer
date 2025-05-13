@@ -65,7 +65,6 @@ If you prefer Material Design 3, consider using [EhViewer-Overhauled](https://gi
 | 6.0-8.1         | No support for animated WebP |
 | 9.0+            | Full support                 |
 
-<em>* Devices running Android 6 require the [ISRG Root X1](https://letsencrypt.org/certs/isrgrootx1.pem) certificate to be installed</em>
 
 - Please go to **[GitHub Releases](https://github.com/EhViewer-NekoInverter/EhViewer/releases)** to download the release version
 
