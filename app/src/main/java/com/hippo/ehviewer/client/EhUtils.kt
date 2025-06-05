@@ -114,7 +114,7 @@ object EhUtils {
         else -> BG_COLOR_UNKNOWN
     }.toInt()
 
-    fun signOut() {
+    suspend fun signOut() {
         EhCookieStore.clear()
         Settings.putAvatar(null)
         Settings.putDisplayName(null)

@@ -17,6 +17,7 @@ package com.hippo.ehviewer.preference
 
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.util.AttributeSet
 import android.view.View
 import android.view.WindowManager
@@ -28,6 +29,7 @@ import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.EhEngine
 import com.hippo.ehviewer.client.EhUrl
 import com.hippo.ehviewer.client.EhUtils
+import com.hippo.ehviewer.ui.MainActivity
 import com.hippo.ehviewer.ui.SettingsActivity
 import com.hippo.ehviewer.ui.scene.BaseScene
 import com.hippo.preference.DialogPreference
@@ -35,6 +37,7 @@ import com.hippo.util.ReadableTime
 import com.hippo.util.addTextToClipboard
 import com.hippo.util.launchIO
 import com.hippo.util.withUIContext
+import kotlinx.coroutines.delay
 import okhttp3.HttpUrl.Companion.toHttpUrl
 
 class AccountPreference(
@@ -94,6 +97,12 @@ class AccountPreference(
                         R.string.settings_eh_account_sign_out_tip,
                         BaseScene.LENGTH_SHORT,
                     )
+                }
+                delay(1500)
+                withUIContext {
+                    val intent = Intent(mActivity, MainActivity::class.java)
+                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    mActivity.startActivity(intent)
                 }
             }
         }

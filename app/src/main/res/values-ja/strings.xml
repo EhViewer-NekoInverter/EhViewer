@@ -375,7 +375,7 @@
     <string name="settings_eh_account_name_tourist">ログインしていません。</string>
     <string name="settings_eh_account_refresh_igneous">Igneous を更新</string>
     <string name="settings_eh_account_sign_out">ログアウト</string>
-    <string name="settings_eh_account_sign_out_tip">ログアウトしました。アプリを再起動で再度ログインできます。</string>
+    <string name="settings_eh_account_sign_out_tip">ログアウトしました。しばらくしてから再度ログインできます。</string>
     <string name="settings_eh_account_identity_cookies">このアカウントは Identity Cookie を使用してログインできます。\nこれは安全に保管してください\n\n%s</string>
     <string name="settings_eh_account_igneous_expire">"Igneous の自動更新: "</string>
     <string name="settings_eh_account_identity_cookies_copy">コピー</string>

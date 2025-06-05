@@ -411,7 +411,7 @@
     <string name="settings_eh_account_name_tourist">Not signed in.</string>
     <string name="settings_eh_account_refresh_igneous">Refresh igneous</string>
     <string name="settings_eh_account_sign_out">Sign out</string>
-    <string name="settings_eh_account_sign_out_tip">You have signed out. Restart the application to sign in again</string>
+    <string name="settings_eh_account_sign_out_tip">Signed out. You can sign in again shortly</string>
     <string name="settings_eh_account_identity_cookies">Identity cookies can be used to sign in to this account.\nKEEP IT SAFE\n\n%s</string>
     <string name="settings_eh_account_igneous_expire">"igneous auto refresh: "</string>
     <string name="settings_eh_account_identity_cookies_copy">Copy</string>

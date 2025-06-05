@@ -164,10 +164,11 @@ object EhCookieStore : CookieJar {
     /**
      * Remove all cookies in this `CookieRepository`.
      */
-    @Synchronized
-    fun clear() {
-        map.clear()
-        db.clear()
+    suspend fun clear() {
+        updateLock.withLock {
+            map.clear()
+            db.clear()
+        }
     }
 
     fun newCookie(
