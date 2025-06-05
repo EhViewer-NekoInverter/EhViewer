@@ -730,22 +730,4 @@ object EhEngine {
         Log.d(TAG, url)
         return EhRequestBuilder(url, referer).executeAndParsingWith(parser)
     }
-
-    suspend fun getGalleryDiff(
-        to: GalleryInfo,
-        from: GalleryInfo,
-    ): List<Pair<Int, Int>>? = runCatching {
-        val toSha1 = getPTokenFromMultiPageViewer(to.gid, to.token, true).toMutableList()
-        val info: MutableList<Pair<Int, Int>> = ArrayList()
-        getPTokenFromMultiPageViewer(from.gid, from.token, true).forEachIndexed { index, value ->
-            val idx = toSha1.indexOf(value)
-            // Avoid duplicate files
-            if (idx != -1) toSha1[idx] = ""
-            if (idx != index) info.add(Pair(index, idx))
-        }
-        info
-    }.getOrElse {
-        it.printStackTrace()
-        null
-    }
 }

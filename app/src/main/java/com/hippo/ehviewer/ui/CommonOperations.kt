@@ -30,6 +30,7 @@ import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.client.EhClient
 import com.hippo.ehviewer.client.EhRequest
 import com.hippo.ehviewer.client.data.GalleryInfo
+import com.hippo.ehviewer.download.DownloadManager
 import com.hippo.ehviewer.download.DownloadService
 import com.hippo.ehviewer.ui.scene.BaseScene
 import com.hippo.unifile.UniFile
@@ -37,7 +38,6 @@ import com.hippo.util.isAtLeastT
 import com.hippo.yorozuya.collect.LongList
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import com.hippo.ehviewer.download.DownloadManager as downloadManager
 
 object CommonOperations {
     private fun doAddToFavorites(
@@ -184,7 +184,7 @@ object CommonOperations {
         val toStart = LongList()
         val toAdd: MutableList<GalleryInfo> = ArrayList()
         for (gi in galleryInfos) {
-            if (downloadManager.containDownloadInfo(gi.gid)) {
+            if (DownloadManager.containDownloadInfo(gi.gid)) {
                 toStart.add(gi.gid)
             } else {
                 toAdd.add(gi)
@@ -205,10 +205,10 @@ object CommonOperations {
         // Get default download label
         if (!justStart && Settings.hasDefaultDownloadLabel) {
             label = Settings.defaultDownloadLabel
-            justStart = label == null || downloadManager.containLabel(label)
+            justStart = label == null || DownloadManager.containLabel(label)
         }
         // If there is no other label, just use null label
-        if (!justStart && downloadManager.labelList.isEmpty()) {
+        if (!justStart && DownloadManager.labelList.isEmpty()) {
             justStart = true
             label = null
         }
@@ -225,7 +225,7 @@ object CommonOperations {
             activity.showTip(R.string.added_to_download_list, BaseScene.LENGTH_SHORT)
         } else {
             // Let use chose label
-            val list = downloadManager.labelList
+            val list = DownloadManager.labelList
             val items = mutableListOf<String>()
             items.add(activity.getString(R.string.default_download_label_name))
             items.addAll(list.mapNotNull { it.label })
@@ -238,7 +238,7 @@ object CommonOperations {
                         label1 = null
                     } else {
                         label1 = items[position]
-                        if (!downloadManager.containLabel(label1)) {
+                        if (!DownloadManager.containLabel(label1)) {
                             label1 = null
                         }
                     }

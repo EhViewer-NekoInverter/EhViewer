@@ -19,6 +19,11 @@ package com.hippo.yorozuya
 
 import org.jsoup.parser.Parser
 
+fun String.cleanAsDirname(): String = this
+    .replace(Regex("[^\\p{L}\\p{N}\\p{P}\\p{Z}]"), "")
+    .replace(Regex("\\s+"), " ")
+    .trim()
+
 fun String.unescapeXml(): String = Parser.unescapeEntities(this, true)
 
 inline infix fun <T> CharSequence.trimAnd(block: CharSequence.() -> T): T = block(trim())

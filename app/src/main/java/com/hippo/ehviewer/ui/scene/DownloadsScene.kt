@@ -458,12 +458,10 @@ class DownloadsScene :
     }
 
     fun updateView() {
-        if (mViewTransition != null) {
-            if (mList.isNullOrEmpty()) {
-                mViewTransition!!.showView(1)
-            } else {
-                mViewTransition!!.showView(0)
-            }
+        if (mList.isNullOrEmpty()) {
+            mViewTransition?.showView(1)
+        } else {
+            mViewTransition?.showView(0)
         }
     }
 
@@ -561,7 +559,7 @@ class DownloadsScene :
 
     override fun onClickSecondaryFab(view: FabLayout, fab: FloatingActionButton, position: Int) {
         val context = context
-        val activity: Activity? = mainActivity
+        val activity = mainActivity
         val recyclerView = mRecyclerView
         if (null == context || null == activity || null == recyclerView) {
             return
@@ -1317,7 +1315,7 @@ class DownloadsScene :
                     DownloadManager.moveDownload(mLabel, fromPosition, toPosition)
                 }
             }
-            mAdapter!!.notifyItemMoved(fromPosition, toPosition)
+            mAdapter?.notifyItemMoved(fromPosition, toPosition)
             return true
         }
 

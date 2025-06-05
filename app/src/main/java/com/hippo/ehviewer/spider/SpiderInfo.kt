@@ -40,6 +40,7 @@ class SpiderInfo(
     var startPage: Int = 0,
     var previewPages: Int = -1,
     var previewPerPage: Int = -1,
+    var upgradeFrom: Long? = null,
 )
 
 private val cbor = Cbor { ignoreUnknownKeys = true }

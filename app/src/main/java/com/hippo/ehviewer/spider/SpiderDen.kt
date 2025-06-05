@@ -33,6 +33,7 @@ import com.hippo.util.runInterruptibleOkio
 import com.hippo.util.runSuspendCatching
 import com.hippo.util.sendTo
 import com.hippo.yorozuya.FileUtils
+import com.hippo.yorozuya.cleanAsDirname
 import okhttp3.Response
 import okhttp3.coroutines.executeAsync
 import okio.buffer
@@ -43,7 +44,6 @@ import com.hippo.ehviewer.EhApplication.Companion.imageCache as sCache
 
 class SpiderDen(private val mGalleryInfo: GalleryInfo) {
     private val fileHashRegex = Regex("/h/([0-9a-f]{40})")
-    private val safeDirnameRegex = Regex("[^\\p{L}\\p{M}\\p{N}\\p{P}\\p{Z}\\p{Cf}\\p{Cs}\\s]")
     private val mGid = mGalleryInfo.gid
     var downloadDir: UniFile? = null
 
@@ -55,15 +55,9 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
             if (field == SpiderQueen.MODE_DOWNLOAD && downloadDir == null) {
                 val title = getSuitableTitle(mGalleryInfo)
                 val dirname = FileUtils.sanitizeFilename("$mGid-$title")
-                val safeDirname = dirname.replace(safeDirnameRegex, "")
-                downloadDir = perDownloadDir(dirname) ?: perDownloadDir(safeDirname)
+                downloadDir = perSafeDownloadDir(mGid, dirname)
             }
         }
-
-    private fun perDownloadDir(dirname: String): UniFile? {
-        DownloadManager.putDownloadDirname(mGid, dirname)
-        return getGalleryDownloadDir(mGid)?.takeIf { it.ensureDir() }
-    }
 
     private fun containInCache(index: Int): Boolean {
         val key = getImageKey(mGid, index)
@@ -91,6 +85,20 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
                 val file = dir.createFile(perFilename(index, extension)) ?: return false
                 UniFile.fromFile(data.toFile())!! sendTo file
             }
+        }.getOrElse {
+            it.printStackTrace()
+            false
+        }
+    }
+
+    fun copyFromUniFileToDownloadDir(oldDir: UniFile, oldIndex: Int, index: Int): Boolean {
+        val dir = downloadDir ?: return false
+        return runCatching {
+            val oldFile = findImageFile(oldDir, oldIndex) ?: return false
+            val extension = oldFile.name.let { name -> FileUtils.getExtensionFromFilename(name) }
+            val file = dir.createFile(perFilename(index, ".$extension")) ?: return false
+            oldFile sendTo file
+            true
         }.getOrElse {
             it.printStackTrace()
             false
@@ -300,5 +308,12 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
             val dirname = DownloadManager.getDownloadDirname(gid) ?: return null
             return dir.subFile(dirname)
         }
+
+        private fun perDownloadDir(gid: Long, dirname: String): UniFile? {
+            DownloadManager.putDownloadDirname(gid, dirname)
+            return getGalleryDownloadDir(gid)?.takeIf { it.ensureDir() }
+        }
+
+        fun perSafeDownloadDir(gid: Long, dirname: String): UniFile? = perDownloadDir(gid, dirname) ?: perDownloadDir(gid, dirname.cleanAsDirname())
     }
 }

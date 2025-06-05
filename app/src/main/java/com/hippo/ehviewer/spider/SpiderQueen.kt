@@ -71,6 +71,8 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
     private val mFinishedPages = AtomicInteger(0)
     private val mSpiderListeners: MutableList<OnSpiderListener> = ArrayList()
 
+    private var mOldDownloadDir: UniFile? = null
+    private var mOldHashMap: MutableMap<String, Int>? = null
     private var mReadReference = 0
     private var mDownloadReference = 0
 
@@ -144,6 +146,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
                 )
             }
         }
+        mSpiderInfo.upgradeFrom = null
     }
 
     fun notifyGetImageSuccess(index: Int, image: Image) {
@@ -221,7 +224,30 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
         mSpiderDen.downloadDir = SpiderDen.getGalleryDownloadDir(galleryInfo.gid)?.takeIf { it.isDirectory }
         mSpiderInfo = readSpiderInfoFromLocal() ?: readSpiderInfoFromInternet() ?: return
         mPageStateArray = IntArray(mSpiderInfo.pages)
+        prepareUpgrade()
         notifyGetPages(mSpiderInfo.pages)
+    }
+
+    private suspend fun prepareUpgrade() {
+        mOldDownloadDir = mSpiderInfo.upgradeFrom?.let { gid ->
+            SpiderDen.getGalleryDownloadDir(gid)?.takeIf { it.isDirectory }
+        }
+        mOldDownloadDir?.findFile(SPIDER_INFO_FILENAME)?.let { oldSpiderInfoFile ->
+            val oldSpiderInfo = readFromUniFile(oldSpiderInfoFile)
+            if (oldSpiderInfo != null && oldSpiderInfo.gid == mSpiderInfo.upgradeFrom) {
+                if (oldSpiderInfo.pTokenMap.size != oldSpiderInfo.pages) {
+                    getPTokenFromMultiPageViewer(
+                        oldSpiderInfo.gid,
+                        oldSpiderInfo.token!!,
+                        oldSpiderInfo,
+                    )
+                    if (oldSpiderInfo.pTokenMap.size == oldSpiderInfo.pages) {
+                        oldSpiderInfo.saveToUniFile(oldSpiderInfoFile)
+                    }
+                }
+                mOldHashMap = oldSpiderInfo.pTokenMap.entries.associateBy({ it.value }, { it.key }).toMutableMap()
+            }
+        }
     }
 
     suspend fun awaitReady(): Boolean {
@@ -345,27 +371,6 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
     }
         ?: readFromCache(galleryInfo.gid)?.takeIf { it.gid == galleryInfo.gid && it.token == galleryInfo.token }
 
-    private fun readPreviews(body: String, index: Int, spiderInfo: SpiderInfo) {
-        spiderInfo.previewPages = GalleryDetailParser.parsePreviewPages(body)
-        val previewSet = GalleryDetailParser.parsePreviewSet(body)
-        if (previewSet.size() > 0) {
-            if (index == 0) {
-                spiderInfo.previewPerPage = previewSet.size()
-            } else {
-                spiderInfo.previewPerPage = previewSet.getPosition(0) / index
-            }
-        }
-        for (i in 0 until previewSet.size()) {
-            if (GET_FULL_HASH) {
-                spiderInfo.pTokenMap[previewSet.getPosition(i)] = previewSet.getSha1At(i)
-            } else {
-                GalleryPageUrlParser.parse(previewSet.getPageUrlAt(i))?.let {
-                    spiderInfo.pTokenMap[it.page] = it.pToken
-                }
-            }
-        }
-    }
-
     private suspend fun readSpiderInfoFromInternet(): SpiderInfo? {
         val url = EhUrl.getGalleryDetailUrl(
             galleryInfo.gid,
@@ -388,21 +393,24 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
         }.getOrNull()
     }
 
-    private suspend fun getPTokenFromMultiPageViewer(index: Int): String? {
-        if (!isMPVAvailable) return null
-        return runSuspendCatching {
+    private suspend fun getPTokenFromMultiPageViewer(gid: Long, token: String, spiderInfo: SpiderInfo) {
+        if (!isMPVAvailable) return
+        runSuspendCatching {
             EhEngine.getPTokenFromMultiPageViewer(
-                galleryInfo.gid,
-                galleryInfo.token!!,
+                gid,
+                token,
                 GET_FULL_HASH,
             ).forEachIndexed { index, pToken ->
-                mSpiderInfo.pTokenMap[index] = pToken
+                spiderInfo.pTokenMap[index] = pToken
             }
-            mSpiderInfo.pTokenMap[index]
-        }.getOrElse {
+        }.onFailure {
             it.printStackTrace()
-            null
         }
+    }
+
+    private suspend fun getPTokenFromMultiPageViewer(index: Int): String? {
+        getPTokenFromMultiPageViewer(galleryInfo.gid, galleryInfo.token!!, mSpiderInfo)
+        return mSpiderInfo.pTokenMap[index]
     }
 
     private suspend fun getPTokenFromInternet(index: Int): String? {
@@ -577,6 +585,14 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
                 pToken = getPToken(index) ?: return updatePageState(index, STATE_FAILED, PTOKEN_FAILED_MESSAGE)
                 previousPToken = getPToken(index - 1)
 
+                mOldDownloadDir?.let { oldDir ->
+                    (mOldHashMap?.get(pToken) ?: mOldHashMap?.get(pToken.take(10)))?.let { oldIndex ->
+                        if (mSpiderDen.copyFromUniFileToDownloadDir(oldDir, oldIndex, index)) {
+                            return updatePageState(index, STATE_FINISHED)
+                        }
+                    }
+                }
+
                 // The lock for delay should be acquired before anything else to maintain FIFO order
                 delay(mDownloadDelay - lastRequestTime.elapsedNow())
                 lastRequestTime = TimeSource.Monotonic.markNow()
@@ -748,6 +764,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
         const val STATE_FINISHED = 2
         const val STATE_FAILED = 3
         const val SPIDER_INFO_FILENAME = ".ehviewer"
+        const val GET_FULL_HASH = true
         private val sQueenMap = LongSparseArray<SpiderQueen>()
         private val PTOKEN_FAILED_MESSAGE = GetText.getString(R.string.error_get_ptoken_error)
         private val ERROR_TIMEOUT = GetText.getString(R.string.error_timeout)
@@ -755,7 +772,6 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
         private val URL_509_PATTERN = Regex("\\.org/.+/509s?\\.gif")
         private const val FORCE_RETRY = "Force retry"
         private const val WORKER_DEBUG_TAG = "SpiderQueenWorker"
-        private const val GET_FULL_HASH = true
 
         private fun check509(url: String) {
             if (URL_509_PATTERN in url) throw QuotaExceededException()
@@ -777,6 +793,27 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
                     sQueenMap.remove(galleryInfo.gid)
                 } else {
                     launchIO { if (awaitReady()) updateMode() }
+                }
+            }
+        }
+
+        fun readPreviews(body: String, index: Int, spiderInfo: SpiderInfo) {
+            spiderInfo.previewPages = GalleryDetailParser.parsePreviewPages(body)
+            val previewSet = GalleryDetailParser.parsePreviewSet(body)
+            if (previewSet.size() > 0) {
+                if (index == 0) {
+                    spiderInfo.previewPerPage = previewSet.size()
+                } else {
+                    spiderInfo.previewPerPage = previewSet.getPosition(0) / index
+                }
+            }
+            for (i in 0 until previewSet.size()) {
+                if (GET_FULL_HASH) {
+                    spiderInfo.pTokenMap[previewSet.getPosition(i)] = previewSet.getSha1At(i)
+                } else {
+                    GalleryPageUrlParser.parse(previewSet.getPageUrlAt(i))?.let {
+                        spiderInfo.pTokenMap[it.page] = it.pToken
+                    }
                 }
             }
         }
