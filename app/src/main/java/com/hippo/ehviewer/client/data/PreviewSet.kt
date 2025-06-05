@@ -21,6 +21,7 @@ abstract class PreviewSet {
     abstract fun size(): Int
     abstract fun getPosition(index: Int): Int
     abstract fun getPageUrlAt(index: Int): String
+    abstract fun getSha1At(index: Int): String
     abstract fun getGalleryPreview(gid: Long, index: Int): GalleryPreview
     abstract fun load(view: LoadImageView, gid: Long, index: Int)
 }

@@ -64,8 +64,7 @@ abstract class StageActivity : EhActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        if (ACTION_START_SCENE != intent.action || !startSceneFromIntent(intent)
-        ) {
+        if (ACTION_START_SCENE != intent.action || !startSceneFromIntent(intent)) {
             onUnrecognizedIntent(intent)
         }
     }

@@ -42,25 +42,7 @@ class SpiderInfo(
     var previewPerPage: Int = -1,
 )
 
-private val cbor = Cbor {
-    ignoreUnknownKeys = true
-}
-
-fun SpiderInfo.write(file: UniFile) {
-    file.openOutputStream().use {
-        it.write(cbor.encodeToByteArray(this))
-    }
-}
-
-fun SpiderInfo.saveToCache() {
-    runSuspendCatching {
-        spiderInfoCache.edit(gid.toString()) {
-            data.toFile().writeBytes(cbor.encodeToByteArray(this@saveToCache))
-        }
-    }.onFailure {
-        it.printStackTrace()
-    }
-}
+private val cbor = Cbor { ignoreUnknownKeys = true }
 
 private val spiderInfoCache by lazy {
     DiskCache.Builder()
@@ -69,24 +51,35 @@ private val spiderInfoCache by lazy {
         .build()
 }
 
-fun readFromCache(gid: Long): SpiderInfo? {
-    val snapshot = spiderInfoCache.openSnapshot(gid.toString()) ?: return null
-    return runCatching {
-        snapshot.use { snapShot ->
-            return cbor.decodeFromByteArray<SpiderInfo>(snapShot.data.toFile().readBytes())
-        }
-    }.onFailure {
-        it.printStackTrace()
-    }.getOrNull()
-}
-
-fun readCompatFromUniFile(file: UniFile): SpiderInfo? = runCatching {
-    file.openInputStream().use {
-        cbor.decodeFromByteArray<SpiderInfo>(it.readBytes())
-    }
+fun readFromUniFile(file: UniFile): SpiderInfo? = runCatching {
+    file.openInputStream().use { cbor.decodeFromByteArray<SpiderInfo>(it.readBytes()) }
 }.getOrNull() ?: runCatching {
     file.openInputStream().use { readLegacySpiderInfo(it) }
+}.onFailure {
+    it.printStackTrace()
 }.getOrNull()
+
+fun SpiderInfo.saveToUniFile(file: UniFile) = runSuspendCatching {
+    file.openOutputStream().use { it.write(cbor.encodeToByteArray(this@saveToUniFile)) }
+}.onFailure {
+    it.printStackTrace()
+}
+
+fun readFromCache(gid: Long): SpiderInfo? = runCatching {
+    spiderInfoCache.openSnapshot(gid.toString())?.use {
+        cbor.decodeFromByteArray<SpiderInfo>(it.data.toFile().readBytes())
+    }
+}.onFailure {
+    it.printStackTrace()
+}.getOrNull()
+
+fun SpiderInfo.saveToCache() = runSuspendCatching {
+    spiderInfoCache.edit(gid.toString()) {
+        data.toFile().writeBytes(cbor.encodeToByteArray(this@saveToCache))
+    }
+}.onFailure {
+    it.printStackTrace()
+}
 
 private fun readLegacySpiderInfo(inputStream: InputStream): SpiderInfo? {
     val source = inputStream.source().buffer()
@@ -94,10 +87,7 @@ private fun readLegacySpiderInfo(inputStream: InputStream): SpiderInfo? {
     fun readInt(): Int = read().toInt()
     fun readLong(): Long = read().toLong()
     fun getVersion(str: String): Int = if (str.startsWith(VERSION_STR)) {
-        NumberUtils.parseIntSafely(
-            str.substring(VERSION_STR.length),
-            -1,
-        )
+        NumberUtils.parseIntSafely(str.substring(VERSION_STR.length), -1)
     } else {
         1
     }
@@ -122,9 +112,7 @@ private fun readLegacySpiderInfo(inputStream: InputStream): SpiderInfo? {
     val previewPages = readInt()
     val previewPerPage = if (version == 1) 0 else readInt()
     val pages = readInt()
-    if (gid == -1L || pages <= 0) {
-        return null
-    }
+    if (gid == -1L || pages <= 0) return null
     val pTokenMap = hashMapOf<Int, String>()
     runCatching {
         while (true) {

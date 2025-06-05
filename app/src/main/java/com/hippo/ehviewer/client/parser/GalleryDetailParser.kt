@@ -66,7 +66,7 @@ object GalleryDetailParser {
     private val PATTERN_PREVIEW_PAGES =
         Regex("<td[^>]+><a[^>]+>([\\d,]+)</a></td><td[^>]+>(?:<a[^>]+>)?&gt;(?:</a>)?</td>")
     private val PATTERN_PREVIEW =
-        Regex("<a href=\"([^\"]+)\">(?:<div>)?<div title=\"Page (\\d+)(?:[^\"]+\"){2}\\D+(\\d+)\\D+(\\d+)[^(]+\\(([^)]+)\\)(?: -(\\d+))?")
+        Regex("<a href=\"([^\"]+)\">(?:<div>)?<div title=\"Page (\\d+)(?:[^\"]+\"){2}\\D+(\\d+)\\D+(\\d+)[^(]+\\(([^)]+)\\)(?: -(\\d+))?(?:.*?data-orghash=\"([^\"]+)\")?")
     private val PATTERN_NEWER_DATE = Regex(", added (.+?)<br />")
     private val PATTERN_FAVORITE_SLOT =
         Regex("/fav.png\\); background-position:0px -(\\d+)px")
@@ -507,12 +507,13 @@ object GalleryDetailParser {
             val position = it.groupValues[2].toInt() - 1
             val url = it.groupValues[5]
             val offset = it.groupValues[6]
+            val sha1 = it.groupValues[7]
             if (offset.isEmpty()) {
-                largePreviewSet.addItem(position, url, pageUrl)
+                largePreviewSet.addItem(position, url, pageUrl, sha1)
             } else {
                 val width = it.groupValues[3].toInt()
                 val height = it.groupValues[4].toInt()
-                normalPreviewSet.addItem(position, url, offset.toInt(), 0, width, height, pageUrl)
+                normalPreviewSet.addItem(position, url, offset.toInt(), 0, width, height, pageUrl, sha1)
             }
         }
         if (largePreviewSet.size() > 0) return largePreviewSet

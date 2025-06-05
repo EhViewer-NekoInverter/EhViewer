@@ -29,6 +29,7 @@ class NormalPreviewSet(
     private var mClipWidthList: IntList = IntList(),
     private var mClipHeightList: IntList = IntList(),
     private var mPageUrlList: ArrayList<String> = arrayListOf(),
+    private val mSha1List: ArrayList<String> = arrayListOf(),
 ) : PreviewSet() {
     fun addItem(
         position: Int,
@@ -38,6 +39,7 @@ class NormalPreviewSet(
         width: Int,
         height: Int,
         pageUrl: String,
+        sha1: String,
     ) {
         mPositionList.add(position)
         mImageKeyList.add(getNormalPreviewKey(imageUrl))
@@ -47,6 +49,7 @@ class NormalPreviewSet(
         mClipWidthList.add(width)
         mClipHeightList.add(height)
         mPageUrlList.add(pageUrl)
+        mSha1List.add(sha1)
     }
 
     override fun size(): Int = mPositionList.size
@@ -54,6 +57,8 @@ class NormalPreviewSet(
     override fun getPosition(index: Int): Int = mPositionList[index]
 
     override fun getPageUrlAt(index: Int): String = mPageUrlList[index]
+
+    override fun getSha1At(index: Int): String = mSha1List[index]
 
     override fun getGalleryPreview(gid: Long, index: Int): GalleryPreview {
         val galleryPreview = GalleryPreview()

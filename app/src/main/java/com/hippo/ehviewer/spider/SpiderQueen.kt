@@ -26,16 +26,10 @@ import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.client.EhEngine
 import com.hippo.ehviewer.client.EhRequestBuilder
 import com.hippo.ehviewer.client.EhUrl
-import com.hippo.ehviewer.client.EhUrl.getGalleryDetailUrl
-import com.hippo.ehviewer.client.EhUrl.getGalleryMultiPageViewerUrl
-import com.hippo.ehviewer.client.EhUrl.referer
 import com.hippo.ehviewer.client.EhUtils.isMPVAvailable
 import com.hippo.ehviewer.client.data.GalleryInfo
 import com.hippo.ehviewer.client.exception.QuotaExceededException
-import com.hippo.ehviewer.client.parser.GalleryDetailParser.parsePages
-import com.hippo.ehviewer.client.parser.GalleryDetailParser.parsePreviewPages
-import com.hippo.ehviewer.client.parser.GalleryDetailParser.parsePreviewSet
-import com.hippo.ehviewer.client.parser.GalleryMultiPageViewerParser
+import com.hippo.ehviewer.client.parser.GalleryDetailParser
 import com.hippo.ehviewer.client.parser.GalleryPageUrlParser
 import com.hippo.image.Image
 import com.hippo.unifile.UniFile
@@ -344,7 +338,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
 
     private fun readSpiderInfoFromLocal(): SpiderInfo? = mSpiderDen.downloadDir?.run {
         findFile(SPIDER_INFO_FILENAME)?.let { file ->
-            readCompatFromUniFile(file)?.takeIf {
+            readFromUniFile(file)?.takeIf {
                 it.gid == galleryInfo.gid && it.token == galleryInfo.token
             }
         }
@@ -352,8 +346,8 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
         ?: readFromCache(galleryInfo.gid)?.takeIf { it.gid == galleryInfo.gid && it.token == galleryInfo.token }
 
     private fun readPreviews(body: String, index: Int, spiderInfo: SpiderInfo) {
-        spiderInfo.previewPages = parsePreviewPages(body)
-        val previewSet = parsePreviewSet(body)
+        spiderInfo.previewPages = GalleryDetailParser.parsePreviewPages(body)
+        val previewSet = GalleryDetailParser.parsePreviewSet(body)
         if (previewSet.size() > 0) {
             if (index == 0) {
                 spiderInfo.previewPerPage = previewSet.size()
@@ -362,27 +356,29 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
             }
         }
         for (i in 0 until previewSet.size()) {
-            val result = GalleryPageUrlParser.parse(previewSet.getPageUrlAt(i))
-            if (result != null) {
-                spiderInfo.pTokenMap[result.page] = result.pToken
+            if (GET_FULL_HASH) {
+                spiderInfo.pTokenMap[previewSet.getPosition(i)] = previewSet.getSha1At(i)
+            } else {
+                GalleryPageUrlParser.parse(previewSet.getPageUrlAt(i))?.let {
+                    spiderInfo.pTokenMap[it.page] = it.pToken
+                }
             }
         }
     }
 
     private suspend fun readSpiderInfoFromInternet(): SpiderInfo? {
-        val request = EhRequestBuilder(
-            getGalleryDetailUrl(
-                galleryInfo.gid,
-                galleryInfo.token,
-                0,
-                false,
-            ),
-            referer,
-        ).build()
+        val url = EhUrl.getGalleryDetailUrl(
+            galleryInfo.gid,
+            galleryInfo.token,
+            0,
+            false,
+            GET_FULL_HASH,
+        )
+        val request = EhRequestBuilder(url, EhUrl.referer).build()
         return runSuspendCatching {
             plainTextOkHttpClient.newCall(request).executeAsync().use { response ->
                 val body = response.body.string()
-                val pages = parsePages(body)
+                val pages = GalleryDetailParser.parsePages(body)
                 val spiderInfo = SpiderInfo(galleryInfo.gid, galleryInfo.token, pages)
                 readPreviews(body, 0, spiderInfo)
                 spiderInfo
@@ -394,19 +390,15 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
 
     private suspend fun getPTokenFromMultiPageViewer(index: Int): String? {
         if (!isMPVAvailable) return null
-        val url = getGalleryMultiPageViewerUrl(
-            galleryInfo.gid,
-            galleryInfo.token!!,
-        )
-        val request = EhRequestBuilder(url, referer).build()
         return runSuspendCatching {
-            plainTextOkHttpClient.newCall(request).executeAsync().use { response ->
-                val body = response.body.string()
-                GalleryMultiPageViewerParser.parsePToken(body).forEachIndexed { index, s ->
-                    mSpiderInfo.pTokenMap[index] = s
-                }
-                mSpiderInfo.pTokenMap[index]
+            EhEngine.getPTokenFromMultiPageViewer(
+                galleryInfo.gid,
+                galleryInfo.token!!,
+                GET_FULL_HASH,
+            ).forEachIndexed { index, pToken ->
+                mSpiderInfo.pTokenMap[index] = pToken
             }
+            mSpiderInfo.pTokenMap[index]
         }.getOrElse {
             it.printStackTrace()
             null
@@ -415,22 +407,19 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
 
     private suspend fun getPTokenFromInternet(index: Int): String? {
         // Check previewIndex
-        var previewIndex: Int
-        previewIndex = if (mSpiderInfo.previewPerPage >= 0) {
-            index / mSpiderInfo.previewPerPage
+        val previewIndex = if (mSpiderInfo.previewPerPage >= 0) {
+            (index / mSpiderInfo.previewPerPage).coerceAtMost(mSpiderInfo.previewPages.takeIf { it > 0 }?.minus(1) ?: Int.MAX_VALUE)
         } else {
             0
         }
-        if (mSpiderInfo.previewPages > 0) {
-            previewIndex = previewIndex.coerceAtMost(mSpiderInfo.previewPages - 1)
-        }
-        val url = getGalleryDetailUrl(
+        val url = EhUrl.getGalleryDetailUrl(
             galleryInfo.gid,
             galleryInfo.token,
             previewIndex,
             false,
+            GET_FULL_HASH,
         )
-        val request = EhRequestBuilder(url, referer).build()
+        val request = EhRequestBuilder(url, EhUrl.referer).build()
         return runSuspendCatching {
             plainTextOkHttpClient.newCall(request).executeAsync().use { response ->
                 val body = response.body.string()
@@ -455,7 +444,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
     @Synchronized
     private fun writeSpiderInfoToLocal() {
         if (!isReady) return
-        mSpiderDen.downloadDir?.run { createFile(SPIDER_INFO_FILENAME)?.also { mSpiderInfo.write(it) } }
+        mSpiderDen.downloadDir?.run { createFile(SPIDER_INFO_FILENAME)?.also { mSpiderInfo.saveToUniFile(it) } }
         mSpiderInfo.saveToCache()
     }
 
@@ -766,6 +755,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
         private val URL_509_PATTERN = Regex("\\.org/.+/509s?\\.gif")
         private const val FORCE_RETRY = "Force retry"
         private const val WORKER_DEBUG_TAG = "SpiderQueenWorker"
+        private const val GET_FULL_HASH = true
 
         private fun check509(url: String) {
             if (URL_509_PATTERN in url) throw QuotaExceededException()

@@ -29,8 +29,8 @@ import com.hippo.ehviewer.download.DownloadManager
 import com.hippo.ehviewer.spider.SpiderDen.Companion.getGalleryDownloadDir
 import com.hippo.ehviewer.spider.SpiderInfo
 import com.hippo.ehviewer.spider.SpiderQueen.Companion.SPIDER_INFO_FILENAME
-import com.hippo.ehviewer.spider.readCompatFromUniFile
-import com.hippo.ehviewer.spider.write
+import com.hippo.ehviewer.spider.readFromUniFile
+import com.hippo.ehviewer.spider.saveToUniFile
 import com.hippo.unifile.UniFile
 import com.hippo.unifile.openInputStream
 import com.hippo.util.launchUI
@@ -55,7 +55,7 @@ class RestoreDownloadPreference(
         if (!dir.isDirectory) return null
         return runCatching {
             val result = dir.findFile(SPIDER_INFO_FILENAME)?.let {
-                readCompatFromUniFile(it)?.run {
+                readFromUniFile(it)?.run {
                     GalleryDetailUrlParser.Result(gid, token!!)
                 }
             } ?: dir.findFile(COMIC_INFO_FILE)?.let { file ->
@@ -125,7 +125,7 @@ class RestoreDownloadPreference(
                                     if (gid in nonSpiderInfoItemList) {
                                         getGalleryDownloadDir(gid)?.run {
                                             createFile(SPIDER_INFO_FILENAME)?.also {
-                                                SpiderInfo(gid, item.token, item.pages).write(it)
+                                                SpiderInfo(gid, item.token, item.pages).saveToUniFile(it)
                                             }
                                         }
                                     }

@@ -24,11 +24,13 @@ class LargePreviewSet(
     private val mPositionList: IntList = IntList(),
     private val mImageUrlList: ArrayList<String> = arrayListOf(),
     private val mPageUrlList: ArrayList<String> = arrayListOf(),
+    private val mSha1List: ArrayList<String> = arrayListOf(),
 ) : PreviewSet() {
-    fun addItem(index: Int, imageUrl: String, pageUrl: String) {
+    fun addItem(index: Int, imageUrl: String, pageUrl: String, sha1: String) {
         mPositionList.add(index)
         mImageUrlList.add(imageUrl)
         mPageUrlList.add(pageUrl)
+        mSha1List.add(sha1)
     }
 
     override fun size(): Int = mImageUrlList.size
@@ -36,6 +38,8 @@ class LargePreviewSet(
     override fun getPosition(index: Int): Int = mPositionList[index]
 
     override fun getPageUrlAt(index: Int): String = mPageUrlList[index]
+
+    override fun getSha1At(index: Int): String = mSha1List[index]
 
     override fun getGalleryPreview(gid: Long, index: Int): GalleryPreview {
         val galleryPreview = GalleryPreview()

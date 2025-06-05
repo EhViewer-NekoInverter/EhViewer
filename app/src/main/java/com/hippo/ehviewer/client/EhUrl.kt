@@ -122,18 +122,23 @@ object EhUrl {
             else -> URL_WATCHED_E
         }
 
-    fun getGalleryDetailUrl(gid: Long, token: String?): String = getGalleryDetailUrl(gid, token, 0, false)
-
-    fun getGalleryDetailUrl(gid: Long, token: String?, index: Int, allComment: Boolean): String {
+    fun getGalleryDetailUrl(
+        gid: Long,
+        token: String?,
+        index: Int = 0,
+        allComment: Boolean = false,
+        sha1: Boolean = false,
+    ): String {
         val builder = UrlBuilder(host + "g/" + gid + '/' + token + '/')
-        if (index != 0) builder.addQuery("p", index)
+        if (index > 0) builder.addQuery("p", index)
         if (allComment) builder.addQuery("hc", 1)
+        if (sha1) builder.addQuery("datatags", 1)
         return builder.build()
     }
 
-    fun getGalleryMultiPageViewerUrl(gid: Long, token: String, tag: Boolean = false): String {
+    fun getGalleryMultiPageViewerUrl(gid: Long, token: String, sha1: Boolean = false): String {
         val builder = UrlBuilder(host + "mpv/" + gid + '/' + token + '/')
-        if (tag) builder.addQuery("datatags", 1)
+        if (sha1) builder.addQuery("datatags", 1)
         return builder.build()
     }
 

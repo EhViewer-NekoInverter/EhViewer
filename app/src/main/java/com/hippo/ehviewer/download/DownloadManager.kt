@@ -27,8 +27,8 @@ import com.hippo.ehviewer.dao.DownloadLabel
 import com.hippo.ehviewer.spider.SpiderDen
 import com.hippo.ehviewer.spider.SpiderQueen
 import com.hippo.ehviewer.spider.SpiderQueen.OnSpiderListener
-import com.hippo.ehviewer.spider.readCompatFromUniFile
-import com.hippo.ehviewer.spider.write
+import com.hippo.ehviewer.spider.readFromUniFile
+import com.hippo.ehviewer.spider.saveToUniFile
 import com.hippo.image.Image
 import com.hippo.yorozuya.ConcurrentPool
 import com.hippo.yorozuya.MathUtils
@@ -597,9 +597,9 @@ object DownloadManager : OnSpiderListener {
     private fun resetReadingProgress(gid: Long) {
         val downloadDir = SpiderDen.getGalleryDownloadDir(gid) ?: return
         val file = downloadDir.findFile(SpiderQueen.SPIDER_INFO_FILENAME) ?: return
-        val spiderInfo = readCompatFromUniFile(file) ?: return
+        val spiderInfo = readFromUniFile(file) ?: return
         spiderInfo.startPage = 0
-        spiderInfo.write(file)
+        spiderInfo.saveToUniFile(file)
     }
 
     // Update in DB

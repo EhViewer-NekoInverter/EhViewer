@@ -719,23 +719,25 @@ object EhEngine {
             .executeAndParsingWith(GalleryPageApiParser::parse)
     }
 
-    private suspend fun getGallerySha1(
+    suspend fun getPTokenFromMultiPageViewer(
         gid: Long,
         token: String?,
+        sha1: Boolean = false,
     ): List<String> {
-        val url = EhUrl.getGalleryMultiPageViewerUrl(gid, token!!, true)
+        val url = EhUrl.getGalleryMultiPageViewerUrl(gid, token!!, sha1)
         val referer = EhUrl.getGalleryDetailUrl(gid, token)
+        val parser = if (sha1) GalleryMultiPageViewerParser::parseSha1 else GalleryMultiPageViewerParser::parsePToken
         Log.d(TAG, url)
-        return EhRequestBuilder(url, referer).executeAndParsingWith(GalleryMultiPageViewerParser::parseSha1)
+        return EhRequestBuilder(url, referer).executeAndParsingWith(parser)
     }
 
     suspend fun getGalleryDiff(
         to: GalleryInfo,
         from: GalleryInfo,
     ): List<Pair<Int, Int>>? = runCatching {
-        val toSha1 = getGallerySha1(to.gid, to.token).toMutableList()
+        val toSha1 = getPTokenFromMultiPageViewer(to.gid, to.token, true).toMutableList()
         val info: MutableList<Pair<Int, Int>> = ArrayList()
-        getGallerySha1(from.gid, from.token).forEachIndexed { index, value ->
+        getPTokenFromMultiPageViewer(from.gid, from.token, true).forEachIndexed { index, value ->
             val idx = toSha1.indexOf(value)
             // Avoid duplicate files
             if (idx != -1) toSha1[idx] = ""
