@@ -420,7 +420,7 @@
     <string name="settings_eh_show_tag_translations_summary">元のテキストの代わりに翻訳したタグを表示します (データファイルのダウンロードに時間がかかります)</string>
     <string name="settings_eh_tag_translations_source">プレースホルダー</string>
     <string name="settings_eh_tag_translations_source_url">https://placeholder</string>
-    <string name="settings_eh_filter">ギャラリーをブロック</string>
+    <string name="settings_eh_filter">ブロッカー</string>
     <string name="settings_eh_filter_summary">タイトル、アップローダー、タグ、コメントの投稿者またはギャラリーをブロックします</string>
     <string name="settings_eh_metered_network_warning">従量制ネットワークの警告</string>
     <string name="settings_eh_request_news">時限リクエストのニュースページ</string>
@@ -542,7 +542,7 @@
     <!-- My Tags Activity -->
     <string name="my_tags">マイタグ</string>
     <!-- Filter Activity -->
-    <string name="filter">ギャラリーをブロック</string>
+    <string name="filter">ブロッカー</string>
     <string name="tip">ヒント</string>
     <string name="filter_tip">E-Hentai のギャラリーリストからブロックしたものを除外します。\n\nタイトルをブロック: ブロックしたテキストを含むギャラリーを除外します。\n\nアップローダーをブロック: 該当するアップローダーを除外します。\n\nタグをブロック: 該当するタグを含むギャラリーを除外します。ギャラリーリストの取得に時間がかかる可能性があります。\n\nタグ名前空間をブロック: 該当するタグ名前空間を含むギャラリーを除外します。ギャラリーリストの取得に時間がかかる可能性があります。\n\nコメント投稿者をブロック: 該当するコメント投稿者が投稿したコメントを除外します。\n\nコメントをブロック: 正規表現に一致するコメントを除外します。</string>
     <string name="no_filter">ブロッカーはここに表示されます</string>
