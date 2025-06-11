@@ -62,7 +62,7 @@ import com.hippo.ehviewer.Settings as AppSettings
 @Suppress("BlockingMethodInNonBlockingContext")
 class AdvancedFragment : BasePreferenceFragment() {
     private var exportLauncher = registerForActivityResult<String, Uri>(
-        ActivityResultContracts.CreateDocument("application/vnd.sqlite3"),
+        ActivityResultContracts.CreateDocument("application/octet-stream"),
     ) { uri: Uri? ->
         if (uri != null) {
             try {
