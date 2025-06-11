@@ -112,12 +112,11 @@ class SignInScene :
     }
 
     private fun showProgress() {
-        if (null != mProgress && View.VISIBLE != mProgress!!.visibility) {
-            mProgress!!.run {
-                alpha = 0.0f
-                visibility = View.VISIBLE
-                animate().alpha(1.0f).setDuration(500).start()
-            }
+        if (mProgress?.visibility == View.VISIBLE) return
+        mProgress?.apply {
+            alpha = 0f
+            visibility = View.VISIBLE
+            animate().alpha(1f).setDuration(500).start()
         }
     }
 
@@ -149,10 +148,13 @@ class SignInScene :
             mSignInViaWebView ->
                 startScene(Announcer(WebViewSignInScene::class.java).setRequestCode(this, REQUEST_CODE_WEBVIEW))
             mSkipSigningIn -> {
-                // Set gallery size SITE_E if skip sign in
-                Settings.putGallerySite(EhUrl.SITE_E)
-                Settings.putSelectSite(false)
-                finishSignIn(false)
+                lifecycleScope.launchIO {
+                    EhUtils.signOut()
+                    // Set gallery size SITE_E if skip sign in
+                    Settings.putGallerySite(EhUrl.SITE_E)
+                    Settings.putSelectSite(false)
+                    finishSignIn(false)
+                }
             }
         }
     }
