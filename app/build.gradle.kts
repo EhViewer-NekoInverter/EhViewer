@@ -36,7 +36,7 @@ android {
                 include(*supportedAbis)
                 isUniversalApk = true
             } else {
-                include("arm64-v8a", "x86")
+                include("x86_64", "x86")
             }
         }
     }

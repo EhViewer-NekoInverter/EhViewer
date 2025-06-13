@@ -60,6 +60,7 @@ import com.hippo.yorozuya.ViewUtils
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import rikka.core.res.resolveColor
@@ -86,7 +87,7 @@ class SearchBar @JvmOverloads constructor(
     private var mListHeader: View
     private var mViewTransition: ViewTransition
     private var mSuggestionAdapter: SuggestionAdapter
-    private var mSuggestionList = arrayListOf<Suggestion>()
+    private var mSuggestionList = listOf<Suggestion>()
     private val suggestionLock = Mutex()
     private var mAllowEmptySearch = true
     private var mInAnimation = false
@@ -145,10 +146,7 @@ class SearchBar @JvmOverloads constructor(
     private fun updateSuggestions(scrollToTop: Boolean = true) {
         launchIO {
             suggestionLock.withLock {
-                mSuggestionList.clear()
-                mergedSuggestionFlow().collect {
-                    mSuggestionList.add(it)
-                }
+                mSuggestionList = mergedSuggestionFlow().toList()
                 withUIContext {
                     if (mSuggestionList.isEmpty()) {
                         removeListHeader()
