@@ -508,6 +508,9 @@
     <string name="settings_privacy_pattern_protection_set">已設定圖案保護</string>
     <string name="settings_privacy_secure">不允許螢幕擷取</string>
     <string name="settings_privacy_secure_summary">啟用後，將無法對本程式進行螢幕擷取，同時，將不會在系統任務切換器中顯示該程式的預覽內容，重新啟動本程式以套用此變更</string>
+    <string name="settings_privacy_clear_search_history">清除裝置上的搜尋記錄</string>
+    <string name="settings_privacy_clear_search_history_summary">移除曾在此裝置上進行過的搜尋</string>
+    <string name="settings_privacy_clear_search_history_cleared">已清除搜尋記錄</string>
     <string name="settings_advanced">進階</string>
     <string name="settings_advanced_save_parse_error_body">解析失敗時儲存網頁的內容</string>
     <string name="settings_advanced_save_parse_error_body_summary">網頁內容可能含有敏感的隱私資料</string>

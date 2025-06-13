@@ -44,6 +44,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.hippo.easyrecyclerview.EasyRecyclerView
 import com.hippo.easyrecyclerview.LinearDividerItemDecoration
+import com.hippo.ehviewer.EhApplication.Companion.searchDatabase
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.client.EhTagDatabase
@@ -72,7 +73,6 @@ class SearchBar @JvmOverloads constructor(
     TextWatcher,
     SearchEditText.SearchEditTextListener {
     private val mRect = Rect()
-    private val mSearchDatabase by lazy { SearchDatabase.getInstance(context) }
     private var mState = STATE_NORMAL
     private var mWidth = 0
     private var mHeight = 0
@@ -167,7 +167,7 @@ class SearchBar @JvmOverloads constructor(
     private fun mergedSuggestionFlow(): Flow<Suggestion> = flow {
         val text = mEditText.text.toString()
         mSuggestionProvider?.run { providerSuggestions(text)?.forEach { emit(it) } }
-        mSearchDatabase.getSuggestions(text, 128).forEach { emit(KeywordSuggestion(it)) }
+        searchDatabase.getSuggestions(text, 128).forEach { emit(KeywordSuggestion(it)) }
         EhTagDatabase.takeIf { it.isInitialized() }?.run {
             if (text.isNotEmpty() && !text.endsWith(" ")) {
                 val keyword = text.substringAfterLast(" ")
@@ -228,7 +228,7 @@ class SearchBar @JvmOverloads constructor(
             return
         }
         // Put it into db
-        mSearchDatabase.addQuery(query)
+        searchDatabase.addQuery(query)
         // Callback
         mHelper?.onApplySearch(query)
     }
@@ -531,7 +531,7 @@ class SearchBar @JvmOverloads constructor(
         }
 
         override fun onLongClick(): Boolean {
-            mSearchDatabase.deleteQuery(mKeyword)
+            searchDatabase.deleteQuery(mKeyword)
             updateSuggestions(false)
             return true
         }

@@ -47,7 +47,7 @@ class CleanRedundancyPreference(
 
     private fun doRealWork(): Int = Settings.downloadLocation?.listFiles()?.sumOf { clearFile(it).compareTo(false) } ?: 0
 
-    override val jobTitle = GetText.getString(R.string.settings_download_clean_redundancy)
+    override val jobTitle = JOB_TITLE_CLEAR_REDUNDANCY
 
     override fun launchJob() {
         if (singletonJob?.isActive == true) {
@@ -68,8 +68,8 @@ class CleanRedundancyPreference(
     }
 
     companion object {
-        private val NO_REDUNDANCY =
-            GetText.getString(R.string.settings_download_clean_redundancy_no_redundancy)
+        private val JOB_TITLE_CLEAR_REDUNDANCY = GetText.getString(R.string.settings_download_clean_redundancy)
+        private val NO_REDUNDANCY = GetText.getString(R.string.settings_download_clean_redundancy_no_redundancy)
         private val CLEAR_REDUNDANCY_DONE =
             { cnt: Int -> GetText.getString(R.string.settings_download_clean_redundancy_done, cnt) }
         private val FINAL_CLEAR_REDUNDANCY_MSG =

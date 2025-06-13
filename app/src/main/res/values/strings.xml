@@ -533,7 +533,10 @@
     <string name="settings_privacy_pattern_protection_not_set">Pattern protection has not been set</string>
     <string name="settings_privacy_pattern_protection_set">Pattern protection has been set</string>
     <string name="settings_privacy_secure">Prevent screenshots</string>
-    <string name="settings_privacy_secure_summary">Prevent the content of the app from being taken screenshots of or shown in the \"Recent Apps\" list.</string>
+    <string name="settings_privacy_secure_summary">Prevent the content of the app from being taken screenshots of or shown in the \"Recent Apps\" list</string>
+    <string name="settings_privacy_clear_search_history">Clear device search history</string>
+    <string name="settings_privacy_clear_search_history_summary">Remove searches you have performed from this device</string>
+    <string name="settings_privacy_clear_search_history_cleared">Search history cleared</string>
     <string name="settings_advanced">Advanced</string>
     <string name="settings_advanced_save_parse_error_body">Save HTML content when parsing error</string>
     <string name="settings_advanced_save_parse_error_body_summary">Html content may be privacy-sensitive</string>

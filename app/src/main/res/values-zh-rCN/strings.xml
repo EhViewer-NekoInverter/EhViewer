@@ -508,6 +508,9 @@
     <string name="settings_privacy_pattern_protection_set">已设置图案保护</string>
     <string name="settings_privacy_secure">不允许屏幕抓取</string>
     <string name="settings_privacy_secure_summary">启用后，将不能截取该应用的屏幕截图。同时，也不会在系统任务切换器中显示该应用的内容预览。请重新启动应用以使此更改生效</string>
+    <string name="settings_privacy_clear_search_history">清除设备上的搜索记录</string>
+    <string name="settings_privacy_clear_search_history_summary">移除您在此设备上执行过的搜索查询的记录</string>
+    <string name="settings_privacy_clear_search_history_cleared">已清除搜索记录</string>
     <string name="settings_advanced">高级</string>
     <string name="settings_advanced_save_parse_error_body">解析失败时保存页面内容</string>
     <string name="settings_advanced_save_parse_error_body_summary">页面内容可能含有隐私敏感信息</string>

@@ -94,7 +94,7 @@ class RestoreDownloadPreference(
         }.getOrNull()
     }
 
-    override val jobTitle = GetText.getString(R.string.settings_download_restore_download_items)
+    override val jobTitle = JOB_TITLE_RESTORE_DOWNLOAD
 
     override fun launchJob() {
         if (singletonJob?.isActive == true) {
@@ -142,6 +142,7 @@ class RestoreDownloadPreference(
     }
 
     companion object {
+        private val JOB_TITLE_RESTORE_DOWNLOAD = GetText.getString(R.string.settings_download_restore_download_items)
         private val RESTORE_NOT_FOUND = GetText.getString(R.string.settings_download_restore_not_found)
         private val RESTORE_FAILED = GetText.getString(R.string.settings_download_restore_failed)
         private val RESTORE_COUNT_MSG =

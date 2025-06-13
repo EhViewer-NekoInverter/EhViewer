@@ -54,10 +54,5 @@ abstract class TaskPreference(
 
     abstract fun launchJob()
 
-    protected fun showTip(msg: String) {
-        (context as SettingsActivity).showTip(
-            msg,
-            Snackbar.LENGTH_SHORT,
-        )
-    }
+    protected fun showTip(msg: String) = (context as SettingsActivity).showTip(msg, Snackbar.LENGTH_SHORT)
 }
