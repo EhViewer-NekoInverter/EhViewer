@@ -60,6 +60,7 @@
         app:fitsSystemWindowsInsets="bottom">
 
         <EditText
+            style="@style/FixedLineHeightEditText"
             android:id="@+id/edit_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

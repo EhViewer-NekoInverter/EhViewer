@@ -60,6 +60,7 @@
                 android:minWidth="@dimen/single_max_width">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    style="@style/FixedLineHeightEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
@@ -79,6 +80,7 @@
                 android:minWidth="@dimen/single_max_width">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    style="@style/FixedLineHeightEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionDone"

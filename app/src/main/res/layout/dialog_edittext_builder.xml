@@ -22,6 +22,7 @@
     android:paddingTop="@dimen/abc_dialog_padding_top_material">
 
     <com.google.android.material.textfield.TextInputEditText
+        style="@style/FixedLineHeightEditText"
         android:id="@+id/edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

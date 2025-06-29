@@ -27,6 +27,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
     <EditText
+        style="@style/FixedLineHeightEditText"
         android:id="@+id/value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

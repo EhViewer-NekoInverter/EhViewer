@@ -65,7 +65,7 @@
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="colorControlActivated">@color/colorPrimary</item>
         <item name="android:colorBackground">@color/grey_850</item>
-        <item name="android:windowSplashScreenIconBackgroundColor" tools:targetApi="s">@color/ic_launcher_background</item>
+        <item name="android:windowSplashScreenIconBackgroundColor" tools:targetApi="31">@color/ic_launcher_background</item>
 
         <!-- Non-overhead workaround for ROMs enable it by default, MIUI etc. -->
         <item name="android:forceDarkAllowed" tools:targetApi="29">false</item>
@@ -170,6 +170,10 @@
 
     <style name="Widget.FloatingActionButton.Accent.Mini" parent="Widget.FloatingActionButton.Accent">
         <item name="fabSize">mini</item>
+    </style>
+
+    <style name="FixedLineHeightEditText" parent="Widget.AppCompat.EditText">
+        <item name="android:useLocalePreferredLineHeightForMinimum" tools:targetApi="35">false</item>
     </style>
 
 </resources>

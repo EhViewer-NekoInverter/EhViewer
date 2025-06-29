@@ -80,6 +80,7 @@
             android:text="@string/search_sp" />
 
         <EditText
+            style="@style/FixedLineHeightEditText"
             android:layout_width="64dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -98,6 +99,7 @@
             android:textColor="?android:attr/textColorPrimary" />
 
         <EditText
+            style="@style/FixedLineHeightEditText"
             android:layout_width="64dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"

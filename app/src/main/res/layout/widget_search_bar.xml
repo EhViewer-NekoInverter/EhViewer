@@ -58,6 +58,7 @@
                 android:padding="12dp" />
 
             <com.hippo.ehviewer.widget.SearchEditText
+                style="@style/FixedLineHeightEditText"
                 android:id="@+id/search_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -36,6 +36,7 @@
         android:hint="@string/proxy_host_or_ip">
 
         <com.google.android.material.textfield.TextInputEditText
+            style="@style/FixedLineHeightEditText"
             android:id="@+id/ip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -51,6 +52,7 @@
         android:hint="@string/proxy_port">
 
         <com.google.android.material.textfield.TextInputEditText
+            style="@style/FixedLineHeightEditText"
             android:id="@+id/port"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
