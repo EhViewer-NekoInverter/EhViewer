@@ -184,6 +184,7 @@ kotlin {
         optIn.addAll(
             "coil3.annotation.ExperimentalCoilApi",
             "kotlin.contracts.ExperimentalContracts",
+            "kotlin.time.ExperimentalTime",
             "kotlinx.coroutines.ExperimentalCoroutinesApi",
             "kotlinx.coroutines.FlowPreview",
             "kotlinx.coroutines.InternalCoroutinesApi",

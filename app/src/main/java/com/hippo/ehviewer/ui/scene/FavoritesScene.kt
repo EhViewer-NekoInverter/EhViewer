@@ -76,13 +76,13 @@ import com.hippo.yorozuya.LayoutUtils
 import com.hippo.yorozuya.ObjectUtils
 import com.hippo.yorozuya.SimpleHandler
 import com.hippo.yorozuya.ViewUtils
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.todayIn
 import rikka.core.res.resolveColor
+import kotlin.time.Clock
 
 @SuppressLint("NotifyDataSetChanged", "RtlHardcoded")
 class FavoritesScene :

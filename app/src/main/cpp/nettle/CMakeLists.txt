@@ -124,6 +124,7 @@ set(LIBNETTLE_SOURCES
         nettle/hmac-sha512.c
         nettle/hmac-streebog.c
         nettle/hmac-sm3.c
+        nettle/hmac-gosthash94-meta.c
         nettle/hmac-md5-meta.c
         nettle/hmac-ripemd160-meta.c
         nettle/hmac-sha1-meta.c
@@ -140,7 +141,6 @@ set(LIBNETTLE_SOURCES
         nettle/md4.c
         nettle/md4-meta.c
         nettle/md5.c
-        nettle/md5-compress.c
         nettle/md5-compat.c
         nettle/md5-meta.c
         nettle/memeql-sec.c
@@ -187,6 +187,7 @@ set(LIBNETTLE_SOURCES
         nettle/sha512-256-meta.c
         nettle/sha3.c
         nettle/sha3-permute.c
+        nettle/sha3-shake.c
         nettle/sha3-224.c
         nettle/sha3-224-meta.c
         nettle/sha3-256.c
@@ -195,6 +196,7 @@ set(LIBNETTLE_SOURCES
         nettle/sha3-384-meta.c
         nettle/sha3-512.c
         nettle/sha3-512-meta.c
+        nettle/shake128.c
         nettle/shake256.c
         nettle/sm3.c
         nettle/sm3-meta.c

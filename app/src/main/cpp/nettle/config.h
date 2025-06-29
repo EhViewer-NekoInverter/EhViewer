@@ -4,19 +4,13 @@
 /* Define if building universal (internal helper macro) */
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
 
-/* Define to one of `_getb67', `GETB67', `getb67' for Cray-2 and Cray-YMP
-   systems. This function is required for `alloca.c' support on those systems.
-   */
-/* #undef CRAY_STACKSEG_END */
-
-/* Define to 1 if using `alloca.c'. */
+/* Define to 1 if using 'alloca.c'. */
 /* #undef C_ALLOCA */
 
-/* Define to 1 if you have `alloca', as a function or macro. */
+/* Define to 1 if you have 'alloca', as a function or macro. */
 #define HAVE_ALLOCA 1
 
-/* Define to 1 if you have <alloca.h> and it should be used (not on Ultrix).
-   */
+/* Define to 1 if <alloca.h> works. */
 #define HAVE_ALLOCA_H 1
 
 /* Define if __builtin_bswap64 is available */
@@ -27,6 +21,9 @@
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #define HAVE_DLFCN_H 1
+
+/* Define to 1 if you have the `elf_aux_info' function. */
+/* #undef HAVE_ELF_AUX_INFO */
 
 /* Define if fcntl file locking is available */
 #define HAVE_FCNTL_LOCKING 1
@@ -52,14 +49,12 @@
 /* Define to 1 if you have the <malloc.h> header file. */
 #define HAVE_MALLOC_H 1
 
-/* Define to 1 if you have the <memory.h> header file. */
-#define HAVE_MEMORY_H 1
-
 /* Define to 1 each of the following for which a native (ie. CPU specific)
     implementation of the corresponding routine exists.  */
 /* #undef HAVE_NATIVE_memxor3 */
 /* #undef HAVE_NATIVE_aes_decrypt */
 /* #undef HAVE_NATIVE_aes_encrypt */
+/* #undef HAVE_NATIVE_aes_invert */
 /* #undef HAVE_NATIVE_aes128_decrypt */
 /* #undef HAVE_NATIVE_aes128_encrypt */
 /* #undef HAVE_NATIVE_aes128_invert_key */
@@ -104,6 +99,8 @@
 /* #undef HAVE_NATIVE_fat_poly1305_blocks */
 /* #undef HAVE_NATIVE_ghash_set_key */
 /* #undef HAVE_NATIVE_ghash_update */
+/* #undef HAVE_NATIVE_gcm_aes_encrypt */
+/* #undef HAVE_NATIVE_gcm_aes_decrypt */
 /* #undef HAVE_NATIVE_salsa20_core */
 #define HAVE_NATIVE_salsa20_2core 1
 /* #undef HAVE_NATIVE_fat_salsa20_2core */
@@ -114,11 +111,14 @@
 /* #undef HAVE_NATIVE_umac_nh */
 /* #undef HAVE_NATIVE_umac_nh_n */
 
-/* Define to 1 if you have the <openssl/ecdsa.h> header file. */
-/* #undef HAVE_OPENSSL_ECDSA_H */
+/* Define to 1 if you have the <openssl/ec.h> header file. */
+/* #undef HAVE_OPENSSL_EC_H */
 
 /* Define to 1 if you have the <openssl/evp.h> header file. */
 /* #undef HAVE_OPENSSL_EVP_H */
+
+/* Define to 1 if you have the <openssl/rsa.h> header file. */
+/* #undef HAVE_OPENSSL_RSA_H */
 
 /* Define to 1 if you have the `secure_getenv' function. */
 #define HAVE_SECURE_GETENV 1
@@ -126,11 +126,11 @@
 /* Define to 1 if you have the <stdint.h> header file. */
 #define HAVE_STDINT_H 1
 
+/* Define to 1 if you have the <stdio.h> header file. */
+#define HAVE_STDIO_H 1
+
 /* Define to 1 if you have the <stdlib.h> header file. */
 #define HAVE_STDLIB_H 1
-
-/* Define to 1 if you have the `strerror' function. */
-#define HAVE_STRERROR 1
 
 /* Define to 1 if you have the <strings.h> header file. */
 #define HAVE_STRINGS_H 1
@@ -157,7 +157,7 @@
 #define PACKAGE_NAME "nettle"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "nettle 3.9.1"
+#define PACKAGE_STRING "nettle 3.10.2"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "nettle"
@@ -166,7 +166,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "3.9.1"
+#define PACKAGE_VERSION "3.10.2"
 
 /* The size of `long', as computed by sizeof. */
 #define SIZEOF_LONG __SIZEOF_LONG__
@@ -182,16 +182,18 @@
 	STACK_DIRECTION = 0 => direction of growth unknown */
 /* #undef STACK_DIRECTION */
 
-/* Define to 1 if you have the ANSI C header files. */
+/* Define to 1 if all of the C90 standard headers exist (not just the ones
+   required in a freestanding environment). This macro is provided for
+   backward compatibility; new code need not use it. */
 #define STDC_HEADERS 1
 
-/* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
-#define TIME_WITH_SYS_TIME 1
+/* Defined to enable additional asserts */
+/* #undef WITH_EXTRA_ASSERTS */
 
 /* Defined if public key features are enabled */
 /* #undef WITH_HOGWEED */
 
-/* Define if you have openssl's libcrypto (used for benchmarking) */
+/* Define if you have openssl libcrypto (used for benchmarking) */
 /* #undef WITH_OPENSSL */
 
 /* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
@@ -253,13 +255,6 @@ char *alloca ();
 #endif
 
 
-#if HAVE_STRERROR
-#define STRERROR strerror
-#else
-#define STRERROR(x) (sys_errlist[x])
-#endif
-
-
 #if __GNUC__ && HAVE_GCC_ATTRIBUTE
 # define NORETURN __attribute__ ((__noreturn__))
 # define PRINTF_STYLE(f, a) __attribute__ ((__format__ (__printf__, f, a)))
@@ -277,3 +272,4 @@ char *alloca ();
 /* Needs include of <limits.h> before use. */
 # define HAVE_NATIVE_64_BIT (SIZEOF_LONG * CHAR_BIT >= 64)
 #endif
+

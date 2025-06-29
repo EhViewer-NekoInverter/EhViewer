@@ -75,7 +75,7 @@ object GalleryDetailParser {
 
     // dd MMMM yyyy, HH:mm
     private val WEB_COMMENT_DATE_FORMAT = LocalDateTime.Format {
-        dayOfMonth()
+        day()
         char(' ')
         monthName(MonthNames.ENGLISH_FULL)
         char(' ')
