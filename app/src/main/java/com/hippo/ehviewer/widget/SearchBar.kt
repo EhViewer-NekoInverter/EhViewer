@@ -221,7 +221,7 @@ class SearchBar @JvmOverloads constructor(
     }
 
     fun applySearch() {
-        val query = mEditText.text.toString().trim { it <= ' ' }
+        val query = mEditText.text.toString().replace(Regex("\\p{Cntrl}"), "").trim { it <= ' ' }
         if (!mAllowEmptySearch && query.isEmpty()) {
             return
         }
