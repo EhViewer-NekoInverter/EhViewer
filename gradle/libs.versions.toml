@@ -1,34 +1,34 @@
 [versions]
-agp = "8.11.0"
+agp = "8.12.2"
 androidx-activity = "1.10.1"
 androidx-appcompat = "1.7.1"
 androidx-biometric = "1.4.0-alpha02"
-androidx-browser = "1.8.0"
+androidx-browser = "1.9.0"
 androidx-collection = "1.5.0"
 androidx-coordinatorlayout = "1.3.0"
-androidx-core = "1.16.0"
-androidx-fragment = "1.8.8"
-androidx-lifecycle = "2.9.1"
+androidx-core = "1.17.0"
+androidx-fragment = "1.8.9"
+androidx-lifecycle = "2.9.3"
 androidx-paging = "3.3.6"
 androidx-preference = "1.2.1"
 androidx-recyclerview = "1.4.0"
 androidx-room = "2.7.2"
 androidx-swiperefreshlayout = "1.2.0-beta01"
-coil = "3.2.0"
+coil = "3.3.0"
 drawer = "1.0.3"
 google-android-material = "1.12.0"
-jsoup = "1.21.1"
-kotlin = "2.2.0"
+jsoup = "1.21.2"
+kotlin = "2.2.10"
 kotlinx-coroutines = "1.10.2"
-kotlinx-datetime = "0.7.0"
+kotlinx-datetime = "0.7.1"
 kotlinx-serialization = "1.9.0"
-ksp = "2.2.0-2.0.2"
-ktor-utils = "3.2.0"
-okhttp3 = "5.0.0-alpha.16"
-okio = "3.14.0"
+ksp = "2.2.10-2.0.2"
+ktor-utils = "3.2.3"
+okhttp3 = "5.1.0"
+okio = "3.16.0"
 #noinspection NewerVersionAvailable
 rikkax-material = { strictly = "1.6.6" }
-spotless = "7.0.4"
+spotless = "7.2.1"
 
 [libraries]
 androidx-activity = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity" }
@@ -57,7 +57,7 @@ jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinx-serialization-cbor = { module = "org.jetbrains.kotlinx:kotlinx-serialization-cbor", version.ref = "kotlinx-serialization" }
-ktlint = "com.pinterest.ktlint:ktlint-cli:1.6.0"
+ktlint = "com.pinterest.ktlint:ktlint-cli:1.7.1"
 ktor-utils = { module = "io.ktor:ktor-utils", version.ref = "ktor-utils" }
 material = { module = "com.google.android.material:material", version.ref = "google-android-material" }
 
