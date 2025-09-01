@@ -171,11 +171,12 @@ object EhTagDatabase {
 
     private val NAMESPACE_TO_PREFIX = HashMap<String, String>().also {
         it["artist"] = "a"
-        it["cosplayer"] = "cos"
         it["character"] = "c"
+        it["cosplayer"] = "cos"
         it["female"] = "f"
         it["group"] = "g"
         it["language"] = "l"
+        it["location"] = "loc"
         it["male"] = "m"
         it["mixed"] = "x"
         it["other"] = "o"
