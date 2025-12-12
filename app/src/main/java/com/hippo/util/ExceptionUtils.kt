@@ -17,6 +17,7 @@ package com.hippo.util
 
 import com.hippo.ehviewer.GetText.getString
 import com.hippo.ehviewer.R
+import com.hippo.ehviewer.client.exception.CloudflareBypassException
 import com.hippo.ehviewer.client.exception.EhException
 import com.hippo.network.StatusCodeException
 import java.net.MalformedURLException
@@ -29,6 +30,11 @@ import javax.net.ssl.SSLException
 object ExceptionUtils {
     fun getReadableString(e: Throwable?): String {
         e?.printStackTrace()
+
+        if (e?.cause is CloudflareBypassException) {
+            return e.cause!!.message!!
+        }
+
         return when (e) {
             is MalformedURLException -> {
                 getString(R.string.error_invalid_url)

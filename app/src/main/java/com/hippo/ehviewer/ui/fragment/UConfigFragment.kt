@@ -17,7 +17,6 @@
  */
 package com.hippo.ehviewer.ui.fragment
 
-import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -37,6 +36,7 @@ import com.hippo.ehviewer.R
 import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.EhUrl
 import com.hippo.ehviewer.ui.scene.BaseScene
+import com.hippo.ehviewer.util.setDefaultSettings
 import com.hippo.ehviewer.widget.DialogWebChromeClient
 import com.hippo.util.launchIO
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -50,7 +50,6 @@ class UConfigFragment : BaseFragment() {
     private var progress: CircularProgressIndicator? = null
     private var loaded = false
 
-    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -60,9 +59,7 @@ class UConfigFragment : BaseFragment() {
         webView = view.findViewById(R.id.webview)
         webView!!.run {
             setBackgroundColor(requireActivity().theme.resolveColor(android.R.attr.colorBackground))
-            settings.builtInZoomControls = true
-            settings.displayZoomControls = false
-            settings.javaScriptEnabled = true
+            setDefaultSettings()
             webViewClient = UConfigWebViewClient()
             webChromeClient = DialogWebChromeClient(requireContext())
         }

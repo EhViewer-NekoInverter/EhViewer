@@ -15,7 +15,6 @@
  */
 package com.hippo.ehviewer.ui.scene
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +26,7 @@ import androidx.lifecycle.lifecycleScope
 import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.EhUrl
 import com.hippo.ehviewer.client.EhUtils
+import com.hippo.ehviewer.util.setDefaultSettings
 import com.hippo.ehviewer.widget.DialogWebChromeClient
 import com.hippo.util.launchIO
 import com.hippo.util.withUIContext
@@ -40,7 +40,6 @@ class WebViewSignInScene : SolidScene() {
 
     override fun needShowLeftDrawer(): Boolean = false
 
-    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -54,11 +53,7 @@ class WebViewSignInScene : SolidScene() {
         }
         return WebView(requireContext()).apply {
             setBackgroundColor(theme.resolveColor(android.R.attr.colorBackground))
-            settings.run {
-                builtInZoomControls = true
-                displayZoomControls = false
-                javaScriptEnabled = true
-            }
+            setDefaultSettings()
             webViewClient = LoginWebViewClient()
             webChromeClient = DialogWebChromeClient(context)
             loadUrl(EhUrl.URL_SIGN_IN)

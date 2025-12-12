@@ -9,5 +9,6 @@ fun WebView.setDefaultSettings() = settings.run {
     builtInZoomControls = true
     displayZoomControls = false
     javaScriptEnabled = true
+    domStorageEnabled = true
     userAgentString = CHROME_USER_AGENT
 }

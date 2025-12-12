@@ -259,9 +259,21 @@ object EhCookieStore : CookieJar {
         val cookies = cookieManager.getCookie(url) ?: return false
         var saved = false
         cookies.split(';').forEach { header ->
-            Cookie.parse(url.toHttpUrl(), header)?.let {
+            Cookie.parse(url.toHttpUrl(), header.trim())?.let {
                 if (filter(it)) {
-                    launchIO { addCookie(it) }
+                    val persistentCookie = Cookie.Builder()
+                        .name(it.name)
+                        .value(it.value)
+                        .domain(it.domain)
+                        .path(it.path)
+                        .expiresAt(System.currentTimeMillis() + 365L * 24 * 60 * 60 * 1000)
+                        .apply {
+                            if (it.secure) secure()
+                            if (it.httpOnly) httpOnly()
+                            if (it.hostOnly) hostOnlyDomain(it.domain)
+                        }
+                        .build()
+                    launchIO { addCookie(persistentCookie) }
                     saved = true
                 }
             }

@@ -46,6 +46,7 @@ import com.hippo.ehviewer.download.DownloadManager
 import com.hippo.ehviewer.ui.EhActivity
 import com.hippo.ehviewer.ui.keepNoMediaFileStatus
 import com.hippo.ehviewer.widget.SearchDatabase
+import com.hippo.okhttp.ChromeRequestBuilder.Companion.CHROME_USER_AGENT
 import com.hippo.scene.SceneApplication
 import com.hippo.util.ReadableTime
 import com.hippo.util.isAtLeastP
@@ -217,7 +218,7 @@ class EhApplication :
             }
             add(
                 NetworkFetcher.Factory(
-                    networkClient = { nonCacheOkHttpClient.asNetworkClient() },
+                    networkClient = { coilOkHttpClient.asNetworkClient() },
                     connectivityChecker = { ConnectivityChecker.ONLINE },
                 ),
             )
@@ -259,6 +260,18 @@ class EhApplication :
         val noRedirectOkHttpClient by lazy {
             nonCacheOkHttpClient.newBuilder()
                 .followRedirects(false)
+                .build()
+        }
+
+        val coilOkHttpClient by lazy {
+            nonCacheOkHttpClient.newBuilder()
+                .addInterceptor { chain ->
+                    val request = chain.request()
+                    val newRequest = request.newBuilder()
+                        .header("User-Agent", CHROME_USER_AGENT)
+                        .build()
+                    chain.proceed(newRequest)
+                }
                 .build()
         }
 

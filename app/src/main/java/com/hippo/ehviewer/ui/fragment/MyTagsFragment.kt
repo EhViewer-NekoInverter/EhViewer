@@ -17,7 +17,6 @@
  */
 package com.hippo.ehviewer.ui.fragment
 
-import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -31,6 +30,7 @@ import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.EhUrl
+import com.hippo.ehviewer.util.setDefaultSettings
 import com.hippo.ehviewer.widget.DialogWebChromeClient
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import rikka.core.res.resolveColor
@@ -40,7 +40,6 @@ class MyTagsFragment : BaseFragment() {
     private var webView: WebView? = null
     private var progress: CircularProgressIndicator? = null
 
-    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -50,9 +49,7 @@ class MyTagsFragment : BaseFragment() {
         webView = view.findViewById(R.id.webview)
         webView!!.run {
             setBackgroundColor(requireActivity().theme.resolveColor(android.R.attr.colorBackground))
-            settings.builtInZoomControls = true
-            settings.displayZoomControls = false
-            settings.javaScriptEnabled = true
+            setDefaultSettings()
             webViewClient = MyTagsWebViewClient()
             webChromeClient = DialogWebChromeClient(requireContext())
         }
