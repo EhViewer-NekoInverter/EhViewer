@@ -416,7 +416,6 @@ class ContentLayout @JvmOverloads constructor(
                             }
                         }
                     }
-
                     TYPE_PRE_PAGE, TYPE_PRE_PAGE_KEEP_POS -> {
                         removeDuplicateData(data, 0, CHECK_DUPLICATE_RANGE)
                         dataSize = data.size
@@ -485,7 +484,6 @@ class ContentLayout @JvmOverloads constructor(
                             }
                         }
                     }
-
                     TYPE_NEXT_PAGE, TYPE_NEXT_PAGE_KEEP_POS -> {
                         removeDuplicateData(data, mData.size - CHECK_DUPLICATE_RANGE, mData.size)
                         dataSize = data.size
@@ -543,7 +541,6 @@ class ContentLayout @JvmOverloads constructor(
                             }
                         }
                     }
-
                     TYPE_SOMEWHERE -> {
                         mStartPage = mCurrentTaskPage
                         mEndPage = mCurrentTaskPage + 1
@@ -586,7 +583,6 @@ class ContentLayout @JvmOverloads constructor(
                             }
                         }
                     }
-
                     TYPE_REFRESH_PAGE -> {
                         if (mCurrentTaskPage < mStartPage || mCurrentTaskPage >= mEndPage) {
                             Log.e(

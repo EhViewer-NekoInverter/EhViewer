@@ -36,6 +36,7 @@ import com.hippo.image.ByteBufferSource
 import com.hippo.image.Image
 import com.hippo.unifile.UniFile
 import com.hippo.yorozuya.FileUtils
+import java.nio.ByteBuffer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -49,7 +50,6 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.sync.withPermit
-import java.nio.ByteBuffer
 
 class ArchiveGalleryProvider(context: Context, private val uri: Uri, passwdFlow: Flow<String>) :
     GalleryProvider2(),

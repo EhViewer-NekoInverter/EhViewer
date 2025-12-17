@@ -136,16 +136,16 @@ open class EasyRecyclerView @JvmOverloads constructor(
         false
     }
 
+    /**
+     * Returns the set of checked items in the list. The result is only valid if
+     * the choice mode has not been set to [.CHOICE_MODE_NONE].
+     *
+     * @return A SparseBooleanArray which will return true for each call to
+     * get(int position) where position is a checked position in the
+     * list and false otherwise, or `null` if the choice
+     * mode is set to [.CHOICE_MODE_NONE].
+     */
     val checkedItemPositions: SparseBooleanArray?
-        /**
-         * Returns the set of checked items in the list. The result is only valid if
-         * the choice mode has not been set to [.CHOICE_MODE_NONE].
-         *
-         * @return A SparseBooleanArray which will return true for each call to
-         * get(int position) where position is a checked position in the
-         * list and false otherwise, or `null` if the choice
-         * mode is set to [.CHOICE_MODE_NONE].
-         */
         get() = if (mChoiceMode != CHOICE_MODE_NONE) {
             mCheckStates
         } else {

@@ -19,8 +19,8 @@ import android.text.TextUtils
 import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.client.EhUrl.host
 import com.hippo.ehviewer.client.data.GalleryInfo
-import okhttp3.HttpUrl.Companion.toHttpUrl
 import java.util.regex.Pattern
+import okhttp3.HttpUrl.Companion.toHttpUrl
 
 object EhUtils {
     const val NONE = -1 // Use it for homepage

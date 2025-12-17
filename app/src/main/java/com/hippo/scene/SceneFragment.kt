@@ -22,8 +22,8 @@ import androidx.annotation.IntDef
 import androidx.fragment.app.Fragment
 import com.hippo.ehviewer.R
 import com.hippo.yorozuya.collect.IntList
-import rikka.core.res.resolveDrawable
 import kotlin.math.min
+import rikka.core.res.resolveDrawable
 
 open class SceneFragment : Fragment() {
     var result: Bundle? = null
@@ -59,10 +59,10 @@ open class SceneFragment : Fragment() {
         activity?.finish()
     }
 
+    /**
+     * @return negative for error
+     */
     val stackIndex: Int
-        /**
-         * @return negative for error
-         */
         get() {
             val activity = activity
             return if (activity is StageActivity) {

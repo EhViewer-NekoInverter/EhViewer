@@ -41,7 +41,6 @@ fun Spanned.toBBCode(): String {
                         append("[i]")
                     }
                 }
-
                 is UnderlineSpan -> append("[u]")
                 is StrikethroughSpan -> append("[s]")
                 is URLSpan -> {
@@ -49,7 +48,6 @@ fun Spanned.toBBCode(): String {
                     append(it.url)
                     append("]")
                 }
-
                 is ImageSpan -> {
                     append("[img]")
                     append(it.source)
@@ -69,7 +67,6 @@ fun Spanned.toBBCode(): String {
                         append("[/i]")
                     }
                 }
-
                 is UnderlineSpan -> append("[/u]")
                 is StrikethroughSpan -> append("[/s]")
                 is URLSpan -> append("[/url]")

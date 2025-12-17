@@ -76,13 +76,13 @@ import com.hippo.yorozuya.LayoutUtils
 import com.hippo.yorozuya.ObjectUtils
 import com.hippo.yorozuya.SimpleHandler
 import com.hippo.yorozuya.ViewUtils
+import kotlin.time.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.todayIn
 import rikka.core.res.resolveColor
-import kotlin.time.Clock
 
 @SuppressLint("NotifyDataSetChanged", "RtlHardcoded")
 class FavoritesScene :
@@ -276,11 +276,9 @@ class FavoritesScene :
             in 0..9 -> {
                 mFavCatArray!![favCat]
             }
-
             FavListUrlBuilder.FAV_CAT_LOCAL -> {
                 getString(R.string.local_favorites)
             }
-
             else -> {
                 getString(R.string.cloud_favorites)
             }
@@ -892,13 +890,11 @@ class FavoritesScene :
                     holder.value.text = mFavLocalCount.toString()
                     holder.itemView.isEnabled = true
                 }
-
                 1 -> {
                     holder.key.setText(R.string.cloud_favorites)
                     holder.value.text = mFavCountSum.toString()
                     holder.itemView.isEnabled = true
                 }
-
                 else -> {
                     if (null == mFavCatArray || null == mFavCountArray || mFavCatArray!!.size < position - 1 || mFavCountArray!!.size < position - 1) {
                         return

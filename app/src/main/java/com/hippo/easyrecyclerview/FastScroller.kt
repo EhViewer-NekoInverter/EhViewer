@@ -271,7 +271,6 @@ class FastScroller @JvmOverloads constructor(
                     return false
                 }
             }
-
             MotionEvent.ACTION_MOVE -> {
                 if (!mDragged) {
                     val x = event.x
@@ -310,7 +309,6 @@ class FastScroller @JvmOverloads constructor(
                 mRecyclerView!!.scrollBy(0, scroll)
                 mLastMotionY = y
             }
-
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 // Notify
                 if (mDragged && mListener != null) {

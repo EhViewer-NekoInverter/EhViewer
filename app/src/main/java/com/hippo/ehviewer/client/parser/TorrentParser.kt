@@ -16,8 +16,8 @@
 package com.hippo.ehviewer.client.parser
 
 import com.hippo.ehviewer.client.exception.ParseException
-import org.jsoup.Jsoup
 import java.util.regex.Pattern
+import org.jsoup.Jsoup
 
 object TorrentParser {
     private val PATTERN_TORRENT =

@@ -23,13 +23,13 @@ import com.hippo.unifile.openInputStream
 import com.hippo.unifile.openOutputStream
 import com.hippo.util.runSuspendCatching
 import com.hippo.yorozuya.NumberUtils
+import java.io.InputStream
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.cbor.Cbor
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray
 import okio.buffer
 import okio.source
-import java.io.InputStream
 
 @Serializable
 class SpiderInfo(

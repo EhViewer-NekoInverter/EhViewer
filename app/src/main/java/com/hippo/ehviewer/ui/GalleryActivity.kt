@@ -103,6 +103,11 @@ import com.hippo.yorozuya.ResourcesUtils
 import com.hippo.yorozuya.SimpleAnimatorListener
 import com.hippo.yorozuya.SimpleHandler
 import com.hippo.yorozuya.ViewUtils
+import java.io.File
+import java.io.IOException
+import java.util.concurrent.atomic.AtomicReference
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
@@ -112,11 +117,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import rikka.core.res.isNight
 import rikka.core.res.resolveColor
-import java.io.File
-import java.io.IOException
-import java.util.concurrent.atomic.AtomicReference
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
 
 class GalleryActivity :
     EhActivity(),
@@ -599,18 +599,14 @@ class GalleryActivity :
                     true
                 }
             }
-
             KeyEvent.KEYCODE_PAGE_UP, KeyEvent.KEYCODE_DPAD_UP -> pageTurn(true).let { true }
             KeyEvent.KEYCODE_PAGE_DOWN, KeyEvent.KEYCODE_DPAD_DOWN -> pageTurn(false).let { true }
-
             KeyEvent.KEYCODE_DPAD_LEFT -> mGalleryView!!.pageLeft().let { true }
             KeyEvent.KEYCODE_DPAD_RIGHT -> mGalleryView!!.pageRight().let { true }
-
             KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_SPACE, KeyEvent.KEYCODE_MENU -> {
                 onTapMenuArea()
                 true
             }
-
             else -> false
         } ||
             super.onKeyDown(keyCode, event)

@@ -51,11 +51,9 @@ object LayoutManagerUtils {
             is LinearLayoutManager -> {
                 layoutManager.scrollToPositionWithOffset(position, offset)
             }
-
             is StaggeredGridLayoutManager -> {
                 layoutManager.scrollToPositionWithOffset(position, offset)
             }
-
             else -> {
                 throw IllegalStateException(
                     "Can't do scrollToPositionWithOffset for " +
@@ -79,7 +77,6 @@ object LayoutManagerUtils {
                         override fun computeScrollVectorForPosition(targetPosition: Int): PointF? = layoutManager.computeScrollVectorForPosition(targetPosition)
                     }
             }
-
             is StaggeredGridLayoutManager -> {
                 smoothScroller =
                     object : SimpleSmoothScroller(context!!, millisecondsPerInch.toFloat()) {
@@ -103,7 +100,6 @@ object LayoutManagerUtils {
                         }
                     }
             }
-
             else -> {
                 throw IllegalStateException(
                     "Can't do smoothScrollToPosition for " +
@@ -144,13 +140,11 @@ object LayoutManagerUtils {
         is LinearLayoutManager -> {
             layoutManager.findFirstVisibleItemPosition()
         }
-
         is StaggeredGridLayoutManager -> {
             val positions =
                 layoutManager.findFirstVisibleItemPositions(null)
             MathUtils.min(*positions)
         }
-
         else -> {
             throw IllegalStateException(
                 "Can't do getFirstVisibleItemPosition for " +
@@ -163,13 +157,11 @@ object LayoutManagerUtils {
         is LinearLayoutManager -> {
             layoutManager.findLastVisibleItemPosition()
         }
-
         is StaggeredGridLayoutManager -> {
             val positions =
                 layoutManager.findLastVisibleItemPositions(null)
             MathUtils.max(*positions)
         }
-
         else -> {
             throw IllegalStateException(
                 "Can't do getLastVisibleItemPosition for " +

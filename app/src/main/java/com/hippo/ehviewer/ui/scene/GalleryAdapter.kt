@@ -34,10 +34,10 @@ import com.hippo.ehviewer.client.EhUtils
 import com.hippo.ehviewer.client.data.GalleryInfo
 import com.hippo.ehviewer.client.getThumbKey
 import com.hippo.ehviewer.client.thumbUrl
+import com.hippo.ehviewer.download.DownloadManager as downloadManager
 import com.hippo.ehviewer.widget.TileThumb
 import com.hippo.widget.recyclerview.AutoStaggeredGridLayoutManager
 import com.hippo.yorozuya.ViewUtils
-import com.hippo.ehviewer.download.DownloadManager as downloadManager
 
 @SuppressLint("InflateParams")
 internal abstract class GalleryAdapter(
@@ -88,7 +88,6 @@ internal abstract class GalleryAdapter(
                     recyclerView.addItemDecoration(mListDecoration!!)
                     notifyDataSetChanged()
                 }
-
                 TYPE_GRID -> {
                     mLayoutManager.setColumnSize(Settings.thumbSize)
                     mLayoutManager.setStrategy(AutoStaggeredGridLayoutManager.STRATEGY_SUITABLE_SIZE)

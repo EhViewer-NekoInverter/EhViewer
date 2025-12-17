@@ -101,6 +101,7 @@ import com.hippo.ehviewer.client.parser.TorrentParser
 import com.hippo.ehviewer.client.thumbUrl
 import com.hippo.ehviewer.dao.DownloadInfo
 import com.hippo.ehviewer.dao.Filter
+import com.hippo.ehviewer.download.DownloadManager as EhDownloadManager
 import com.hippo.ehviewer.download.DownloadManager.DownloadInfoListener
 import com.hippo.ehviewer.download.DownloadService
 import com.hippo.ehviewer.spider.SpiderDen
@@ -136,15 +137,14 @@ import com.hippo.yorozuya.IntIdGenerator
 import com.hippo.yorozuya.SimpleHandler
 import com.hippo.yorozuya.ViewUtils
 import com.hippo.yorozuya.collect.IntList
-import okhttp3.HttpUrl.Companion.toHttpUrl
-import okhttp3.coroutines.executeAsync
-import rikka.core.res.resolveBoolean
-import rikka.core.res.resolveColor
 import kotlin.math.abs
 import kotlin.math.hypot
 import kotlin.math.max
 import kotlin.math.roundToInt
-import com.hippo.ehviewer.download.DownloadManager as EhDownloadManager
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.coroutines.executeAsync
+import rikka.core.res.resolveBoolean
+import rikka.core.res.resolveColor
 
 class GalleryDetailScene :
     BaseScene(),

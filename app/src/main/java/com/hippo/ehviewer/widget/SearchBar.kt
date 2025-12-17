@@ -266,7 +266,6 @@ class SearchBar @JvmOverloads constructor(
                     }
                     mOnStateChangeListener?.onStateChange(this, state, oldState, animation)
                 }
-
                 STATE_SEARCH -> {
                     if (state == STATE_NORMAL) {
                         mViewTransition.showView(0, animation)
@@ -275,7 +274,6 @@ class SearchBar @JvmOverloads constructor(
                     }
                     mOnStateChangeListener?.onStateChange(this, state, oldState, animation)
                 }
-
                 STATE_SEARCH_LIST -> {
                     hideImeAndSuggestionsList(animation)
                     if (state == STATE_NORMAL) {

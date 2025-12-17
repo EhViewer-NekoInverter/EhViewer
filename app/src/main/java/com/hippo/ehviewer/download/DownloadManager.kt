@@ -35,9 +35,9 @@ import com.hippo.yorozuya.MathUtils
 import com.hippo.yorozuya.ObjectUtils
 import com.hippo.yorozuya.SimpleHandler
 import com.hippo.yorozuya.collect.LongList
+import java.util.LinkedList
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import java.util.LinkedList
 
 object DownloadManager : OnSpiderListener {
     // All download info list
@@ -1035,20 +1035,17 @@ object DownloadManager : OnSpiderListener {
                         }
                     }
                 }
-
                 TYPE_ON_GET_509 -> {
                     if (mDownloadListener != null) {
                         mDownloadListener!!.onGet509()
                     }
                 }
-
                 TYPE_ON_PAGE_DOWNLOAD -> mSpeedReminder.onDownload(
                     mIndex,
                     mContentLength,
                     mReceivedSize,
                     mBytesRead,
                 )
-
                 TYPE_ON_PAGE_SUCCESS -> {
                     mSpeedReminder.onDone(mIndex)
                     val info = mCurrentTask
@@ -1069,7 +1066,6 @@ object DownloadManager : OnSpiderListener {
                         }
                     }
                 }
-
                 TYPE_ON_PAGE_FAILURE -> {
                     mSpeedReminder.onDone(mIndex)
                     val info = mCurrentTask
@@ -1087,7 +1083,6 @@ object DownloadManager : OnSpiderListener {
                         }
                     }
                 }
-
                 TYPE_ON_FINISH -> {
                     mSpeedReminder.onFinish()
                     // Download done

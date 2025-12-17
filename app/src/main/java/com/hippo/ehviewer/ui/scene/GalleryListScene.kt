@@ -116,13 +116,13 @@ import com.hippo.yorozuya.LayoutUtils
 import com.hippo.yorozuya.MathUtils
 import com.hippo.yorozuya.SimpleAnimatorListener
 import com.hippo.yorozuya.ViewUtils
+import kotlin.time.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.todayIn
 import rikka.core.res.resolveColor
-import kotlin.time.Clock
 
 class GalleryListScene :
     BaseScene(),
@@ -889,7 +889,6 @@ class GalleryListScene :
                         intent.putExtra(GalleryActivity.KEY_GALLERY_INFO, gi)
                         startActivity(intent)
                     }
-
                     1 -> if (downloaded) {
                         AlertDialog.Builder(context)
                             .setTitle(R.string.download_remove_dialog_title)
@@ -910,7 +909,6 @@ class GalleryListScene :
                         // CommonOperations Actions
                         CommonOperations.startDownload(activity, gi, false)
                     }
-
                     2 -> if (favourited) {
                         // CommonOperations Actions
                         CommonOperations.removeFromFavorites(
@@ -927,7 +925,6 @@ class GalleryListScene :
                             false,
                         )
                     }
-
                     3 -> {
                         val labelRawList = mDownloadManager.labelList
                         val labelList: MutableList<String> = ArrayList(labelRawList.size + 1)
@@ -1079,7 +1076,6 @@ class GalleryListScene :
                         selectSearchFab(animation)
                     }
                 }
-
                 STATE_SIMPLE_SEARCH -> when (state) {
                     STATE_NORMAL -> {
                         mSearchBar!!.setState(SearchBar.STATE_NORMAL, animation)
@@ -1099,7 +1095,6 @@ class GalleryListScene :
                         mSearchBarMover!!.returnSearchBarPosition()
                     }
                 }
-
                 STATE_SEARCH -> when (state) {
                     STATE_NORMAL -> {
                         mViewTransition!!.showView(0, animation)
@@ -1117,7 +1112,6 @@ class GalleryListScene :
                         mSearchBarMover!!.returnSearchBarPosition()
                     }
                 }
-
                 STATE_SEARCH_SHOW_LIST -> when (state) {
                     STATE_NORMAL -> {
                         mViewTransition!!.showView(0, animation)

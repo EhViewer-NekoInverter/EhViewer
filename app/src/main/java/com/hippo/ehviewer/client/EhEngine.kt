@@ -52,6 +52,8 @@ import com.hippo.ehviewer.client.parser.UserConfigParser
 import com.hippo.ehviewer.client.parser.VoteCommentParser
 import com.hippo.ehviewer.client.parser.VoteTagParser
 import com.hippo.network.StatusCodeException
+import java.io.File
+import kotlin.math.ceil
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -68,8 +70,6 @@ import okhttp3.coroutines.executeAsync
 import org.json.JSONArray
 import org.json.JSONObject
 import org.jsoup.Jsoup
-import java.io.File
-import kotlin.math.ceil
 
 private val okHttpClient = EhApplication.okHttpClient
 private val MEDIA_TYPE_JSON: MediaType = "application/json; charset=utf-8".toMediaType()
@@ -369,11 +369,9 @@ object EhEngine {
             -1 -> {
                 "favdel"
             }
-
             in 0..9 -> {
                 dstCat.toString()
             }
-
             else -> {
                 throw EhException("Invalid dstCat: $dstCat")
             }
@@ -417,11 +415,9 @@ object EhEngine {
             -1 -> {
                 "delete"
             }
-
             in 0..9 -> {
                 "fav$dstCat"
             }
-
             else -> {
                 throw EhException("Invalid dstCat: $dstCat")
             }

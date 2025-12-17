@@ -49,17 +49,14 @@ object EhFilter {
                     filter.text = filter.text!!.lowercase(Locale.getDefault())
                     mTitleFilterList.add(filter)
                 }
-
                 MODE_TAG -> {
                     filter.text = filter.text!!.lowercase(Locale.getDefault())
                     mTagFilterList.add(filter)
                 }
-
                 MODE_TAG_NAMESPACE -> {
                     filter.text = filter.text!!.lowercase(Locale.getDefault())
                     mTagNamespaceFilterList.add(filter)
                 }
-
                 MODE_UPLOADER -> mUploaderFilterList.add(filter)
                 MODE_COMMENTER -> mCommenterFilterList.add(filter)
                 MODE_COMMENT -> mCommentFilterList.add(filter)
@@ -91,7 +88,6 @@ object EhFilter {
                         text = "$text ($it)"
                     }
                 }
-
                 MODE_TAG -> {
                     val index = text.indexOf(':')
                     if (index > 0) {
@@ -118,17 +114,14 @@ object EhFilter {
                 filter.text = filter.text!!.lowercase(Locale.getDefault())
                 mTitleFilterList.add(filter)
             }
-
             MODE_TAG -> {
                 filter.text = filter.text!!.lowercase(Locale.getDefault())
                 mTagFilterList.add(filter)
             }
-
             MODE_TAG_NAMESPACE -> {
                 filter.text = filter.text!!.lowercase(Locale.getDefault())
                 mTagNamespaceFilterList.add(filter)
             }
-
             MODE_UPLOADER -> mUploaderFilterList.add(filter)
             MODE_COMMENTER -> mCommenterFilterList.add(filter)
             MODE_COMMENT -> mCommentFilterList.add(filter)

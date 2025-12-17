@@ -39,9 +39,9 @@ import com.hippo.util.getTextFromClipboard
 import com.hippo.util.launchIO
 import com.hippo.util.withUIContext
 import com.hippo.yorozuya.ViewUtils
+import java.util.Locale
 import kotlinx.coroutines.Job
 import okhttp3.Cookie
-import java.util.Locale
 
 class CookieSignInScene :
     SolidScene(),

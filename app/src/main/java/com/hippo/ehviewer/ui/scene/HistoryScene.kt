@@ -295,7 +295,6 @@ class HistoryScene : ToolbarScene() {
                         intent.putExtra(GalleryActivity.KEY_GALLERY_INFO, gi)
                         startActivity(intent)
                     }
-
                     1 -> if (downloaded) {
                         AlertDialog.Builder(context)
                             .setTitle(R.string.download_remove_dialog_title)
@@ -316,7 +315,6 @@ class HistoryScene : ToolbarScene() {
                         // CommonOperations Actions
                         CommonOperations.startDownload(activity, gi, false)
                     }
-
                     2 -> if (favourited) {
                         // CommonOperations Actions
                         CommonOperations.removeFromFavorites(
@@ -333,7 +331,6 @@ class HistoryScene : ToolbarScene() {
                             false,
                         )
                     }
-
                     3 -> {
                         lifecycleScope.launchIO {
                             val hi: HistoryInfo? = gi as? HistoryInfo
@@ -344,7 +341,6 @@ class HistoryScene : ToolbarScene() {
                             }
                         }
                     }
-
                     4 -> {
                         val labelRawList = mDownloadManager.labelList
                         val labelList: MutableList<String> = ArrayList(labelRawList.size + 1)

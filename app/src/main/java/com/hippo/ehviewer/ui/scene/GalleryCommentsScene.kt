@@ -93,8 +93,8 @@ import com.hippo.yorozuya.SimpleAnimatorListener
 import com.hippo.yorozuya.StringUtils
 import com.hippo.yorozuya.ViewUtils
 import com.hippo.yorozuya.collect.IntList
-import rikka.core.res.resolveColor
 import kotlin.math.hypot
+import rikka.core.res.resolveColor
 
 class GalleryCommentsScene :
     ToolbarScene(),
@@ -222,13 +222,9 @@ class GalleryCommentsScene :
                     val end = mEditText!!.selectionEnd
                     when (item.itemId) {
                         R.id.action_bold -> text[start, end] = StyleSpan(Typeface.BOLD)
-
                         R.id.action_italic -> text[start, end] = StyleSpan(Typeface.ITALIC)
-
                         R.id.action_underline -> text[start, end] = UnderlineSpan()
-
                         R.id.action_strikethrough -> text[start, end] = StrikethroughSpan()
-
                         R.id.action_url -> {
                             val oldSpans = text.getSpans<URLSpan>(start, end)
                             var oldUrl = "https://"
@@ -261,11 +257,9 @@ class GalleryCommentsScene :
                                 },
                             )
                         }
-
                         R.id.action_clear -> {
                             text.clearSpan(start, end, false)
                         }
-
                         else -> return false
                     }
                     mode?.finish()

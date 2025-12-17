@@ -574,7 +574,6 @@ class MainActivity :
                         .setArgs(args),
                 )
             }
-
             R.id.nav_subscription -> {
                 val args = Bundle()
                 args.putString(GalleryListScene.KEY_ACTION, GalleryListScene.ACTION_SUBSCRIPTION)
@@ -583,7 +582,6 @@ class MainActivity :
                         .setArgs(args),
                 )
             }
-
             R.id.nav_whats_hot -> {
                 val args = Bundle()
                 args.putString(GalleryListScene.KEY_ACTION, GalleryListScene.ACTION_WHATS_HOT)
@@ -592,7 +590,6 @@ class MainActivity :
                         .setArgs(args),
                 )
             }
-
             R.id.nav_toplist -> {
                 val args = Bundle()
                 args.putString(GalleryListScene.KEY_ACTION, GalleryListScene.ACTION_TOP_LIST)
@@ -601,19 +598,15 @@ class MainActivity :
                         .setArgs(args),
                 )
             }
-
             R.id.nav_favourite -> {
                 startScene(Announcer(FavoritesScene::class.java))
             }
-
             R.id.nav_history -> {
                 startScene(Announcer(HistoryScene::class.java))
             }
-
             R.id.nav_downloads -> {
                 startScene(Announcer(DownloadsScene::class.java))
             }
-
             R.id.nav_settings -> {
                 val intent = Intent(this, SettingsActivity::class.java)
                 settingsLauncher.launch(intent)

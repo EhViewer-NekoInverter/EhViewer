@@ -57,12 +57,10 @@ open class LoadImageView @JvmOverloads constructor(
                 setOnClickListener(if (canRetry) this else null)
                 isClickable = canRetry
             }
-
             RETRY_TYPE_LONG_CLICK -> {
                 setOnLongClickListener(if (canRetry) this else null)
                 isLongClickable = canRetry
             }
-
             RETRY_TYPE_NONE -> {}
         }
     }

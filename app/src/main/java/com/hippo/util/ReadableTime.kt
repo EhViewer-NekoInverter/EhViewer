@@ -18,6 +18,9 @@ package com.hippo.util
 import android.content.Context
 import android.content.res.Resources
 import com.hippo.ehviewer.R
+import java.util.Locale
+import kotlin.time.Clock
+import kotlin.time.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -25,9 +28,6 @@ import kotlinx.datetime.format.MonthNames
 import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
-import java.util.Locale
-import kotlin.time.Clock
-import kotlin.time.Instant
 
 object ReadableTime {
     const val MAX_VALUE_MILLIS = 253402300799999L

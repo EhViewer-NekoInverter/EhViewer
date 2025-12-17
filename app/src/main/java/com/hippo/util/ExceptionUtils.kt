@@ -39,15 +39,12 @@ object ExceptionUtils {
             is MalformedURLException -> {
                 getString(R.string.error_invalid_url)
             }
-
             is SocketTimeoutException -> {
                 getString(R.string.error_timeout)
             }
-
             is UnknownHostException -> {
                 getString(R.string.error_unknown_host)
             }
-
             is StatusCodeException -> {
                 val sb = StringBuilder()
                 sb.append(getString(R.string.error_bad_status_code, e.responseCode))
@@ -56,19 +53,15 @@ object ExceptionUtils {
                 }
                 sb.toString()
             }
-
             is ProtocolException if e.message!!.startsWith("Too many follow-up requests:") -> {
                 getString(R.string.error_redirection)
             }
-
             is ProtocolException, is SocketException, is SSLException -> {
                 getString(R.string.error_socket)
             }
-
             is EhException -> {
                 e.message!!
             }
-
             else -> {
                 getString(R.string.error_unknown)
             }
@@ -81,11 +74,9 @@ object ExceptionUtils {
             is VirtualMachineError -> {
                 throw t
             }
-
             is ThreadDeath -> {
                 throw t
             }
-
             is LinkageError -> {
                 throw t
             }

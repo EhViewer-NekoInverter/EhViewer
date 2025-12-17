@@ -18,10 +18,10 @@
 package com.hippo.yorozuya
 
 import com.hippo.util.isAtLeastN
+import java.io.File
 import okhttp3.ResponseBody
 import okio.buffer
 import okio.sink
-import java.io.File
 
 fun ResponseBody.copyToFile(file: File) {
     file.outputStream().use { os ->

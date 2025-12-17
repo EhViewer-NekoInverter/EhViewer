@@ -55,14 +55,14 @@ import com.hippo.util.loadHtml
 import com.hippo.yorozuya.FileUtils
 import com.hippo.yorozuya.IntIdGenerator
 import eu.kanade.tachiyomi.network.interceptor.CloudflareInterceptor
+import java.security.cert.CertificateFactory
+import java.security.cert.X509Certificate
 import kotlinx.coroutines.DelicateCoroutinesApi
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.tls.HandshakeCertificates
 import okio.FileSystem
 import okio.Path.Companion.toOkioPath
-import java.security.cert.CertificateFactory
-import java.security.cert.X509Certificate
 
 class EhApplication :
     SceneApplication(),

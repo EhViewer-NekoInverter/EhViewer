@@ -191,7 +191,6 @@ abstract class GalleryProvider {
                 } else {
                     mListener.onDataChanged(mIndex)
                 }
-
                 TYPE_WAIT -> mListener.onPageWait(mIndex)
                 TYPE_PERCENT -> mListener.onPagePercent(mIndex, mPercent)
                 TYPE_SUCCEED -> mListener.onPageSucceed(mIndex, mImage)

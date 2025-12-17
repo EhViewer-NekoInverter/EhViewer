@@ -15,6 +15,7 @@
  */
 package com.hippo.ehviewer.spider
 
+import com.hippo.ehviewer.EhApplication.Companion.imageCache as sCache
 import com.hippo.ehviewer.EhApplication.Companion.nonCacheOkHttpClient
 import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.client.EhRequestBuilder
@@ -34,13 +35,12 @@ import com.hippo.util.runSuspendCatching
 import com.hippo.util.sendTo
 import com.hippo.yorozuya.FileUtils
 import com.hippo.yorozuya.cleanAsDirname
+import java.io.IOException
+import java.util.Locale
 import okhttp3.Response
 import okhttp3.coroutines.executeAsync
 import okio.buffer
 import okio.sink
-import java.io.IOException
-import java.util.Locale
-import com.hippo.ehviewer.EhApplication.Companion.imageCache as sCache
 
 class SpiderDen(private val mGalleryInfo: GalleryInfo) {
     private val fileHashRegex = Regex("/h/([0-9a-f]{40})")
@@ -109,11 +109,9 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
         SpiderQueen.MODE_READ -> {
             containInCache(index) || containInDownloadDir(index)
         }
-
         SpiderQueen.MODE_DOWNLOAD -> {
             containInDownloadDir(index) || copyFromCacheToDownloadDir(index, Settings.skipCopyImage)
         }
-
         else -> {
             false
         }

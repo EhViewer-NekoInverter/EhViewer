@@ -9,12 +9,12 @@ import androidx.core.content.ContextCompat
 import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.exception.CloudflareBypassException
 import com.hippo.util.launchIO
+import java.io.IOException
+import java.util.concurrent.CountDownLatch
 import kotlinx.coroutines.DelicateCoroutinesApi
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-import java.io.IOException
-import java.util.concurrent.CountDownLatch
 
 class CloudflareInterceptor(context: Context) : WebViewInterceptor(context) {
     private val executor = ContextCompat.getMainExecutor(context)

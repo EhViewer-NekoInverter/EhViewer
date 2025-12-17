@@ -83,8 +83,8 @@ import com.hippo.yorozuya.LayoutUtils
 import com.hippo.yorozuya.ObjectUtils
 import com.hippo.yorozuya.ViewUtils
 import com.hippo.yorozuya.collect.LongList
-import rikka.core.res.resolveColor
 import java.util.LinkedList
+import rikka.core.res.resolveColor
 
 @SuppressLint("RtlHardcoded")
 class DownloadsScene :
@@ -364,25 +364,21 @@ class DownloadsScene :
                     .show()
                 return true
             }
-
             R.id.action_start_all -> {
                 val intent = Intent(activity, DownloadService::class.java)
                 intent.action = DownloadService.ACTION_START_ALL
                 ContextCompat.startForegroundService(activity, intent)
                 return true
             }
-
             R.id.action_stop_all -> {
                 // DownloadManager Actions
                 DownloadManager.stopAllDownload()
                 return true
             }
-
             R.id.action_open_download_labels -> {
                 openDrawer(GravityCompat.END)
                 return true
             }
-
             R.id.action_reset_reading_progress -> {
                 AlertDialog.Builder(requireContext())
                     .setMessage(R.string.reset_reading_progress_message)
@@ -395,7 +391,6 @@ class DownloadsScene :
                     }.show()
                 return true
             }
-
             R.id.action_start_all_reversed -> {
                 val list = mList ?: return true
                 val gidList = LongList()
@@ -411,7 +406,6 @@ class DownloadsScene :
                 ContextCompat.startForegroundService(activity, intent)
                 return true
             }
-
             R.id.action_sort -> {
                 AlertDialog.Builder(requireActivity())
                     .setSingleChoiceItems(
@@ -427,7 +421,6 @@ class DownloadsScene :
                     .show()
                 return true
             }
-
             else -> return false
         }
     }
@@ -722,13 +715,11 @@ class DownloadsScene :
                 info,
                 context.getString(R.string.download_state_none),
             )
-
             DownloadInfo.STATE_WAIT -> bindState(
                 holder,
                 info,
                 context.getString(R.string.download_state_wait),
             )
-
             DownloadInfo.STATE_DOWNLOAD -> bindProgress(holder, info)
             DownloadInfo.STATE_FAILED -> {
                 val text: String = if (info.legacy <= 0) {
@@ -738,7 +729,6 @@ class DownloadsScene :
                 }
                 bindState(holder, info, text)
             }
-
             DownloadInfo.STATE_FINISH -> bindState(
                 holder,
                 info,
@@ -1306,11 +1296,9 @@ class DownloadsScene :
                 null -> {
                     DownloadManager.moveDownload(fromPosition, toPosition)
                 }
-
                 getString(R.string.default_download_label_name) -> {
                     DownloadManager.moveDownload(null, fromPosition, toPosition)
                 }
-
                 else -> {
                     DownloadManager.moveDownload(mLabel, fromPosition, toPosition)
                 }

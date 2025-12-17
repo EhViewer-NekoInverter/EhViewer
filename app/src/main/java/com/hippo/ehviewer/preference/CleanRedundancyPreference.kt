@@ -20,12 +20,12 @@ import android.util.AttributeSet
 import com.hippo.ehviewer.GetText
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
+import com.hippo.ehviewer.download.DownloadManager as downloadManager
 import com.hippo.unifile.UniFile
 import com.hippo.util.launchUI
 import com.hippo.util.withUIContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import com.hippo.ehviewer.download.DownloadManager as downloadManager
 
 class CleanRedundancyPreference(
     context: Context,

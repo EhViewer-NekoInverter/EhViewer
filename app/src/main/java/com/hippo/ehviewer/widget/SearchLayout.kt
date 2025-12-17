@@ -248,7 +248,6 @@ class SearchLayout @JvmOverloads constructor(
                     urlBuilder.pageTo = pageTo
                 }
             }
-
             SEARCH_MODE_IMAGE -> {
                 urlBuilder.mode = ListUrlBuilder.MODE_IMAGE_SEARCH
                 mImageView!!.formatListUrlBuilder(urlBuilder)
@@ -332,13 +331,11 @@ class SearchLayout @JvmOverloads constructor(
                         ViewUtils.removeFromParent(mNormalView)
                         content.addView(mNormalView)
                     }
-
                     ITEM_TYPE_NORMAL_ADVANCE -> {
                         title.setText(R.string.search_advance)
                         ViewUtils.removeFromParent(mAdvanceView)
                         content.addView(mAdvanceView)
                     }
-
                     ITEM_TYPE_IMAGE -> {
                         title.setText(R.string.search_image)
                         ViewUtils.removeFromParent(mImageView)

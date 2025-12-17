@@ -1,7 +1,7 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val isRelease: Boolean
     get() = gradle.startParameter.taskNames.any { it.contains("Release") }

@@ -26,9 +26,9 @@ import com.hippo.network.UrlBuilder
 import com.hippo.util.encodeUTF8
 import com.hippo.yorozuya.NumberUtils
 import com.hippo.yorozuya.StringUtils
-import kotlinx.parcelize.Parcelize
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ListUrlBuilder(
@@ -156,87 +156,67 @@ data class ListUrlBuilder(
                     val cats = NumberUtils.parseIntSafely(value, EhUtils.ALL_CATEGORY)
                     category = category or (cats.inv() and EhUtils.ALL_CATEGORY)
                 }
-
                 "f_doujinshi" -> if ("1" == value) {
                     category = category or EhUtils.DOUJINSHI
                 }
-
                 "f_manga" -> if ("1" == value) {
                     category = category or EhUtils.MANGA
                 }
-
                 "f_artistcg" -> if ("1" == value) {
                     category = category or EhUtils.ARTIST_CG
                 }
-
                 "f_gamecg" -> if ("1" == value) {
                     category = category or EhUtils.GAME_CG
                 }
-
                 "f_western" -> if ("1" == value) {
                     category = category or EhUtils.WESTERN
                 }
-
                 "f_non-h" -> if ("1" == value) {
                     category = category or EhUtils.NON_H
                 }
-
                 "f_imageset" -> if ("1" == value) {
                     category = category or EhUtils.IMAGE_SET
                 }
-
                 "f_cosplay" -> if ("1" == value) {
                     category = category or EhUtils.COSPLAY
                 }
-
                 "f_asianporn" -> if ("1" == value) {
                     category = category or EhUtils.ASIAN_PORN
                 }
-
                 "f_misc" -> if ("1" == value) {
                     category = category or EhUtils.MISC
                 }
-
                 "f_search" -> try {
                     keyword = URLDecoder.decode(value, "utf-8")
                 } catch (_: UnsupportedEncodingException) {
                     // Ignore
                 } catch (_: IllegalArgumentException) {
                 }
-
                 "advsearch" -> if ("1" == value) {
                     enableAdvanceSearch = true
                 }
-
                 "f_sh" -> if ("on" == value) {
                     advanceSearch = advanceSearch or AdvanceSearchTable.SH
                 }
-
                 "f_sto" -> if ("on" == value) {
                     advanceSearch = advanceSearch or AdvanceSearchTable.STO
                 }
-
                 "f_sfl" -> if ("on" == value) {
                     advanceSearch = advanceSearch or AdvanceSearchTable.SFL
                 }
-
                 "f_sfu" -> if ("on" == value) {
                     advanceSearch = advanceSearch or AdvanceSearchTable.SFU
                 }
-
                 "f_sft" -> if ("on" == value) {
                     advanceSearch = advanceSearch or AdvanceSearchTable.SFT
                 }
-
                 "f_sr" -> if ("on" == value) {
                     enableMinRating = true
                 }
-
                 "f_srdd" -> minRating = NumberUtils.parseIntSafely(value, -1)
                 "f_sp" -> if ("on" == value) {
                     enablePage = true
                 }
-
                 "f_spf" -> pageFrom = NumberUtils.parseIntSafely(value, -1)
                 "f_spt" -> pageTo = NumberUtils.parseIntSafely(value, -1)
                 "f_shash" -> hash = value
@@ -315,7 +295,6 @@ data class ListUrlBuilder(
             }
             ub.build()
         }
-
         MODE_UPLOADER -> {
             val sb = StringBuilder(EhUrl.host)
             mKeyword?.let {
@@ -333,7 +312,6 @@ data class ListUrlBuilder(
             }
             sb.toString()
         }
-
         MODE_TAG -> {
             val sb = StringBuilder(EhUrl.host)
             mKeyword?.let {
@@ -351,9 +329,7 @@ data class ListUrlBuilder(
             }
             sb.toString()
         }
-
         MODE_WHATS_HOT -> EhUrl.popularUrl
-
         MODE_IMAGE_SEARCH -> {
             val ub = UrlBuilder(EhUrl.host)
             hash?.let {
@@ -361,7 +337,6 @@ data class ListUrlBuilder(
             }
             ub.build()
         }
-
         MODE_TOPLIST -> {
             val sb = StringBuilder(EhUrl.HOST_E)
             sb.append("toplist.php?tl=")
@@ -373,7 +348,6 @@ data class ListUrlBuilder(
             }
             sb.toString()
         }
-
         else -> throw IllegalStateException("Unexpected value: $mode")
     }
 

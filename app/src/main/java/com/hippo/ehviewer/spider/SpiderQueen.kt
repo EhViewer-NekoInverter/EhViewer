@@ -20,6 +20,7 @@ import android.util.Log
 import androidx.annotation.IntDef
 import androidx.collection.LongSparseArray
 import androidx.collection.set
+import com.hippo.ehviewer.EhApplication.Companion.okHttpClient as plainTextOkHttpClient
 import com.hippo.ehviewer.GetText
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
@@ -36,6 +37,10 @@ import com.hippo.unifile.UniFile
 import com.hippo.util.ExceptionUtils
 import com.hippo.util.launchIO
 import com.hippo.util.runSuspendCatching
+import java.util.concurrent.atomic.AtomicInteger
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeSource
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -52,11 +57,6 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withTimeout
 import okhttp3.coroutines.executeAsync
-import java.util.concurrent.atomic.AtomicInteger
-import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.seconds
-import kotlin.time.TimeSource
-import com.hippo.ehviewer.EhApplication.Companion.okHttpClient as plainTextOkHttpClient
 
 class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineScope {
     override val coroutineContext = Dispatchers.IO + Job()
