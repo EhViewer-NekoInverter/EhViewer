@@ -2,7 +2,7 @@ package com.hippo.ehviewer.util
 
 import android.annotation.SuppressLint
 import android.webkit.WebView
-import com.hippo.okhttp.ChromeRequestBuilder.Companion.CHROME_USER_AGENT
+import com.hippo.okhttp.CHROME_USER_AGENT
 
 @SuppressLint("SetJavaScriptEnabled")
 fun WebView.setDefaultSettings() = settings.run {

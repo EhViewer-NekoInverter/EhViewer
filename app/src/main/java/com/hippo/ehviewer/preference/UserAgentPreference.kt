@@ -31,7 +31,7 @@ import android.widget.TextView.OnEditorActionListener
 import androidx.appcompat.app.AlertDialog
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
-import com.hippo.okhttp.ChromeRequestBuilder.Companion.CHROME_USER_AGENT
+import com.hippo.okhttp.CHROME_USER_AGENT
 import com.hippo.preference.DialogPreference
 
 @SuppressLint("InflateParams")

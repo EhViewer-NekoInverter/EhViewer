@@ -14,6 +14,7 @@ androidx-preference = "1.2.1"
 androidx-recyclerview = "1.4.0"
 androidx-room = "2.8.4"
 androidx-swiperefreshlayout = "1.2.0"
+androidx-webkit = "1.14.0"
 coil = "3.3.0"
 drawer = "1.0.3"
 google-android-material = "1.13.0"
@@ -46,6 +47,7 @@ androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidx-room" }
 androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "androidx-room" }
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "androidx-swiperefreshlayout" }
+androidx-webkit = { module = "androidx.webkit:webkit", version.ref = "androidx-webkit" }
 
 coil = { module = "io.coil-kt.coil3:coil" }
 coil-bom = { module = "io.coil-kt.coil3:coil-bom", version.ref = "coil" }

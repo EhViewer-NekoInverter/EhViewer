@@ -24,7 +24,7 @@ import com.hippo.ehviewer.EhApplication.Companion.application
 import com.hippo.ehviewer.client.data.FavListUrlBuilder
 import com.hippo.ehviewer.ui.scene.GalleryListScene
 import com.hippo.glgallery.GalleryView
-import com.hippo.okhttp.ChromeRequestBuilder.Companion.CHROME_USER_AGENT
+import com.hippo.okhttp.CHROME_USER_AGENT
 import com.hippo.unifile.UniFile
 import com.hippo.yorozuya.NumberUtils
 import java.util.Locale

@@ -133,6 +133,7 @@ dependencies {
     implementation(libs.androidx.biometric)
     implementation(libs.androidx.browser)
     implementation(libs.androidx.collection)
+    implementation(libs.androidx.webkit)
 
     implementation(libs.androidx.core)
 

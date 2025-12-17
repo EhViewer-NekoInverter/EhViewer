@@ -15,18 +15,19 @@
  */
 package com.hippo.okhttp
 
+import androidx.webkit.WebViewCompat
+import com.hippo.ehviewer.EhApplication
 import com.hippo.ehviewer.Settings
 import okhttp3.Request
 
-open class ChromeRequestBuilder(url: String) : Request.Builder() {
-    companion object {
-        const val CHROME_USER_AGENT =
-            "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Mobile Safari/537.36"
-        const val CHROME_ACCEPT =
-            "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
-        const val CHROME_ACCEPT_LANGUAGE = "en-US,en;q=0.9"
-    }
+private val WebViewVersion = runCatching {
+    WebViewCompat.getCurrentWebViewPackage(EhApplication.application)?.versionName?.substringBefore('.')?.toInt()
+}.getOrDefault(127)
+val CHROME_USER_AGENT = "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/$WebViewVersion.0.0.0 Mobile Safari/537.36"
+private const val CHROME_ACCEPT = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+private const val CHROME_ACCEPT_LANGUAGE = "en-US,en;q=0.9"
 
+open class ChromeRequestBuilder(url: String) : Request.Builder() {
     init {
         this.url(url)
         this.addHeader("User-Agent", Settings.userAgent!!)
