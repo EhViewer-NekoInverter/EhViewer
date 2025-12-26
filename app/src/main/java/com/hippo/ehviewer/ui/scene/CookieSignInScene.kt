@@ -166,7 +166,7 @@ class CookieSignInScene :
     private fun showResultErrorDialog(e: Throwable) {
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.sign_in_failed)
-            .setMessage("${ExceptionUtils.getReadableString(e)}\n\n${getString(R.string.wrong_cookie_warning)}")
+            .setMessage("${ExceptionUtils.getReadableString(e)}\n\n${getString(R.string.sign_in_failed_tip)}")
             .setPositiveButton(R.string.get_it, null)
             .show()
     }

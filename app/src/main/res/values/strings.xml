@@ -30,13 +30,12 @@
     <string name="error_username_cannot_empty">Username cannot be an empty string</string>
     <string name="error_password_cannot_empty">Password cannot be an empty string</string>
     <string name="sign_in_failed">Sign in failed</string>
-    <string name="sign_in_failed_tip">If this issue continues, try \"Sign in via WebView\" or \"Sign in via cookies\".</string>
+    <string name="sign_in_failed_tip">If this issue continues, try \"Sign in via WebView\".</string>
     <string name="get_it">Got it</string>
     <!-- Cookie Sign In Scene -->
     <string name="cookie_explain">A cookie is a small piece of data stored in web browser. Google it if you don\'t know what it is or how to get it.\n\nPlease enter special cookies to sign in.</string>
     <string name="from_clipboard">From clipboard</string>
     <string name="text_is_empty">Text is empty</string>
-    <string name="wrong_cookie_warning">It seems that the cookies you entered are wrong. You\'d better check them.</string>
     <string name="from_clipboard_error">No cookies found in clipboard.</string>
 
     <!-- Select Site Scene -->
@@ -669,6 +668,7 @@
     <string name="no_browser_installed">Just install a browser please.</string>
     <string name="cloudflare_bypass_failed">Failed to bypass Cloudflare challenge</string>
     <string name="open_in_webview">Open URL in WebView to finish the challenge?</string>
+    <string name="information_webview_outdated">Please update the WebView app for better compatibility</string>
 
     <!-- Readable Time -->
     <string name="from_the_future">From the future</string>

@@ -28,13 +28,12 @@
     <string name="error_username_cannot_empty">ユーザー名は空欄にできません</string>
     <string name="error_password_cannot_empty">パスワードは空欄にできません</string>
     <string name="sign_in_failed">ログインに失敗しました</string>
-    <string name="sign_in_failed_tip">この問題が解決しない場合は「WebView でログイン」か「Cookie でログイン」をお試しください。</string>
+    <string name="sign_in_failed_tip">この問題が解決しない場合は「WebView でログイン」をお試しください。</string>
     <string name="get_it">了解</string>
     <!-- Cookie Sign In Scene -->
     <string name="cookie_explain">Cookie とは、ウェブブラウザに保存される小さなデータのことです。Cookie が何なのか、または取得方法がわからない場合は Google で検索をしてください。\n\nログインをするには特別な Cookie を入力してください。</string>
     <string name="from_clipboard">クリップボードから</string>
     <string name="text_is_empty">テキストが空です</string>
-    <string name="wrong_cookie_warning">入力した Cookie が間違っているようです。確認をした方が良いですよ。</string>
     <string name="from_clipboard_error">クリップボードから Cookie が見つかりませんでした。</string>
     <!-- Select Site Scene -->
     <string name="select_scene">どのギャラリーサイトにアクセスしますか？</string>
@@ -598,6 +597,7 @@
     <string name="no_browser_installed">ブラウザをインストールしてください。</string>
     <string name="cloudflare_bypass_failed">Cloudflare チャレンジのバイパスに失敗しました</string>
     <string name="open_in_webview">WebView で URL を開いてチャレンジを完了しますか？</string>
+    <string name="information_webview_outdated">WebViewアプリを更新して互換性を向上させてください</string>
     <!-- Readable Time -->
     <string name="from_the_future">未来から</string>
     <string name="just_now">たった今</string>

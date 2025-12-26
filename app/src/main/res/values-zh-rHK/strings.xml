@@ -27,13 +27,12 @@
     <string name="error_username_cannot_empty">用户名不可為空</string>
     <string name="error_password_cannot_empty">密碼不可為空</string>
     <string name="sign_in_failed">登錄失敗</string>
-    <string name="sign_in_failed_tip">若持續出錯，請嘗試“通過網頁登錄”或“通過 Cookie 登錄”。</string>
+    <string name="sign_in_failed_tip">若持續出錯，請嘗試“通過網頁登錄”。</string>
     <string name="get_it">知道了</string>
     <!-- Cookie Sign In Scene -->
     <string name="cookie_explain">Cookie 是存儲在瀏覽器裏的一小塊數據。如果您不清楚 Cookie 是什麼或者怎麼獲取 Cookie，最好搜索一下。\n\n請輸入特定的 Cookie 來登錄。</string>
     <string name="from_clipboard">從剪貼板導入</string>
     <string name="text_is_empty">文本為空</string>
-    <string name="wrong_cookie_warning">看起來您輸入的 Cookie 是錯誤的，最好檢查一下。</string>
     <string name="from_clipboard_error">未在剪貼板中發現 Cookies。</string>
 
     <!-- Select Site Scene -->
@@ -607,6 +606,7 @@
     <string name="no_browser_installed">請安裝一個瀏覽器。</string>
     <string name="cloudflare_bypass_failed">未能繞過 Cloudflare 驗證</string>
     <string name="open_in_webview">在 WebView 中打開鏈接以通過驗證？</string>
+    <string name="information_webview_outdated">請更新 WebView 以獲得更佳的相容性</string>
 
     <!-- Readable Time -->
     <string name="from_the_future">來自未來</string>
