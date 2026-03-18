@@ -33,6 +33,7 @@ import com.hippo.ehviewer.client.EhCookieStore
 import com.hippo.ehviewer.client.EhEngine
 import com.hippo.ehviewer.client.EhUrl
 import com.hippo.ehviewer.client.EhUtils
+import com.hippo.ehviewer.client.exception.CloudflareBypassException
 import com.hippo.util.ExceptionUtils
 import com.hippo.util.getClipboardManager
 import com.hippo.util.getTextFromClipboard
@@ -154,8 +155,7 @@ class CookieSignInScene :
             withUIContext {
                 hideProgress()
                 result.onSuccess {
-                    setResult(RESULT_OK, null)
-                    finish()
+                    ok()
                 }.onFailure {
                     showResultErrorDialog(it)
                 }
@@ -163,11 +163,32 @@ class CookieSignInScene :
         }
     }
 
+    private fun ok() {
+        setResult(RESULT_OK, null)
+        finish()
+    }
+
     private fun showResultErrorDialog(e: Throwable) {
+        val isCloudflareError = e.cause is CloudflareBypassException
+        val message = buildString {
+            append(ExceptionUtils.getReadableString(e))
+            append("\n\n")
+            append(getString(R.string.sign_in_failed_tip))
+            if (isCloudflareError) {
+                append("\n\n")
+                append(getString(R.string.sign_in_failed_tip_2))
+            }
+        }
+
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.sign_in_failed)
-            .setMessage("${ExceptionUtils.getReadableString(e)}\n\n${getString(R.string.sign_in_failed_tip)}")
+            .setMessage(message)
             .setPositiveButton(R.string.get_it, null)
+            .apply {
+                if (isCloudflareError) {
+                    setNegativeButton(R.string.ignore) { _, _ -> ok() }
+                }
+            }
             .show()
     }
 

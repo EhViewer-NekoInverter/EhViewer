@@ -29,6 +29,8 @@
     <string name="error_password_cannot_empty">パスワードは空欄にできません</string>
     <string name="sign_in_failed">ログインに失敗しました</string>
     <string name="sign_in_failed_tip">この問題が解決しない場合は「WebView でログイン」をお試しください。</string>
+    <string name="sign_in_failed_tip_2">Cookie が正しいことを確認している場合は、エラーを無視して続行することもできますが、いくつかの問題が発生する可能性があります。</string>
+    <string name="ignore">無視</string>
     <string name="get_it">了解</string>
     <!-- Cookie Sign In Scene -->
     <string name="cookie_explain">Cookie とは、ウェブブラウザに保存される小さなデータのことです。Cookie が何なのか、または取得方法がわからない場合は Google で検索をしてください。\n\nログインをするには特別な Cookie を入力してください。</string>

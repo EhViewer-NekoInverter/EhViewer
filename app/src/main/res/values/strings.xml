@@ -31,6 +31,8 @@
     <string name="error_password_cannot_empty">Password cannot be an empty string</string>
     <string name="sign_in_failed">Sign in failed</string>
     <string name="sign_in_failed_tip">If this issue continues, try \"Sign in via WebView\".</string>
+    <string name="sign_in_failed_tip_2">If you are sure your cookies are correct, you can choose to ignore the error and continue, but this may cause some issues.</string>
+    <string name="ignore">Ignore</string>
     <string name="get_it">Got it</string>
     <!-- Cookie Sign In Scene -->
     <string name="cookie_explain">A cookie is a small piece of data stored in web browser. Google it if you don\'t know what it is or how to get it.\n\nPlease enter special cookies to sign in.</string>
