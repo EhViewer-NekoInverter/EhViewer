@@ -191,9 +191,6 @@ kotlin {
             "kotlinx.coroutines.InternalCoroutinesApi",
             "kotlinx.serialization.ExperimentalSerializationApi",
         )
-        freeCompilerArgs.addAll(
-            "-Xwhen-guards",
-        )
     }
 }
 
