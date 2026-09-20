@@ -15,6 +15,8 @@
  */
 package com.hippo.ehviewer.client
 
+import android.util.Log
+
 import com.hippo.util.launchIO
 import com.hippo.util.withUIContext
 import java.io.File
@@ -39,7 +41,7 @@ object EhClient {
                 if (e is CancellationException) {
                     throw e // Don't catch coroutine CancellationException
                 }
-                e.printStackTrace()
+                Log.e("EhViewer", "Error", e)
                 withUIContext { callback?.onFailure(e) }
             }
         }

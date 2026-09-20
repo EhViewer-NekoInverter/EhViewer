@@ -15,6 +15,8 @@
  */
 package com.hippo.ehviewer.preference
 
+import android.util.Log
+
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
@@ -78,7 +80,7 @@ class RestoreDownloadPreference(
             }
             RestoreItem(dirname, gid, result.token)
         }.onFailure {
-            it.printStackTrace()
+            Log.e("EhViewer", "Error", it)
         }.getOrNull()
     }
 
@@ -90,7 +92,7 @@ class RestoreDownloadPreference(
                 fillGalleryListByApi(it, EhUrl.referer)
             }
         }.onFailure {
-            it.printStackTrace()
+            Log.e("EhViewer", "Error", it)
         }.getOrNull()
     }
 

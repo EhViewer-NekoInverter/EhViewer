@@ -15,6 +15,8 @@
  */
 package com.hippo.ehviewer.preference
 
+import android.util.Log
+
 import android.content.Context
 import android.content.DialogInterface
 import android.util.AttributeSet
@@ -95,7 +97,7 @@ class ImageLimitsPreference(
         runCatching {
             EhEngine.getImageLimits()
         }.onFailure {
-            it.printStackTrace()
+            Log.e("EhViewer", "Error", it)
             if (showError) {
                 withUIContext {
                     mDialog.setMessage(it.message)
@@ -146,7 +148,7 @@ class ImageLimitsPreference(
             runCatching {
                 EhEngine.resetImageLimits(mLimits.maximum < 0)
             }.onFailure {
-                it.printStackTrace()
+                Log.e("EhViewer", "Error", it)
                 withUIContext {
                     mDialog.setMessage(it.message)
                 }

@@ -17,6 +17,8 @@
  */
 package com.hippo.ehviewer.client.parser
 
+import android.util.Log
+
 import com.hippo.util.ExceptionUtils
 import com.hippo.util.JsoupUtils
 import org.jsoup.Jsoup
@@ -28,7 +30,7 @@ object GalleryNotAvailableParser {
         d!!.child(0).html().replace("<br>", "\n")
     }.getOrElse {
         ExceptionUtils.throwIfFatal(it)
-        it.printStackTrace()
+        Log.e("EhViewer", "Error", it)
         null
     }
 }

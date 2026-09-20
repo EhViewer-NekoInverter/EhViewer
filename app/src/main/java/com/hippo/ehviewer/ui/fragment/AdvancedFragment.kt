@@ -74,7 +74,7 @@ class AdvancedFragment : BasePreferenceFragment() {
                 )
             } catch (e: Exception) {
                 ExceptionUtils.throwIfFatal(e)
-                e.printStackTrace()
+                Log.e("EhViewer", "Error", e)
             }
             try {
                 val alertDialog = AlertDialog.Builder(requireActivity())
@@ -118,7 +118,7 @@ class AdvancedFragment : BasePreferenceFragment() {
                 )
             } catch (e: Exception) {
                 ExceptionUtils.throwIfFatal(e)
-                e.printStackTrace()
+                Log.e("EhViewer", "Error", e)
             }
             try {
                 val zipFile = File(AppConfig.getExternalTempDir(), "logs.zip")
@@ -151,7 +151,7 @@ class AdvancedFragment : BasePreferenceFragment() {
                             origin.close()
                             origin = null
                         } catch (e: Exception) {
-                            e.printStackTrace()
+                            Log.e("EhViewer", "Error", e)
                         }
                     }
                     val entry =
@@ -166,7 +166,7 @@ class AdvancedFragment : BasePreferenceFragment() {
                     )
                     finished = true
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    Log.e("EhViewer", "Error", e)
                 } finally {
                     origin?.close()
                     out?.close()
@@ -206,7 +206,7 @@ class AdvancedFragment : BasePreferenceFragment() {
                 )
             } catch (e: Exception) {
                 ExceptionUtils.throwIfFatal(e)
-                e.printStackTrace()
+                Log.e("EhViewer", "Error", e)
             }
             try {
                 val alertDialog = AlertDialog.Builder(requireActivity())
@@ -350,7 +350,7 @@ class AdvancedFragment : BasePreferenceFragment() {
                                     delay(AppSettings.downloadDelay.toLong())
                                 }
                             } catch (e: InterruptedException) {
-                                e.printStackTrace()
+                                Log.e("EhViewer", "Error", e)
                             }
                             favIndex++
                             favListUrlBuilder.setIndex(result.next, true)

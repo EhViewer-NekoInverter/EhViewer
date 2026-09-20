@@ -15,6 +15,8 @@
  */
 package com.hippo.ehviewer.client.parser
 
+import android.util.Log
+
 import com.hippo.ehviewer.client.exception.NotLoggedInException
 import com.hippo.ehviewer.client.exception.ParseException
 import com.hippo.util.ExceptionUtils
@@ -41,7 +43,7 @@ object FavoritesParser {
             }
         }.onFailure {
             ExceptionUtils.throwIfFatal(it)
-            it.printStackTrace()
+            Log.e("EhViewer", "Error", it)
             throw ParseException("Parse favorites error")
         }
         val result = GalleryListParser.parse(d, body)

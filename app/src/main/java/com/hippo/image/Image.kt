@@ -17,6 +17,8 @@
  */
 package com.hippo.image
 
+import android.util.Log
+
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -183,7 +185,7 @@ class Image private constructor(
                 Image(image, src)
             }.onFailure {
                 src.close()
-                it.printStackTrace()
+                Log.e("EhViewer", "Error", it)
             }.getOrNull()
         }
 

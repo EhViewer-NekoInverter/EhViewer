@@ -15,6 +15,8 @@
  */
 package com.hippo.ehviewer.spider
 
+import android.util.Log
+
 import coil3.disk.DiskCache
 import com.hippo.ehviewer.EhApplication
 import com.hippo.ehviewer.coil.edit
@@ -57,13 +59,13 @@ fun readFromUniFile(file: UniFile): SpiderInfo? = runCatching {
 }.getOrNull() ?: runCatching {
     file.openInputStream().use { readLegacySpiderInfo(it) }
 }.onFailure {
-    it.printStackTrace()
+    Log.e("EhViewer", "Error", it)
 }.getOrNull()
 
 fun SpiderInfo.saveToUniFile(file: UniFile) = runSuspendCatching {
     file.openOutputStream().use { it.write(cbor.encodeToByteArray(this@saveToUniFile)) }
 }.onFailure {
-    it.printStackTrace()
+    Log.e("EhViewer", "Error", it)
 }
 
 fun readFromCache(gid: Long): SpiderInfo? = runCatching {
@@ -71,7 +73,7 @@ fun readFromCache(gid: Long): SpiderInfo? = runCatching {
         cbor.decodeFromByteArray<SpiderInfo>(it.data.toFile().readBytes())
     }
 }.onFailure {
-    it.printStackTrace()
+    Log.e("EhViewer", "Error", it)
 }.getOrNull()
 
 fun SpiderInfo.saveToCache() = runSuspendCatching {
@@ -79,7 +81,7 @@ fun SpiderInfo.saveToCache() = runSuspendCatching {
         data.toFile().writeBytes(cbor.encodeToByteArray(this@saveToCache))
     }
 }.onFailure {
-    it.printStackTrace()
+    Log.e("EhViewer", "Error", it)
 }
 
 private fun readLegacySpiderInfo(inputStream: InputStream): SpiderInfo? {

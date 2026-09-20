@@ -15,6 +15,8 @@
  */
 package com.hippo.ehviewer.client.parser
 
+import android.util.Log
+
 import com.hippo.ehviewer.EhDB
 import com.hippo.ehviewer.Settings
 import com.hippo.ehviewer.client.EhFilter
@@ -324,7 +326,7 @@ object GalleryDetailParser {
         group.ifEmpty { null }
     } catch (e: Throwable) {
         ExceptionUtils.throwIfFatal(e)
-        e.printStackTrace()
+        Log.e("EhViewer", "Error", e)
         null
     }
 
@@ -339,7 +341,7 @@ object GalleryDetailParser {
             parseTagGroups(tagGroups)
         } catch (e: Throwable) {
             ExceptionUtils.throwIfFatal(e)
-            e.printStackTrace()
+            Log.e("EhViewer", "Error", e)
             EMPTY_GALLERY_TAG_GROUP_ARRAY
         }
     }
@@ -348,7 +350,7 @@ object GalleryDetailParser {
         trs.mapNotNull { parseTagGroup(it) }.toTypedArray()
     } catch (e: Throwable) {
         ExceptionUtils.throwIfFatal(e)
-        e.printStackTrace()
+        Log.e("EhViewer", "Error", e)
         EMPTY_GALLERY_TAG_GROUP_ARRAY
     }
 
@@ -434,7 +436,7 @@ object GalleryDetailParser {
             comment
         } catch (e: Throwable) {
             ExceptionUtils.throwIfFatal(e)
-            e.printStackTrace()
+            Log.e("EhViewer", "Error", e)
             null
         }
     }
@@ -463,7 +465,7 @@ object GalleryDetailParser {
         GalleryCommentList(list.toTypedArray(), hasMore)
     } catch (e: Throwable) {
         ExceptionUtils.throwIfFatal(e)
-        e.printStackTrace()
+        Log.e("EhViewer", "Error", e)
         EMPTY_GALLERY_COMMENT_ARRAY
     }
 
@@ -477,7 +479,7 @@ object GalleryDetailParser {
         elements[elements.size - 2].text().toInt()
     } catch (e: Throwable) {
         ExceptionUtils.throwIfFatal(e)
-        e.printStackTrace()
+        Log.e("EhViewer", "Error", e)
         throw ParseException("Can't parse preview pages")
     }
 

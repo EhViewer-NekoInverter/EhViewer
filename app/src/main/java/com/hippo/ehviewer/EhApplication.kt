@@ -15,6 +15,8 @@
  */
 package com.hippo.ehviewer
 
+import android.util.Log
+
 import android.app.Activity
 import android.content.Context
 import android.os.StrictMode
@@ -130,12 +132,12 @@ class EhApplication :
         runCatching {
             keepNoMediaFileStatus()
         }.onFailure {
-            it.printStackTrace()
+            Log.e("EhViewer", "Error", it)
         }
         runCatching {
             clearTempDir()
         }.onFailure {
-            it.printStackTrace()
+            Log.e("EhViewer", "Error", it)
         }
     }
 
@@ -145,7 +147,7 @@ class EhApplication :
                 EhEngine.getNews(true)?.let { showEventPane(it) }
             }
         }.onFailure {
-            it.printStackTrace()
+            Log.e("EhViewer", "Error", it)
         }
     }
 

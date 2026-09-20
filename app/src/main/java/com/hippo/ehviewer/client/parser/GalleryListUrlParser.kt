@@ -15,6 +15,8 @@
  */
 package com.hippo.ehviewer.client.parser
 
+import android.util.Log
+
 import android.text.TextUtils
 import androidx.core.net.toUri
 import com.hippo.ehviewer.client.EhUrl
@@ -84,7 +86,7 @@ object GalleryListUrlParser {
             try {
                 URLDecoder.decode(uploader, StandardCharsets.UTF_8.displayName())
             } catch (e: UnsupportedEncodingException) {
-                e.printStackTrace()
+                Log.e("EhViewer", "Error", e)
                 return null
             }
         }
@@ -113,7 +115,7 @@ object GalleryListUrlParser {
             try {
                 URLDecoder.decode(tag, StandardCharsets.UTF_8.displayName())
             } catch (e: UnsupportedEncodingException) {
-                e.printStackTrace()
+                Log.e("EhViewer", "Error", e)
                 return null
             }
         }

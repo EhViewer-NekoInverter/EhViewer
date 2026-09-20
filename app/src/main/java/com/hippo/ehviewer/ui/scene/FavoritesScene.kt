@@ -15,6 +15,8 @@
  */
 package com.hippo.ehviewer.ui.scene
 
+import android.util.Log
+
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -867,7 +869,7 @@ class FavoritesScene :
         override fun onFailure(e: Exception) {
             val scene = this@FavoritesScene
             if (mLocal) {
-                e.printStackTrace()
+                Log.e("EhViewer", "Error", e)
                 scene.onGetFavoritesLocal(mKeyword, mTaskId)
             } else {
                 scene.onGetFavoritesFailure(e, mTaskId)

@@ -161,7 +161,7 @@ class ArchiveGalleryProvider(context: Context, private val uri: Uri, passwdFlow:
             extractToFd(index, it.fd)
         }
     }.getOrElse {
-        it.printStackTrace()
+        Log.e("EhViewer", "Error", it)
         false
     }
 
