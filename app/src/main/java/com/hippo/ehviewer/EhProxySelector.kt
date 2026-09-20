@@ -15,6 +15,8 @@
  */
 package com.hippo.ehviewer
 
+import android.util.Log
+
 import android.text.TextUtils
 import com.hippo.ehviewer.Settings.proxyIp
 import com.hippo.ehviewer.Settings.proxyPort
@@ -65,7 +67,7 @@ class EhProxySelector internal constructor() : ProxySelector() {
                 }
             }.onFailure {
                 ExceptionUtils.throwIfFatal(it)
-                it.printStackTrace()
+                Log.e("EhViewer", "Error", it)
             }
         }
         return delegation?.select(uri) ?: alternative!!.select(uri)

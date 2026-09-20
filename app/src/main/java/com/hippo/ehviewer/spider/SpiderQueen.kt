@@ -279,7 +279,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
             runCatching {
                 writeSpiderInfoToLocal()
             }.onFailure {
-                it.printStackTrace()
+                Log.e("EhViewer", "Error", it)
             }
         }
     }
@@ -334,7 +334,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
             val targetImageUrl = EhEngine.getOriginalImageUrl(originImageUrl, pageUrl)
             mSpiderDen.saveImageFromUrl(targetImageUrl, pageUrl, dir, filename)
         }.onFailure {
-            it.printStackTrace()
+            Log.e("EhViewer", "Error", it)
         }.getOrNull()
     }
 
@@ -400,7 +400,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
                 spiderInfo
             }
         }.onFailure {
-            it.printStackTrace()
+            Log.e("EhViewer", "Error", it)
         }.getOrNull()
     }
 
@@ -415,7 +415,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
                 spiderInfo.pTokenMap[index] = pToken
             }
         }.onFailure {
-            it.printStackTrace()
+            Log.e("EhViewer", "Error", it)
         }
     }
 
@@ -446,7 +446,7 @@ class SpiderQueen private constructor(val galleryInfo: GalleryInfo) : CoroutineS
                 mSpiderInfo.pTokenMap[index]
             }
         }.getOrElse {
-            it.printStackTrace()
+            Log.e("EhViewer", "Error", it)
             null
         }
     }

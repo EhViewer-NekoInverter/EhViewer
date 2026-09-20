@@ -15,6 +15,8 @@
  */
 package com.hippo.ehviewer.ui.fragment
 
+import android.util.Log
+
 import android.app.Activity
 import android.content.res.Configuration
 import android.os.Bundle
@@ -90,7 +92,7 @@ class EhFragment : BasePreferenceFragment() {
                 runCatching {
                     EhEngine.getUConfig()
                 }.onFailure {
-                    it.printStackTrace()
+                    Log.e("EhViewer", "Error", it)
                 }
             }
         } else if (Settings.KEY_LIST_MODE == key) {

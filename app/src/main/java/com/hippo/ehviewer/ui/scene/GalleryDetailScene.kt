@@ -15,6 +15,8 @@
  */
 package com.hippo.ehviewer.ui.scene
 
+import android.util.Log
+
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -361,7 +363,7 @@ class GalleryDetailScene :
                         }
                     }
                 }.onFailure { e ->
-                    e.printStackTrace()
+                    Log.e("EhViewer", "Error", e)
                 }
             }
         }
@@ -1317,12 +1319,12 @@ class GalleryDetailScene :
                                                 .show()
                                         }
                                     } else {
-                                        it.printStackTrace()
+                                        Log.e("EhViewer", "Error", it)
                                     }
                                 }
                             }
                         }.onFailure {
-                            it.printStackTrace()
+                            Log.e("EhViewer", "Error", it)
                         }
                         withUIContext {
                             dialog.dismiss()
@@ -1613,7 +1615,7 @@ class GalleryDetailScene :
     }
 
     private fun onGetGalleryDetailFailure(e: Exception) {
-        e.printStackTrace()
+        Log.e("EhViewer", "Error", e)
         if (null != mTip) {
             val error = ExceptionUtils.getReadableString(e)
             mTip!!.text = error
@@ -1736,7 +1738,7 @@ class GalleryDetailScene :
                         application.getSystemService<DownloadManager>()!!.enqueue(r)
                     }
                 } catch (e: Throwable) {
-                    e.printStackTrace()
+                    Log.e("EhViewer", "Error", e)
                     ExceptionUtils.throwIfFatal(e)
                 }
             }
@@ -1748,7 +1750,7 @@ class GalleryDetailScene :
                 showTip(ExceptionUtils.getReadableString(e), LENGTH_LONG)
             } else {
                 showTip(R.string.download_archive_failure, LENGTH_LONG)
-                e.printStackTrace()
+                Log.e("EhViewer", "Error", e)
             }
         }
 
@@ -1817,7 +1819,7 @@ class GalleryDetailScene :
         }
 
         override fun onFailure(e: Exception) {
-            e.printStackTrace()
+            Log.e("EhViewer", "Error", e)
             showTip(R.string.rate_failed, LENGTH_LONG)
         }
 
@@ -2050,7 +2052,7 @@ class GalleryDetailScene :
                     dm.enqueue(r)
                     showTip(R.string.download_torrent_started, LENGTH_SHORT)
                 } catch (e: Throwable) {
-                    e.printStackTrace()
+                    Log.e("EhViewer", "Error", e)
                     ExceptionUtils.throwIfFatal(e)
                     showTip(R.string.download_torrent_failure, LENGTH_SHORT)
                 }

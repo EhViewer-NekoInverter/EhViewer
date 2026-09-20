@@ -15,6 +15,8 @@
  */
 package com.hippo.ehviewer
 
+import android.util.Log
+
 import android.os.Build
 import android.os.Debug
 import com.hippo.util.ReadableTime
@@ -90,7 +92,7 @@ object Crash {
                 fw.flush()
             }
         }.onFailure {
-            it.printStackTrace()
+            Log.e("EhViewer", "Error", it)
             file.delete()
         }
     }

@@ -15,6 +15,8 @@
  */
 package com.hippo.ehviewer.ui
 
+import android.util.Log
+
 import android.Manifest
 import android.animation.Animator
 import android.animation.ObjectAnimator
@@ -146,7 +148,7 @@ class GalleryActivity :
                         }
                     }
                 } catch (e: IOException) {
-                    e.printStackTrace()
+                    Log.e("EhViewer", "Error", e)
                 } finally {
                     runOnUiThread {
                         Toast.makeText(
@@ -929,7 +931,7 @@ class GalleryActivity :
             try {
                 resolver.delete(imageUri, null, null)
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e("EhViewer", "Error", e)
             }
             Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show()
             return

@@ -15,6 +15,8 @@
  */
 package com.hippo.scene
 
+import android.util.Log
+
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
@@ -47,7 +49,7 @@ open class StageLayout @JvmOverloads constructor(
                 ViewGroup::class.java.getDeclaredField("mDisappearingChildren")
             mDisappearingChildrenField!!.isAccessible = true
         } catch (e: NoSuchFieldException) {
-            e.printStackTrace()
+            Log.e("EhViewer", "Error", e)
         }
         if (mDisappearingChildrenField != null) {
             mDumpView = View(context)
@@ -64,7 +66,7 @@ open class StageLayout @JvmOverloads constructor(
                 @Suppress("UNCHECKED_CAST")
                 mSuperDisappearingChildren = mDisappearingChildrenField!![this] as ArrayList<View>?
             } catch (e: IllegalAccessException) {
-                e.printStackTrace()
+                Log.e("EhViewer", "Error", e)
             }
         }
 

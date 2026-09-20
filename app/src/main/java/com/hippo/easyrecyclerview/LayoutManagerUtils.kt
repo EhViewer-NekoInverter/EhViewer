@@ -15,6 +15,8 @@
  */
 package com.hippo.easyrecyclerview
 
+import android.util.Log
+
 import android.content.Context
 import android.graphics.PointF
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,7 +40,7 @@ object LayoutManagerUtils {
             sCsdfp!!.isAccessible = true
         } catch (e: NoSuchMethodException) {
             // Ignore
-            e.printStackTrace()
+            Log.e("EhViewer", "Error", e)
         }
     }
 
@@ -85,9 +87,9 @@ object LayoutManagerUtils {
                             try {
                                 direction = sCsdfp!!.invoke(layoutManager, targetPosition) as Int
                             } catch (e: IllegalAccessException) {
-                                e.printStackTrace()
+                                Log.e("EhViewer", "Error", e)
                             } catch (e: InvocationTargetException) {
-                                e.printStackTrace()
+                                Log.e("EhViewer", "Error", e)
                             }
                             if (direction == 0) {
                                 return null

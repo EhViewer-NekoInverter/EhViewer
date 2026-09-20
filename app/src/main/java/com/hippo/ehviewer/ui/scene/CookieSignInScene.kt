@@ -15,6 +15,8 @@
  */
 package com.hippo.ehviewer.ui.scene
 
+import android.util.Log
+
 import android.graphics.Paint
 import android.os.Bundle
 import android.view.KeyEvent
@@ -245,7 +247,7 @@ class CookieSignInScene :
             enter()
         } catch (e: Exception) {
             ExceptionUtils.throwIfFatal(e)
-            e.printStackTrace()
+            Log.e("EhViewer", "Error", e)
             showClipboardError()
         }
     }

@@ -15,6 +15,8 @@
  */
 package com.hippo.ehviewer.client
 
+import android.util.Log
+
 import android.content.Context
 import com.hippo.ehviewer.AppConfig
 import com.hippo.ehviewer.EhApplication
@@ -68,7 +70,7 @@ object EhTagDatabase {
         try {
             tagGroups = JSONObject(source.readString(StandardCharsets.UTF_8)).toTagGroups()
         } catch (e: JSONException) {
-            e.printStackTrace()
+            Log.e("EhViewer", "Error", e)
         }
     }
 
@@ -210,7 +212,7 @@ object EhTagDatabase {
             }
         }.onFailure {
             file.delete()
-            it.printStackTrace()
+            Log.e("EhViewer", "Error", it)
         }
         return false
     }
@@ -241,7 +243,7 @@ object EhTagDatabase {
                     }
                 }
             }.onFailure {
-                it.printStackTrace()
+                Log.e("EhViewer", "Error", it)
             }
             update()
         }
@@ -292,7 +294,7 @@ object EhTagDatabase {
                     } catch (_: IOException) {
                     }
                 }.onFailure {
-                    it.printStackTrace()
+                    Log.e("EhViewer", "Error", it)
                 }
             }
         }
