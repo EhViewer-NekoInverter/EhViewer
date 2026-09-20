@@ -37,6 +37,7 @@ import android.os.ParcelFileDescriptor
 import android.os.ParcelFileDescriptor.MODE_READ_ONLY
 import android.provider.MediaStore
 import android.text.TextUtils
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -146,7 +147,7 @@ class GalleryActivity :
                         }
                     }
                 } catch (e: IOException) {
-                    e.printStackTrace()
+                    Log.e(TAG, "Error", e)
                 } finally {
                     runOnUiThread {
                         Toast.makeText(
@@ -929,7 +930,7 @@ class GalleryActivity :
             try {
                 resolver.delete(imageUri, null, null)
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e(TAG, "Error", e)
             }
             Toast.makeText(this, R.string.error_cant_save_image, Toast.LENGTH_SHORT).show()
             return
@@ -1283,6 +1284,7 @@ class GalleryActivity :
     }
 
     companion object {
+        private val TAG = GalleryActivity::class.java.simpleName
         const val ACTION_EH = "eh"
         const val KEY_ACTION = "action"
         const val KEY_FILENAME = "filename"

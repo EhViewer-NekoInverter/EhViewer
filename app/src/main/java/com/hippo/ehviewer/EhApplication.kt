@@ -19,6 +19,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.StrictMode
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -130,12 +131,12 @@ class EhApplication :
         runCatching {
             keepNoMediaFileStatus()
         }.onFailure {
-            it.printStackTrace()
+            Log.e(TAG, "Error", it)
         }
         runCatching {
             clearTempDir()
         }.onFailure {
-            it.printStackTrace()
+            Log.e(TAG, "Error", it)
         }
     }
 
@@ -145,7 +146,7 @@ class EhApplication :
                 EhEngine.getNews(true)?.let { showEventPane(it) }
             }
         }.onFailure {
-            it.printStackTrace()
+            Log.e(TAG, "Error", it)
         }
     }
 
@@ -230,6 +231,7 @@ class EhApplication :
     }.build()
 
     companion object {
+        private val TAG = EhApplication::class.java.simpleName
         private const val KEY_GLOBAL_STUFF_NEXT_ID = "global_stuff_next_id"
 
         lateinit var application: EhApplication

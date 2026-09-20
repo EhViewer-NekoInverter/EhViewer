@@ -21,6 +21,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.util.Log
 import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
@@ -294,7 +295,7 @@ class SearchLayout @JvmOverloads constructor(
             try {
                 super.onLayoutChildren(recycler, state)
             } catch (e: IndexOutOfBoundsException) {
-                e.printStackTrace()
+                Log.e("SearchLayout", "Error", e)
             }
         }
     }

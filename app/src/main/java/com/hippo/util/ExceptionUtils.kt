@@ -15,6 +15,7 @@
  */
 package com.hippo.util
 
+import android.util.Log
 import com.hippo.ehviewer.GetText.getString
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.client.exception.CloudflareBypassException
@@ -29,7 +30,7 @@ import javax.net.ssl.SSLException
 
 object ExceptionUtils {
     fun getReadableString(e: Throwable?): String {
-        e?.printStackTrace()
+        e?.let { Log.e("ExceptionUtils", "Error", it) }
 
         if (e?.cause is CloudflareBypassException) {
             return e.cause!!.message!!

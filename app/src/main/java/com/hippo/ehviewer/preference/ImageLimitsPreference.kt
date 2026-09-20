@@ -18,6 +18,7 @@ package com.hippo.ehviewer.preference
 import android.content.Context
 import android.content.DialogInterface
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
@@ -95,7 +96,7 @@ class ImageLimitsPreference(
         runCatching {
             EhEngine.getImageLimits()
         }.onFailure {
-            it.printStackTrace()
+            Log.e(TAG, "Error", it)
             if (showError) {
                 withUIContext {
                     mDialog.setMessage(it.message)
@@ -146,7 +147,7 @@ class ImageLimitsPreference(
             runCatching {
                 EhEngine.resetImageLimits(mLimits.maximum < 0)
             }.onFailure {
-                it.printStackTrace()
+                Log.e(TAG, "Error", it)
                 withUIContext {
                     mDialog.setMessage(it.message)
                 }
@@ -162,5 +163,9 @@ class ImageLimitsPreference(
                 }
             }
         }
+    }
+
+    companion object {
+        private val TAG = ImageLimitsPreference::class.java.simpleName
     }
 }

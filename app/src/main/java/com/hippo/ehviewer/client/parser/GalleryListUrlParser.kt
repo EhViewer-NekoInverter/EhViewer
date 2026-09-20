@@ -16,6 +16,7 @@
 package com.hippo.ehviewer.client.parser
 
 import android.text.TextUtils
+import android.util.Log
 import androidx.core.net.toUri
 import com.hippo.ehviewer.client.EhUrl
 import com.hippo.ehviewer.client.data.ListUrlBuilder
@@ -28,6 +29,7 @@ import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
 object GalleryListUrlParser {
+    private val TAG = GalleryListUrlParser::class.java.simpleName
     private val VALID_HOSTS = arrayOf(EhUrl.DOMAIN_EX, EhUrl.DOMAIN_E, EhUrl.DOMAIN_LOFI)
     private const val PATH_NORMAL = "/"
     private const val PATH_UPLOADER = "/uploader/"
@@ -84,7 +86,7 @@ object GalleryListUrlParser {
             try {
                 URLDecoder.decode(uploader, StandardCharsets.UTF_8.displayName())
             } catch (e: UnsupportedEncodingException) {
-                e.printStackTrace()
+                Log.e(TAG, "Error", e)
                 return null
             }
         }
@@ -113,7 +115,7 @@ object GalleryListUrlParser {
             try {
                 URLDecoder.decode(tag, StandardCharsets.UTF_8.displayName())
             } catch (e: UnsupportedEncodingException) {
-                e.printStackTrace()
+                Log.e(TAG, "Error", e)
                 return null
             }
         }

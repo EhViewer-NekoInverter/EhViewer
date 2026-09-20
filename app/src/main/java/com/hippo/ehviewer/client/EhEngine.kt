@@ -567,7 +567,7 @@ object EhEngine {
         }.onFailure {
             // It may get redirected when accessing ex for the first time
             if (url == EhUrl.URL_UCONFIG_EX) {
-                it.printStackTrace()
+                Log.e("EhEngine", "Error", it)
                 getUConfigInternal(url)
             } else {
                 throw it

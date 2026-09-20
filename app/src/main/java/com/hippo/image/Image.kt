@@ -22,6 +22,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.Animatable
+import android.util.Log
 import androidx.core.graphics.createBitmap
 import coil3.BitmapImage
 import coil3.DrawableImage
@@ -183,7 +184,7 @@ class Image private constructor(
                 Image(image, src)
             }.onFailure {
                 src.close()
-                it.printStackTrace()
+                Log.e("Image", "Error", it)
             }.getOrNull()
         }
 

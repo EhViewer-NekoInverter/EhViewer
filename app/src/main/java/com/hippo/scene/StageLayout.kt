@@ -19,6 +19,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -47,7 +48,7 @@ open class StageLayout @JvmOverloads constructor(
                 ViewGroup::class.java.getDeclaredField("mDisappearingChildren")
             mDisappearingChildrenField!!.isAccessible = true
         } catch (e: NoSuchFieldException) {
-            e.printStackTrace()
+            Log.e(TAG, "Error", e)
         }
         if (mDisappearingChildrenField != null) {
             mDumpView = View(context)
@@ -64,7 +65,7 @@ open class StageLayout @JvmOverloads constructor(
                 @Suppress("UNCHECKED_CAST")
                 mSuperDisappearingChildren = mDisappearingChildrenField!![this] as ArrayList<View>?
             } catch (e: IllegalAccessException) {
-                e.printStackTrace()
+                Log.e(TAG, "Error", e)
             }
         }
 
@@ -138,5 +139,9 @@ open class StageLayout @JvmOverloads constructor(
 
     init {
         init(context)
+    }
+
+    companion object {
+        private val TAG = StageLayout::class.java.simpleName
     }
 }

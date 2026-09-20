@@ -17,6 +17,7 @@ package com.hippo.ehviewer
 
 import android.os.Build
 import android.os.Debug
+import android.util.Log
 import com.hippo.util.ReadableTime
 import com.hippo.yorozuya.FileUtils
 import com.hippo.yorozuya.OSUtils
@@ -90,7 +91,7 @@ object Crash {
                 fw.flush()
             }
         }.onFailure {
-            it.printStackTrace()
+            Log.e("Crash", "Error", it)
             file.delete()
         }
     }

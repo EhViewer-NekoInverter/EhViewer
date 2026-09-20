@@ -17,6 +17,7 @@ package com.hippo.ehviewer
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.room.Room.databaseBuilder
 import com.hippo.ehviewer.EhApplication.Companion.ehDatabase
@@ -35,6 +36,7 @@ import com.hippo.unifile.UniFile
 import com.hippo.util.sendTo
 
 object EhDB {
+    private val TAG = EhDB::class.java.simpleName
     private val db = ehDatabase
 
     // Fix state
@@ -379,7 +381,7 @@ object EhDB {
             UniFile.fromFile(dbFile)!! sendTo UniFile.fromUri(context, uri)!!
             return true
         }.onFailure {
-            it.printStackTrace()
+            Log.e(TAG, "Error", it)
         }
         return false
     }
@@ -441,7 +443,7 @@ object EhDB {
             oldDB.close()
             context.deleteDatabase(tmpDBName)
         }.onFailure {
-            it.printStackTrace()
+            Log.e(TAG, "Error", it)
             return context.getString(R.string.settings_advanced_import_data_cant_read)
         }
         return null

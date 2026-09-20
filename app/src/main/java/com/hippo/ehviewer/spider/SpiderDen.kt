@@ -15,6 +15,7 @@
  */
 package com.hippo.ehviewer.spider
 
+import android.util.Log
 import com.hippo.ehviewer.EhApplication.Companion.imageCache as sCache
 import com.hippo.ehviewer.EhApplication.Companion.nonCacheOkHttpClient
 import com.hippo.ehviewer.Settings
@@ -86,7 +87,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
                 UniFile.fromFile(data.toFile())!! sendTo file
             }
         }.getOrElse {
-            it.printStackTrace()
+            Log.e(TAG, "Error", it)
             false
         }
     }
@@ -100,7 +101,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
             oldFile sendTo file
             true
         }.getOrElse {
-            it.printStackTrace()
+            Log.e(TAG, "Error", it)
             false
         }
     }
@@ -159,7 +160,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
                 }
                 if (ret == it.body.contentLength()) dst else null
             }.onFailure { e ->
-                e.printStackTrace()
+                Log.e(TAG, "Error", e)
             }.getOrNull()
         }
     }
@@ -210,7 +211,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
         findDownloadFileForIndex(index, extension)?.runSuspendCatching {
             return doSave(this) == length
         }?.onFailure {
-            it.printStackTrace()
+            Log.e(TAG, "Error", it)
             return false
         }
 
@@ -224,7 +225,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
                     received = doSave(UniFile.fromFile(data.toFile())!!)
                 }
             }.onFailure {
-                it.printStackTrace()
+                Log.e(TAG, "Error", it)
             }.onSuccess {
                 return received == length
             }
@@ -242,7 +243,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
                 UniFile.fromFile(data.toFile())!! sendTo file
                 return true
             }.onFailure {
-                it.printStackTrace()
+                Log.e(TAG, "Error", it)
                 return false
             }
         }
@@ -251,7 +252,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
         runCatching {
             findImageFile(downloadDir!!, index)!! sendTo file
         }.onFailure {
-            it.printStackTrace()
+            Log.e(TAG, "Error", it)
             return false
         }.onSuccess {
             return true
@@ -285,6 +286,7 @@ class SpiderDen(private val mGalleryInfo: GalleryInfo) {
     }
 
     companion object {
+        private val TAG = SpiderDen::class.java.simpleName
         private val COMPAT_IMAGE_EXTENSIONS = SUPPORT_IMAGE_EXTENSIONS + ".jpeg"
         private val GIF_IMAGE_EXTENSION = SUPPORT_IMAGE_EXTENSIONS[2]
 

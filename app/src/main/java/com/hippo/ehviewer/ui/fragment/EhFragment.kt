@@ -18,6 +18,7 @@ package com.hippo.ehviewer.ui.fragment
 import android.app.Activity
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
@@ -90,7 +91,7 @@ class EhFragment : BasePreferenceFragment() {
                 runCatching {
                     EhEngine.getUConfig()
                 }.onFailure {
-                    it.printStackTrace()
+                    Log.e("EhFragment", "Error", it)
                 }
             }
         } else if (Settings.KEY_LIST_MODE == key) {
