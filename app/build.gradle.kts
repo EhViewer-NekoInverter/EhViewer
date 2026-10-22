@@ -64,8 +64,8 @@ android {
 
     defaultConfig {
         applicationId = "org.moedog.ehviewer"
-        versionCode = 180014
-        versionName = "1.8.13"
+        versionCode = 180015
+        versionName = "1.8.14"
         buildConfigField("String", "VERSION_CODE", "\"${defaultConfig.versionCode}\"")
         buildConfigField("String", "COMMIT_SHA", "\"$commitSha\"")
         ndk {
