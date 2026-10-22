@@ -161,7 +161,7 @@ class ArchiveGalleryProvider(context: Context, private val uri: Uri, passwdFlow:
             extractToFd(index, it.fd)
         }
     }.getOrElse {
-        Log.e("EhViewer", "Error", it)
+        Log.e("ArchiveGalleryProvider", "Error", it)
         false
     }
 

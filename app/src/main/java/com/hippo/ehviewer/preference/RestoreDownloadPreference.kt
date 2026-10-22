@@ -15,11 +15,10 @@
  */
 package com.hippo.ehviewer.preference
 
-import android.util.Log
-
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import com.hippo.ehviewer.GetText
 import com.hippo.ehviewer.R
 import com.hippo.ehviewer.Settings
@@ -80,7 +79,7 @@ class RestoreDownloadPreference(
             }
             RestoreItem(dirname, gid, result.token)
         }.onFailure {
-            Log.e("EhViewer", "Error", it)
+            Log.e(TAG, "Error", it)
         }.getOrNull()
     }
 
@@ -92,7 +91,7 @@ class RestoreDownloadPreference(
                 fillGalleryListByApi(it, EhUrl.referer)
             }
         }.onFailure {
-            Log.e("EhViewer", "Error", it)
+            Log.e(TAG, "Error", it)
         }.getOrNull()
     }
 
@@ -144,6 +143,7 @@ class RestoreDownloadPreference(
     }
 
     companion object {
+        private val TAG = RestoreDownloadPreference::class.java.simpleName
         private val JOB_TITLE_RESTORE_DOWNLOAD = GetText.getString(R.string.settings_download_restore_download_items)
         private val RESTORE_NOT_FOUND = GetText.getString(R.string.settings_download_restore_not_found)
         private val RESTORE_FAILED = GetText.getString(R.string.settings_download_restore_failed)

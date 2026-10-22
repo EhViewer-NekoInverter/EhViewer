@@ -16,7 +16,6 @@
 package com.hippo.ehviewer.client.parser
 
 import android.util.Log
-
 import com.hippo.ehviewer.client.exception.InsufficientFundsException
 import com.hippo.ehviewer.client.exception.NoHAtHClientException
 import org.jsoup.Jsoup
@@ -44,7 +43,7 @@ object ArchiveParser {
                 }.onSuccess {
                     archiveList.add(it)
                 }.onFailure {
-                    Log.e("EhViewer", "Error", it)
+                    Log.e("ArchiveParser", "Error", it)
                 }
             }
         }

@@ -15,14 +15,13 @@
  */
 package com.hippo.ehviewer.widget
 
-import android.util.Log
-
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.util.Log
 import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
@@ -296,7 +295,7 @@ class SearchLayout @JvmOverloads constructor(
             try {
                 super.onLayoutChildren(recycler, state)
             } catch (e: IndexOutOfBoundsException) {
-                Log.e("EhViewer", "Error", e)
+                Log.e("SearchLayout", "Error", e)
             }
         }
     }

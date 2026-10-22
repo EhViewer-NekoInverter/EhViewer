@@ -15,8 +15,6 @@
  */
 package com.hippo.ehviewer.ui.scene
 
-import android.util.Log
-
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -34,6 +32,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -363,7 +362,7 @@ class GalleryDetailScene :
                         }
                     }
                 }.onFailure { e ->
-                    Log.e("EhViewer", "Error", e)
+                    Log.e(TAG, "Error", e)
                 }
             }
         }
@@ -1319,12 +1318,12 @@ class GalleryDetailScene :
                                                 .show()
                                         }
                                     } else {
-                                        Log.e("EhViewer", "Error", it)
+                                        Log.e(TAG, "Error", it)
                                     }
                                 }
                             }
                         }.onFailure {
-                            Log.e("EhViewer", "Error", it)
+                            Log.e(TAG, "Error", it)
                         }
                         withUIContext {
                             dialog.dismiss()
@@ -1615,7 +1614,7 @@ class GalleryDetailScene :
     }
 
     private fun onGetGalleryDetailFailure(e: Exception) {
-        Log.e("EhViewer", "Error", e)
+        Log.e(TAG, "Error", e)
         if (null != mTip) {
             val error = ExceptionUtils.getReadableString(e)
             mTip!!.text = error
@@ -1738,7 +1737,7 @@ class GalleryDetailScene :
                         application.getSystemService<DownloadManager>()!!.enqueue(r)
                     }
                 } catch (e: Throwable) {
-                    Log.e("EhViewer", "Error", e)
+                    Log.e(TAG, "Error", e)
                     ExceptionUtils.throwIfFatal(e)
                 }
             }
@@ -1750,7 +1749,7 @@ class GalleryDetailScene :
                 showTip(ExceptionUtils.getReadableString(e), LENGTH_LONG)
             } else {
                 showTip(R.string.download_archive_failure, LENGTH_LONG)
-                Log.e("EhViewer", "Error", e)
+                Log.e(TAG, "Error", e)
             }
         }
 
@@ -1819,7 +1818,7 @@ class GalleryDetailScene :
         }
 
         override fun onFailure(e: Exception) {
-            Log.e("EhViewer", "Error", e)
+            Log.e(TAG, "Error", e)
             showTip(R.string.rate_failed, LENGTH_LONG)
         }
 
@@ -2052,7 +2051,7 @@ class GalleryDetailScene :
                     dm.enqueue(r)
                     showTip(R.string.download_torrent_started, LENGTH_SHORT)
                 } catch (e: Throwable) {
-                    Log.e("EhViewer", "Error", e)
+                    Log.e(TAG, "Error", e)
                     ExceptionUtils.throwIfFatal(e)
                     showTip(R.string.download_torrent_failure, LENGTH_SHORT)
                 }
@@ -2140,6 +2139,7 @@ class GalleryDetailScene :
     }
 
     companion object {
+        private val TAG = GalleryDetailScene::class.java.simpleName
         const val KEY_ACTION = "action"
         const val ACTION_GALLERY_INFO = "action_gallery_info"
         const val ACTION_GID_TOKEN = "action_gid_token"

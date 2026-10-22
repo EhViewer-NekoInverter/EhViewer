@@ -15,10 +15,9 @@
  */
 package com.hippo.easyrecyclerview
 
-import android.util.Log
-
 import android.content.Context
 import android.graphics.PointF
+import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -29,6 +28,7 @@ import java.lang.reflect.Method
 import kotlin.math.abs
 
 object LayoutManagerUtils {
+    private val TAG = LayoutManagerUtils::class.java.simpleName
     private var sCsdfp: Method? = null
 
     init {
@@ -40,7 +40,7 @@ object LayoutManagerUtils {
             sCsdfp!!.isAccessible = true
         } catch (e: NoSuchMethodException) {
             // Ignore
-            Log.e("EhViewer", "Error", e)
+            Log.e(TAG, "Error", e)
         }
     }
 
@@ -87,9 +87,9 @@ object LayoutManagerUtils {
                             try {
                                 direction = sCsdfp!!.invoke(layoutManager, targetPosition) as Int
                             } catch (e: IllegalAccessException) {
-                                Log.e("EhViewer", "Error", e)
+                                Log.e(TAG, "Error", e)
                             } catch (e: InvocationTargetException) {
-                                Log.e("EhViewer", "Error", e)
+                                Log.e(TAG, "Error", e)
                             }
                             if (direction == 0) {
                                 return null

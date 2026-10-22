@@ -307,7 +307,7 @@ object GalleryListParser {
                 }
             }
         } catch (e: Throwable) {
-            Log.e("EhViewer", "Error", e)
+            Log.e(TAG, "Error", e)
         }
         try {
             val itg = d.getElementsByClass("itg").first()
@@ -331,7 +331,7 @@ object GalleryListParser {
             }
         } catch (e: Throwable) {
             ExceptionUtils.throwIfFatal(e)
-            Log.e("EhViewer", "Error", e)
+            Log.e(TAG, "Error", e)
             throw ParseException("Can't parse gallery list")
         }
         return result

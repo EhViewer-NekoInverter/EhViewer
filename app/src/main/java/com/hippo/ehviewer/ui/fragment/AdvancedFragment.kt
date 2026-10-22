@@ -74,7 +74,7 @@ class AdvancedFragment : BasePreferenceFragment() {
                 )
             } catch (e: Exception) {
                 ExceptionUtils.throwIfFatal(e)
-                Log.e("EhViewer", "Error", e)
+                Log.e(TAG, "Error", e)
             }
             try {
                 val alertDialog = AlertDialog.Builder(requireActivity())
@@ -118,7 +118,7 @@ class AdvancedFragment : BasePreferenceFragment() {
                 )
             } catch (e: Exception) {
                 ExceptionUtils.throwIfFatal(e)
-                Log.e("EhViewer", "Error", e)
+                Log.e(TAG, "Error", e)
             }
             try {
                 val zipFile = File(AppConfig.getExternalTempDir(), "logs.zip")
@@ -151,7 +151,7 @@ class AdvancedFragment : BasePreferenceFragment() {
                             origin.close()
                             origin = null
                         } catch (e: Exception) {
-                            Log.e("EhViewer", "Error", e)
+                            Log.e(TAG, "Error", e)
                         }
                     }
                     val entry =
@@ -166,7 +166,7 @@ class AdvancedFragment : BasePreferenceFragment() {
                     )
                     finished = true
                 } catch (e: Exception) {
-                    Log.e("EhViewer", "Error", e)
+                    Log.e(TAG, "Error", e)
                 } finally {
                     origin?.close()
                     out?.close()
@@ -206,7 +206,7 @@ class AdvancedFragment : BasePreferenceFragment() {
                 )
             } catch (e: Exception) {
                 ExceptionUtils.throwIfFatal(e)
-                Log.e("EhViewer", "Error", e)
+                Log.e(TAG, "Error", e)
             }
             try {
                 val alertDialog = AlertDialog.Builder(requireActivity())
@@ -350,7 +350,7 @@ class AdvancedFragment : BasePreferenceFragment() {
                                     delay(AppSettings.downloadDelay.toLong())
                                 }
                             } catch (e: InterruptedException) {
-                                Log.e("EhViewer", "Error", e)
+                                Log.e(TAG, "Error", e)
                             }
                             favIndex++
                             favListUrlBuilder.setIndex(result.next, true)
@@ -403,6 +403,7 @@ class AdvancedFragment : BasePreferenceFragment() {
         get() = R.string.settings_advanced
 
     companion object {
+        private val TAG = AdvancedFragment::class.java.simpleName
         private const val KEY_DUMP_LOGCAT = "dump_logcat"
         private const val KEY_IMPORT_DATA = "import_data"
         private const val KEY_EXPORT_DATA = "export_data"

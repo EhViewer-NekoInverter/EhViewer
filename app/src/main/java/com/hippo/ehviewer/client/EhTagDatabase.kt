@@ -15,9 +15,8 @@
  */
 package com.hippo.ehviewer.client
 
-import android.util.Log
-
 import android.content.Context
+import android.util.Log
 import com.hippo.ehviewer.AppConfig
 import com.hippo.ehviewer.EhApplication
 import com.hippo.ehviewer.EhApplication.Companion.nonCacheOkHttpClient
@@ -46,6 +45,7 @@ private typealias TagGroup = Map<String, String>
 private typealias TagGroups = Map<String, TagGroup>
 
 object EhTagDatabase {
+    private val TAG = EhTagDatabase::class.java.simpleName
     private const val NAMESPACE_PREFIX = "n"
     private const val UPDATE_INTERVAL = 3 * 24 * 3600 * 1000
     const val TYPE_EQUAL = 0
@@ -70,7 +70,7 @@ object EhTagDatabase {
         try {
             tagGroups = JSONObject(source.readString(StandardCharsets.UTF_8)).toTagGroups()
         } catch (e: JSONException) {
-            Log.e("EhViewer", "Error", e)
+            Log.e(TAG, "Error", e)
         }
     }
 
@@ -212,7 +212,7 @@ object EhTagDatabase {
             }
         }.onFailure {
             file.delete()
-            Log.e("EhViewer", "Error", it)
+            Log.e(TAG, "Error", it)
         }
         return false
     }
@@ -243,7 +243,7 @@ object EhTagDatabase {
                     }
                 }
             }.onFailure {
-                Log.e("EhViewer", "Error", it)
+                Log.e(TAG, "Error", it)
             }
             update()
         }
@@ -294,7 +294,7 @@ object EhTagDatabase {
                     } catch (_: IOException) {
                     }
                 }.onFailure {
-                    Log.e("EhViewer", "Error", it)
+                    Log.e(TAG, "Error", it)
                 }
             }
         }
