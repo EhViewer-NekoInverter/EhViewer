@@ -35,6 +35,7 @@ import com.hippo.ehviewer.client.EhEngine
 import com.hippo.ehviewer.client.EhUrl
 import com.hippo.ehviewer.client.EhUtils
 import com.hippo.ehviewer.client.exception.CloudflareBypassException
+import com.hippo.network.StatusCodeException
 import com.hippo.util.ExceptionUtils
 import com.hippo.util.getClipboardManager
 import com.hippo.util.getTextFromClipboard
@@ -170,7 +171,7 @@ class CookieSignInScene :
     }
 
     private fun showResultErrorDialog(e: Throwable) {
-        val isCloudflareError = e.cause is CloudflareBypassException
+        val isCloudflareError = e.cause is CloudflareBypassException || (e is StatusCodeException && e.responseCode == 403)
         val message = buildString {
             append(ExceptionUtils.getReadableString(e))
             append("\n\n")
